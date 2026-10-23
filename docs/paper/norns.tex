@@ -1,0 +1,237 @@
+% The Norns III paper draft: seeded simulated-annealing placement from provenance and
+% recovered clusters. IEEEtran conference class; compiles with pdfLaTeX (Overleaf) and BibTeX.
+% Style and figures follow the Odin III paper (shared TikZ palette, IMAGE/odin3-tikz-styles.tex).
+% Numbers trace to the experiment records in this repository (docs/plan/norns-experiment.md and
+% the run logs); gaps are marked with \todo{} and filled as runs land.
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,arrows.meta,shapes.geometric,backgrounds,calc,matrix}
+
+\graphicspath{{IMAGE/}}
+\input{IMAGE/odin3-tikz-styles}
+
+\newcommand{\code}[1]{\texttt{#1}}
+% A visible marker for numbers not yet measured.
+\newcommand{\todo}[1]{\textbf{[TODO: #1]}}
+\lstset{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true,
+        frame=single, framesep=2pt, xleftmargin=3pt, xrightmargin=3pt,
+        aboveskip=4pt, belowskip=4pt}
+
+\title{The Norns~III: Seeding Simulated-Annealing Placement with Provenance and Recovered
+Clusters\\
+How hot can the anneal start before it destroys a good initial placement?}
+
+\author{\IEEEauthorblockN{Peter Jamieson}
+\IEEEauthorblockA{Electrical and Computer Engineering, Miami University\\
+Oxford, OH, USA\\
+jamiespa@miamioh.edu}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Simulated annealing is the workhorse of FPGA placement, and it starts from an
+initial placement that the anneal then destroys and rebuilds. What if the
+initial placement carried real information -- the HDL hierarchy a
+provenance-tracked front end kept, or the clusters a graph analysis
+recovered from the flat netlist? This paper asks whether such seeds improve
+placement, and, because the anneal's early phase can erase any seed, at what
+initial temperature the seed's advantage dies. The seeds come from Odin~III's
+provenance hierarchy and from Loki~III's L2 clusterings (Louvain, spectral,
+affinity propagation, k-means); the die-level arrangement of clusters comes
+from a cut-weighted quotient-graph layout; and the seeds enter VPR through
+its initial-placement and floorplanning-constraint interfaces, with one
+additive, default-off patch for checkpointing, following RLPlace. We report
+seed retention against the annealing temperature, quality of results against
+an unseeded baseline, and the crossover temperature at which each seed stops
+helping -- the recipe a clustering-based initial placement should be used
+with.
+\end{abstract}
+
+\begin{IEEEkeywords}
+FPGA placement, simulated annealing, provenance, clustering, VTR
+\end{IEEEkeywords}
+
+% ==========================================================================================
+\section{Introduction}
+\label{sec:intro}
+
+VPR's simulated-annealing placer starts from an initial placement and anneals
+it: the schedule begins hot enough to move anything, and the early phase
+rearranges the circuit wholesale. The question this paper asks is whether the
+initial placement can be made to \emph{mean} something, and how much of that
+meaning survives the anneal. Gharibian et al. showed that system-level
+structure recovered from a flat netlist correlates with placement
+locality~\cite{gharibian2010finding,gharibian2013analyzing,gharibian2014identifying}.
+Odin~III keeps the provenance link that makes recovery unnecessary for the
+hierarchy~\cite{gharibian2010finding}, and Loki~III recovers clusters from the
+flat netlist without a language model. RLPlace~\cite{elgammal2022rlplace}
+showed that the anneal itself can be improved -- directed moves chosen by a
+reinforcement-learning agent and checkpointing that prevents oscillation --
+starting from VTR's analytic placement. This paper connects those lines: the
+seed carries the structure, the anneal is measured for how much of it the
+seed can keep, and the temperature at which the advantage dies is reported as
+data, not tuned away.
+
+The contributions are: (1) a seeding methodology -- provenance hierarchy and
+four recovered clusterings, arranged on the die by a quotient-graph layout,
+entering VPR through its initial-placement and constraint interfaces with a
+default-off checkpointing patch; (2) the crossover sweep, which calibrates the
+highest useful initial temperature for each seed against the best placement
+any seed achieves; (3) the retention and quality numbers per seed, with the
+full-seed versus inter-cluster-only split that separates the value of the
+coarse layout from the fine one.
+
+\section{Background}
+\label{sec:background}
+
+\subsection{Simulated annealing placement and RLPlace}
+
+VPR places by simulated annealing from an analytic initial
+placement~\cite{luu2014vtr7,murray2020vtr8}. The anneal's moves are mostly
+random; its early phase can undo any structure the start carried. RLPlace
+improves the anneal rather than the start: a K-armed bandit selects among
+directed move types (simple moves and swaps, bounded centroid, median,
+critical-path moves), and checkpointing periodically saves the best placement
+so oscillation cannot throw it away~\cite{elgammal2022rlplace}. Our experiment
+keeps the anneal as-is except for one default-off checkpointing flag, and
+changes the start instead; RLPlace's checkpointing prediction -- that
+save-best/restore extends the useful temperature range -- is one of the
+hypotheses we test.
+
+\subsection{The seeds}
+
+The provenance hierarchy (Urd) is the module structure Odin~III records on
+every netlist object; it needs no recovery. The recovered clusters (Verdandi)
+are Loki~III L2 partitions: Louvain, spectral, affinity propagation and
+k-means at several $k$, scored in the Loki paper against the known hierarchy.
+The two seed families differ exactly in the question's terms: provenance is
+the structure the designer wrote, clusters are the structure the flat netlist
+still shows.
+
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Seed construction}
+
+Each seed is a partition of the placed blocks. Its die-level arrangement
+comes from the quotient graph: contract each cluster to a node, weight edges
+by inter-cluster net cuts, lay the quotient out by a coarse force-directed
+solve, and scale it to the die. Inside a cluster, blocks take the seed's
+internal order -- or a shuffle, in the inter-cluster-only arm, so the two arms
+separate the coarse layout's value from the fine one.
+
+\subsection{Injection}
+
+Seeds enter VPR two ways, both already in the pinned build (v8.0.0+18416):
+soft, as an initial placement file (\code{--read\_initial\_place\_file}) that
+the anneal is free to move away from; and hard, as floorplanning constraints
+(\code{--read\_vpr\_constraints}) with one PartitionRegion per cluster, which
+the anneal cannot violate at any temperature. \code{--write\_initial\_place\_file}
+dumps VPR's own analytic start for the baseline study.
+
+\subsection{The crossover sweep}
+
+The calibration loop follows the data, in order. First, run every seed and
+keep the best final placement $P^*$ (and which seed made it). Second,
+cold-start a fresh anneal from $P^*$ and sweep the initial temperature
+upward; the temperature at which quality falls to the unseeded baseline is
+the crossover -- the highest useful start temperature for a cluster-derived
+placement. Third, run every seed at a temperature just above its crossover
+against an unseeded run at the same temperature: whether the seed still wins
+there says whether its information is coarse (which anneals away last) or
+fine. The checkpointing arm repeats the sweeps with save-best/restore
+enabled; per RLPlace, the crossover should move hotter.
+
+\subsection{Metrics and data}
+
+Per run: seed retention (fraction of blocks still inside their seed cluster's
+region at exit; mean displacement from the seed coordinate), routed
+wirelength, critical-path delay, minimum channel width, placement runtime,
+and the per-temperature cost curve. Designs are the 15 VTR benchmarks that
+fit the development machine, smallest first, one run at a time under the
+heavy lock. Every number in this paper traces to a kept record; large data
+keeps its scripts.
+
+\begin{figure}[t]
+\centering
+\odinfit{\columnwidth}{\input{IMAGE/fig_norns}}
+\caption{The Norns~III experiment. Seeds from provenance and recovered
+clusters, arranged by a quotient-graph layout, enter VPR softly (initial
+placement) or hard (constraints). The crossover sweep cold-starts from the
+best placement and raises the initial temperature until the seed's advantage
+dies; the checkpointing arm (one default-off patch) tests whether
+save-best/restore extends the range.}
+\label{fig:norns}
+\end{figure}
+
+\section{Results}
+\label{sec:results}
+
+\begin{table}[t]
+\caption{Geomean quality ratios vs the unseeded baseline, per seed and
+injection (soft initial placement, hard constraints).}
+\label{tab:qor}
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Seed & Wirelength & Delay & Chan. width & Runtime \\
+\midrule
+Urd (hierarchy) & \todo{} & \todo{} & \todo{} & \todo{} \\
+Louvain & \todo{} & \todo{} & \todo{} & \todo{} \\
+Spectral & \todo{} & \todo{} & \todo{} & \todo{} \\
+Affinity propagation & \todo{} & \todo{} & \todo{} & \todo{} \\
+k-means ($k$, $2k$, $4k$) & \todo{} & \todo{} & \todo{} & \todo{} \\
+Inter-cluster only & \todo{} & \todo{} & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{The crossover sweep: highest initial temperature at which the
+cold-start from the best placement still matches its quality, and retention
+at that temperature, per seed.}
+\label{tab:crossover}
+\centering
+\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Seed & Crossover $T$ & Retention \\
+\midrule
+Urd (hierarchy) & \todo{} & \todo{} \\
+Louvain & \todo{} & \todo{} \\
+Spectral & \todo{} & \todo{} \\
+Affinity propagation & \todo{} & \todo{} \\
+k-means & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The numbers land as the runs complete; the retention-versus-temperature
+curves are the experiment's central figure and will be added here.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\todo{Three observations once the runs land: which seed family wins and
+whether it is coarse or fine information; whether the checkpointing arm
+moves the crossover hotter, as RLPlace predicts; and what the safe
+temperature recipe is for a cluster-derived start.}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\todo{Written from the results.}
+
+\bibliography{joined}
+
+\end{document}

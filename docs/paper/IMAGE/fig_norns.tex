@@ -1,0 +1,28 @@
+% The Norns III experiment: seeds -> VPR (soft initial placement / hard constraints), the
+% crossover sweep, and the checkpointing arm. Shared palette: IMAGE/odin3-tikz-styles.tex.
+\begin{tikzpicture}[odin]
+  % seed builders, side by side
+  \node[box, neutral] (urd) {Urd\\\odinsub{provenance hierarchy}};
+  \node[box, neutral, right=3mm of urd] (verd) {Verdandi\\\odinsub{L2 clusters}};
+  \node[box, light, below=5mm of $(urd.south)!0.5!(verd.south)$] (quot) {quotient-graph layout\\\odinsub{inter-cluster cuts}};
+  % injection, side by side
+  \node[box, external, below=5mm of quot] (soft) {soft seed\\\odinsub{initial place file}};
+  \node[box, external, right=3mm of soft] (hard) {hard seed\\\odinsub{PartitionRegions}};
+  % VPR and the patch
+  \node[box, neutral, below=5mm of $(soft.south)!0.5!(hard.south)$] (vpr) {VPR anneal\\\odinsub{pack, place, route}};
+  \node[box, external, right=3mm of vpr] (ckpt) {checkpoint patch\\\odinsub{default-off}};
+  % measurements
+  \node[box, light, below=5mm of vpr] (met) {retention, QoR, runtime\\\odinsub{cost curves per run}};
+  % flow
+  \draw[flow] (urd) -- (quot);
+  \draw[flow] (verd) -- (quot);
+  \draw[flow] (quot) -- (soft);
+  \draw[flow] (quot) -- (hard);
+  \draw[flow] (soft) -- (vpr);
+  \draw[flow] (hard) -- (vpr);
+  \draw[flow, dash pattern=on 2.4pt off 1.4pt] (ckpt) -- (vpr);
+  \draw[flow] (vpr) -- (met);
+  % the sweep note
+  \node[plain, below=3mm of met, font=\scriptsize\color{o3sub}, align=center]
+    {crossover sweep: cold-start from the best placement,\\raise T until the seed's advantage dies};
+\end{tikzpicture}
