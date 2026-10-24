@@ -177,8 +177,8 @@ expanded until it holds the cluster's logic (and nudged to cover a memory or
 multiplier site the cluster needs), and VPR's placement orders the blocks
 inside each region.
 
-\textbf{Placement macros.} Every seed honours the die's placement macros: pad
-CLBs never move (their I/O sites are fixed by the architecture),
+\textbf{Placement macros.} Every seed honours the die's placement macros: I/O
+pads never move (their I/O sites are fixed by the architecture),
 \code{mult\_36} macros stay anchored on their tile footprint, and an adder
 carry chain moves as one vertical run in a single column, head at the top
 (VPR places a chain as a direct vertical macro). Chains are assigned slots
@@ -190,7 +190,7 @@ seed builder reads that module from the BLIF, and each populated module
 becomes one cluster; blocks that carry no module name join one flat cluster.
 Urd is one cluster on sha and stereovision3, two on diffeq1 and diffeq2 (one
 module plus the flat group), and one per populated module plus the flat group
-on the other designs, 3 to 23 clusters. The rationale is the designer's
+on the other designs. The rationale is the designer's
 locality: modules are the units the designer grouped, and logic inside a
 module was written to communicate (shared words, state, control), so a module
 cluster concentrates the connectivity the placer is paid to shorten. That is
@@ -224,7 +224,9 @@ is one word fanned out to every consumer, a datapath chain is a dataflow
 line, and an FSM's next-state logic and registers exchange signals every
 cycle. Provenance preserves that grouping in the netlist, so a seed built
 from it starts the placer with the designer's locality already on the die;
-L2 clusters rediscover most of it from connectivity alone. That is why Urd
+L2 clusters try to rediscover it from connectivity alone, and this
+experiment measures how well that substitute places, not how closely the
+clusters match the modules. That is why Urd
 and Verdandi are the arms, and why the paper asks whether recovered structure
 is interchangeable with provenance.
 
