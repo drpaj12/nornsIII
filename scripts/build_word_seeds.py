@@ -159,14 +159,17 @@ def build(design: str) -> int:
     path = nl.runs_dir(design, "seeds", "clusters.json")
     result = nl.read_json(path) if path.is_file() else {"design": design, "seeds": {}}
     run("words", cluster_of["words"], words_map)
-    run("slices", cluster_of["words"], words_map, extra_runs=runs)
+    wcl = {cl for cl in word_clbs}
+    run("slices", cluster_of["words"], words_map, extra_runs=runs, bit_order=bit_of_clb,
+        bit_clusters=wcl)
     run("hier", cluster_of["urd"], urd, inner=inner)
     run("words_partial", cluster_of["words"], only_words, fixed=fixed, keep=seeded)
     per_clb = {r["name"]: i for i, r in enumerate(place.rows)}
     run("random", per_clb, {}, layout="random")
     run("urd_shuf", cluster_of["urd"], urd, layout="shuffle")
     run("words_shuf", cluster_of["words"], words_map, layout="shuffle")
-    run("slices_shuf", cluster_of["words"], words_map, layout="shuffle", extra_runs=runs)
+    run("slices_shuf", cluster_of["words"], words_map, layout="shuffle", extra_runs=runs,
+        bit_order=bit_of_clb, bit_clusters=wcl)
     run("hier_shuf", cluster_of["urd"], urd, layout="shuffle", inner=inner)
     nl.write_json(path, result)
     return 0

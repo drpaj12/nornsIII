@@ -34,6 +34,9 @@
   164,
   144
  ],
+ "lines_with_several_words": 22,
+ "max_words_on_line": 20,
+ "statement_lines": 55,
  "unjoined_cells": 29,
  "words": 147,
  "words_ge2": 110

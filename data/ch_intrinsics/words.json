@@ -32,6 +32,9 @@
   8,
   7
  ],
+ "lines_with_several_words": 1,
+ "max_words_on_line": 4,
+ "statement_lines": 2,
  "unjoined_cells": 1,
  "words": 7,
  "words_ge2": 5

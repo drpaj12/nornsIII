@@ -31,8 +31,9 @@ def paired(data, designs, a, b, metric="wirelength"):
         if r is not None:
             vals.append(r)
     wins = sum(1 for v in vals if v < 1)
+    losses = sum(1 for v in vals if v > 1)
     return {"n": len(vals), "gm": nl.geomean(vals) if vals else float("nan"), "wins": wins,
-            "p": sign_p(wins, len(vals))}
+            "ties": len(vals) - wins - losses, "p": sign_p(wins, wins + losses)}
 
 
 def sign_p(k: int, n: int) -> float:
@@ -115,6 +116,9 @@ def compute() -> dict:
         "unjoined": sum(c["unjoined_cells"] for c in cov),
         "words": sum(c["words"] for c in cov),
         "max_line_group": [max(c["line_groups_largest"][0] for c in cov)] if cov else None,
+        "lines": sum(c.get("statement_lines", 0) for c in cov),
+        "lines_multi": sum(c.get("lines_with_several_words", 0) for c in cov),
+        "max_words_line": max((c.get("max_words_on_line", 0) for c in cov), default=0),
     }
     h: dict = {}
     # H7a words vs urd; H7b slices vs words (wl, chan); H7c rank of hier; H7d partial vs words
@@ -164,6 +168,14 @@ def compute() -> dict:
     h["H4"]["status"] = ("supported" if holds and all(holds) else
                          "not supported" if holds and not any(holds) else "inconclusive")
     out["hyp"] = h
+    same = {}
+    for name, (x, y) in {"slices_words": (("slices", "full"), ("words", "full")),
+                         "hier_urd": (("hier", "full"), ("urd", "full")),
+                         "partial_words": (("words_partial", "full"), ("words", "full"))}.items():
+        same[name] = [d for d in designs if rec(data, d, *x) and rec(data, d, *y)
+                      and rec(data, d, *x).get("wirelength") == rec(data, d, *y).get("wirelength")
+                      and rec(data, d, *x).get("chan_width") == rec(data, d, *y).get("chan_width")]
+    out["same"] = same
     # N1
     n1p = nl.DATA / "analysis" / "n1.json"
     if n1p.is_file():

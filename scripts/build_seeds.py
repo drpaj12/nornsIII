@@ -201,7 +201,9 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                flat: nl.Flat, chains: list[dict[str, object]], *, layout: str = "spring",
                extra_runs: list[dict[str, object]] | None = None,
                fixed: dict[str, tuple[int, int, int, int]] | None = None,
-               inner: dict[str, tuple[str, float]] | None = None) -> dict[str, object]:
+               inner: dict[str, tuple[str, float]] | None = None,
+               bit_order: dict[str, float] | None = None,
+               bit_clusters: set[int] | None = None) -> dict[str, object]:
     """One seed. Round-2 options (all default to the round-1 behaviour):
 
     layout     "spring" quotient layout; "shuffle" the same layout with the cluster positions
@@ -213,6 +215,9 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                from the pool.
     inner      CLB -> (word key, bit order): inside each cluster the words are laid out as
                aligned vertical runs in bit order (the hierarchical seed).
+    bit_order  CLB -> bit position; bit_clusters the word clusters that use it: a word run
+               that finds no free window in a column is still laid out in bit order down the
+               columns of its slots (column-major, top first) instead of the analytic order.
     """
     import networkx as nx
 
@@ -351,6 +356,11 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
             fine = sorted(names, key=lambda n: base_xy.get(n, (0.0, 0.0)))
             if inner is not None and cls == "logic":
                 assignment_full.update(inner_place(fine, picked, inner))
+            elif bit_order is not None and cl in (bit_clusters or ()) and cls == "logic":
+                by_bit = sorted(names, key=lambda n: (bit_order.get(n, 1e9),
+                                                      base_xy.get(n, (0.0, 0.0))))
+                for name, slot in zip(by_bit, sorted(picked, key=lambda t: (t[0], -t[1]))):
+                    assignment_full[name] = slot
             else:
                 for name, slot in zip(fine, sorted(picked)):
                     assignment_full[name] = slot
@@ -445,9 +455,17 @@ def inner_place(names: list[str], picked: list[tuple[int, int, int, int]],
                     break
             if done:
                 break
+    # a word with no free window still goes down the columns of the free slots in bit order
+    free = sorted((s for s in picked if s not in used), key=lambda t: (t[0], -t[1]))
+    for key in sorted(words, key=lambda k: (-len(words[k]), k)):
+        members = sorted(words[key], key=lambda n: (inner[n][1], pos[n]))
+        if len(members) < 2 or members[0] in out:
+            continue
+        for name in members:
+            if free:
+                out[name] = free.pop(0)
     rest = [n for n in names if n not in out]
-    free = sorted(s for s in picked if s not in used)
-    for name, slot in zip(rest, free):
+    for name, slot in zip(rest, sorted(free)):
         out[name] = slot
     return out
 

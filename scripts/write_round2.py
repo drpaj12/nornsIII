@@ -19,13 +19,13 @@ QUOTE = ("consider that bitwise is more relevant in the Norn path so we should c
          "hierarchically yes)). Let's include this and run the next set of experiments noting "
          "this thought pattern in the appendix of each paper so we can see the progress ... "
          "write up into the papers findings.")
-LABEL = {"urd": "Urd (hierarchy)", "louvain": "Louvain", "spectral": "Spectral",
-         "affinity": "Affinity propagation", "kmeans_k": "k-means $k$",
+LABEL = {"urd": "Urd (round 1)", "louvain": "Louvain", "spectral": "Spectral",
+         "affinity": "Affinity prop.", "kmeans_k": "k-means $k$",
          "kmeans_2k": "k-means $2k$", "kmeans_4k": "k-means $4k$",
-         "words": "Words (quotient layout)", "words_inter": "Words, inter-cluster only",
-         "slices": "Slices (bit-sliced words)", "hier": "Hier (modules, sliced words)",
-         "words_partial": "Words, partial seed", "random": "Random legal start",
-         "urd_shuf": "Urd, cluster positions permuted"}
+         "words": "Words", "words_inter": "Words, inter only",
+         "slices": "Slices", "hier": "Hier",
+         "words_partial": "Words, partial", "random": "Random start",
+         "urd_shuf": "Urd, permuted"}
 
 
 def code(s: str) -> str:
@@ -81,7 +81,8 @@ adds a bit-level seeding aspect that keeps the module hierarchy at the coarse le
 The obvious source, the provenance BLIF's block name \\code{{module/\\$nN@file:line}}, is too
 coarse: the line is the HDL \\emph{{statement}}, so one \\code{{always}} block is one group (the
 largest (module, file:line) group in any design holds up to {c['max_line_group'][0]} blocks,
-and sha's holds 1739 of its 2506 blocks). The finer records exist in the Odin~III session that
+and sha's holds 1739 of its 2506 blocks; {c['lines_multi']} of the {c['lines']} statement lines that
+hold word blocks hold more than one word, up to {c['max_words_line']}). The finer records exist in the Odin~III session that
 writes the BLIF, so the seed builder reruns the identical script, checks that the BLIF it
 writes equals the kept one byte for byte ({'all' if c['identical'] else 'not all'} {n} designs
 match), and reads the records Loki~III's labeller reads: the HDL name \\code{{bus[i]}} of a
@@ -164,7 +165,7 @@ def results(R: dict) -> str:
         if key in vb and vb[key]["n"]:
             rows.append(arm_row(LABEL[key], vb[key]))
     if best and f"{best}_shuf" in vb and vb[f"{best}_shuf"]["n"]:
-        rows.append(arm_row(f"{LABEL[best].split(' (')[0].split(',')[0]}, positions permuted",
+        rows.append(arm_row(f"{LABEL[best].split(',')[0]}, permuted",
                             vb[f"{best}_shuf"]))
     n = R["n_designs"]
     a, b, c_, d = h["H7a"], h["H7b"], h["H7c"], h["H7d"]
@@ -178,13 +179,14 @@ def results(R: dict) -> str:
 \\begin{{table}}[t]
 \\caption{{Round two: geomean ratios vs the unseeded baseline at scale~1 for the soft arms (Urd from
 round one for reference). The last column is the number of designs where the routed wirelength is
-below the baseline. Below 1.0 is better.}}
+below the baseline. WL is routed wirelength, Chan.\\ the minimum channel width, Time the
+placement runtime. Below 1.0 is better.}}
 \\label{{tab:r2qor}}
 \\centering
 \\small
 \\begin{{tabular}}{{lccccc}}
 \\toprule
-Seed & Wirelength & Delay & Chan.\\ width & Place time & Better \\\\
+Seed & WL & Delay & Chan.\\ & Time & Better \\\\
 \\midrule
 {chr(10).join(rows)}
 \\bottomrule
@@ -201,6 +203,12 @@ H7c is {c_['status']}: \\code{{hier}} ranks {c_['rank']} of {c_['of']} families 
 {f3(c_['hier_gm'])}; the lowest is {code(c_['best_name'])} at {f3(c_['best_gm'])}.
 H7d is {d['status']}: \\code{{words\\_partial}} over \\code{{words}} is {f3(d['gm'])}
 (better on {d['wins']} of {d['n']}, $p={pfmt(d['p'])}$).
+"""
+    out += f"""Ties (identical results) are left out of the sign tests: {a['ties']} for H7a, {b['ties']} for H7b and
+{d['ties']} for H7d. A family with nothing to rearrange reproduces its reference exactly (a design whose words are
+all single-CLB, or that has one module): \\code{{slices}} equals \\code{{words}} on {len(R['same']['slices_words'])}
+designs, \\code{{hier}} equals Urd on {len(R['same']['hier_urd'])} and \\code{{words\\_partial}} equals \\code{{words}} on
+{len(R['same']['partial_words'])}.
 """
     if best:
         hb, xo = R.get("hard_best"), R.get("xover")
@@ -241,12 +249,12 @@ single module have no module label and are left out of that row.}}
 \\label{{tab:r2n1}}
 \\centering
 \\small
-\\begin{{tabular}}{{lccccccc}}
+\\begin{{tabular}}{{lccc}}
 \\toprule
-Labels & $n$ & NMI start & NMI final & NMI null & Comp.\\ start & Comp.\\ final & Comp.\\ null \\\\
+Labels & $n$ & NMI (start/final/null) & Comp.\\ (start/final/null) \\\\
 \\midrule
-Module & {m['n']} & {f3(m['nmi_initial'])} & {f3(m['nmi_final'])} & {f3(m['nmi_null'])} & {f3(m['dens_initial'])} & {f3(m['dens_final'])} & {f3(m['dens_null'])} \\\\
-Word & {w['n']} & {f3(w['nmi_initial'])} & {f3(w['nmi_final'])} & {f3(w['nmi_null'])} & {f3(w['dens_initial'])} & {f3(w['dens_final'])} & {f3(w['dens_null'])} \\\\
+Module & {m['n']} & {f2(m['nmi_initial'])}/{f2(m['nmi_final'])}/{f2(m['nmi_null'])} & {f2(m['dens_initial'])}/{f2(m['dens_final'])}/{f2(m['dens_null'])} \\\\
+Word & {w['n']} & {f2(w['nmi_initial'])}/{f2(w['nmi_final'])}/{f2(w['nmi_null'])} & {f2(w['dens_initial'])}/{f2(w['dens_final'])}/{f2(w['dens_null'])} \\\\
 \\bottomrule
 \\end{{tabular}}
 \\end{{table}}

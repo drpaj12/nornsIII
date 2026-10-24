@@ -186,6 +186,14 @@ def build(design: str) -> dict:
                        for k in ("lut", "ff", "hard")},
         "line_groups_largest": line_groups(blocks),
     }
+    by_line: dict[tuple, set] = collections.defaultdict(set)
+    for name, info in member.items():
+        _m, _l, f, ln = nl.provenance_parts(name)
+        if f and info["word"]:
+            by_line[(_m, f, ln)].add(info["word"])
+    summary["statement_lines"] = len(by_line)
+    summary["lines_with_several_words"] = sum(1 for v in by_line.values() if len(v) > 1)
+    summary["max_words_on_line"] = max((len(v) for v in by_line.values()), default=0)
     nl.write_json(nl.runs_dir(design, "words", "members.json"), member)
     nl.write_json(nl.runs_dir(design, "words", "words.json"),
                   {k: sorted(v) for k, v in words.items()})
