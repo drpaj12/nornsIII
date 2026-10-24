@@ -30,8 +30,12 @@ def build(design: str) -> None:
         return
     count = module_count(log)
     info = nl.runs_dir(design, "netlist", "info.json")
-    nl.write_json(info, {"design": design, "modules": count, "blif": str(out),
-                         "blif_sha256": __import__("hashlib").sha256(out.read_bytes()).hexdigest()})
+    payload = {"design": design, "modules": count, "blif": str(out),
+               "blif_sha256": __import__("hashlib").sha256(out.read_bytes()).hexdigest()}
+    nl.write_json(info, payload)
+    # the module count is part of EXPERIMENT.md; keep it with the committed data too
+    nl.write_json(nl.DATA / design / "netlist.json",
+                  {"design": design, "modules": count, "blif_sha256": payload["blif_sha256"]})
     print(f"{design}: ok modules={count}")
 
 

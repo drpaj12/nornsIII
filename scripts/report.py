@@ -172,7 +172,9 @@ def per_design_table(data: dict[str, list[dict[str, object]]], designs: list[str
             "| modules |", "|---|---|---|---|---|---|"]
     for design in designs:
         base = pick(data[design], "baseline")
-        info = nl.runs_dir(design, "netlist", "info.json")
+        info = nl.DATA / design / "netlist.json"
+        if not info.is_file():
+            info = nl.runs_dir(design, "netlist", "info.json")
         modules = nl.read_json(info).get("modules") if info.is_file() else ""
         rows.append("| {} | {} | {} | {} | {} | {} |".format(
             design, nl.fmt(base.get("wirelength")) if base else "",

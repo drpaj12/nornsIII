@@ -1,0 +1,5 @@
+{
+ "blif_sha256": "098b0a56e336ed6160434ff4b254d5730aa34fcec252338bd82fad0a853ebbad",
+ "design": "mkDelayWorker32B",
+ "modules": 16
+}
