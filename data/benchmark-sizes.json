@@ -1,0 +1,215 @@
+{
+ "designs": {
+  "blob_merge": {
+   "blocks": 630,
+   "clbs": 494,
+   "grid": [
+    28,
+    28
+   ],
+   "io": 136,
+   "memory": 0,
+   "mult_36": 0,
+   "source": "runs/blob_merge/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 784
+  },
+  "boundtop": {
+   "blocks": 444,
+   "clbs": 54,
+   "grid": [
+    15,
+    15
+   ],
+   "io": 389,
+   "memory": 1,
+   "mult_36": 0,
+   "source": "runs/boundtop/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 225
+  },
+  "ch_intrinsics": {
+   "blocks": 243,
+   "clbs": 13,
+   "grid": [
+    10,
+    10
+   ],
+   "io": 229,
+   "memory": 1,
+   "mult_36": 0,
+   "source": "runs/ch_intrinsics/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 100
+  },
+  "diffeq1": {
+   "blocks": 300,
+   "clbs": 37,
+   "grid": [
+    16,
+    16
+   ],
+   "io": 258,
+   "memory": 0,
+   "mult_36": 5,
+   "source": "runs/diffeq1/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 256
+  },
+  "diffeq2": {
+   "blocks": 189,
+   "clbs": 22,
+   "grid": [
+    16,
+    16
+   ],
+   "io": 162,
+   "memory": 0,
+   "mult_36": 5,
+   "source": "runs/diffeq2/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 256
+  },
+  "mkDelayWorker32B": {
+   "blocks": 1176,
+   "clbs": 74,
+   "grid": [
+    50,
+    50
+   ],
+   "io": 1059,
+   "memory": 43,
+   "mult_36": 0,
+   "source": "runs/mkDelayWorker32B/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 2500
+  },
+  "mkPktMerge": {
+   "blocks": 503,
+   "clbs": 21,
+   "grid": [
+    28,
+    28
+   ],
+   "io": 467,
+   "memory": 15,
+   "mult_36": 0,
+   "source": "runs/mkPktMerge/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 784
+  },
+  "mkSMAdapter4B": {
+   "blocks": 528,
+   "clbs": 125,
+   "grid": [
+    20,
+    20
+   ],
+   "io": 398,
+   "memory": 5,
+   "mult_36": 0,
+   "source": "runs/mkSMAdapter4B/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 400
+  },
+  "or1200": {
+   "blocks": 1034,
+   "clbs": 252,
+   "grid": [
+    27,
+    27
+   ],
+   "io": 779,
+   "memory": 2,
+   "mult_36": 1,
+   "source": "runs/or1200/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 729
+  },
+  "raygentop": {
+   "blocks": 691,
+   "clbs": 143,
+   "grid": [
+    19,
+    19
+   ],
+   "io": 541,
+   "memory": 1,
+   "mult_36": 6,
+   "source": "runs/raygentop/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 361
+  },
+  "sha": {
+   "blocks": 216,
+   "clbs": 142,
+   "grid": [
+    17,
+    17
+   ],
+   "io": 74,
+   "memory": 0,
+   "mult_36": 0,
+   "source": "runs/sha/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 289
+  },
+  "stereovision0": {
+   "blocks": 1073,
+   "clbs": 707,
+   "grid": [
+    33,
+    33
+   ],
+   "io": 366,
+   "memory": 0,
+   "mult_36": 0,
+   "source": "runs/stereovision0/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 1089
+  },
+  "stereovision1": {
+   "blocks": 1091,
+   "clbs": 788,
+   "grid": [
+    40,
+    40
+   ],
+   "io": 260,
+   "memory": 0,
+   "mult_36": 43,
+   "source": "runs/stereovision1/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 1600
+  },
+  "stereovision2": {
+   "blocks": 2479,
+   "clbs": 1956,
+   "grid": [
+    82,
+    82
+   ],
+   "io": 331,
+   "memory": 0,
+   "mult_36": 192,
+   "source": "runs/stereovision2/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 6724
+  },
+  "stereovision3": {
+   "blocks": 56,
+   "clbs": 15,
+   "grid": [
+    7,
+    7
+   ],
+   "io": 41,
+   "memory": 0,
+   "mult_36": 0,
+   "source": "runs/stereovision3/runs/baseline/vpr.out",
+   "suite": "VTR 8.0",
+   "tiles": 49
+  }
+ },
+ "note": "Extracted by scripts/benchmark_sizes.py from each design's baseline runs/<design>/runs/baseline/vpr.out (or a cold run's log when the baseline is missing); runs/ is local, this file is the committed copy."
+}

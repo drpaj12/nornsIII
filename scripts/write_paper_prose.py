@@ -105,6 +105,19 @@ placement while the anneal supplies the fine one."""
     text = s_path.read_text(encoding="utf-8")
     text = fill_tables(text, nl.WS / "docs" / "plan" / "paper-numbers.tex")
     import re
+    b = s.get("benchmarks")
+    if b:
+        latex = lambda name: name.replace("_", "\\_")
+        bench = f"""The {b['n']} designs span two orders of magnitude after technology mapping:
+from {b['clb_min']} CLBs ({latex(b['smallest'])}) to {b['clb_max']} ({latex(b['largest'])}),
+{b['clb_total']} CLBs in total. The mean is {b['clb_mean']} CLBs and the median {b['clb_median']:g};
+the mean sits well above the median because three stereovision designs carry most of the logic.
+VPR auto-sizes a square grid to the packed netlist, with a mean side of {b['grid_mean']} tiles
+(median {b['grid_median']:g}) and a mean of {b['tiles_mean']} grid tiles (median
+{b['tiles_median']:g}). Grid size follows the largest resource demand, not the CLB count:
+I/O-heavy and memory-heavy designs such as mkDelayWorker32B get a large die for few CLBs."""
+        text = re.sub(r"(% BEGIN tab:benchmarks prose\n).*?(?=\n% END tab:benchmarks prose)",
+                      lambda m: m.group(1) + bench, text, flags=re.S)
     text = re.sub(r"The (?:ten|\d+) completed designs give .*?(?=\n\n\\section\{Discussion\})",
                   lambda _m: results, text, flags=re.S)
     text = re.sub(r"Three observations\..*?(?=\n\n\\section\{Conclusion\})",
@@ -148,7 +161,8 @@ def fill_tables(text: str, numbers_path) -> str:
     numbers = numbers_path.read_text(encoding="utf-8")
     qor = _rows(numbers, "% tab:qor rows")
     cross = _rows(numbers, "% tab:crossover rows")
-    for label, rows in (("tab:qor", qor), ("tab:crossover", cross)):
+    bench = _rows(numbers, "% tab:benchmarks rows")
+    for label, rows in (("tab:qor", qor), ("tab:crossover", cross), ("tab:benchmarks", bench)):
         if not rows:
             continue
         start = text.index(f"\\label{{{label}}}")

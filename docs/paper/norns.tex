@@ -271,6 +271,59 @@ fit the development machine, smallest first, one run at a time under the
 heavy lock. Every number in this paper traces to a kept record; large data
 keeps its scripts.
 
+\subsection{Benchmarks}
+\label{sec:benchmarks}
+
+Table~\ref{tab:benchmarks} reports each design's construction and its
+post-technology-mapping size. The module count is the front end's, while the
+CLB count and the grid are VPR's own numbers for the packed netlist, so the
+table describes the designs as the experiment actually places them.
+
+% BEGIN tab:benchmarks prose
+The 15 designs span two orders of magnitude after technology mapping:
+from 13 CLBs (ch\_intrinsics) to 1956 (stereovision2),
+4843 CLBs in total. The mean is 322.9 CLBs and the median 125;
+the mean sits well above the median because three stereovision designs carry most of the logic.
+VPR auto-sizes a square grid to the packed netlist, with a mean side of 27.2 tiles
+(median 20) and a mean of 1076.4 grid tiles (median
+400). Grid size follows the largest resource demand, not the CLB count:
+I/O-heavy and memory-heavy designs such as mkDelayWorker32B get a large die for few CLBs.
+% END tab:benchmarks prose
+
+\begin{table*}[t]
+\caption{Benchmark construction and post-technology-mapping size. All fifteen
+designs are from the VTR~8.0 benchmark set
+(\code{vtr\_flow/benchmarks/verilog}). Modules is the front end's module
+count, CLBs the \code{clb} blocks VPR packs, Memory and Mult the memory and
+\code{mult\_36} blocks, and Grid the auto-sized device grid with its tile
+count in parentheses. Sizes are read from each design's baseline run log and
+kept in \code{data/benchmark-sizes.json}.}
+\label{tab:benchmarks}
+\centering
+\footnotesize
+\begin{tabular}{@{}l l r r r r c@{}}
+\toprule
+Design & Suite & Modules & CLBs & Memory & Mult & Grid (tiles) \\
+\midrule
+ch\_intrinsics & VTR 8.0 & 2 & 13 & 1 & 0 & $10\times$10 (100) \\
+stereovision3 & VTR 8.0 & 1 & 15 & 0 & 0 & $7\times$7 (49) \\
+diffeq2 & VTR 8.0 & 1 & 22 & 0 & 5 & $16\times$16 (256) \\
+diffeq1 & VTR 8.0 & 1 & 37 & 0 & 5 & $16\times$16 (256) \\
+mkPktMerge & VTR 8.0 & 7 & 21 & 15 & 0 & $28\times$28 (784) \\
+raygentop & VTR 8.0 & 15 & 143 & 1 & 6 & $19\times$19 (361) \\
+sha & VTR 8.0 & 1 & 142 & 0 & 0 & $17\times$17 (289) \\
+boundtop & VTR 8.0 & 13 & 54 & 1 & 0 & $15\times$15 (225) \\
+mkSMAdapter4B & VTR 8.0 & 8 & 125 & 5 & 0 & $20\times$20 (400) \\
+or1200 & VTR 8.0 & 16 & 252 & 2 & 1 & $27\times$27 (729) \\
+stereovision0 & VTR 8.0 & 25 & 707 & 0 & 0 & $33\times$33 (1089) \\
+stereovision1 & VTR 8.0 & 16 & 788 & 0 & 43 & $40\times$40 (1600) \\
+mkDelayWorker32B & VTR 8.0 & 16 & 74 & 43 & 0 & $50\times$50 (2500) \\
+stereovision2 & VTR 8.0 & 24 & 1956 & 0 & 192 & $82\times$82 (6724) \\
+blob\_merge & VTR 8.0 & 2 & 494 & 0 & 0 & $28\times$28 (784) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \begin{figure}[t]
 \centering
 \odinfit{\columnwidth}{\input{IMAGE/fig_norns}}
