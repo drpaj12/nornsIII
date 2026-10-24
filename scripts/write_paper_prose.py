@@ -20,6 +20,23 @@ def main(argv: list[str]) -> int:
     wins = sum(v[0] for v in s["hot_wins"].values())
     n = sum(v[1] for v in s["hot_wins"].values())
     fmt_scale = lambda v: "n/a" if v is None else f"{v:g}"
+    pairs = []
+    for design in designs:
+        on = nl.runs_dir(design, "crossover", "crossover.json")
+        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        if not on.is_file() or not off.is_file():
+            continue
+        a = nl.read_json(on).get("crossover_scale")
+        b = nl.read_json(off).get("crossover_scale_off")
+        if a is not None and b is not None:
+            pairs.append((design, a, b))
+    same = [d for d, a, b in pairs if a == b]
+    hotter = [f"{d} ({a:g} vs {b:g})" for d, a, b in pairs if a > b]
+    ckpt_sentence = (
+        f"the two sweeps find the same scale on {len(same)} of the {len(pairs)} designs where "
+        f"both found one"
+        + (f", and checkpointing extends it on {', '.join(hotter)}" if hotter else "")
+        + ".")
     hot_range = (f"{min(hot_ret):.2f}-{max(hot_ret):.2f}" if hot_ret else "n/a")
     ret1 = "n/a"
     ret1i = "n/a"
@@ -37,7 +54,8 @@ def main(argv: list[str]) -> int:
         ret1i = f"{statistics.median(inter):.2f}" if inter else "n/a"
     except Exception:  # the retention medians are a summary only
         pass
-    results = f"""The ten completed designs give the ratios of Table~\\ref{{tab:qor}}. Soft seeds
+    n_designs = len(designs)
+    results = f"""The {n_designs} completed designs give the ratios of Table~\\ref{{tab:qor}}. Soft seeds
 stay within a few percent of the unseeded baseline in routed wirelength
 ({s['soft_wl']} for the full seed, {s['inter_wl']} for the inter-cluster-only arm) while
 cutting the minimum channel width to {s['soft_chan']} of the baseline and costing
@@ -49,12 +67,9 @@ band. Retention at scale~1 is {ret1} of a seed's cluster blocks (full) and {ret1
 quality: provenance is not a better starting structure than recovered clusters on these
 designs, and the inter-cluster-only arms show that the fine order inside a cluster matters as
 much as its coarse die position. Second, VPR's checkpointing does not separate the crossover in the
-measured range: with it on and off the two sweeps find the same scale on the nine designs where
-both were extended to the same cap, and on stereovision3 both win throughout up to 256 (the
-control sweep on or1200 is capped at 16, so that design cannot be compared yet). RLPlace's
-prediction that checkpointing extends the useful range is therefore not observed on these
-designs; if it holds, its effect is smaller than the between-design variation. Third, the safe
-recipe is
+measured range: {ckpt_sentence} RLPlace's prediction that checkpointing extends the useful
+range is therefore not observed on these designs; if it holds, its effect is smaller than the
+between-design variation. Third, the safe recipe is
 to cold-start from a cluster-derived placement at a temperature scale at or below the crossover,
 which is a multiple of VPR's own estimate; above it the seed's retention stays high
 ({hot_range} at twice the crossover) but it wins only {wins} of
