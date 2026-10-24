@@ -203,7 +203,9 @@ def cold(design: str, scale: float, pstar: Path, region_seed: str | None = None,
                    timeout=timeout)
 
 
-def crossover(design: str, scales: list[float], timeout: int | None = None) -> dict[str, object]:
+def crossover(design: str, scales: list[float], timeout: int | None = None,
+              cap: float = 256.0) -> dict[str, object]:
+    """Cold-start sweep; extends by doubling while the cold start still wins (up to cap)."""
     best = best_final(design)
     if best is None:
         print(f"{design}: no seed runs for P*")
@@ -215,14 +217,18 @@ def crossover(design: str, scales: list[float], timeout: int | None = None) -> d
     region_seed = str(best["tag"]).split("-")[1] if str(best["tag"]).startswith("soft") else \
         str(best["tag"]).split("-", 1)[1]
     rows = []
-    for scale in scales:
+    todo = list(scales)
+    while todo:
+        scale = todo.pop(0)
         u = unseeded(design, scale, timeout=timeout)
         c = cold(design, scale, pstar, region_seed=region_seed, timeout=timeout)
         rows.append({"scale": scale, "unseeded": u.get("wirelength"), "cold": c.get("wirelength"),
                      "cold_t": c.get("init_t"), "unseeded_ret": u.get("retention"),
                      "cold_ret": c.get("retention")})
-    wins = [r["scale"] for r in rows if r["cold"] and r["unseeded"]
-            and float(r["cold"]) < float(r["unseeded"])]
+        wins = [r["scale"] for r in rows if r["cold"] and r["unseeded"]
+                and float(r["cold"]) < float(r["unseeded"])]
+        if len(wins) == len(rows) and scale < cap and scale * 2 not in todo:
+            todo.append(scale * 2)
     result = {"design": design, "pstar": str(best["tag"]), "region_seed": region_seed,
               "scales": rows, "crossover_scale": max(wins) if wins else None,
               "wins_all": len(wins) == len(rows)}
@@ -286,7 +292,7 @@ def hot(design: str, seeds: list[str], scale: float, timeout: int | None = None)
     """Each seed's final placement at the hot scale, vs the unseeded run at the same scale."""
     unseeded(design, scale, timeout=timeout)
     for seed in seeds:
-        tag = f"hot-{seed}"
+        tag = f"hot-{seed}-{scale:g}"
         if done(design, tag):
             continue
         src = nl.runs_dir(design, "runs", f"soft-{seed}-full", "final.place")

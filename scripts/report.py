@@ -56,7 +56,7 @@ def pick(recs: list[dict[str, object]], arm: str, seed: str = "", variant: str =
             return r
         if arm == "cold" and a == "cold" and r.get("scale") == scale:
             return r
-        if arm == "hot" and a == "hot" and r.get("tag") == f"hot-{seed}":
+        if arm == "hot" and a == "hot" and str(r.get("tag", "")).startswith(f"hot-{seed}-"):
             return r
     return None
 
@@ -139,6 +139,8 @@ def retention_table(data: dict[str, list[dict[str, object]]], designs: list[str]
             full = pick(data[design], "soft", seed, "full")
             inter = pick(data[design], "soft", seed, "inter")
             hot = pick(data[design], "hot", seed)
+            if hot is not None and hot.get("scale") is not None:
+                hot_scale = float(hot["scale"])
             un = pick(data[design], "unseeded", scale=float(hot_scale)) if hot_scale else None
             rows.append("| {} | {} | {} | {} | {} | {} | {} | {} |".format(
                 design, seed,
