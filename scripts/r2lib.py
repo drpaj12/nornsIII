@@ -183,11 +183,18 @@ def compute() -> dict:
                 "dens_initial": statistics.median([r["initial"][1] for r in rows]) if rows else None,
                 "dens_null": statistics.median([r["null_density_mean"] for r in rows]) if rows else None,
                 "above_null": sum(1 for x in z if x > 2), "n_z": len(z),
+                "dens_above_null": sum(1 for r in rows if r["null_density_sd"] > 0 and
+                                       (r["final"][1] - r["null_density_mean"])
+                                       / r["null_density_sd"] > 2),
                 "final_ge_initial": sum(1 for r in rows if r["final"][0] >= r["initial"][0]),
             }
         out["n1"] = agg
-        ok = all(a["n_z"] and a["above_null"] / a["n_z"] >= 2 / 3 for a in agg.values())
-        none = all(a["n_z"] and a["above_null"] / a["n_z"] < 1 / 3 for a in agg.values())
+        def share(a, key):
+            return a[key] / a["n_z"] if a["n_z"] else 0.0
+        ok = all(share(a, "above_null") >= 2 / 3 and share(a, "dens_above_null") >= 2 / 3
+                 for a in agg.values())
+        none = all(share(a, "above_null") < 1 / 3 and share(a, "dens_above_null") < 1 / 3
+                   for a in agg.values())
         h["H1"] = {"status": "supported" if ok else "not supported" if none else "inconclusive"}
     n2p = nl.DATA / "analysis" / "n2.json"
     if n2p.is_file():
@@ -199,6 +206,8 @@ def compute() -> dict:
         h["H2"] = {"status": "supported" if len(pos) >= 2 else
                    "not supported" if not anysig else "inconclusive",
                    "n_sig": len(anysig), "n_pairs": len(sp)}
+    h.setdefault("H1", {"status": "not run"})
+    h.setdefault("H2", {"status": "not run", "n_sig": 0, "n_pairs": 0})
     # hard arm and crossover of the best family
     if best:
         hv = []

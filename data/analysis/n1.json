@@ -1,0 +1,545 @@
+{
+ "designs": [
+  {
+   "design": "ch_intrinsics",
+   "logic_clbs": 13,
+   "module": {
+    "final": [
+     0.22778367321708606,
+     0.46825396825396826
+    ],
+    "initial": [
+     0.15207022022412975,
+     0.5576923076923077
+    ],
+    "labelled_clbs": 13,
+    "labels": 2,
+    "null_density_mean": 0.17377823565323564,
+    "null_density_sd": 0.04869132543916039,
+    "null_nmi_mean": 0.16660851331364848,
+    "null_nmi_sd": 0.0703812022416188
+   },
+   "word": {
+    "final": [
+     0.3651481891390344,
+     0.42857142857142855
+    ],
+    "initial": [
+     0.6304669204139439,
+     0.85
+    ],
+    "labelled_clbs": 11,
+    "labels": 3,
+    "null_density_mean": 0.17985572562358276,
+    "null_density_sd": 0.04777779612294455,
+    "null_nmi_mean": 0.28313859240499906,
+    "null_nmi_sd": 0.12736025026547548
+   }
+  },
+  {
+   "design": "stereovision3",
+   "logic_clbs": 15,
+   "module": {
+    "final": [
+     NaN,
+     NaN
+    ],
+    "initial": [
+     NaN,
+     NaN
+    ],
+    "labelled_clbs": 15,
+    "labels": 1,
+    "null_density_mean": NaN,
+    "null_density_sd": NaN,
+    "null_nmi_mean": NaN,
+    "null_nmi_sd": NaN
+   },
+   "word": {
+    "final": [
+     0.731646077540664,
+     0.6666666666666666
+    ],
+    "initial": [
+     0.7574497708508482,
+     0.5185185185185185
+    ],
+    "labelled_clbs": 13,
+    "labels": 9,
+    "null_density_mean": 0.3623148148148148,
+    "null_density_sd": 0.13269041885726254,
+    "null_nmi_mean": 0.7308699512354463,
+    "null_nmi_sd": 0.03983614715050498
+   }
+  },
+  {
+   "design": "diffeq2",
+   "logic_clbs": 22,
+   "module": {
+    "final": [
+     0.056194923657812985,
+     0.220090515545061
+    ],
+    "initial": [
+     0.10839534208917931,
+     0.5192099567099567
+    ],
+    "labelled_clbs": 22,
+    "labels": 2,
+    "null_density_mean": 0.5025730519480519,
+    "null_density_sd": 0.025616453750628737,
+    "null_nmi_mean": 0.09621647038482477,
+    "null_nmi_sd": 0.059641489433416184
+   },
+   "word": {
+    "final": [
+     0.6920630374612055,
+     0.75625
+    ],
+    "initial": [
+     0.6717259282532928,
+     0.68125
+    ],
+    "labelled_clbs": 20,
+    "labels": 7,
+    "null_density_mean": 0.3982956349206349,
+    "null_density_sd": 0.07480680950466892,
+    "null_nmi_mean": 0.57148578053726,
+    "null_nmi_sd": 0.0498972913451919
+   }
+  },
+  {
+   "design": "diffeq1",
+   "logic_clbs": 37,
+   "module": {
+    "final": [
+     0.03928865941303697,
+     0.3060372060372061
+    ],
+    "initial": [
+     0.16620911639054095,
+     0.3111861861861862
+    ],
+    "labelled_clbs": 37,
+    "labels": 2,
+    "null_density_mean": 0.33213495963495965,
+    "null_density_sd": 0.01903888673946492,
+    "null_nmi_mean": 0.045584711870490444,
+    "null_nmi_sd": 0.03965498206840105
+   },
+   "word": {
+    "final": [
+     0.595238586278959,
+     0.3587301587301588
+    ],
+    "initial": [
+     0.5817860326641938,
+     0.37296090153233014
+    ],
+    "labelled_clbs": 36,
+    "labels": 10,
+    "null_density_mean": 0.18319566068851784,
+    "null_density_sd": 0.025239674037991905,
+    "null_nmi_mean": 0.4424189393905011,
+    "null_nmi_sd": 0.027747504975860638
+   }
+  },
+  {
+   "design": "mkPktMerge",
+   "logic_clbs": 21,
+   "module": {
+    "final": [
+     0.3526606067531624,
+     0.24332993147689166
+    ],
+    "initial": [
+     0.36291975832523443,
+     0.281015037593985
+    ],
+    "labelled_clbs": 21,
+    "labels": 5,
+    "null_density_mean": 0.09552139475809383,
+    "null_density_sd": 0.04683137999102669,
+    "null_nmi_mean": 0.27420032972393327,
+    "null_nmi_sd": 0.054189593185335914
+   },
+   "word": {
+    "final": [
+     0.2599292521156328,
+     0.04155124653739612
+    ],
+    "initial": [
+     0.4549827903364555,
+     0.08928571428571429
+    ],
+    "labelled_clbs": 20,
+    "labels": 6,
+    "null_density_mean": 0.05644570556255339,
+    "null_density_sd": 0.015600606688081409,
+    "null_nmi_mean": 0.3134055984825778,
+    "null_nmi_sd": 0.05943697761810112
+   }
+  },
+  {
+   "design": "raygentop",
+   "logic_clbs": 143,
+   "module": {
+    "final": [
+     0.44454373583987267,
+     0.25539830844139805
+    ],
+    "initial": [
+     0.4249120917226132,
+     0.2012646652587203
+    ],
+    "labelled_clbs": 143,
+    "labels": 14,
+    "null_density_mean": 0.08927159254307934,
+    "null_density_sd": 0.005821554392969936,
+    "null_nmi_mean": 0.23500747210886364,
+    "null_nmi_sd": 0.018106983891607652
+   },
+   "word": {
+    "final": [
+     0.7777973338020747,
+     0.3095054030447289
+    ],
+    "initial": [
+     0.794319053659676,
+     0.2349938341015671
+    ],
+    "labelled_clbs": 140,
+    "labels": 77,
+    "null_density_mean": 0.08382475468031014,
+    "null_density_sd": 0.018503356010734762,
+    "null_nmi_mean": 0.7729111145752422,
+    "null_nmi_sd": 0.0039854471400959605
+   }
+  },
+  {
+   "design": "sha",
+   "logic_clbs": 142,
+   "module": {
+    "final": [
+     NaN,
+     NaN
+    ],
+    "initial": [
+     NaN,
+     NaN
+    ],
+    "labelled_clbs": 142,
+    "labels": 1,
+    "null_density_mean": NaN,
+    "null_density_sd": NaN,
+    "null_nmi_mean": NaN,
+    "null_nmi_sd": NaN
+   },
+   "word": {
+    "final": [
+     0.6443033489281129,
+     0.26698026642172723
+    ],
+    "initial": [
+     0.6572433994801352,
+     0.25047682928322024
+    ],
+    "labelled_clbs": 142,
+    "labels": 37,
+    "null_density_mean": 0.0852882626631816,
+    "null_density_sd": 0.01214156399381079,
+    "null_nmi_mean": 0.6028107018848098,
+    "null_nmi_sd": 0.006281689860965832
+   }
+  },
+  {
+   "design": "boundtop",
+   "logic_clbs": 54,
+   "module": {
+    "final": [
+     0.49765787741412504,
+     0.26566725455614343
+    ],
+    "initial": [
+     0.5024945016000494,
+     0.34135401635401635
+    ],
+    "labelled_clbs": 54,
+    "labels": 7,
+    "null_density_mean": 0.09171405814483223,
+    "null_density_sd": 0.008311439005990844,
+    "null_nmi_mean": 0.2110351620996353,
+    "null_nmi_sd": 0.03244225050139041
+   },
+   "word": {
+    "final": [
+     0.7667686876388918,
+     0.28568812140240707
+    ],
+    "initial": [
+     0.7716289730045478,
+     0.4219047619047619
+    ],
+    "labelled_clbs": 54,
+    "labels": 26,
+    "null_density_mean": 0.09058976836331982,
+    "null_density_sd": 0.022351307474063567,
+    "null_nmi_mean": 0.6509361787916522,
+    "null_nmi_sd": 0.012656036631369256
+   }
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "logic_clbs": 125,
+   "module": {
+    "final": [
+     0.1305184801674742,
+     0.42995185185185186
+    ],
+    "initial": [
+     0.10070093467650759,
+     0.458984126984127
+    ],
+    "labelled_clbs": 125,
+    "labels": 3,
+    "null_density_mean": 0.4467449925312394,
+    "null_density_sd": 0.004525641741790726,
+    "null_nmi_mean": 0.02759143853337671,
+    "null_nmi_sd": 0.0116196747956646
+   },
+   "word": {
+    "final": [
+     0.7356461247228157,
+     0.3290615933773829
+    ],
+    "initial": [
+     0.7245866521317129,
+     0.3785338345864662
+    ],
+    "labelled_clbs": 117,
+    "labels": 47,
+    "null_density_mean": 0.08538251719635882,
+    "null_density_sd": 0.011400377911687465,
+    "null_nmi_mean": 0.6575231366584995,
+    "null_nmi_sd": 0.004871827459467088
+   }
+  },
+  {
+   "design": "or1200",
+   "logic_clbs": 252,
+   "module": {
+    "final": [
+     0.43013666268904327,
+     0.2624699276425704
+    ],
+    "initial": [
+     0.43740626016668027,
+     0.19960509178726762
+    ],
+    "labelled_clbs": 252,
+    "labels": 12,
+    "null_density_mean": 0.08779302917869301,
+    "null_density_sd": 0.002232732393458971,
+    "null_nmi_mean": 0.12439408835965948,
+    "null_nmi_sd": 0.01075987463906699
+   },
+   "word": {
+    "final": [
+     0.7058722680637532,
+     0.3176343918625196
+    ],
+    "initial": [
+     0.7100965586582697,
+     0.3265799260136682
+    ],
+    "labelled_clbs": 220,
+    "labels": 61,
+    "null_density_mean": 0.03803614094411852,
+    "null_density_sd": 0.00436926453636939,
+    "null_nmi_mean": 0.6078529824776296,
+    "null_nmi_sd": 0.007439443131909419
+   }
+  },
+  {
+   "design": "stereovision0",
+   "logic_clbs": 707,
+   "module": {
+    "final": [
+     0.3666983004521821,
+     0.1426707034012057
+    ],
+    "initial": [
+     0.30223313248106254,
+     0.10215845963379229
+    ],
+    "labelled_clbs": 707,
+    "labels": 23,
+    "null_density_mean": 0.06736951744538937,
+    "null_density_sd": 0.00085633254292115,
+    "null_nmi_mean": 0.11852424742569508,
+    "null_nmi_sd": 0.006245072843872993
+   },
+   "word": {
+    "final": [
+     0.8662568968069787,
+     0.19767079825349113
+    ],
+    "initial": [
+     0.8649070941985224,
+     0.13918261564613205
+    ],
+    "labelled_clbs": 704,
+    "labels": 445,
+    "null_density_mean": 0.03686900444235797,
+    "null_density_sd": 0.003422502046690212,
+    "null_nmi_mean": 0.8620379165543324,
+    "null_nmi_sd": 0.000554737202303949
+   }
+  },
+  {
+   "design": "stereovision1",
+   "logic_clbs": 788,
+   "module": {
+    "final": [
+     0.20634646415693492,
+     0.1733436464365238
+    ],
+    "initial": [
+     0.24941100564040572,
+     0.19948982739737245
+    ],
+    "labelled_clbs": 788,
+    "labels": 14,
+    "null_density_mean": 0.13720105595790724,
+    "null_density_sd": 0.0023030937375668847,
+    "null_nmi_mean": 0.053521133552207084,
+    "null_nmi_sd": 0.00518758926727904
+   },
+   "word": {
+    "final": [
+     0.861427272372781,
+     0.2863886133759613
+    ],
+    "initial": [
+     0.8569067050459173,
+     0.26808389153912765
+    ],
+    "labelled_clbs": 787,
+    "labels": 449,
+    "null_density_mean": 0.037118402289188515,
+    "null_density_sd": 0.004750395829161151,
+    "null_nmi_mean": 0.8479133133568119,
+    "null_nmi_sd": 0.0006088417511480179
+   }
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "logic_clbs": 74,
+   "module": {
+    "final": [
+     0.05037837570087805,
+     0.04937284207989141
+    ],
+    "initial": [
+     0.06682529746596808,
+     0.0348078597535664
+    ],
+    "labelled_clbs": 74,
+    "labels": 3,
+    "null_density_mean": 0.03455482918280356,
+    "null_density_sd": 0.00032207390717293733,
+    "null_nmi_mean": 0.05481997078083278,
+    "null_nmi_sd": 0.017262832987553843
+   },
+   "word": {
+    "final": [
+     0.6934721746604844,
+     0.8333333333333333
+    ],
+    "initial": [
+     0.5314931935522147,
+     0.6666666666666666
+    ],
+    "labelled_clbs": 9,
+    "labels": 7,
+    "null_density_mean": 0.04435422947027017,
+    "null_density_sd": 0.06587597142634638,
+    "null_nmi_mean": 0.7886709299012997,
+    "null_nmi_sd": 0.045865401181693806
+   }
+  },
+  {
+   "design": "stereovision2",
+   "logic_clbs": 1956,
+   "module": {
+    "final": [
+     0.3091901155085331,
+     0.03668353879982803
+    ],
+    "initial": [
+     0.2646898238336944,
+     0.057624871322386896
+    ],
+    "labelled_clbs": 1956,
+    "labels": 21,
+    "null_density_mean": 0.03417830986847614,
+    "null_density_sd": 0.0007863680640231958,
+    "null_nmi_mean": 0.04294398732774308,
+    "null_nmi_sd": 0.002278067677431372
+   },
+   "word": {
+    "final": [
+     0.7796333256742368,
+     0.09844485369436615
+    ],
+    "initial": [
+     0.7603462763856043,
+     0.10621519284938426
+    ],
+    "labelled_clbs": 1953,
+    "labels": 676,
+    "null_density_mean": 0.0134246856127404,
+    "null_density_sd": 0.0009106839492956848,
+    "null_nmi_mean": 0.7272349328891542,
+    "null_nmi_sd": 0.00041145741947903484
+   }
+  },
+  {
+   "design": "blob_merge",
+   "logic_clbs": 494,
+   "module": {
+    "final": [
+     0.03820145661761295,
+     0.7264112945084605
+    ],
+    "initial": [
+     0.054174547537512205,
+     0.7248143534378353
+    ],
+    "labelled_clbs": 494,
+    "labels": 3,
+    "null_density_mean": 0.7125882220060981,
+    "null_density_sd": 0.00041568095657602876,
+    "null_nmi_mean": 0.010325082368481326,
+    "null_nmi_sd": 0.005069161485052954
+   },
+   "word": {
+    "final": [
+     0.9473606233376951,
+     0.37306185194116226
+    ],
+    "initial": [
+     0.9474606105729325,
+     0.26701884998031045
+    ],
+    "labelled_clbs": 387,
+    "labels": 328,
+    "null_density_mean": 0.040550648390551045,
+    "null_density_sd": 0.010218567463032704,
+    "null_nmi_mean": 0.9478870329946695,
+    "null_nmi_sd": 0.0012075877315362057
+   }
+  }
+ ],
+ "samples": 20
+}

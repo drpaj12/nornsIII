@@ -15,7 +15,8 @@ N2  Does a design's structure predict the seed gain? Per design, on the netlist 
     per-design gain 1 - wirelength ratio of the Urd full seed (round 1), of the best round-1
     family, and of the best round-2 word family.
 
-Usage: python scripts/structure.py n1|n2|all [design ...]
+Usage: python scripts/structure.py n1|graph|n2|all [design ...]
+(graph caches the per-design graph statistics; n2 adds the gains and the Spearman table)
 Writes data/analysis/n1.json and data/analysis/n2.json.
 """
 
@@ -217,15 +218,27 @@ def gains(design: str) -> dict[str, float | None]:
             "best_r2": 1 - min(r2) if r2 else None}
 
 
+def graph_stats(designs: list[str]) -> dict[str, dict]:
+    """Graph statistics per design, cached in data/analysis/n2_graph.json (no VPR data needed)."""
+    path = nl.DATA / "analysis" / "n2_graph.json"
+    cache = nl.read_json(path) if path.is_file() else {}
+    for d in designs:
+        if d not in cache:
+            cache[d] = n2_design(d)
+            print(d, {k: (round(v, 3) if isinstance(v, float) else v)
+                      for k, v in cache[d].items()})
+            nl.write_json(path, cache)
+    return cache
+
+
 def n2(designs: list[str]) -> None:
     from scipy import stats
+    cache = graph_stats(designs)
     rows = []
     for d in designs:
-        row = n2_design(d)
+        row = dict(cache[d])
         row["gain"] = gains(d)
         rows.append(row)
-        print(d, {k: (round(v, 3) if isinstance(v, float) else v) for k, v in row.items()
-                  if k != "gain"})
     corr = {}
     for gname in ("urd", "best_r1", "best_r2"):
         for pname, sign in (("q", 1), ("q_z", 1), ("rent_p", -1)):
@@ -243,6 +256,8 @@ def main(argv: list[str]) -> int:
     designs = argv[1:] or list(nl.DESIGN_ORDER)
     if mode in ("n1", "all"):
         n1(designs)
+    if mode == "graph":
+        graph_stats(designs)
     if mode in ("n2", "all"):
         n2(designs)
     return 0

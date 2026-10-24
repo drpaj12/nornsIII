@@ -82,9 +82,8 @@ scale~1 is {ret1} of a seed's cluster CLBs (full) and {ret1i} (inter)."""
 interchangeable: provenance (Urd) is the worst full seed in the soft arm (1.029) and the best in
 the hard arm, so it is not consistently better or worse than recovered clusters. The full and
 inter-cluster-only arms differ by {inter_pct:.1f}\\% in pooled wirelength
-({s['soft_wl']} vs {s['inter_wl']}); no arm randomizes the coarse cluster layout, so whether the
-fine order inside a cluster matters as much as the coarse die position is not measured here and
-stays open. Second, VPR's checkpointing does not separate the crossover in the
+({s['soft_wl']} vs {s['inter_wl']}); round one has no arm that randomizes the coarse cluster layout;
+the round-two permuted-cluster and random-start arms (Section~\\ref{{sec:r2-results}}) measure it. Second, VPR's checkpointing does not separate the crossover in the
 measured range: {ckpt_sentence} RLPlace's prediction that checkpointing extends the useful
 range is therefore not observed on these designs; if it holds, its effect is smaller than the
 between-design variation. Third, the safe recipe is
@@ -118,12 +117,12 @@ VPR auto-sizes a square grid to the packed netlist, with a mean side of {b['grid
 I/O-heavy and memory-heavy designs such as mkDelayWorker32B get a large die for few CLBs."""
         text = re.sub(r"(% BEGIN tab:benchmarks prose\n).*?(?=\n% END tab:benchmarks prose)",
                       lambda m: m.group(1) + bench, text, flags=re.S)
-    text = re.sub(r"The (?:ten|\d+) completed designs give .*?(?=\n\n\\section\{Discussion\})",
+    text = re.sub(r"The (?:ten|\d+) completed designs give .*?(?=\n\n\\input\{r2-results\})",
                   lambda _m: results, text, flags=re.S)
-    text = re.sub(r"Three observations\..*?(?=\n\n\\section\{Conclusion\})",
+    text = re.sub(r"Three observations\..*?(?=\n\n\\input\{r2-discussion\})",
                   lambda _m: discussion, text, flags=re.S)
     text = re.sub(r"Seeding VPR's anneal is worth it.*?"
-                  r"(?=\n\n\\bibliographystyle|\n\n\\bibliography)",
+                  r"(?=\n\n\\input\{r2-conclusion\})",
                   lambda _m: conclusion, text, flags=re.S)
     old_results = ("The numbers land as the runs complete; the retention-versus-temperature\n"
                    "curves are the experiment's central figure and will be added here.")

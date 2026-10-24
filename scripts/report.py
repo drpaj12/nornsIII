@@ -199,6 +199,77 @@ def failures(data: dict[str, list[dict[str, object]]], designs: list[str]) -> li
     return ["| design | tag | result | cause |", "|---|---|---|---|"] + rows if rows else ["none."]
 
 
+def round2_section() -> list[str]:
+    """Round-two tables (bitwise seeds, random and permuted arms, N1, N2) from r2lib."""
+    import r2lib
+    R = r2lib.compute()
+    out = ["Round-two arms at scale 1, geomean ratios vs the unseeded baseline (below 1.0 is "
+           "better); `better` = designs with routed wirelength below the baseline.", "",
+           "| arm | wirelength | delay | chan width | place runtime | better |",
+           "|---|---|---|---|---|---|"]
+    for key, v in R["vs_base"].items():
+        if key in ("urd", "words", "words_inter", "slices", "hier", "words_partial", "random",
+                   "urd_shuf") or key.endswith("_shuf"):
+            if v["n"]:
+                out.append("| {} | {} | {} | {} | {} | {}/{} |".format(
+                    key, r2lib.f3(v["wirelength"]), r2lib.f3(v["cpd_ns"]),
+                    r2lib.f3(v["chan_width"]), r2lib.f3(v["place_s"]), v["wins"], v["n"]))
+    out += ["", f"Best new family: {R['best']}.", "", "| hypothesis | status | deciding number |",
+            "|---|---|---|"]
+    h = R["hyp"]
+    for key in ("H7a", "H7b", "H7c", "H7d", "H4", "H1", "H2"):
+        if key not in h:
+            continue
+        v = h[key]
+        if key in ("H7a", "H7b", "H7d"):
+            num = f"geomean {r2lib.f3(v['gm'])}, better on {v['wins']}/{v['n']}, p={r2lib.pfmt(v['p'])}"
+        elif key == "H7c":
+            num = f"hier rank {v['rank']}/{v['of']} ({r2lib.f3(v['hier_gm'])}); best {v['best_name']}"
+        elif key == "H4":
+            num = "; ".join(f"{k}: random {r2lib.f3(c['random'])} > permuted "
+                            f"{r2lib.f3(c['shuffled'])} > quotient {r2lib.f3(c['quotient'])}"
+                            for k, c in v.items() if isinstance(c, dict))
+        elif key == "H1":
+            num = "; ".join(f"{lab}: {a['above_null']}/{a['n_z']} NMI, {a['dens_above_null']}/"
+                            f"{a['n_z']} compactness above null+2sd"
+                            for lab, a in R["n1"].items())
+        else:
+            num = f"{v['n_sig']}/{v['n_pairs']} correlations at p<0.05 (n=15)"
+        out.append(f"| {key} | {v['status']} | {num} |")
+    c = R["coverage_all"]
+    out += ["", "Word membership (Odin III bus names and spans joined by net id): "
+            f"{c['in_word']}/{c['blocks']} blocks in a word; flip-flops {c['ff_word']}/{c['ff_total']}, "
+            f"LUTs {c['lut_word']}/{c['lut_total']}, hard cells {c['hard_word']}/{c['hard_total']}; "
+            f"{c['unjoined']} Odin cells found no BLIF block; the rerun BLIF equals the kept one "
+            f"on all designs: {c['identical']}.", "",
+            "| design | blocks | in a word | words | words >= 2 | largest (module,file:line) group |",
+            "|---|---|---|---|---|---|"]
+    for w in R["coverage"]:
+        out.append(f"| {w['design']} | {w['blocks']} | {w['blocks_in_word']} | {w['words']} | "
+                   f"{w['words_ge2']} | {w['line_groups_largest'][0]} |")
+    if "n1" in R:
+        out += ["", "N1 medians over designs (NMI / compactness): analytic start, VPR final, "
+                "random null.", "", "| labels | n | NMI start | NMI final | NMI null | comp start "
+                "| comp final | comp null |", "|---|---|---|---|---|---|---|---|"]
+        for lab, a in R["n1"].items():
+            out.append(f"| {lab} | {a['n']} | {r2lib.f3(a['nmi_initial'])} | "
+                       f"{r2lib.f3(a['nmi_final'])} | {r2lib.f3(a['nmi_null'])} | "
+                       f"{r2lib.f3(a['dens_initial'])} | {r2lib.f3(a['dens_final'])} | "
+                       f"{r2lib.f3(a['dens_null'])} |")
+    if "n2" in R:
+        out += ["", "N2 Spearman rho (p, n) between structure and gain (1 - wirelength ratio).",
+                "", "| pair | rho | p | n |", "|---|---|---|---|"]
+        for k, v in R["n2"]["spearman"].items():
+            out.append(f"| {k} | {v['rho']:.3f} | {r2lib.pfmt(v['p'])} | {v['n']} |")
+    if R.get("xover"):
+        x = R["xover"]
+        out += ["", f"Crossover of the best new family: median scale {x['median']:g} vs round one "
+                f"{x['r1_median']:g} (n={x['n']}); retention at 2S median "
+                f"{r2lib.f2(x['hot_ret_median'])}; wins vs unseeded at 2S {x['hot_wins'][0]}/"
+                f"{x['hot_wins'][1]}."]
+    return out
+
+
 def write(designs: list[str]) -> None:
     data, order = load_all()
     designs = [d for d in order if d in designs or not designs]
@@ -213,6 +284,8 @@ def write(designs: list[str]) -> None:
         data, designs)
     out += ["", "## Checkpointing arm (VPR --place_checkpointing, default on vs off)",
             ""] + checkpoint_table(designs)
+    out += ["", "## Round 2 (bitwise seeds, random and permuted starts, N1, N2)", ""] \
+        + round2_section()
     out += ["", "## Failed runs", ""] + failures(data, designs)
     out += ["", "## Method notes", "",
             "* Soft seeds are `--read_initial_place_file` with the cluster layout; `full` keeps "
@@ -249,6 +322,13 @@ def write(designs: list[str]) -> None:
             "and stereovision3; diffeq1 and diffeq2 (one module each) get two Urd clusters (the "
             "module and a flat group), and the other designs get one cluster per populated "
             "module (3 to 23).",
+            "* Round 2 agent defaults: (6) word membership comes from Odin III bus names and "
+            "spans joined to the BLIF by net id (the BLIF line is a statement, too coarse); "
+            "(7) a CLB joins a word cluster when >= 1/3 of its atoms are word atoms, else it "
+            "keeps its Urd module cluster; (8) the Rent exponent is fitted on BFS balls, the "
+            "inverse Rent exponent is -p; (9) the random null of N1 permutes logic-CLB "
+            "coordinates (20 samples); (10) hypothesis statuses follow the decision rules in "
+            "the paper's methodology section.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
             "sweep (extended by doubling while the control still wins, to the same 256 cap).", ""]
