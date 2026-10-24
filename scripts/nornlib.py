@@ -30,14 +30,16 @@ DESIGN_ORDER = (
     "mkDelayWorker32B", "stereovision2", "blob_merge",
 )
 SEED_FAMILIES = ("urd", "louvain", "spectral", "affinity", "kmeans_k", "kmeans_2k", "kmeans_4k")
-VTR_ROOT = Path(os.environ.get("VTR_ROOT", "/home/jamiespa/odin3-ws/external/vtr-verilog-to-routing"))
+# defaults assume the Yggdrasil III workspace layout (scripts/env.sh); every path is overridable
+WS_ROOT = Path(os.environ.get("WS_ROOT", str(Path.home() / "odin3-ws")))
+VTR_ROOT = Path(os.environ.get("VTR_ROOT", str(WS_ROOT / "external" / "vtr-verilog-to-routing")))
 VPR = VTR_ROOT / "build" / "vpr" / "vpr"
 ARCH = VTR_ROOT / "vtr_flow" / "arch" / "timing" / "k6_frac_N10_frac_chain_mem32K_40nm.xml"
 BENCH = VTR_ROOT / "vtr_flow" / "benchmarks" / "verilog"
-ODIN3_ROOT = Path(os.environ.get("ODIN3_ROOT", "/home/jamiespa/odin3-ws/odin3"))
+ODIN3_ROOT = Path(os.environ.get("ODIN3_ROOT", str(WS_ROOT / "odin3")))
 ODIN3 = ODIN3_ROOT / "build" / "release" / "odin3"
 ODIN3_LIB = ODIN3_ROOT / "build" / "release" / "libodin3.so"
-LOCK = Path("/tmp/claude-1000/odin3-heavy.lock")
+LOCK = Path(os.environ.get("NORNS_LOCK", "/tmp/claude-1000/odin3-heavy.lock"))
 RUNS = WS / "runs"
 DATA = WS / "data"
 
@@ -364,6 +366,7 @@ def run(cmd: list[str], *, cwd: Path | None = None, env: dict[str, str] | None =
 
 
 def vpr_command(blif: Path, extra: list[str]) -> list[str]:
+    ensure_dir(LOCK.parent)
     return ["flock", "-x", str(LOCK), str(VPR), str(ARCH), str(blif)] + extra
 
 
