@@ -145,14 +145,26 @@ soft wirelength (supported if the geomean is below 1 and $p<0.05$, not supported
 geomean is at least 1, else inconclusive). H7b: \\code{{slices}} beats \\code{{words}} on wirelength and
 channel width (supported if both geomeans are below 1 and the wirelength sign test has $p<0.05$).
 H7c: \\code{{hier}} has the lowest geomean wirelength of all eleven soft families. H7d: \\code{{words\\_partial}}
-is at least as good as the full word seed (supported if the geomean ratio is at most 1, inconclusive up to 1.01).
+is better than the full word seed (supported if the geomean ratio is below 1 and the wirelength sign test has $p<0.05$, not supported
+if it is above 1 with $p<0.05$, else inconclusive; no equivalence margin was fixed, so ``at least as good'' is not testable here).
 H1: the baseline's final placement is module- and word-coherent (supported if, for both labellings,
 at least two thirds of the designs lie more than two null standard deviations above the null in both
 NMI and compactness). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
-positive correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\\ge$ analytic start in
+correlation of either sign reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.
 """
+
+
+def h7d_note(d: dict) -> str:
+    return " (no evidence of a difference)" if d["status"] == "inconclusive" else ""
+
+
+def h7d_phrase(d: dict) -> str:
+    """H7d as a clause for the discussion."""
+    return {"supported": "better than seeding everything",
+            "not supported": "worse than seeding everything",
+            "inconclusive": "not distinguishable from seeding everything"}[d["status"]]
 
 
 def arm_row(label: str, v: dict) -> str:
@@ -207,7 +219,7 @@ H7b is {b['status']}: \\code{{slices}} over \\code{{words}} is {f3(b['gm'])} in 
 (better on {b['chan_wins']} of {b['chan_n']}).
 H7c is {c_['status']}: \\code{{hier}} ranks {c_['rank']} of {c_['of']} families at
 {f3(c_['hier_gm'])}; the lowest is {code(c_['best_name'])} at {f3(c_['best_gm'])}.
-H7d is {d['status']}: \\code{{words\\_partial}} over \\code{{words}} is {f3(d['gm'])}
+H7d is {d['status']}{h7d_note(d)}: \\code{{words\\_partial}} over \\code{{words}} is {f3(d['gm'])}
 (better on {d['wins']} of {d['n']}, $p={pfmt(d['p'])}$).
 """
     out += f"""Ties (identical results) are left out of the sign tests: {a['ties']} for H7a, {b['ties']} for H7b and
@@ -319,7 +331,7 @@ def discussion(R: dict) -> str:
 against module clusters are {a['status']} ({f3(a['gm'])}); laying the words out bit-sliced against the quotient layout of the same
 clusters is {b['status']} ({f3(b['gm'])} in wirelength); the hierarchical
 combination is {c_['status']} as the best seed (rank {c_['rank']} of {c_['of']}); and seeding only the
-word cells is {d['status']} as good as seeding everything ({f3(d['gm'])}). The word
+word cells is {h7d_phrase(d)} (H7d {d['status']}, {f3(d['gm'])}, better on {d['wins']} of {d['n']}). The word
 membership available from Odin~III covers the flip-flops, adders, multipliers and memories but only
 {R['coverage_all']['lut_word'] * 100 // R['coverage_all']['lut_total']}\\% of the LUTs, because ABC's cone provenance merges the spans of
 mixed logic, so the word seeds are datapath-register seeds more than whole-datapath seeds; a result
@@ -381,7 +393,7 @@ def appendix(R: dict) -> str:
             f"WL {f3(h['H7b']['gm'])}, ch.\\ {f3(h['H7b']['chan_gm'])}"),
         row("N7", "H7c hier is best", "2", h["H7c"]["status"],
             f"rank {h['H7c']['rank']}/{h['H7c']['of']}"),
-        row("N7", "H7d partial $\\ge$ full", "2", h["H7d"]["status"], f3(h["H7d"]["gm"])),
+        row("N7", "H7d partial better than full", "2", h["H7d"]["status"], f3(h["H7d"]["gm"])),
         row("N4", "H4 random $<$ permuted $<$ quotient", "2", h["H4"]["status"],
             f"{f3(h['H4']['urd']['random'])}/{f3(h['H4']['urd']['shuffled'])}/{f3(h['H4']['urd']['quotient'])}"),
     ]
@@ -432,10 +444,23 @@ of the LUTs get a word.
 {h['H7c']['status']} for H7c, {h['H7d']['status']} for H7d, {h['H4']['status']} for H4"""+(f""", {h['H1']['status']} for H1 and {h['H2']['status']} for H2""" if 'n1' in R and 'n2' in R else "")+f""";
 the numbers are in Table~\\ref{{tab:r2log}} and Section~\\ref{{sec:r2-results}}.
 
+\\paragraph{{2026-10-24, rules changed after the data, and reverted.}} Two decision rules were touched after the
+results were visible. (1) H2: the rule fixed in the methodology text was ``not supported if no correlation reaches
+$p<0.05$''. When the full data showed one significant correlation, a negative one (best new-family gain against $z(Q)$,
+$\\rho=-0.59$, $p=0.021$), the rule was briefly changed to count only positive correlations, which turned the status into
+not supported. That change is reverted: under the rule as first written the status is {h['H2']['status']}.
+(2) H7d: the first rule called ``at least as good'' supported at a geomean ratio of 1 or below, with no test and no margin,
+and so called H7d supported at {f3(h['H7d']['gm'])} (better on {h['H7d']['wins']} of {h['H7d']['n']}, $p={pfmt(h['H7d']['p'])}$). A geomean near
+1 with a non-significant sign test is no evidence either way, so the status is {h['H7d']['status']} (``no evidence of a difference'').
+
 \\paragraph{{Still open.}} N3 (effort curve: how the result changes with the anneal budget, e.g. inner\\_num);
 N5 (size: designs of 1000 CLBs and up, where a seed has more to say); N6 (region looseness: constraint
 regions between the soft seed and the tight regions of round one); LUT coverage of the word membership
 (a front-end change, not a seeding change); more than one VPR seed per configuration.
+Next round: H7d is to be tested as non-inferiority, which needs a stated margin on the geomean wirelength ratio; the
+margin is to be fixed, together with every other decision rule, in a commit before any run, and chosen from the
+run-to-run spread that several VPR seeds per configuration will measure. No margin is proposed from the present
+single-seed data.
 
 \\begin{{table}}[t]
 \\caption{{Research questions and hypotheses of the study with status and the deciding number.}}

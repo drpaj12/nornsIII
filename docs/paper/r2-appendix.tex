@@ -33,13 +33,26 @@ joined by net id (Section~\ref{sec:r2-method}); only about 49\%
 of the LUTs get a word.
 
 \paragraph{2026-10-24, round two: outcomes.} Inconclusive for H7a, inconclusive for H7b,
-not supported for H7c, supported for H7d, not supported for H4, inconclusive for H1 and not supported for H2;
+not supported for H7c, inconclusive for H7d, not supported for H4, inconclusive for H1 and inconclusive for H2;
 the numbers are in Table~\ref{tab:r2log} and Section~\ref{sec:r2-results}.
+
+\paragraph{2026-10-24, rules changed after the data, and reverted.} Two decision rules were touched after the
+results were visible. (1) H2: the rule fixed in the methodology text was ``not supported if no correlation reaches
+$p<0.05$''. When the full data showed one significant correlation, a negative one (best new-family gain against $z(Q)$,
+$\rho=-0.59$, $p=0.021$), the rule was briefly changed to count only positive correlations, which turned the status into
+not supported. That change is reverted: under the rule as first written the status is inconclusive.
+(2) H7d: the first rule called ``at least as good'' supported at a geomean ratio of 1 or below, with no test and no margin,
+and so called H7d supported at 0.980 (better on 9 of 15, $p=0.607$). A geomean near
+1 with a non-significant sign test is no evidence either way, so the status is inconclusive (``no evidence of a difference'').
 
 \paragraph{Still open.} N3 (effort curve: how the result changes with the anneal budget, e.g. inner\_num);
 N5 (size: designs of 1000 CLBs and up, where a seed has more to say); N6 (region looseness: constraint
 regions between the soft seed and the tight regions of round one); LUT coverage of the word membership
 (a front-end change, not a seeding change); more than one VPR seed per configuration.
+Next round: H7d is to be tested as non-inferiority, which needs a stated margin on the geomean wirelength ratio; the
+margin is to be fixed, together with every other decision rule, in a commit before any run, and chosen from the
+run-to-run spread that several VPR seeds per configuration will measure. No margin is proposed from the present
+single-seed data.
 
 \begin{table}[t]
 \caption{Research questions and hypotheses of the study with status and the deciding number.}
@@ -56,10 +69,10 @@ R1 & seeds win at $2\times$ crossover & 1 & not supported & 57/105 \\
 N7 & H7a words beat Urd & 2 & inconclusive & 0.986 (10/15) \\
 N7 & H7b slices beat words & 2 & inconclusive & WL 0.982, ch.\ 1.033 \\
 N7 & H7c hier is best & 2 & not supported & rank 8/11 \\
-N7 & H7d partial $\ge$ full & 2 & supported & 0.980 \\
+N7 & H7d partial better than full & 2 & inconclusive & 0.980 \\
 N4 & H4 random $<$ permuted $<$ quotient & 2 & not supported & 0.997/1.020/1.029 \\
 N1 & H1 baseline already coherent & 2 & inconclusive & 8/13 mod., 9/15 word \\
-N2 & H2 structure predicts gain & 2 & not supported & 0+/1- of 9 at $p<0.05$ \\
+N2 & H2 structure predicts gain & 2 & inconclusive & 0+/1- of 9 at $p<0.05$ \\
 \bottomrule
 \end{tabular}
 \end{table}

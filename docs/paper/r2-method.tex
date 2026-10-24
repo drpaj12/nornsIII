@@ -70,10 +70,11 @@ soft wirelength (supported if the geomean is below 1 and $p<0.05$, not supported
 geomean is at least 1, else inconclusive). H7b: \code{slices} beats \code{words} on wirelength and
 channel width (supported if both geomeans are below 1 and the wirelength sign test has $p<0.05$).
 H7c: \code{hier} has the lowest geomean wirelength of all eleven soft families. H7d: \code{words\_partial}
-is at least as good as the full word seed (supported if the geomean ratio is at most 1, inconclusive up to 1.01).
+is better than the full word seed (supported if the geomean ratio is below 1 and the wirelength sign test has $p<0.05$, not supported
+if it is above 1 with $p<0.05$, else inconclusive; no equivalence margin was fixed, so ``at least as good'' is not testable here).
 H1: the baseline's final placement is module- and word-coherent (supported if, for both labellings,
 at least two thirds of the designs lie more than two null standard deviations above the null in both
 NMI and compactness). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
-positive correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
+correlation of either sign reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.

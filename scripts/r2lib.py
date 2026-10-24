@@ -149,14 +149,16 @@ def compute() -> dict:
                 "best_gm": ranks[0][0] if ranks else float("nan"),
                 "status": "supported" if names and names[0] == "hier" else "not supported"}
     d_ = paired(data, designs, ("words_partial", "full"), ("words", "full"))
+    # No equivalence margin was fixed before the data, so "at least as good" cannot be decided as
+    # non-inferiority: only a sign-test-backed difference counts (a margin is set for round three).
     if math.isnan(d_["gm"]):
         st = "inconclusive"
-    elif d_["gm"] <= 1.0:
+    elif d_["gm"] < 1.0 and d_["p"] < 0.05:
         st = "supported"
-    elif d_["gm"] <= 1.01:
-        st = "inconclusive"
-    else:
+    elif d_["gm"] > 1.0 and d_["p"] < 0.05:
         st = "not supported"
+    else:
+        st = "inconclusive"
     h["H7d"] = {**d_, "status": st}
     # H4: random > shuffled > quotient >= analytic, for Urd and for the best word family
     chain = {}
@@ -220,8 +222,11 @@ def compute() -> dict:
         pos = [k for k, v in sp.items() if k.startswith("best_r2~") and v["rho"] > 0 and v["p"] < 0.05]
         anypos = [k for k, v in sp.items() if v["rho"] > 0 and v["p"] < 0.05]
         neg = [k for k, v in sp.items() if v["rho"] < 0 and v["p"] < 0.05]
+        anysig = [k for k, v in sp.items() if v["p"] < 0.05]
+        # the rule as fixed before the data: a correlation of either sign at p<0.05 keeps the
+        # hypothesis from being called "not supported"
         h["H2"] = {"status": "supported" if len(pos) >= 2 else
-                   "not supported" if not anypos else "inconclusive",
+                   "not supported" if not anysig else "inconclusive",
                    "n_sig": len(anypos) + len(neg), "n_pos": len(anypos), "n_neg": len(neg),
                    "neg": neg, "n_pairs": len(sp)}
     h.setdefault("H1", {"status": "not run"})

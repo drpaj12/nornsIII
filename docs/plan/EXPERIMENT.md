@@ -222,10 +222,10 @@ Best new family: words_partial.
 | H7a | inconclusive | geomean 0.986, better on 10/15, p=0.302 |
 | H7b | inconclusive | geomean 0.982, better on 8/15, p=0.791 |
 | H7c | not supported | hier rank 8/11 (1.014); best words_partial |
-| H7d | supported | geomean 0.980, better on 9/15, p=0.607 |
+| H7d | inconclusive | geomean 0.980, better on 9/15, p=0.607 |
 | H4 | not supported | urd: random 0.997 > permuted 1.020 > quotient 1.029; best: random 0.997 > permuted 0.980 > quotient 0.994 |
 | H1 | inconclusive | module: 8/13 NMI, 10/13 compactness above null+2sd; word: 9/15 NMI, 14/15 compactness above null+2sd |
-| H2 | not supported | 0 positive and 1 negative of 9 correlations at p<0.05 (n=15) |
+| H2 | inconclusive | 0 positive and 1 negative of 9 correlations at p<0.05 (n=15) |
 
 Word membership (Odin III bus names and spans joined by net id): 86043/106793 blocks in a word; flip-flops 41962/41962, LUTs 18402/37244, hard cells 25679/25852; 1204 Odin cells found no BLIF block; the rerun BLIF equals the kept one on all designs: True.
 
