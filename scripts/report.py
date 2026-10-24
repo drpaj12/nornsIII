@@ -224,8 +224,9 @@ def write(designs: list[str]) -> None:
             "* Crossover = the largest `--anneal_auto_init_t_scale` S at which the cold start "
             "from P* still routes shorter than the unseeded run at the same S; the start "
             "temperature recorded by VPR is S x its automatic estimate. The sweep is run once "
-            "per design: P* is the best scale-1 placement over all designs x seven seeds, so S "
-            "is design-level, and the hot step then cold-starts every seed at 2S. When the sweep "
+            "per design: P* is that design's best scale-1 soft or hard placement over its seven "
+            "seeds, so S is design-level, and the hot step then cold-starts every seed at 2S. "
+            "When the sweep "
             "stopped at its cap (16, or 256 for or1200 and stereovision3), S is a lower bound on "
             "the fall point.",
             "* Retention = fraction of a seed's cluster CLBs whose exit position is inside the "
