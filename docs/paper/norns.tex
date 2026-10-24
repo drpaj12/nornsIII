@@ -114,7 +114,8 @@ hypotheses we test.
 The provenance hierarchy (Urd) is the module structure Odin~III records on
 every netlist object; it needs no recovery. Urd has a single cluster only on
 sha and stereovision3, two on diffeq1 and diffeq2 (their one module plus a
-flat group), and one per populated module (3 to 23) on the other designs, so
+flat group), and one per populated module plus a flat group (3 to 23) on the
+other designs, so
 its signal is degenerate on the two one-cluster designs. The recovered
 clusters (Verdandi)
 are Loki~III L2 partitions: Louvain, spectral, affinity propagation and
@@ -137,6 +138,97 @@ by inter-cluster net cuts, lay the quotient out by a coarse force-directed
 solve, and scale it to the die. Inside a cluster, blocks take the seed's
 internal order, or a shuffle in the inter-cluster-only arm; the two arms
 differ only in that intra-cluster order, not in the coarse cluster layout.
+
+\subsection{Seed construction in detail}
+\label{sec:seed-detail}
+
+\textbf{One die, one netlist.} Every seed targets the same die: VPR's
+\code{k6\_frac\_N10\_frac\_chain\_mem32K\_40nm} architecture with six-input
+LUTs (K~=~6). The netlist is the VTR-dialect BLIF that Odin~III's front end
+writes for each design: \code{read\_verilog --nolatches --vtr-compat},
+\code{proc}, \code{fsm}, \code{opt}, \code{flatten}, \code{opt -full},
+\code{wreduce}, \code{hardmap}, \code{lower}, \code{abc --lut 6},
+\code{stats}, and \code{write\_blif --vtr --lut-k 6 --name-style provenance}.
+Each configuration is one deterministic VPR run (\code{--seed 1}). The
+unseeded baseline run is the comparison point and also supplies the seed
+builders: its analytic initial placement (\code{initial.place}) gives every
+soft seed legal slots and its fine order, and its \code{final.flat\_place} is
+the reference the retention metric uses.
+
+\textbf{Coarse layout.} Every soft seed shares one die-level arrangement, the
+quotient-graph layout. Each cluster is contracted to one node and each pair of
+clusters is weighted by the number of nets cut between them; the weighted
+quotient graph is laid out by a force-directed solve
+(\code{networkx.spring\_layout}, fixed seed), and the embedding is scaled onto
+the die's logic-slot bounding box. Each cluster then takes the free CLB slots
+nearest its laid-out point, nearest first. Clusters that exchange many nets
+therefore start close together, and the die fills in cluster-sized groups
+instead of a scatter.
+
+\textbf{Fine order.} The soft arm has two variants that differ only inside a
+cluster. \code{Full} keeps the baseline analytic order: a cluster's blocks
+keep their relative analytic positions when they are assigned the cluster's
+slots. \code{Inter} shuffles the intra-cluster order under a fixed shuffle
+seed, so only the inter-cluster structure survives; because the coarse
+cluster layout is identical in the two variants, the pair isolates the fine
+order. The hard arm has no fine-order choice: it hands VPR one
+\code{PartitionRegion} per cluster, sized from the full seed's slots and
+expanded until it holds the cluster's logic (and nudged to cover a memory or
+multiplier site the cluster needs), and VPR's placement orders the blocks
+inside each region.
+
+\textbf{Placement macros.} Every seed honours the die's placement macros: I/O
+pads never move (their I/O sites are fixed by the architecture),
+\code{mult\_36} macros stay anchored on their tile footprint, and an adder
+carry chain moves as one vertical run in a single column, head at the top
+(VPR places a chain as a direct vertical macro). Chains are assigned slots
+before the nearest-first fill, so a chain is never split.
+
+\textbf{The seed families.} The Urd seed is the provenance hierarchy made
+explicit: Odin~III writes each block's HDL module into its netlist name, the
+seed builder reads that module from the BLIF, and each populated module
+becomes one cluster; blocks that carry no module name join one flat cluster.
+Urd is one cluster on sha and stereovision3, two on diffeq1 and diffeq2 (one
+module plus the flat group), and one per populated module plus the flat group
+on the other designs. The rationale is the designer's
+locality: modules are the units the designer grouped, and logic inside a
+module was written to communicate (shared words, state, control), so a module
+cluster concentrates the connectivity the placer is paid to shorten. That is
+the hypothesis the Urd arm tests.
+
+The Verdandi seeds are Loki~III's L2 clusterings of the flat netlist:
+Louvain, spectral, affinity propagation, and k-means at $k$, $2k$ and $4k$,
+with $k$ the design's module count (two where the design has one module).
+Norns builds the L0 \code{graph.json} the clusterings read from the same
+Odin~III BLIF, because Loki's \code{key.json} uses Odin API names that do not
+join to VPR atom names; the clustering code is Loki's. A recovered cluster
+approximates the provenance grouping from connectivity alone, so comparing
+Urd with Verdandi isolates what the HDL structure adds over the graph.
+
+\textbf{Why a seed should beat a random start.} A random placement scatters
+communicating logic across the die; the quotient layout puts each cluster's
+logic together and puts clusters that exchange nets next to each other, so
+the anneal starts from the structure it is meant to find and refines from
+there. The experiment tests that mechanism rather than assuming it, and it
+compares against VPR's analytic start, which already respects connectivity,
+not against a random placement. Two measurements report what the seed did:
+retention, the fraction of a seed's CLBs found inside its seed cluster's
+region at exit, has medians 0.68 (full) and 0.70 (inter) at VPR's own start
+temperature and 0.52--0.74 per family at twice the crossover; and the
+crossover sweep finds the largest tested temperature scale at which the seed
+still wins, the point where its contribution stops surviving the anneal.
+
+\textbf{What the HDL constructs say about a good start.} HDL modules, buses,
+datapath words and finite-state machines group logic that communicates: a bus
+is one word fanned out to every consumer, a datapath chain is a dataflow
+line, and an FSM's next-state logic and registers exchange signals every
+cycle. Provenance preserves that grouping in the netlist, so a seed built
+from it starts the placer with the designer's locality already on the die;
+L2 clusters try to rediscover it from connectivity alone, and this
+experiment measures how well that substitute places, not how closely the
+clusters match the modules. That is why Urd
+and Verdandi are the arms, and why the paper asks whether recovered structure
+is interchangeable with provenance.
 
 \subsection{Injection}
 
@@ -180,6 +272,59 @@ and the per-temperature cost curve. Designs are the 15 VTR benchmarks that
 fit the development machine, smallest first, one run at a time under the
 heavy lock. Every number in this paper traces to a kept record; large data
 keeps its scripts.
+
+\subsection{Benchmarks}
+\label{sec:benchmarks}
+
+Table~\ref{tab:benchmarks} reports each design's construction and its
+post-technology-mapping size. The module count is the front end's, while the
+CLB count and the grid are VPR's own numbers for the packed netlist, so the
+table describes the designs as the experiment actually places them.
+
+% BEGIN tab:benchmarks prose
+The 15 designs span two orders of magnitude after technology mapping:
+from 13 CLBs (ch\_intrinsics) to 1956 (stereovision2),
+4843 CLBs in total. The mean is 322.9 CLBs and the median 125;
+the mean sits well above the median because three stereovision designs carry most of the logic.
+VPR auto-sizes a square grid to the packed netlist, with a mean side of 27.2 tiles
+(median 20) and a mean of 1076.4 grid tiles (median
+400). Grid size follows the largest resource demand, not the CLB count:
+I/O-heavy and memory-heavy designs such as mkDelayWorker32B get a large die for few CLBs.
+% END tab:benchmarks prose
+
+\begin{table*}[t]
+\caption{Benchmark construction and post-technology-mapping size. All fifteen
+designs are from the VTR~8.0 benchmark set
+(\code{vtr\_flow/benchmarks/verilog}). Modules is the front end's module
+count, CLBs the \code{clb} blocks VPR packs, Memory and Mult the memory and
+\code{mult\_36} blocks, and Grid the auto-sized device grid with its tile
+count in parentheses. Sizes are read from each design's baseline run log and
+kept in \code{data/benchmark-sizes.json}.}
+\label{tab:benchmarks}
+\centering
+\footnotesize
+\begin{tabular}{@{}l l r r r r c@{}}
+\toprule
+Design & Suite & Modules & CLBs & Memory & Mult & Grid (tiles) \\
+\midrule
+ch\_intrinsics & VTR 8.0 & 2 & 13 & 1 & 0 & $10\times$10 (100) \\
+stereovision3 & VTR 8.0 & 1 & 15 & 0 & 0 & $7\times$7 (49) \\
+diffeq2 & VTR 8.0 & 1 & 22 & 0 & 5 & $16\times$16 (256) \\
+diffeq1 & VTR 8.0 & 1 & 37 & 0 & 5 & $16\times$16 (256) \\
+mkPktMerge & VTR 8.0 & 7 & 21 & 15 & 0 & $28\times$28 (784) \\
+raygentop & VTR 8.0 & 15 & 143 & 1 & 6 & $19\times$19 (361) \\
+sha & VTR 8.0 & 1 & 142 & 0 & 0 & $17\times$17 (289) \\
+boundtop & VTR 8.0 & 13 & 54 & 1 & 0 & $15\times$15 (225) \\
+mkSMAdapter4B & VTR 8.0 & 8 & 125 & 5 & 0 & $20\times$20 (400) \\
+or1200 & VTR 8.0 & 16 & 252 & 2 & 1 & $27\times$27 (729) \\
+stereovision0 & VTR 8.0 & 25 & 707 & 0 & 0 & $33\times$33 (1089) \\
+stereovision1 & VTR 8.0 & 16 & 788 & 0 & 43 & $40\times$40 (1600) \\
+mkDelayWorker32B & VTR 8.0 & 16 & 74 & 43 & 0 & $50\times$50 (2500) \\
+stereovision2 & VTR 8.0 & 24 & 1956 & 0 & 192 & $82\times$82 (6724) \\
+blob\_merge & VTR 8.0 & 2 & 494 & 0 & 0 & $28\times$28 (784) \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \begin{figure}[t]
 \centering

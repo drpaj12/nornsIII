@@ -1,4 +1,18 @@
 {
+ "benchmarks": {
+  "clb_max": 1956,
+  "clb_mean": 322.9,
+  "clb_median": 125,
+  "clb_min": 13,
+  "clb_total": 4843,
+  "grid_mean": 27.2,
+  "grid_median": 20,
+  "largest": "stereovision2",
+  "n": 15,
+  "smallest": "ch_intrinsics",
+  "tiles_mean": 1076.4,
+  "tiles_median": 400
+ },
  "crossover_off_median": 16.0,
  "crossover_on_median": 16.0,
  "hard_design_wl": {
