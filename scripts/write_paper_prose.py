@@ -20,6 +20,8 @@ def main(argv: list[str]) -> int:
     wins = sum(v[0] for v in s["hot_wins"].values())
     n = sum(v[1] for v in s["hot_wins"].values())
     fmt_scale = lambda v: "n/a" if v is None else f"{v:g}"
+    import report
+    data, designs = report.load_all()
     pairs = []
     for design in designs:
         on = nl.runs_dir(design, "crossover", "crossover.json")
@@ -32,17 +34,17 @@ def main(argv: list[str]) -> int:
             pairs.append((design, a, b))
     same = [d for d, a, b in pairs if a == b]
     hotter = [f"{d} ({a:g} vs {b:g})" for d, a, b in pairs if a > b]
+    cooler = [f"{d} (control {b:g} vs {a:g})" for d, a, b in pairs if b > a]
     ckpt_sentence = (
         f"the two sweeps find the same scale on {len(same)} of the {len(pairs)} designs where "
         f"both found one"
-        + (f", and checkpointing extends it on {', '.join(hotter)}" if hotter else "")
+        + (f", checkpointing extends it on {', '.join(hotter)}" if hotter else "")
+        + (f", and the control extends it on {', '.join(cooler)}" if cooler else "")
         + ".")
     hot_range = (f"{min(hot_ret):.2f}-{max(hot_ret):.2f}" if hot_ret else "n/a")
     ret1 = "n/a"
     ret1i = "n/a"
     try:
-        import report
-        data, designs = report.load_all()
         full = [float(r["retention"]) for d in designs for seed in report.FAMILIES
                 for r in [report.pick(data[d], "soft", seed, "full")]
                 if r and r.get("retention") is not None]
@@ -77,13 +79,20 @@ which is a multiple of VPR's own estimate; above it the seed's retention stays h
 survives the anneal, the advantage does not."""
     conclusion = """Seeding VPR's anneal is worth it only as a calibrated cold start: at
 VPR's own start temperature the cluster layouts and the provenance hierarchy place at parity
-with the analytic start, but they let the anneal begin closer to its best solution, and
-VPR's stock checkpointing extends that range. The recipe is the crossover table, not a
-seed-specific tuning: start at or below it, and expect the seed to inform the coarse
+with the analytic start, but from a good final placement they keep winning when the anneal is
+restarted hotter, up to the crossover the sweep measures. The recipe is that crossover table,
+not a seed-specific tuning: start at or below it, and expect the seed to inform the coarse
 placement while the anneal supplies the fine one."""
     s_path = nl.WS / "docs" / "paper" / ("norns.tex" if not argv else argv[0])
     text = s_path.read_text(encoding="utf-8")
     text = fill_tables(text, nl.WS / "docs" / "plan" / "paper-numbers.tex")
+    import re
+    text = re.sub(r"The (?:ten|\d+) completed designs give .*?(?=\n\n\\section\{Discussion\})",
+                  lambda _m: results, text, flags=re.S)
+    text = re.sub(r"Three observations\..*?(?=\n\n\\section\{Conclusion\})",
+                  lambda _m: discussion, text, flags=re.S)
+    text = re.sub(r"Seeding VPR's anneal is worth it.*?(?=\n\n\\bibliography)",
+                  lambda _m: conclusion, text, flags=re.S)
     old_results = ("The numbers land as the runs complete; the retention-versus-temperature\n"
                    "curves are the experiment's central figure and will be added here.")
     text = text.replace(old_results, results)
