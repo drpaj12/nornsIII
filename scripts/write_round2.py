@@ -6,7 +6,7 @@ from a fresh checkout. Usage: python scripts/write_round2.py
 
 from __future__ import annotations
 
-import math
+import statistics
 import sys
 
 import nornlib as nl
@@ -25,7 +25,7 @@ LABEL = {"urd": "Urd (round 1)", "louvain": "Louvain", "spectral": "Spectral",
          "words": "Words", "words_inter": "Words, inter only",
          "slices": "Slices", "hier": "Hier",
          "words_partial": "Words, partial", "random": "Random start",
-         "urd_shuf": "Urd, permuted"}
+         "urd_shuf": "Urd, permuted", "words_partial_shuf": "Words, partial, permuted"}
 
 
 GAIN = {"urd": "the Urd gain", "best_r1": "the best round-one gain", "best_r2": "the best new-family gain"}
@@ -72,7 +72,9 @@ def round1() -> dict:
 def method(R: dict) -> str:
     c = R["coverage_all"]
     n = R["n_designs"]
-    bf = lambda k: f"{100 * c[k + '_word'] / c[k + '_total']:.0f}\\%"
+    def bf(k: str) -> str:
+        return f"{100 * c[k + '_word'] / c[k + '_total']:.0f}\\%"
+
     return f"""\\subsection{{Round two: bitwise seeds and structure analyses}}
 \\label{{sec:r2-method}}
 
@@ -94,7 +96,8 @@ match), and reads the records Loki~III's labeller reads: the HDL name \\code{{bu
 cell's output net and the source spans of each cell, matched to the word-level cells that
 exist before technology mapping. A final cell joins its BLIF block through the net id the BLIF
 name carries (\\code{{\\$n<id>}}), so the join is by identifier, not by string
-({c['unjoined']} of {c['blocks']} cells, {pct(c['unjoined'] / c['blocks'])}, found no BLIF block and are left unlabelled;
+({c['unjoined']} of the {c['odin_cells']} Odin~III final cells, {pct(c['unjoined'] / c['odin_cells'])}, found no BLIF block and are left unlabelled,
+from none to {pct(c['unjoined_worst']['share'])} per design, the worst being {code(c['unjoined_worst']['design'])} with {c['unjoined_worst']['n']} of {c['unjoined_worst']['of']};
 the writer legalises dotted names, handled explicitly). A block's word is the first rule
 that applies: (bus) an output net named \\code{{bus[i]}} puts it in word \\code{{bus}} at bit $i$,
 which holds for every flip-flop that keeps a register name; (cell) exactly one word-level cell's
@@ -129,14 +132,19 @@ Urd, and the \\code{{*\\_shuf}} twin of the best new family).
 \\paragraph{{Structure analyses (no VPR runs).}}
 RQ-N1 measures, on each design's unseeded baseline, how module- and word-coherent three
 placements are: VPR's analytic start, its final placement, and a random null (logic-CLB
-coordinates permuted, 20 samples). Coherence is the NMI between a $g\\times g$ grid partition
-($g=\\lceil\\sqrt{{\\#\\text{{labels}}}}\\rceil$) and the labels, and the compactness
-(label CLBs per grid tile of the label's bounding box, CLB-weighted). RQ-N2 correlates the seed
+coordinates permuted, 20 samples). A logic CLB carries the plurality label of its atoms (module: the Urd module; word:
+the word with most atoms in the CLB; a CLB without one is unlabelled). Coherence is the NMI between a $g\\times g$ grid partition
+of the labelled CLBs ($g=\\max(2,\\lceil\\sqrt{{\\#\\text{{labels}}}}\\rceil)$, the grid spanning the labelled CLBs' bounding box) and the labels. The compactness is a
+separate metric that does not use the grid: the CLB-weighted mean over labels with at least two CLBs of the label's CLBs divided
+by the area, in tiles, of the label's bounding box. A labelling is scored only with at least four labelled CLBs and two labels, and a design
+is counted against the null only when the null's standard deviation is positive (counted separately for the two metrics). A design with
+fewer than two real Urd modules (\\code{{diffeq1}} and \\code{{diffeq2}}, which have one module plus the artificial flat group, and \\code{{sha}} and \\code{{stereovision3}}, which have none)
+has no module row. Label sets with fewer than {r2lib.TINY_LABELLED} labelled CLBs are flagged in the results. RQ-N2 correlates the seed
 gain with three structure measures of the netlist graph: Louvain modularity $Q$; the $z$-score of
-$Q$ against a degree-preserving null (double edge swaps, 20 samples); and the inverse Rent
+$Q$ against a degree-preserving null (double edge swaps, 10 per edge, 20 samples); and the inverse Rent
 exponent $-p$, with $p$ fitted from the terminals of BFS balls of geometric sizes (a lower
 exponent is a more local design). Spearman's $\\rho$ and $p$-value are reported with $n={n}$,
-which is small.
+which is small, and again as partial correlations with the edge count regressed out, because graph size drives both $z(Q)$ and the gain.
 
 \\paragraph{{Hypotheses and decision rules.}}
 Paired comparisons are per design (variant over reference), reported as a geomean ratio, the number of
@@ -148,11 +156,21 @@ H7c: \\code{{hier}} has the lowest geomean wirelength of all eleven soft familie
 is better than the full word seed (supported if the geomean ratio is below 1 and the wirelength sign test has $p<0.05$, not supported
 if it is above 1 with $p<0.05$, else inconclusive; no equivalence margin was fixed, so ``at least as good'' is not testable here).
 H1: the baseline's final placement is module- and word-coherent (supported if, for both labellings,
-at least two thirds of the designs lie more than two null standard deviations above the null in both
-NMI and compactness). H2: structure predicts gain (supported if at least two of the three
+at least two thirds of the designs lie more than two null standard deviations above the null in NMI and at least two thirds in
+compactness, the two counted separately; not supported if fewer than a third do for both labellings and both metrics). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
 correlation of either sign reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.
+
+\\paragraph{{Which rules predate the data.}}
+These rules were not registered anywhere outside the repository, so their order is stated from the commit times of
+that repository. The decision-rule code for H7a to H7d and H4 was committed at 15:21 on 2026-10-24 and H1's rule (with the compactness
+criterion) at 15:24, before the first round-two VPR data (15:38). Some of those rules were later found weak and
+changed; the appendix lists the changes. After the first data: tie handling in the sign tests (ties left out) came with the first data
+commit; the methodology text that states the rules was written at 17:31, after nine designs; the best family was frozen at
+{R['best_n']} designs after their results were seen (so the hard, crossover and permuted arms of the best family use a choice made
+on data); the H2 rule was briefly changed and reverted, and the H7d rule was replaced after review. The next round fixes every decision rule, and the equivalence margin of
+H7d, in a commit before any run.
 """
 
 
@@ -182,8 +200,7 @@ def results(R: dict) -> str:
         if key in vb and vb[key]["n"]:
             rows.append(arm_row(LABEL[key], vb[key]))
     if best and f"{best}_shuf" in vb and vb[f"{best}_shuf"]["n"]:
-        rows.append(arm_row(f"{LABEL[best].split(',')[0]}, permuted",
-                            vb[f"{best}_shuf"]))
+        rows.append(arm_row(LABEL.get(f"{best}_shuf", f"{best}_shuf"), vb[f"{best}_shuf"]))
     n = R["n_designs"]
     a, b, c_, d = h["H7a"], h["H7b"], h["H7c"], h["H7d"]
     h4 = h["H4"]
@@ -228,24 +245,55 @@ all single-CLB, or that has one module): \\code{{slices}} equals \\code{{words}}
 design(s), \\code{{hier}} equals Urd on {len(R['same']['hier_urd'])} and \\code{{words\\_partial}} equals \\code{{words}} on
 {len(R['same']['partial_words'])}.
 """
+    out += audit_text(R)
+    pt = R.get("partial")
+    if pt:
+        share = [x["moved_words_partial"] / x["logic_memory_clbs"] for x in pt]
+        lo = min(pt, key=lambda x: x["moved_words_partial"] / x["logic_memory_clbs"])
+        hi90 = sum(1 for x in share if x >= 0.9)
+        allm = sorted(x["moved_words_partial"] / x["placed_blocks"] for x in pt)
+        out += f"""\\code{{words\\_partial}} places only the word CLBs, so how much of each design it moves matters for H7d
+(Table~\\ref{{tab:r2partial}}). Of the logic and memory CLBs the seed moves a median of {100 * statistics.median(share):.0f}\\% per design
+({hi90} of {len(pt)} designs at 90\\% or more, down to {100 * min(share):.0f}\\% on {design_tex(lo['design'])}); counting every placed block, pads and
+multipliers included, which are anchored in every arm, the median is only {100 * statistics.median(allm):.0f}\\% (for example
+{pt[0]['moved_words_partial']} of {pt[0]['placed_blocks']} on {design_tex(pt[0]['design'])}). Where the seed covers nearly all logic CLBs,
+\\code{{words\\_partial}} differs little from \\code{{words}}, so H7d compares two similar placements; where it covers little (for example
+{design_tex(lo['design'])}), most of the seed is VPR's own analytic start. H7d is
+therefore a weak test of ``seeding fewer CLBs'' on the designs where the share is high.
+"""
     if best:
         hb, xo = R.get("hard_best"), R.get("xover")
         out += f"""The best new family by geomean wirelength is {code(best)} (chosen on the {R['best_n']} designs whose
 soft arms were complete when the hard and crossover arms were queued"""
         out += (f"""; over all {n} designs it is {code(R['best_now'])}""" if R['best_now'] != best else "")
-        out += """), so the coarse-random, hard and crossover arms below use it."""
+        out += f"""), so the coarse-random, hard and crossover arms below use it. Its geomean of
+{f3(vb[best]['wirelength'])} is a selected figure: the family was the best of four on those {R['best_n']} designs and is reported on
+them (and on the {n - R['best_n']} added later), so it is biased low, and it lies inside the band of the other arms."""
         if hb and hb["n"]:
             out += f""" Its hard arm (one region per cluster, scale~1) is {f3(hb['gm'])} in wirelength over
-{hb['n']} designs, better than the baseline on {hb['wins']}; round one's hard arm pooled to {R['r1']['hard_wl']}."""
+{hb['n']} designs, better than the baseline on {hb['wins']}; round one's hard arm pooled to {R['r1']['hard_wl']} (all families, all designs)."""
+            if hb["failed"] and hb["urd_n"]:
+                out += f""" That figure is over the {hb['n']} survivors only, and the {len(hb['failed'])} designs that failed are among the largest, so
+survivors flatter it. Round one's Urd hard arm over the same {hb['urd_n']} designs is {f3(hb['urd_gm'])} (better on {hb['urd_wins']}):
+on equal designs the bitwise family's hard arm is {'worse' if hb['gm'] > hb['urd_gm'] else 'better'} than Urd's."""
             if hb["failed"]:
                 out += (f""" The hard arm failed in VPR's initial placement on {len(hb['failed'])} designs
 ({', '.join(design_tex(x) for x in hb['failed'])}: no free sites for the constrained blocks, the same failure round one
-had on blob\\_merge) and those are left out.""")
+had on blob\\_merge) and those are left out. The builder's region check counts a box as large enough when it holds as many logic sites
+as the cluster's own CLBs; it does not count the unseeded CLBs that this family leaves at their analytic positions,
+which can sit inside a box, so these failures may be builder-side rather than a property of hard regions.""")
         if xo and xo["n"]:
+            miss = xo["nowin"]
             out += f""" Its crossover sweep, started from its own scale-1 placement, has median crossover scale
-{xo['median']:g} against {xo['r1_median']:g} for round one's best-of-seven $P^*$ (at least round one's on
-{xo['ge_r1']} of {xo['n']} designs); at twice the crossover the retention median is {f2(xo['hot_ret_median'])} and the
-seed beats an unseeded run at the same temperature on {xo['hot_wins'][0]} of {xo['hot_wins'][1]} designs."""
+{xo['median']:g} against {xo['r1_median']:g} for round one's best-of-seven $P^*$ over the {xo['n']} of {xo['n_all']} designs where
+it won at some scale (at least round one's on {xo['ge_r1']} of {xo['n']}); at twice the crossover the retention median is
+{f2(xo['hot_ret_median'])} and the seed beats an unseeded run at the same temperature on {xo['hot_wins'][0]} of {xo['hot_wins'][1]} designs."""
+            if miss:
+                won = " and ".join(f"{miss[x]:g}$\\times$ on {design_tex(x)}" for x in miss)
+                out += f""" {" and ".join(design_tex(x) for x in miss)} had no winning scale at all and are left out of
+those medians and counts (round one won up to {won}). Counting them as failures, the family is at least round one's on
+{xo['ge_r1']} of {xo['n_all']} designs, and the median over all {xo['n_all']} (a failure taken as below the lowest scale) is
+{xo['median_all']:g} against {xo['r1_median_all']:g}."""
         out += "\n\n"
     ur, bq = h4["urd"], h4["best"]
     out += f"""\\textbf{{RQ-N4, clustering versus coarse layout.}} H4 is {h4['status']}. For Urd the wirelength
@@ -268,16 +316,18 @@ the coarse layout is worth beyond the clustering itself."""
         m, w = n1["module"], n1["word"]
         out += f"""\\textbf{{RQ-N1, does VPR rediscover the hierarchy?}} H1 is {h['H1']['status']}. Table~\\ref{{tab:r2n1}}
 gives medians over designs: the final placement is above the random null in NMI on {m['above_null']} of {m['n_z']}
-designs for modules and {w['above_null']} of {w['n_z']} for words, and in compactness on {m['dens_above_null']}
-and {w['dens_above_null']} (more than two null standard deviations). Final and analytic placements are close, and the final
+designs for modules and {w['above_null']} of {w['n_z']} for words, and in compactness on {m['dens_above_null']} of {m['dens_n_z']}
+and {w['dens_above_null']} of {w['dens_n_z']} (more than two null standard deviations). Modules are counted over {m['n']} designs, not 15 or 13:
+\\code{{diffeq1}} and \\code{{diffeq2}} have a single module, whose second label is the artificial flat group, and \\code{{sha}} and
+\\code{{stereovision3}} have none. {tiny_text(m, w)} Final and analytic placements are close, and the final
 NMI is at least the analytic one on {m['final_ge_initial']} of {m['n']} (modules) and {w['final_ge_initial']} of {w['n']}
 (words) designs. With many small labels the NMI of a random placement is itself high (word null
 {f2(w['nmi_null'])}), so compactness is the cleaner signal.
 
 \\begin{{table}}[t]
 \\caption{{RQ-N1: medians over designs of the grid-partition NMI and label compactness of the
-analytic start, VPR's final placement and a random null (20 permutations). Designs with a
-single module have no module label and are left out of that row.}}
+analytic start, VPR's final placement and a random null (20 permutations). Designs with fewer
+than two real modules have no module label and are left out of that row.}}
 \\label{{tab:r2n1}}
 \\centering
 \\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
@@ -317,8 +367,93 @@ Best new family & {cell('best_r2', 'q')} & {cell('best_r2', 'q_z')} & {cell('bes
 \\bottomrule
 \\end{{tabular}}
 \\end{{table}}
-"""
+
+{n2_size_text(R)}"""
     return out
+
+
+def audit_text(R: dict) -> str:
+    """Seed-file audit: the committed builders reproduce the seeds VPR ran from; the slices fallback."""
+    au = R.get("audit")
+    if not au:
+        return ""
+    all_same = all(v["identical_to_runs"] for v in au.values())
+    fb = [d for d, v in au.items() if v["fallback_changes_slices"]]
+    sw = [d for d, v in au.items() if v["slices_equals_words"]]
+    hu = [d for d, v in au.items() if v["hier_equals_urd"]]
+    mk_note = (" On \\code{mkDelayWorker32B} only 9 CLBs carry a word label, in 7 words, and no word has two CLBs off the carry chains."
+               if "mkDelayWorker32B" in sw else "")
+    out = f"""Seed audit. Rebuilding the seven round-two seed families from the kept word membership with the committed builders gives
+{'seed files byte-identical to the ones VPR ran from on all ' + str(len(au)) + ' designs' if all_same else 'seed files that differ from the ones VPR ran from on some designs'};
+so every \\code{{slices}} run used the column-major bit-order fallback of the committed code, and that fallback changes the slices
+seed on {len(fb)} designs ({', '.join(design_tex(x) for x in fb)}). The designs where \\code{{slices}} equals \\code{{words}} as a seed file
+({', '.join(design_tex(x) for x in sw) or 'none'}) and where \\code{{hier}} equals Urd ({', '.join(design_tex(x) for x in hu) or 'none'}) are equal because there is nothing to rearrange, not because
+a code path was skipped.{mk_note}
+"""
+    return out + "\n"
+
+
+def tiny_text(m: dict, w: dict) -> str:
+    parts = []
+    for lab, a in (("module", m), ("word", w)):
+        if a["tiny"]:
+            parts.append(f"{lab} labels on " + ", ".join(design_tex(x) for x in a["tiny"]))
+    if not parts:
+        return ""
+    return ("Label sets with fewer than " + str(r2lib.TINY_LABELLED) + " labelled CLBs carry little information (" +
+            "; ".join(parts) + ").")
+
+
+def n2_size_text(R: dict) -> str:
+    """Graph size as a confounder of the N2 correlations (partial Spearman controlling for edges)."""
+    n2 = R["n2"]
+    pe, ve = n2.get("partial_edges"), n2.get("vs_edges")
+    if not pe or not ve:
+        return ""
+
+    def cell(g, p):
+        v = pe.get(f"{g}~{p}")
+        return "--" if v is None else f"{v['rho']:.2f} ({pfmt(v['p'])})"
+
+    def rp(k):
+        return f"$\\rho={ve[k]['rho']:.2f}$ (${peq(ve[k]['p'])}$)"
+
+    nul = f"{n2['swaps_per_edge']}"
+    return f"""Graph size is a confounder. The measure $z(Q)$ rises with the number of edges ({rp('q_z')}), and the gains fall with it: the best
+new-family gain against edges is {rp('gain_best_r2')}, the best round-one gain {rp('gain_best_r1')}, Urd's {rp('gain_urd')}. Table~\\ref{{tab:r2n2p}}
+repeats the correlations of Table~\\ref{{tab:r2n2}} as partial Spearman correlations with the rank of the edge count regressed out of both
+variables. The null graphs behind $z(Q)$ use {nul} double edge swaps per edge on every design (an earlier run capped the swaps at 200000, which left
+3.8 to 9.8 per edge on the five graphs above 20000 edges; the cap was removed and the null recomputed). The best-of-$k$ gains are maxima over $k$
+families per design ($k=7$ round one, $k=4$ round two), a positively biased gain, and the noise of a single VPR seed per configuration is unquantified.
+
+\\begin{{table}}[t]
+\\caption{{RQ-N2 with graph size controlled: partial Spearman $\\rho$ ($p$) between structure and seed gain, the rank of the edge count
+regressed out of both.}}
+\\label{{tab:r2n2p}}
+\\centering
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
+\\begin{{tabular}}{{lccc}}
+\\toprule
+Gain & $Q$ & $z(Q)$ & $-p_{{\\text{{Rent}}}}$ \\\\
+\\midrule
+Urd, round one & {cell('urd', 'q')} & {cell('urd', 'q_z')} & {cell('urd', 'rent_p')} \\\\
+Best round one & {cell('best_r1', 'q')} & {cell('best_r1', 'q_z')} & {cell('best_r1', 'rent_p')} \\\\
+Best new family & {cell('best_r2', 'q')} & {cell('best_r2', 'q_z')} & {cell('best_r2', 'rent_p')} \\\\
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+"""
+
+
+def peq(p: float) -> str:
+    return "p<0.001" if p < 0.001 else f"p={p:.3f}"
+
+
+def size_clause(R: dict, keys: list[str]) -> str:
+    pe = R["n2"].get("partial_edges", {})
+    parts = [f"{pe[k]['rho']:.2f}, ${peq(pe[k]['p'])}$" for k in keys if k in pe]
+    return ("; it tracks graph size, and with the edge count regressed out the partial $\\rho$ is "
+            + " and ".join(parts)) if parts else ""
 
 
 def discussion(R: dict) -> str:
@@ -336,9 +471,14 @@ membership available from Odin~III covers the flip-flops, adders, multipliers an
 {R['coverage_all']['lut_word'] * 100 // R['coverage_all']['lut_total']}\\% of the LUTs, because ABC's cone provenance merges the spans of
 mixed logic, so the word seeds are datapath-register seeds more than whole-datapath seeds; a result
 against bitwise seeding here is a result about that coverage as much as about the idea."""
-    t0 = lambda k: f3(vb[k]["init_t"]) if k in vb and vb[k]["n"] else "n/a"
+    def t0(k: str) -> str:
+        return f2(vb[k]["init_t"]) if k in vb and vb[k]["n"] else "n/a"
+
+    t0s = [v["init_t"] for k, v in vb.items() if v["n"] and (k in ("urd", "words", "words_inter", "slices", "hier", "words_partial",
+                                                                    "random", "urd_shuf") or k.endswith("_shuf"))]
+    t0lo, t0hi = f"{min(t0s):.1f}", f"{max(t0s):.1f}"
     bands = [vb[k]["wirelength"] for k in ("urd", "words", "words_inter", "slices", "hier", "words_partial",
-                                           "random", "urd_shuf") if k in vb and vb[k]["n"]]
+                                           "random", "urd_shuf", f"{best}_shuf" if best else "") if k in vb and vb[k]["n"]]
     if bands:
         s += f"""
 
@@ -347,13 +487,17 @@ Every soft arm of Table~\\ref{{tab:r2qor}}, bitwise or not, random start include
 {R['n_designs']} designs. The conclusions below are conclusions about differences inside that band."""
     s += f"""
 
-One confound the scale-1 comparison cannot remove: VPR derives its start temperature from the starting
+One confound the scale-1 comparison cannot remove: VPR derives its start temperature $T_0$ from the starting
 placement, so a start that is worse than the analytic one is annealed hotter and, in these runs, longer. The
 geomean start temperature relative to the baseline is {f2(vb['random']['init_t'])} for the random start,
 {f2(vb['urd']['init_t'])} for Urd and {f2(vb[best]['init_t']) if best else 'n/a'} for the best new family, and placement runtime moves with it
-(Table~\\ref{{tab:r2qor}}). The arms are therefore compared at VPR's own temperature, not at equal anneal effort, and
-the random start beating a connectivity-aware start would be a statement about the schedule as much as about the start;
-the effort curve (N3) is the experiment that separates them and stays open."""
+(Table~\\ref{{tab:r2qor}}). The arms are therefore compared at VPR's own temperature, not at equal anneal effort. The confound
+bears directly on four comparisons: H4 (random start, permuted and quotient layouts have $T_0$ of {t0('random')}, {t0('urd_shuf')} and {t0('urd')} times the baseline's, for Urd),
+H7a (\\code{{words}} {t0('words')} against Urd {t0('urd')}), H7b (\\code{{slices}} {t0('slices')} against \\code{{words}} {t0('words')}) and H7d
+(\\code{{words\\_partial}} {t0('words_partial')} against \\code{{words}} {t0('words')}; against the permuted Urd arm {t0('urd_shuf')}). The start temperatures
+of the arms differ by {t0lo} to {t0hi} times the baseline's, and the direction of the bias is unknown: a hotter
+start can erase more of the seed, or give the anneal more moves to repair a worse one. A random start beating a connectivity-aware start
+would be a statement about the schedule as much as about the start. The effort curve (N3) is the experiment that separates the two, and it stays open."""
     s += f"""
 
 On the coarse-versus-fine question that round one left open, the arms give these numbers: H4 is {h['H4']['status']}, with Urd at random {f3(h['H4']['urd']['random'])}, permuted
@@ -364,7 +508,7 @@ is {h['H1']['status']} as a rediscovery of the hierarchy by the NMI-and-compactn
 what a module or word seed would group. Whether the structure of the
 netlist predicts where a seed helps is H2, {h['H2']['status']}"""
     if h["H2"].get("n_neg"):
-        s += f""" (the one correlation that reaches $p<0.05$ is negative: {', '.join(GAIN[k.split('~')[0]] + ' vs ' + MEAS[k.split('~')[1]] for k in h['H2']['neg'])})"""
+        s += f""" (the one correlation that reaches $p<0.05$ is negative: {', '.join(GAIN[k.split('~')[0]] + ' vs ' + MEAS[k.split('~')[1]] for k in h['H2']['neg'])}{size_clause(R, h['H2']['neg'])})"""
     s += f""". All of this is $n=15$ designs, median {R['r1']['clb_median']:g} CLBs, one VPR
 seed per configuration; the seed-to-seed spread of VPR is not measured here, so differences of about a percent should not be read as effects."""
     return s
@@ -372,18 +516,46 @@ seed per configuration; the seed-to-seed spread of VPR is not measured here, so 
 
 def conclusion(R: dict) -> str:
     h = R["hyp"]
+    vb = R["vs_base"]
+    bands = [vb[k]["wirelength"] for k in ("urd", "words", "words_inter", "slices", "hier", "words_partial",
+                                           "random", "urd_shuf", f"{R['best']}_shuf" if R["best"] else "")
+             if k in vb and vb[k]["n"]]
     return (f"Round two adds bitwise seeds to the provenance hierarchy. At VPR's own start temperature the "
-            f"best of them, {code(R['best']) if R['best'] else 'n/a'}, is "
-            f"{f3(R['vs_base'][R['best']]['wirelength']) if R['best'] else 'n/a'} of the baseline's wirelength, "
-            f"the Urd hierarchy is {f3(R['vs_base']['urd']['wirelength'])}, and the question that made the idea "
-            f"worth testing, bit-level structure against module structure, comes out "
+            f"best of the four new families, {code(R['best']) if R['best'] else 'n/a'}, is "
+            f"{f3(vb[R['best']]['wirelength']) if R['best'] else 'n/a'} of the baseline's wirelength; that is a figure "
+            f"selected as the best of four on the data it is reported on, it sits inside the "
+            f"{f3(min(bands))} to {f3(max(bands))} band that every soft arm falls in, and it is not an effect. "
+            f"The question that made the idea worth testing, bit-level structure against module structure, comes out "
             f"{h['H7a']['status']} (H7a) and {h['H7c']['status']} (H7c) on these designs.")
+
+
+def partial_table(R: dict) -> str:
+    pt = R.get("partial")
+    if not pt:
+        return ""
+    rows = "\n".join(f"{design_tex(x['design'])} & {x['placed_blocks']} & {x['logic_memory_clbs']} & {x['seeded']} & "
+                      f"{x['moved_words_partial']} & {x['moved_words']} \\\\" for x in pt)
+    return f"""\\begin{{table}}[t]
+\\caption{{How much of each design the \\code{{words\\_partial}} seed places. Logic and memory CLBs only (pads and multipliers are
+anchored in every arm); Seeded = CLBs in a word cluster that VPR's initial placement is given a slot for; Moved = CLBs whose seeded
+position differs from VPR's analytic start, for \\code{{words\\_partial}} and for the full \\code{{words}} seed.}}
+\\label{{tab:r2partial}}
+\\centering
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
+\\begin{{tabular}}{{lccccc}}
+\\toprule
+Design & Placed blocks & Logic+mem. & Seeded & Moved (partial) & Moved (words) \\\\
+\\midrule
+{rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+"""
 
 
 def appendix(R: dict) -> str:
     h = R["hyp"]
-    vb = R["vs_base"]
-    best = R["best"]
+
     def row(rq, hyp, rnd, status, num):
         return f"{rq} & {hyp} & {rnd} & {status} & {num} \\\\"
     rows = [
@@ -444,14 +616,18 @@ of the LUTs get a word.
 {h['H7c']['status']} for H7c, {h['H7d']['status']} for H7d, {h['H4']['status']} for H4"""+(f""", {h['H1']['status']} for H1 and {h['H2']['status']} for H2""" if 'n1' in R and 'n2' in R else "")+f""";
 the numbers are in Table~\\ref{{tab:r2log}} and Section~\\ref{{sec:r2-results}}.
 
-\\paragraph{{2026-10-24, rules changed after the data, and reverted.}} Two decision rules were touched after the
-results were visible. (1) H2: the rule fixed in the methodology text was ``not supported if no correlation reaches
+\\paragraph{{2026-10-24, rules changed after the data.}} Two decision rules were touched after the
+results were visible, and one count was corrected. (1) H2: the rule fixed in the methodology text was ``not supported if no correlation reaches
 $p<0.05$''. When the full data showed one significant correlation, a negative one (best new-family gain against $z(Q)$,
-$\\rho=-0.59$, $p=0.021$), the rule was briefly changed to count only positive correlations, which turned the status into
-not supported. That change is reverted: under the rule as first written the status is {h['H2']['status']}.
+$\\rho=-0.59$, $p=0.021$ with the null of the first run), the rule was briefly changed to count only positive correlations, which turned the status into
+not supported. That change is reverted: under the rule as first written the status is {h['H2']['status']}. The null was then recomputed without
+the cap on edge swaps (RQ-N2) and the correlation is $\\rho={R['n2']['spearman']['best_r2~q_z']['rho']:.2f}$, $p={pfmt(R['n2']['spearman']['best_r2~q_z']['p'])}$.
 (2) H7d: the first rule called ``at least as good'' supported at a geomean ratio of 1 or below, with no test and no margin,
 and so called H7d supported at {f3(h['H7d']['gm'])} (better on {h['H7d']['wins']} of {h['H7d']['n']}, $p={pfmt(h['H7d']['p'])}$). A geomean near
 1 with a non-significant sign test is no evidence either way, so the status is {h['H7d']['status']} (``no evidence of a difference'').
+(3) H1: the count of designs above the null in compactness was first divided by the number of designs scored on NMI; it now has its own
+denominator, and the module row no longer counts the designs with fewer than two real modules (13 designs became {R['n1']['module']['n']}). The status of H1 did
+not change.
 
 \\paragraph{{Still open.}} N3 (effort curve: how the result changes with the anneal budget, e.g. inner\\_num);
 N5 (size: designs of 1000 CLBs and up, where a seed has more to say); N6 (region looseness: constraint
@@ -462,6 +638,7 @@ margin is to be fixed, together with every other decision rule, in a commit befo
 run-to-run spread that several VPR seeds per configuration will measure. No margin is proposed from the present
 single-seed data.
 
+{partial_table(R)}
 \\begin{{table}}[t]
 \\caption{{Research questions and hypotheses of the study with status and the deciding number.}}
 \\label{{tab:r2log}}

@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 import sys
-from pathlib import Path
 
 import nornlib as nl
 
@@ -232,7 +231,7 @@ def round2_section() -> list[str]:
                             for k, c in v.items() if isinstance(c, dict))
         elif key == "H1":
             num = "; ".join(f"{lab}: {a['above_null']}/{a['n_z']} NMI, {a['dens_above_null']}/"
-                            f"{a['n_z']} compactness above null+2sd"
+                            f"{a['dens_n_z']} compactness above null+2sd"
                             for lab, a in R["n1"].items())
         else:
             num = (f"{v['n_pos']} positive and {v['n_neg']} negative of {v['n_pairs']} correlations "
@@ -242,7 +241,7 @@ def round2_section() -> list[str]:
     out += ["", "Word membership (Odin III bus names and spans joined by net id): "
             f"{c['in_word']}/{c['blocks']} blocks in a word; flip-flops {c['ff_word']}/{c['ff_total']}, "
             f"LUTs {c['lut_word']}/{c['lut_total']}, hard cells {c['hard_word']}/{c['hard_total']}; "
-            f"{c['unjoined']} Odin cells found no BLIF block; the rerun BLIF equals the kept one "
+            f"{c['unjoined']} of {c['odin_cells']} Odin cells found no BLIF block; the rerun BLIF equals the kept one "
             f"on all designs: {c['identical']}.", "",
             "| design | blocks | in a word | words | words >= 2 | largest (module,file:line) group |",
             "|---|---|---|---|---|---|"]
@@ -331,6 +330,12 @@ def write(designs: list[str]) -> None:
             "inverse Rent exponent is -p; (9) the random null of N1 permutes logic-CLB "
             "coordinates (20 samples); (10) hypothesis statuses follow the decision rules in "
             "the paper's methodology section.",
+            "* Regenerating round two: `scripts/build_words.py`, `scripts/build_word_seeds.py`, "
+            "`scripts/round2.py` (VPR; `soft`, then `freeze`, then `chunk stage2`) and "
+            "`scripts/structure.py all|graph|partial` need the local `runs/` tree; then "
+            "`scripts/report.py` (this file), `scripts/fill_paper.py`, "
+            "`scripts/write_paper_prose.py` and `scripts/write_round2.py` regenerate every "
+            "document from the committed `data/` alone.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
             "sweep (extended by doubling while the control still wins, to the same 256 cap).", ""]

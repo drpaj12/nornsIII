@@ -19,7 +19,8 @@ match), and reads the records Loki~III's labeller reads: the HDL name \code{bus[
 cell's output net and the source spans of each cell, matched to the word-level cells that
 exist before technology mapping. A final cell joins its BLIF block through the net id the BLIF
 name carries (\code{\$n<id>}), so the join is by identifier, not by string
-(1204 of 106793 cells, 1.1\%, found no BLIF block and are left unlabelled;
+(1204 of the 106262 Odin~III final cells, 1.1\%, found no BLIF block and are left unlabelled,
+from none to 22.2\% per design, the worst being \code{mkDelayWorker32B} with 942 of 4235;
 the writer legalises dotted names, handled explicitly). A block's word is the first rule
 that applies: (bus) an output net named \code{bus[i]} puts it in word \code{bus} at bit $i$,
 which holds for every flip-flop that keeps a register name; (cell) exactly one word-level cell's
@@ -54,14 +55,19 @@ Urd, and the \code{*\_shuf} twin of the best new family).
 \paragraph{Structure analyses (no VPR runs).}
 RQ-N1 measures, on each design's unseeded baseline, how module- and word-coherent three
 placements are: VPR's analytic start, its final placement, and a random null (logic-CLB
-coordinates permuted, 20 samples). Coherence is the NMI between a $g\times g$ grid partition
-($g=\lceil\sqrt{\#\text{labels}}\rceil$) and the labels, and the compactness
-(label CLBs per grid tile of the label's bounding box, CLB-weighted). RQ-N2 correlates the seed
+coordinates permuted, 20 samples). A logic CLB carries the plurality label of its atoms (module: the Urd module; word:
+the word with most atoms in the CLB; a CLB without one is unlabelled). Coherence is the NMI between a $g\times g$ grid partition
+of the labelled CLBs ($g=\max(2,\lceil\sqrt{\#\text{labels}}\rceil)$, the grid spanning the labelled CLBs' bounding box) and the labels. The compactness is a
+separate metric that does not use the grid: the CLB-weighted mean over labels with at least two CLBs of the label's CLBs divided
+by the area, in tiles, of the label's bounding box. A labelling is scored only with at least four labelled CLBs and two labels, and a design
+is counted against the null only when the null's standard deviation is positive (counted separately for the two metrics). A design with
+fewer than two real Urd modules (\code{diffeq1} and \code{diffeq2}, which have one module plus the artificial flat group, and \code{sha} and \code{stereovision3}, which have none)
+has no module row. Label sets with fewer than 20 labelled CLBs are flagged in the results. RQ-N2 correlates the seed
 gain with three structure measures of the netlist graph: Louvain modularity $Q$; the $z$-score of
-$Q$ against a degree-preserving null (double edge swaps, 20 samples); and the inverse Rent
+$Q$ against a degree-preserving null (double edge swaps, 10 per edge, 20 samples); and the inverse Rent
 exponent $-p$, with $p$ fitted from the terminals of BFS balls of geometric sizes (a lower
 exponent is a more local design). Spearman's $\rho$ and $p$-value are reported with $n=15$,
-which is small.
+which is small, and again as partial correlations with the edge count regressed out, because graph size drives both $z(Q)$ and the gain.
 
 \paragraph{Hypotheses and decision rules.}
 Paired comparisons are per design (variant over reference), reported as a geomean ratio, the number of
@@ -73,8 +79,18 @@ H7c: \code{hier} has the lowest geomean wirelength of all eleven soft families. 
 is better than the full word seed (supported if the geomean ratio is below 1 and the wirelength sign test has $p<0.05$, not supported
 if it is above 1 with $p<0.05$, else inconclusive; no equivalence margin was fixed, so ``at least as good'' is not testable here).
 H1: the baseline's final placement is module- and word-coherent (supported if, for both labellings,
-at least two thirds of the designs lie more than two null standard deviations above the null in both
-NMI and compactness). H2: structure predicts gain (supported if at least two of the three
+at least two thirds of the designs lie more than two null standard deviations above the null in NMI and at least two thirds in
+compactness, the two counted separately; not supported if fewer than a third do for both labellings and both metrics). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
 correlation of either sign reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.
+
+\paragraph{Which rules predate the data.}
+These rules were not registered anywhere outside the repository, so their order is stated from the commit times of
+that repository. The decision-rule code for H7a to H7d and H4 was committed at 15:21 on 2026-10-24 and H1's rule (with the compactness
+criterion) at 15:24, before the first round-two VPR data (15:38). Some of those rules were later found weak and
+changed; the appendix lists the changes. After the first data: tie handling in the sign tests (ties left out) came with the first data
+commit; the methodology text that states the rules was written at 17:31, after nine designs; the best family was frozen at
+13 designs after their results were seen (so the hard, crossover and permuted arms of the best family use a choice made
+on data); the H2 rule was briefly changed and reverted, and the H7d rule was replaced after review. The next round fixes every decision rule, and the equivalence margin of
+H7d, in a commit before any run.

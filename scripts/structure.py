@@ -15,15 +15,18 @@ N2  Does a design's structure predict the seed gain? Per design, on the netlist 
     per-design gain 1 - wirelength ratio of the Urd full seed (round 1), of the best round-1
     family, and of the best round-2 word family.
 
-Usage: python scripts/structure.py n1|graph|n2|all [design ...]
-(graph caches the per-design graph statistics; n2 adds the gains and the Spearman table)
-Writes data/analysis/n1.json and data/analysis/n2.json.
+Also (no VPR run): how much of each design the words_partial seed actually places, from the
+committed-by-script seed files (mode `partial`).
+
+Usage: python scripts/structure.py n1|graph|n2|partial|all [design ...]
+(graph caches the per-design graph statistics; n2 adds the gains and the Spearman table;
+partial writes data/analysis/partial.json; `all` is n1 + n2)
+Writes data/analysis/n1.json, n2.json, n2_graph.json and partial.json.
 """
 
 from __future__ import annotations
 
 import collections
-import json
 import math
 import random
 import statistics
@@ -32,6 +35,7 @@ import sys
 import nornlib as nl
 
 NULL_SAMPLES = 20
+SWAPS_PER_EDGE = 10  # double edge swaps per edge for the null graph (no cap since round-2 review)
 
 
 def labels_of(design: str):
@@ -40,6 +44,10 @@ def labels_of(design: str):
     blif, flat, blocks, place, chains, clb_class, clb_atoms, _slots = bws.prepare(design)
     urd = bs.block_clusters(design, blocks)["urd"]
     mod = bws.majority(place, clb_atoms, urd)
+    # a design with fewer than two real modules (diffeq1/2: one module plus the artificial flat
+    # group; sha, stereovision3: no module at all) has no module structure to rediscover
+    if len({str(b["module"]) for b in blocks if b["module"]}) < 2:
+        mod = {name: None for name in mod}
     members_path = nl.runs_dir(design, "words", "members.json")
     members = nl.read_json(members_path)
     ids = sorted({m["word"] for m in members.values() if m["word"]})
@@ -190,13 +198,13 @@ def n2_design(design: str) -> dict[str, object]:
     nulls = []
     for i in range(NULL_SAMPLES):
         h = graph.copy()
-        nswap = min(10 * h.number_of_edges(), 200000)
+        nswap = SWAPS_PER_EDGE * h.number_of_edges()
         nx.double_edge_swap(h, nswap=nswap, max_tries=nswap * 20, seed=100 + i)
         nulls.append(modularity(h, seed=1))
     mean, sd = statistics.mean(nulls), statistics.pstdev(nulls)
     p, npts = rent_exponent(graph)
     return {"design": design, "nodes": graph.number_of_nodes(),
-            "edges": graph.number_of_edges(), "q": q, "null_q_mean": mean, "null_q_sd": sd,
+            "edges": graph.number_of_edges(), "swaps_per_edge": SWAPS_PER_EDGE, "q": q, "null_q_mean": mean, "null_q_sd": sd,
             "q_z": (q - mean) / sd if sd > 0 else float("nan"), "rent_p": p,
             "rent_points": npts}
 
@@ -240,15 +248,70 @@ def n2(designs: list[str]) -> None:
         row["gain"] = gains(d)
         rows.append(row)
     corr = {}
+    partial = {}
+    vs_edges = {}
     for gname in ("urd", "best_r1", "best_r2"):
         for pname, sign in (("q", 1), ("q_z", 1), ("rent_p", -1)):
-            pairs = [(sign * r[pname], r["gain"][gname]) for r in rows
+            pairs = [(sign * r[pname], r["gain"][gname], r["edges"]) for r in rows
                      if r["gain"][gname] is not None and not math.isnan(r[pname])]
             if len(pairs) >= 5:
-                rho, p = stats.spearmanr([a for a, _ in pairs], [b for _, b in pairs])
+                rho, p = stats.spearmanr([a for a, _, _ in pairs], [b for _, b, _ in pairs])
                 corr[f"{gname}~{pname}"] = {"rho": float(rho), "p": float(p), "n": len(pairs)}
+                if len(pairs) >= 6:
+                    partial[f"{gname}~{pname}"] = partial_spearman(
+                        [a for a, _, _ in pairs], [b for _, b, _ in pairs], [c for _, _, c in pairs])
+    # the structure measures and the gains against the graph size itself
+    for name, vals in (*(( pn, [sg * r[pn] for r in rows]) for pn, sg in
+                         (("q", 1), ("q_z", 1), ("rent_p", -1))),
+                       *((f"gain_{g}", [r["gain"][g] for r in rows])
+                         for g in ("urd", "best_r1", "best_r2"))):
+        pairs = [(v, r["edges"]) for v, r in zip(vals, rows)
+                 if v is not None and not math.isnan(v)]
+        rho, p = stats.spearmanr([a for a, _ in pairs], [b for _, b in pairs])
+        vs_edges[name] = {"rho": float(rho), "p": float(p), "n": len(pairs)}
     nl.write_json(nl.DATA / "analysis" / "n2.json",
-                  {"samples": NULL_SAMPLES, "designs": rows, "spearman": corr})
+                  {"samples": NULL_SAMPLES, "swaps_per_edge": SWAPS_PER_EDGE, "designs": rows,
+                   "spearman": corr, "partial_edges": partial, "vs_edges": vs_edges})
+
+
+def partial_spearman(x, y, z) -> dict[str, float]:
+    """Spearman correlation of x and y with the rank of z (graph size) regressed out of both."""
+    import numpy as np
+    from scipy import stats
+    rx, ry, rz = (stats.rankdata(v) for v in (x, y, z))
+    n = len(rx)
+    design = np.column_stack([np.ones(n), rz])
+
+    def resid(v):
+        beta, *_ = np.linalg.lstsq(design, v, rcond=None)
+        return v - design @ beta
+
+    r = float(np.corrcoef(resid(rx), resid(ry))[0, 1])
+    t = r * math.sqrt((n - 3) / max(1e-12, 1 - r * r))
+    return {"rho": r, "p": float(2 * stats.t.sf(abs(t), n - 3)), "n": n}
+
+
+def partial_fraction(designs: list[str]) -> None:
+    """Share of the logic and memory CLBs that the words_partial seed places (the rest keeps
+    VPR's analytic position), from runs/<design>/seeds. `moved` = seed position differs from the
+    analytic one; the full word seed's `moved` is given for comparison. Pads and multipliers are
+    anchored in every arm and are not counted."""
+    import build_word_seeds as bws
+    rows = []
+    for d in designs:
+        clusters = nl.read_json(nl.runs_dir(d, "seeds", "clusters.json"))["seeds"]
+        _blif, _flat, _blocks, place, _chains, clb_class, _atoms, _slots = bws.prepare(d)
+        base = place.coords()
+        lm = [n for n in base if clb_class.get(n) in ("logic", "memory")]
+        row: dict[str, object] = {"design": d, "logic_memory_clbs": len(lm),
+                                  "placed_blocks": len(base),
+                                  "seeded": sum(clusters["words_partial"]["clb_counts"].values())}
+        for fam in ("words_partial", "words"):
+            seed = nl.Place(nl.runs_dir(d, "seeds", f"{fam}-full.place")).coords()
+            row[f"moved_{fam}"] = sum(1 for n in lm if seed.get(n) != base[n])
+        rows.append(row)
+        print(d, row)
+    nl.write_json(nl.DATA / "analysis" / "partial.json", {"designs": rows})
 
 
 def main(argv: list[str]) -> int:
@@ -258,6 +321,8 @@ def main(argv: list[str]) -> int:
         n1(designs)
     if mode == "graph":
         graph_stats(designs)
+    if mode == "partial":
+        partial_fraction(designs)
     if mode in ("n2", "all"):
         n2(designs)
     return 0

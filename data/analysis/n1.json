@@ -48,8 +48,8 @@
      NaN,
      NaN
     ],
-    "labelled_clbs": 15,
-    "labels": 1,
+    "labelled_clbs": 0,
+    "labels": 0,
     "null_density_mean": NaN,
     "null_density_sd": NaN,
     "null_nmi_mean": NaN,
@@ -77,19 +77,19 @@
    "logic_clbs": 22,
    "module": {
     "final": [
-     0.056194923657812985,
-     0.220090515545061
+     NaN,
+     NaN
     ],
     "initial": [
-     0.10839534208917931,
-     0.5192099567099567
+     NaN,
+     NaN
     ],
-    "labelled_clbs": 22,
-    "labels": 2,
-    "null_density_mean": 0.5025730519480519,
-    "null_density_sd": 0.025616453750628737,
-    "null_nmi_mean": 0.09621647038482477,
-    "null_nmi_sd": 0.059641489433416184
+    "labelled_clbs": 0,
+    "labels": 0,
+    "null_density_mean": NaN,
+    "null_density_sd": NaN,
+    "null_nmi_mean": NaN,
+    "null_nmi_sd": NaN
    },
    "word": {
     "final": [
@@ -113,19 +113,19 @@
    "logic_clbs": 37,
    "module": {
     "final": [
-     0.03928865941303697,
-     0.3060372060372061
+     NaN,
+     NaN
     ],
     "initial": [
-     0.16620911639054095,
-     0.3111861861861862
+     NaN,
+     NaN
     ],
-    "labelled_clbs": 37,
-    "labels": 2,
-    "null_density_mean": 0.33213495963495965,
-    "null_density_sd": 0.01903888673946492,
-    "null_nmi_mean": 0.045584711870490444,
-    "null_nmi_sd": 0.03965498206840105
+    "labelled_clbs": 0,
+    "labels": 0,
+    "null_density_mean": NaN,
+    "null_density_sd": NaN,
+    "null_nmi_mean": NaN,
+    "null_nmi_sd": NaN
    },
    "word": {
     "final": [
@@ -228,8 +228,8 @@
      NaN,
      NaN
     ],
-    "labelled_clbs": 142,
-    "labels": 1,
+    "labelled_clbs": 0,
+    "labels": 0,
     "null_density_mean": NaN,
     "null_density_sd": NaN,
     "null_nmi_mean": NaN,

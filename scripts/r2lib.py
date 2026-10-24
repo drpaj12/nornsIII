@@ -19,6 +19,9 @@ NEW = r2_best.NEW
 ROUND1 = report.FAMILIES
 
 
+TINY_LABELLED = 20  # fewer labelled logic CLBs than this: the NMI and compactness are not informative
+
+
 def rec(data, design, fam, var="full"):
     return report.pick(data[design], "soft", fam, var)
 
@@ -105,7 +108,6 @@ def compute() -> dict:
         out["vs_base"][f"{best}_shuf"] = vs_base(data, designs, f"{best}_shuf")
     cov = coverage(designs)
     out["coverage"] = cov
-    tot = sum(c["blocks"] for c in cov) or 1
     out["coverage_all"] = {
         "blocks": sum(c["blocks"] for c in cov),
         "in_word": sum(c["blocks_in_word"] for c in cov),
@@ -118,6 +120,11 @@ def compute() -> dict:
         "median_share": statistics.median([c["blocks_in_word"] / c["blocks"] for c in cov]) if cov else None,
         "identical": all(c["blif_identical"] for c in cov) if cov else None,
         "unjoined": sum(c["unjoined_cells"] for c in cov),
+        "odin_cells": sum(c["final_cells"] + c["unjoined_cells"] for c in cov),
+        "unjoined_worst": max(({"design": c["design"], "n": c["unjoined_cells"],
+                                "of": c["final_cells"] + c["unjoined_cells"],
+                                "share": c["unjoined_cells"] / (c["final_cells"] + c["unjoined_cells"])}
+                               for c in cov), key=lambda x: x["share"]) if cov else None,
         "words": sum(c["words"] for c in cov),
         "max_line_group": [max(c["line_groups_largest"][0] for c in cov)] if cov else None,
         "lines": sum(c.get("statement_lines", 0) for c in cov),
@@ -201,14 +208,18 @@ def compute() -> dict:
                 "dens_initial": statistics.median([r["initial"][1] for r in rows]) if rows else None,
                 "dens_null": statistics.median([r["null_density_mean"] for r in rows]) if rows else None,
                 "above_null": sum(1 for x in z if x > 2), "n_z": len(z),
+                "dens_n_z": sum(1 for r in rows if r["null_density_sd"] > 0),
                 "dens_above_null": sum(1 for r in rows if r["null_density_sd"] > 0 and
                                        (r["final"][1] - r["null_density_mean"])
                                        / r["null_density_sd"] > 2),
+                "tiny": [d["design"] for d in n1["designs"]
+                         if 0 < d[lab]["labelled_clbs"] < TINY_LABELLED],
                 "final_ge_initial": sum(1 for r in rows if r["final"][0] >= r["initial"][0]),
             }
         out["n1"] = agg
         def share(a, key):
-            return a[key] / a["n_z"] if a["n_z"] else 0.0
+            n_ = a["dens_n_z"] if key == "dens_above_null" else a["n_z"]
+            return a[key] / n_ if n_ else 0.0
         ok = all(share(a, "above_null") >= 2 / 3 and share(a, "dens_above_null") >= 2 / 3
                  for a in agg.values())
         none = all(share(a, "above_null") < 1 / 3 and share(a, "dens_above_null") < 1 / 3
@@ -247,17 +258,36 @@ def compute() -> dict:
             r = latest.get(f"hard-{best}")
             if r is not None and r.get("rc") != 0:
                 failed.append(d)
+        # Urd's hard arm (round one) over the same designs the best family's hard arm survived on
+        uv = []
+        for d in designs:
+            if d in failed:
+                continue
+            r = report.ratio(report.pick(data[d], "hard", "urd"), report.pick(data[d], "baseline"),
+                             "wirelength")
+            if r is not None:
+                uv.append(r)
         out["hard_best"] = {"n": len(hv), "gm": nl.geomean(hv) if hv else float("nan"),
-                            "wins": sum(1 for v in hv if v < 1), "failed": failed}
+                            "wins": sum(1 for v in hv if v < 1), "failed": failed,
+                            "urd_n": len(uv), "urd_gm": nl.geomean(uv) if uv else float("nan"),
+                            "urd_wins": sum(1 for v in uv if v < 1)}
         xs, r1s, rets, hotw, hotn = [], [], [], 0, 0
+        nowin: dict[str, float] = {}  # designs with no winning scale: name -> round one's scale
+        all_x, all_r1 = [], []
         for d in designs:
             p = nl.data_crossover(d, f"xover-{best}.json")
             q = nl.data_crossover(d, "crossover.json")
             if not (p.is_file() and q.is_file()):
                 continue
             res, r1 = nl.read_json(p), nl.read_json(q)
-            if res.get("crossover_scale") is None or r1.get("crossover_scale") is None:
+            if r1.get("crossover_scale") is None:
                 continue
+            all_r1.append(float(r1["crossover_scale"]))
+            if res.get("crossover_scale") is None:
+                nowin[d] = float(r1["crossover_scale"])
+                all_x.append(0.0)  # below the lowest scale tried
+                continue
+            all_x.append(float(res["crossover_scale"]))
             xs.append(float(res["crossover_scale"]))
             r1s.append(float(r1["crossover_scale"]))
             hs = float(res["crossover_scale"]) * 2
@@ -268,11 +298,21 @@ def compute() -> dict:
             if hot and un and hot.get("wirelength") and un.get("wirelength"):
                 hotn += 1
                 hotw += 1 if float(hot["wirelength"]) < float(un["wirelength"]) else 0
-        out["xover"] = {"n": len(xs), "median": statistics.median(xs) if xs else None,
+        ge = sum(1 for a, b in zip(xs, r1s) if a >= b)
+        out["xover"] = {"n": len(xs), "n_all": len(xs) + len(nowin), "nowin": nowin,
+                        "median": statistics.median(xs) if xs else None,
                         "r1_median": statistics.median(r1s) if r1s else None,
-                        "ge_r1": sum(1 for a, b in zip(xs, r1s) if a >= b),
+                        "ge_r1": ge,
+                        "median_all": statistics.median(all_x) if all_x else None,
+                        "r1_median_all": statistics.median(all_r1) if all_r1 else None,
                         "hot_ret_median": statistics.median(rets) if rets else None,
                         "hot_wins": [hotw, hotn]}
+    ap = nl.DATA / "analysis" / "seed_audit.json"
+    if ap.is_file():
+        out["audit"] = nl.read_json(ap)["designs"]
+    pp = nl.DATA / "analysis" / "partial.json"
+    if pp.is_file():
+        out["partial"] = nl.read_json(pp)["designs"]
     return out
 
 

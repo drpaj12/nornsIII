@@ -1,0 +1,109 @@
+{
+ "designs": {
+  "blob_merge": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "boundtop": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "ch_intrinsics": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "diffeq1": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "diffeq2": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "mkDelayWorker32B": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": true,
+   "identical_to_runs": true,
+   "slices_equals_words": true
+  },
+  "mkPktMerge": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "mkSMAdapter4B": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "or1200": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "raygentop": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "sha": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "stereovision0": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "stereovision1": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "stereovision2": {
+   "fallback_changes_slices": true,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  },
+  "stereovision3": {
+   "fallback_changes_slices": false,
+   "files": 35,
+   "hier_equals_urd": false,
+   "identical_to_runs": true,
+   "slices_equals_words": false
+  }
+ }
+}

@@ -224,10 +224,10 @@ Best new family: words_partial.
 | H7c | not supported | hier rank 8/11 (1.014); best words_partial |
 | H7d | inconclusive | geomean 0.980, better on 9/15, p=0.607 |
 | H4 | not supported | urd: random 0.997 > permuted 1.020 > quotient 1.029; best: random 0.997 > permuted 0.980 > quotient 0.994 |
-| H1 | inconclusive | module: 8/13 NMI, 10/13 compactness above null+2sd; word: 9/15 NMI, 14/15 compactness above null+2sd |
+| H1 | inconclusive | module: 8/11 NMI, 10/11 compactness above null+2sd; word: 9/15 NMI, 14/15 compactness above null+2sd |
 | H2 | inconclusive | 0 positive and 1 negative of 9 correlations at p<0.05 (n=15) |
 
-Word membership (Odin III bus names and spans joined by net id): 86043/106793 blocks in a word; flip-flops 41962/41962, LUTs 18402/37244, hard cells 25679/25852; 1204 Odin cells found no BLIF block; the rerun BLIF equals the kept one on all designs: True.
+Word membership (Odin III bus names and spans joined by net id): 86043/106793 blocks in a word; flip-flops 41962/41962, LUTs 18402/37244, hard cells 25679/25852; 1204 of 106262 Odin cells found no BLIF block; the rerun BLIF equals the kept one on all designs: True.
 
 | design | blocks | in a word | words | words >= 2 | largest (module,file:line) group |
 |---|---|---|---|---|---|
@@ -251,7 +251,7 @@ N1 medians over designs (NMI / compactness): analytic start, VPR final, random n
 
 | labels | n | NMI start | NMI final | NMI null | comp start | comp final | comp null |
 |---|---|---|---|---|---|---|---|
-| module | 13 | 0.249 | 0.228 | 0.096 | 0.281 | 0.255 | 0.096 |
+| module | 11 | 0.265 | 0.309 | 0.119 | 0.201 | 0.255 | 0.092 |
 | word | 15 | 0.725 | 0.732 | 0.658 | 0.327 | 0.318 | 0.084 |
 
 N2 Spearman rho (p, n) between structure and gain (1 - wirelength ratio).
@@ -259,13 +259,13 @@ N2 Spearman rho (p, n) between structure and gain (1 - wirelength ratio).
 | pair | rho | p | n |
 |---|---|---|---|
 | best_r1~q | -0.093 | 0.742 | 15 |
-| best_r1~q_z | -0.239 | 0.390 | 15 |
+| best_r1~q_z | -0.229 | 0.413 | 15 |
 | best_r1~rent_p | -0.164 | 0.558 | 15 |
 | best_r2~q | -0.357 | 0.191 | 15 |
-| best_r2~q_z | -0.589 | 0.021 | 15 |
+| best_r2~q_z | -0.582 | 0.023 | 15 |
 | best_r2~rent_p | 0.129 | 0.648 | 15 |
 | urd~q | -0.175 | 0.533 | 15 |
-| urd~q_z | -0.454 | 0.089 | 15 |
+| urd~q_z | -0.443 | 0.098 | 15 |
 | urd~rent_p | 0.125 | 0.657 | 15 |
 
 Crossover of the best new family: median scale 16 vs round one 16 (n=13); retention at 2S median 0.20; wins vs unseeded at 2S 5/13.
@@ -290,5 +290,6 @@ Crossover of the best new family: median scale 16 vs round one 16 (n=13); retent
 * The crossover and checkpointing sweep results are kept in `data/<design>/crossover/`; the generators read only these committed copies (the run logs and placements under `runs/` are local).
 * Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm constrains regions only, so it has no full/inter split. (3) Pad CLBs and mult_36 macros stay anchored; adder carry chains move as a vertical run. (4) One VPR run per configuration at `--seed 1` (deterministic). (5) Urd has one cluster only on sha and stereovision3; diffeq1 and diffeq2 (one module each) get two Urd clusters (the module and a flat group), and the other designs get one cluster per populated module (3 to 23).
 * Round 2 agent defaults: (6) word membership comes from Odin III bus names and spans joined to the BLIF by net id (the BLIF line is a statement, too coarse); (7) a CLB joins a word cluster when >= 1/3 of its atoms are word atoms, else it keeps its Urd module cluster; (8) the Rent exponent is fitted on BFS balls, the inverse Rent exponent is -p; (9) the random null of N1 permutes logic-CLB coordinates (20 samples); (10) hypothesis statuses follow the decision rules in the paper's methodology section.
+* Regenerating round two: `scripts/build_words.py`, `scripts/build_word_seeds.py`, `scripts/round2.py` (VPR; `soft`, then `freeze`, then `chunk stage2`) and `scripts/structure.py all|graph|partial` need the local `runs/` tree; then `scripts/report.py` (this file), `scripts/fill_paper.py`, `scripts/write_paper_prose.py` and `scripts/write_round2.py` regenerate every document from the committed `data/` alone.
 * VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a patch; the on arm is the main matrix, the off arm repeats the cold-start scale sweep (extended by doubling while the control still wins, to the same 256 cap).
 

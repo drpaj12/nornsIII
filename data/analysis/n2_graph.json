@@ -3,12 +3,13 @@
   "design": "blob_merge",
   "edges": 23130,
   "nodes": 10366,
-  "null_q_mean": 0.4888070199565642,
-  "null_q_sd": 0.00138237993204182,
+  "null_q_mean": 0.48984671308375805,
+  "null_q_sd": 0.0017046646179587025,
   "q": 0.7088230623392398,
-  "q_z": 159.15743370037546,
+  "q_z": 128.4571445600255,
   "rent_p": 0.8035439162928537,
-  "rent_points": 14
+  "rent_points": 14,
+  "swaps_per_edge": 10
  },
  "boundtop": {
   "design": "boundtop",
@@ -19,7 +20,8 @@
   "q": 0.7065488728572715,
   "q_z": 73.96914033156932,
   "rent_p": 0.35971771148767545,
-  "rent_points": 10
+  "rent_points": 10,
+  "swaps_per_edge": 10
  },
  "ch_intrinsics": {
   "design": "ch_intrinsics",
@@ -30,7 +32,8 @@
   "q": 0.7221931708971677,
   "q_z": 11.549197961701449,
   "rent_p": 0.2056586571167306,
-  "rent_points": 6
+  "rent_points": 6,
+  "swaps_per_edge": 10
  },
  "diffeq1": {
   "design": "diffeq1",
@@ -41,7 +44,8 @@
   "q": 0.5836127164645585,
   "q_z": 10.890403385646362,
   "rent_p": 0.3811249846063601,
-  "rent_points": 8
+  "rent_points": 8,
+  "swaps_per_edge": 10
  },
  "diffeq2": {
   "design": "diffeq2",
@@ -52,18 +56,20 @@
   "q": 0.6629799267496616,
   "q_z": 16.336505854251847,
   "rent_p": 0.2920243302033738,
-  "rent_points": 8
+  "rent_points": 8,
+  "swaps_per_edge": 10
  },
  "mkDelayWorker32B": {
   "design": "mkDelayWorker32B",
   "edges": 20450,
   "nodes": 3960,
-  "null_q_mean": 0.22965702524494713,
-  "null_q_sd": 0.0008887648708938107,
+  "null_q_mean": 0.22967723590844147,
+  "null_q_sd": 0.0008590397210857449,
   "q": 0.8145912614104411,
-  "q_z": 658.1428399361001,
+  "q_z": 680.8928750846628,
   "rent_p": 0.12884904281108006,
-  "rent_points": 12
+  "rent_points": 12,
+  "swaps_per_edge": 10
  },
  "mkPktMerge": {
   "design": "mkPktMerge",
@@ -74,7 +80,8 @@
   "q": 0.24619214770387363,
   "q_z": -34.453270655241546,
   "rent_p": 0.14272581001573806,
-  "rent_points": 9
+  "rent_points": 9,
+  "swaps_per_edge": 10
  },
  "mkSMAdapter4B": {
   "design": "mkSMAdapter4B",
@@ -85,7 +92,8 @@
   "q": 0.7697807732300933,
   "q_z": 159.60671632198637,
   "rent_p": 0.6389355276625022,
-  "rent_points": 11
+  "rent_points": 11,
+  "swaps_per_edge": 10
  },
  "or1200": {
   "design": "or1200",
@@ -96,7 +104,8 @@
   "q": 0.7255822833838859,
   "q_z": 177.608794097115,
   "rent_p": 0.6922933370085969,
-  "rent_points": 12
+  "rent_points": 12,
+  "swaps_per_edge": 10
  },
  "raygentop": {
   "design": "raygentop",
@@ -107,7 +116,8 @@
   "q": 0.7759761195056977,
   "q_z": 164.5674817263191,
   "rent_p": 0.5371071041530455,
-  "rent_points": 11
+  "rent_points": 11,
+  "swaps_per_edge": 10
  },
  "sha": {
   "design": "sha",
@@ -118,40 +128,44 @@
   "q": 0.5691966370469378,
   "q_z": 91.03710194587319,
   "rent_p": 0.4265501361307204,
-  "rent_points": 11
+  "rent_points": 11,
+  "swaps_per_edge": 10
  },
  "stereovision0": {
   "design": "stereovision0",
   "edges": 31922,
   "nodes": 21071,
-  "null_q_mean": 0.6715893678217307,
-  "null_q_sd": 0.0006707200859414323,
+  "null_q_mean": 0.6716421061997805,
+  "null_q_sd": 0.0006437092221856305,
   "q": 0.8711093746767096,
-  "q_z": 297.4713461502047,
+  "q_z": 309.8716961047475,
   "rent_p": 0.2326660179562402,
-  "rent_points": 16
+  "rent_points": 16,
+  "swaps_per_edge": 10
  },
  "stereovision1": {
   "design": "stereovision1",
   "edges": 29804,
   "nodes": 19405,
-  "null_q_mean": 0.656579977228671,
-  "null_q_sd": 0.00061711236905023,
+  "null_q_mean": 0.656625994022802,
+  "null_q_sd": 0.0007560735795394727,
   "q": 0.8224928697355627,
-  "q_z": 268.85361698752007,
+  "q_z": 219.37927762770238,
   "rent_p": 0.23676962527175216,
-  "rent_points": 16
+  "rent_points": 16,
+  "swaps_per_edge": 10
  },
  "stereovision2": {
   "design": "stereovision2",
   "edges": 52116,
   "nodes": 36629,
-  "null_q_mean": 0.7125033586763072,
-  "null_q_sd": 0.0003569768443034288,
+  "null_q_mean": 0.712584975227599,
+  "null_q_sd": 0.00028978667086892296,
   "q": 0.9114702137934906,
-  "q_z": 557.3662782117665,
+  "q_z": 686.3160336862142,
   "rent_p": 0.0735110180977435,
-  "rent_points": 17
+  "rent_points": 17,
+  "swaps_per_edge": 10
  },
  "stereovision3": {
   "design": "stereovision3",
@@ -162,6 +176,7 @@
   "q": 0.6710969624936499,
   "q_z": 27.825728309121697,
   "rent_p": 0.3936682295901377,
-  "rent_points": 7
+  "rent_points": 7,
+  "swaps_per_edge": 10
  }
 }
