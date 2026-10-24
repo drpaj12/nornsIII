@@ -262,7 +262,7 @@ def round2_section() -> list[str]:
                 "", "| pair | rho | p | n |", "|---|---|---|---|"]
         for k, v in R["n2"]["spearman"].items():
             out.append(f"| {k} | {v['rho']:.3f} | {r2lib.pfmt(v['p'])} | {v['n']} |")
-    if R.get("xover"):
+    if R.get("xover") and R["xover"]["n"]:
         x = R["xover"]
         out += ["", f"Crossover of the best new family: median scale {x['median']:g} vs round one "
                 f"{x['r1_median']:g} (n={x['n']}); retention at 2S median "

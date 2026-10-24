@@ -1,0 +1,65 @@
+\appendix
+\section{Research log}
+\label{sec:r2-appendix}
+
+This log records the thought pattern of the study so a reader can follow how each result
+produced the next question. Entries are dated; numbers are those of the generated tables.
+
+\paragraph{2026-10-23, round one: the question and its hypotheses.} Does seeding VPR's anneal from
+netlist clusters or the provenance hierarchy improve placement, and how hot can the anneal start before it
+destroys the seed? Hypotheses: a seed helps at VPR's own start temperature; the helpful temperature range
+is bounded by a design-level crossover; the provenance hierarchy and recovered clusters differ; hard regions help or hurt.
+
+\paragraph{2026-10-24, what round one said.} Soft seeds sat at parity with the analytic baseline
+(wirelength 1.009 full, 1.015 inter-cluster only; channel width 0.973; runtime 1.087); hard regions were worse
+(1.088, 14 of 104 better); seed retention was 0.68/0.70 at scale~1 but a seeded run won only 57 of 105 head-to-heads at twice the
+crossover; Urd was the worst soft and the best hard seed.
+
+\paragraph{2026-10-24, what it suggested.} The baseline is VPR's connectivity-aware analytic
+start, so \emph{better than random} was never tested; the anneal budget may erase what a seed adds (an
+effort curve is untested, N3); VPR's flat placement may already rediscover the structure the seed carries (N1); the
+designs are small, median 125 CLBs (size effect untested, N5); and whether the gain is the clustering or the coarse
+layout was not separable (N4).
+
+\paragraph{2026-10-24, Peter's bitwise idea.} ``consider that bitwise is more relevant in the Norn path so we should consider that as an additional seeding aspect (not necessarily the entire HDL structure (though hierarchically yes)). Let's include this and run the next set of experiments noting this thought pattern in the appendix of each paper so we can see the progress ... write up into the papers findings.''
+Reading: Norns is the datapath path, bits are the unit of structure there, so word and bit-slice
+structure is a seeding aspect of its own, with the module hierarchy kept at the coarse level.
+
+\paragraph{2026-10-24, round two: questions and hypotheses.} N7 (bitwise seeds): H7a to H7d.
+N1: H1 (VPR rediscovers the hierarchy). N2: H2 (structure predicts the gain). N4: H4 (random start,
+permuted clusters, quotient layout, analytic start). The word membership had to come from data: the
+provenance BLIF line is a statement, so the membership is read from Odin~III's bus names and source spans and
+joined by net id (Section~\ref{sec:r2-method}); only about 21\%
+of the LUTs get a word.
+
+\paragraph{2026-10-24, round two: outcomes.} Inconclusive for H7a, inconclusive for H7b,
+not supported for H7c, supported for H7d, not supported for H4, inconclusive for H1 and not supported for H2;
+the numbers are in Table~\ref{tab:r2log} and Section~\ref{sec:r2-results}.
+
+\paragraph{Still open.} N3 (effort curve: how the result changes with the anneal budget, e.g. inner\_num);
+N5 (size: designs of 1000 CLBs and up, where a seed has more to say); N6 (region looseness: constraint
+regions between the soft seed and the tight regions of round one); LUT coverage of the word membership
+(a front-end change, not a seeding change); more than one VPR seed per configuration.
+
+\begin{table}[t]
+\caption{Research questions and hypotheses of the study with status and the deciding number.}
+\label{tab:r2log}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lp{2.5cm}lp{1.5cm}p{2.2cm}@{}}
+\toprule
+RQ & Hypothesis & Round & Status & Deciding number \\
+\midrule
+R1 & soft seed stays at parity & 1 & supported & wirelength 1.009 \\
+R1 & hard regions help & 1 & not supported & 1.088 (14/104) \\
+R1 & seeds win at $2\times$ crossover & 1 & not supported & 57/105 \\
+N7 & H7a words beat Urd & 2 & inconclusive & 0.986 (5/9) \\
+N7 & H7b slices beat words & 2 & inconclusive & WL 0.957, ch.\ 1.060 \\
+N7 & H7c hier is best & 2 & not supported & rank 8/11 \\
+N7 & H7d partial $\ge$ full & 2 & supported & 0.973 \\
+N4 & H4 random $<$ permuted $<$ quotient & 2 & not supported & 0.975/1.035/1.026 \\
+N1 & H1 baseline already coherent & 2 & inconclusive & 8/13 mod., 9/15 word \\
+N2 & H2 structure predicts gain & 2 & not supported & 0/9 at $p<0.05$ \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -184,7 +184,7 @@ placement runtime, $T_0$ the anneal's start temperature that VPR derives from th
 starting placement. Below 1.0 is better (except $T_0$, a diagnostic).}}
 \\label{{tab:r2qor}}
 \\centering
-\\small
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
 \\begin{{tabular}}{{lcccccc}}
 \\toprule
 Seed & WL & Delay & Chan.\\ & Time & $T_0$ & Better \\\\
@@ -249,7 +249,7 @@ analytic start, VPR's final placement and a random null (20 permutations). Desig
 single module have no module label and are left out of that row.}}
 \\label{{tab:r2n1}}
 \\centering
-\\small
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
 \\begin{{tabular}}{{lccc}}
 \\toprule
 Labels & $n$ & NMI (start/final/null) & Comp.\\ (start/final/null) \\\\
@@ -275,7 +275,7 @@ large $\\rho$ can be told from chance). Table~\\ref{{tab:r2n2}} lists Spearman's
 inverse Rent exponent is $-p$.}}
 \\label{{tab:r2n2}}
 \\centering
-\\small
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
 \\begin{{tabular}}{{lccc}}
 \\toprule
 Gain & $Q$ & $z(Q)$ & $-p_{{\\text{{Rent}}}}$ \\\\
@@ -409,8 +409,8 @@ regions between the soft seed and the tight regions of round one); LUT coverage 
 \\caption{{Research questions and hypotheses of the study with status and the deciding number.}}
 \\label{{tab:r2log}}
 \\centering
-\\small
-\\begin{{tabular}}{{llllp{{3.2cm}}}}
+\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
+\\begin{{tabular}}{{@{{}}lp{{2.5cm}}lp{{1.5cm}}p{{2.2cm}}@{{}}}}
 \\toprule
 RQ & Hypothesis & Round & Status & Deciding number \\\\
 \\midrule

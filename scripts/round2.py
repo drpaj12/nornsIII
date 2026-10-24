@@ -6,6 +6,7 @@
   python scripts/round2.py hard  [design ...]   hard arm of the best new family, scale 1
   python scripts/round2.py xover [design ...]   cold-start crossover sweep + the 2S hot step
                                                 of the best new family
+  python scripts/round2.py chunk <mode> [design ...]   any mode below, one lock hold per design
   python scripts/round2.py best                 print the best new family
   python scripts/round2.py freeze               record the choice in data/analysis/best.json
 
@@ -92,7 +93,30 @@ def xover(design: str, fam: str) -> None:
     print(f"{design}: {fam} crossover_scale={res['crossover_scale']}")
 
 
+def chunk(mode: str, designs: list[str]) -> int:
+    """Run one mode design by design, each design under ONE hold of the heavy lock.
+
+    Under contention every run waits behind the other lanes' queue; one lock acquisition per
+    design (a few minutes of small runs) instead of one per run. Still one VPR at a time. A
+    design whose runs are long (average run over 60 s) keeps the per-run lock.
+    """
+    import os
+    import subprocess
+    here = nl.WS / "scripts"
+    for design in designs:
+        if design == "stereovision2":
+            rc = subprocess.run([sys.executable, str(here / "round2.py"), mode, design]).returncode
+        else:
+            env = dict(os.environ, NORNS_LOCK_HELD="1")
+            rc = subprocess.run(["flock", "-x", str(nl.LOCK), sys.executable,
+                                 str(here / "round2.py"), mode, design], env=env).returncode
+        print(f"{design}: {mode} chunk rc={rc}", flush=True)
+    return 0
+
+
 def main(argv: list[str]) -> int:
+    if argv[0] == "chunk":
+        return chunk(argv[1], argv[2:] or list(nl.DESIGN_ORDER))
     mode = argv[0]
     designs = argv[1:] or list(nl.DESIGN_ORDER)
     if mode == "best":
