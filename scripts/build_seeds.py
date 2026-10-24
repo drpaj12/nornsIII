@@ -335,8 +335,18 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
             continue
         xs2 = [c[0] for c in coords]
         ys2 = [c[1] for c in coords]
-        lo_x, hi_x = max(0, min(xs2) - 1), min(width - 1, max(xs2) + 1)
-        lo_y, hi_y = max(0, min(ys2) - 1), min(height - 1, max(ys2) + 1)
+        n_logic = sum(1 for name in names if clb_types.get(name) == "logic"
+                      and name in assignment_full)
+        expand = 2
+        while True:
+            lo_x, hi_x = max(0, min(xs2) - expand), min(width - 1, max(xs2) + expand)
+            lo_y, hi_y = max(0, min(ys2) - expand), min(height - 1, max(ys2) + expand)
+            room = sum(1 for x, y in site_map.get("logic", set())
+                       if lo_x <= x <= hi_x and lo_y <= y <= hi_y)
+            if room >= n_logic or (lo_x == 0 and hi_x == width - 1
+                                   and lo_y == 0 and hi_y == height - 1):
+                break
+            expand += 1
         need_classes = {clb_types[n] for n in names if n in assignment_full}
         for cls in need_classes - {"logic", "pad"}:
             if not any(x in range(lo_x, hi_x + 1) and y in range(lo_y, hi_y + 1)

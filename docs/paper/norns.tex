@@ -48,8 +48,9 @@ initial temperature the seed's advantage dies. The seeds come from Odin~III's
 provenance hierarchy and from Loki~III's L2 clusterings (Louvain, spectral,
 affinity propagation, k-means); the die-level arrangement of clusters comes
 from a cut-weighted quotient-graph layout; and the seeds enter VPR through
-its initial-placement and floorplanning-constraint interfaces, with one
-additive, default-off patch for checkpointing, following RLPlace. We report
+its initial-placement and floorplanning-constraint interfaces, with VPR's
+stock checkpointing flag (on by default, following RLPlace) as the control
+arm. We report
 seed retention against the annealing temperature, quality of results against
 an unseeded baseline, and the crossover temperature at which each seed stops
 helping -- the recipe a clustering-based initial placement should be used
@@ -83,8 +84,8 @@ data, not tuned away.
 
 The contributions are: (1) a seeding methodology -- provenance hierarchy and
 four recovered clusterings, arranged on the die by a quotient-graph layout,
-entering VPR through its initial-placement and constraint interfaces with a
-default-off checkpointing patch; (2) the crossover sweep, which calibrates the
+entering VPR through its initial-placement and constraint interfaces, with
+VPR's stock checkpointing as the control arm; (2) the crossover sweep, which calibrates the
 highest useful initial temperature for each seed against the best placement
 any seed achieves; (3) the retention and quality numbers per seed, with the
 full-seed versus inter-cluster-only split that separates the value of the
@@ -102,8 +103,8 @@ improves the anneal rather than the start: a K-armed bandit selects among
 directed move types (simple moves and swaps, bounded centroid, median,
 critical-path moves), and checkpointing periodically saves the best placement
 so oscillation cannot throw it away~\cite{elgammal2022rlplace}. Our experiment
-keeps the anneal as-is except for one default-off checkpointing flag, and
-changes the start instead; RLPlace's checkpointing prediction -- that
+keeps the anneal as-is (VPR already ships RLPlace-style checkpointing, on by
+default) and changes the start instead; the checkpointing prediction -- that
 save-best/restore extends the useful temperature range -- is one of the
 hypotheses we test.
 
@@ -135,8 +136,15 @@ Seeds enter VPR two ways, both already in the pinned build (v8.0.0+18416):
 soft, as an initial placement file (\code{--read\_initial\_place\_file}) that
 the anneal is free to move away from; and hard, as floorplanning constraints
 (\code{--read\_vpr\_constraints}) with one PartitionRegion per cluster, which
-the anneal cannot violate at any temperature. \code{--write\_initial\_place\_file}
-dumps VPR's own analytic start for the baseline study.
+the anneal cannot violate at any temperature. The hard arm constrains the
+regions only, so the anneal chooses the fine placement inside each one (one
+hard variant, no full/inter split). \code{--write\_initial\_place\_file}
+dumps VPR's own analytic start for the baseline study. VPR's placement
+macros are respected: I/O pads and the multiplier tiles stay anchored, and
+carry chains move as one vertical run. The seeds are built from an Odin~III
+provenance BLIF and Loki~III's clusterings of the same netlist, arranged by
+a cut-weighted quotient-graph layout with \code{networkx} (spring layout,
+fixed seed).
 
 \subsection{The crossover sweep}
 
@@ -145,11 +153,12 @@ keep the best final placement $P^*$ (and which seed made it). Second,
 cold-start a fresh anneal from $P^*$ and sweep the initial temperature
 upward; the temperature at which quality falls to the unseeded baseline is
 the crossover -- the highest useful start temperature for a cluster-derived
-placement. Third, run every seed at a temperature just above its crossover
+placement. The temperature is reported as a multiple $S$ of VPR's automatic
+start-temperature estimate. Third, run every seed at a temperature just above its crossover
 against an unseeded run at the same temperature: whether the seed still wins
 there says whether its information is coarse (which anneals away last) or
-fine. The checkpointing arm repeats the sweeps with save-best/restore
-enabled; per RLPlace, the crossover should move hotter.
+fine. The checkpointing arm repeats the sweeps with VPR's checkpointing
+disabled; per RLPlace, the crossover should move hotter when it is on.
 
 \subsection{Metrics and data}
 
@@ -168,7 +177,7 @@ keeps its scripts.
 clusters, arranged by a quotient-graph layout, enter VPR softly (initial
 placement) or hard (constraints). The crossover sweep cold-starts from the
 best placement and raises the initial temperature until the seed's advantage
-dies; the checkpointing arm (one default-off patch) tests whether
+dies; the checkpointing arm (VPR's stock flag, on vs off) tests whether
 save-best/restore extends the range.}
 \label{fig:norns}
 \end{figure}
