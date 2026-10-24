@@ -16,7 +16,6 @@ import nornlib as nl
 
 def main(argv: list[str]) -> int:
     s = nl.read_json(nl.WS / "docs" / "plan" / "paper-summary.json")
-    hot_ret = [v for v in s["hot_retention"].values() if v is not None]
     wins = sum(v[0] for v in s["hot_wins"].values())
     n = sum(v[1] for v in s["hot_wins"].values())
     fmt_scale = lambda v: "n/a" if v is None else f"{v:g}"
@@ -24,8 +23,8 @@ def main(argv: list[str]) -> int:
     data, designs = report.load_all()
     pairs = []
     for design in designs:
-        on = nl.runs_dir(design, "crossover", "crossover.json")
-        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        on = nl.data_crossover(design, "crossover.json")
+        off = nl.data_crossover(design, "checkpoint.json")
         if not on.is_file() or not off.is_file():
             continue
         a = nl.read_json(on).get("crossover_scale")
@@ -41,7 +40,6 @@ def main(argv: list[str]) -> int:
         + (f", checkpointing extends it on {', '.join(hotter)}" if hotter else "")
         + (f", and the control extends it on {', '.join(cooler)}" if cooler else "")
         + ".")
-    hot_range = (f"{min(hot_ret):.2f}-{max(hot_ret):.2f}" if hot_ret else "n/a")
     ret1 = "n/a"
     ret1i = "n/a"
     try:
@@ -57,30 +55,50 @@ def main(argv: list[str]) -> int:
     except Exception:  # the retention medians are a summary only
         pass
     n_designs = len(designs)
+    hard_n = s["hard_runs"]
+    hard_better = s["hard_runs_better"]
+    hard_sv3 = s["hard_design_wl"]["stereovision3"]
+    hard_fam = s["hard_family_wl"]
+    urd_hard = hard_fam["urd"]
+    recovered_hard = [float(v) for k, v in hard_fam.items() if k != "urd"]
+    hot_med = [v for v in s["hot_retention"].values() if v is not None]
+    hot_lo, hot_hi = s["hot_retention_range"]
+    inter_pct = 100 * (float(s["inter_wl"]) / float(s["soft_wl"]) - 1)
     results = f"""The {n_designs} completed designs give the ratios of Table~\\ref{{tab:qor}}. Soft seeds
 stay within a few percent of the unseeded baseline in routed wirelength
-({s['soft_wl']} for the full seed, {s['inter_wl']} for the inter-cluster-only arm) while
-cutting the minimum channel width to {s['soft_chan']} of the baseline and costing
-{s['soft_runtime']} in placement runtime. The hard arm is consistently worse
-({s['hard_wl']}): fixed regions block the anneal's fine moves across cluster borders. No single
-seed family dominates; the recovered clusterings and the provenance hierarchy land in the same
-band. Retention at scale~1 is {ret1} of a seed's cluster blocks (full) and {ret1i} (inter)."""
-    discussion = f"""Three observations. First, the seed families are interchangeable in
-quality: provenance is not a better starting structure than recovered clusters on these
-designs, and the inter-cluster-only arms show that the fine order inside a cluster matters as
-much as its coarse die position. Second, VPR's checkpointing does not separate the crossover in the
+({s['soft_wl']} for the full seed, {s['inter_wl']} for the inter-cluster-only arm, both pooled
+over all seven seed families) while cutting the minimum channel width to {s['soft_chan']} and
+costing {s['soft_runtime']} in placement runtime (both also pooled). The hard arm is worse on
+average (geomean {s['hard_wl']} over the {hard_n} runs that completed; {hard_better} of those
+still beat the baseline, and stereovision3's hard geomean is {hard_sv3}), but not uniformly: one
+blob\\_merge k-means$_{{2k}}$ run is missing from the arm because VPR's initial placement could
+not fit 9 CLBs inside its regions (the constraints are too tight, not a packing failure).
+Fixed regions may block the anneal's fine moves across cluster borders -- a hypothesis the
+aggregate numbers are consistent with. No single seed family dominates: Urd is the worst full
+seed in soft wirelength (1.029) and the best hard seed ({urd_hard} against
+{min(recovered_hard):.3f}-{max(recovered_hard):.3f} for the recovered families). Retention at
+scale~1 is {ret1} of a seed's cluster CLBs (full) and {ret1i} (inter)."""
+    discussion = f"""Three observations. First, the seed families span a narrow band but are not
+interchangeable: provenance (Urd) is the worst full seed in the soft arm (1.029) and the best in
+the hard arm, so it is not consistently better or worse than recovered clusters. The full and
+inter-cluster-only arms differ by {inter_pct:.1f}\\% in pooled wirelength
+({s['soft_wl']} vs {s['inter_wl']}); no arm randomizes the coarse cluster layout, so whether the
+fine order inside a cluster matters as much as the coarse die position is not measured here and
+stays open. Second, VPR's checkpointing does not separate the crossover in the
 measured range: {ckpt_sentence} RLPlace's prediction that checkpointing extends the useful
 range is therefore not observed on these designs; if it holds, its effect is smaller than the
 between-design variation. Third, the safe recipe is
 to cold-start from a cluster-derived placement at a temperature scale at or below the crossover,
-which is a multiple of VPR's own estimate; above it the seed's retention stays high
-({hot_range} at twice the crossover) but it wins only {wins} of
+which is a multiple of VPR's own estimate; above it the seed's retention is still high per family
+(medians {min(hot_med):.2f}-{max(hot_med):.2f} at twice the crossover, individual runs
+{hot_lo:.2f}-{hot_hi:.2f}) but it wins only {wins} of
 {n} head-to-heads against an unseeded run at the same temperature -- the coarse structure
 survives the anneal, the advantage does not."""
     conclusion = """Seeding VPR's anneal is worth it only as a calibrated cold start: at
 VPR's own start temperature the cluster layouts and the provenance hierarchy place at parity
 with the analytic start, but from a good final placement they keep winning when the anneal is
-restarted hotter, up to the crossover the sweep measures. The recipe is that crossover table,
+restarted hotter, up to the largest tested scale that still wins -- a lower bound on the fall
+point where the sweep hit its cap. The recipe is that crossover table,
 not a seed-specific tuning: start at or below it, and expect the seed to inform the coarse
 placement while the anneal supplies the fine one."""
     s_path = nl.WS / "docs" / "paper" / ("norns.tex" if not argv else argv[0])
@@ -91,7 +109,8 @@ placement while the anneal supplies the fine one."""
                   lambda _m: results, text, flags=re.S)
     text = re.sub(r"Three observations\..*?(?=\n\n\\section\{Conclusion\})",
                   lambda _m: discussion, text, flags=re.S)
-    text = re.sub(r"Seeding VPR's anneal is worth it.*?(?=\n\n\\bibliography)",
+    text = re.sub(r"Seeding VPR's anneal is worth it.*?"
+                  r"(?=\n\n\\bibliographystyle|\n\n\\bibliography)",
                   lambda _m: conclusion, text, flags=re.S)
     old_results = ("The numbers land as the runs complete; the retention-versus-temperature\n"
                    "curves are the experiment's central figure and will be added here.")
