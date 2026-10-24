@@ -151,6 +151,20 @@ def retention_table(data: dict[str, list[dict[str, object]]], designs: list[str]
     return rows
 
 
+def checkpoint_table(designs: list[str]) -> list[str]:
+    rows = ["| design | P* | crossover scale (checkpointing on) | crossover scale (off) |",
+            "|---|---|---|---|"]
+    for design in designs:
+        on = nl.runs_dir(design, "crossover", "crossover.json")
+        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        a = nl.read_json(on) if on.is_file() else {}
+        b = nl.read_json(off) if off.is_file() else {}
+        rows.append("| {} | {} | {} | {} |".format(
+            design, a.get("pstar", ""),
+            a.get("crossover_scale", "n/a"), b.get("crossover_scale_off", "n/a")))
+    return rows
+
+
 def per_design_table(data: dict[str, list[dict[str, object]]], designs: list[str]) -> list[str]:
     rows = ["| design | baseline WL | baseline delay | baseline chan | baseline place s "
             "| modules |", "|---|---|---|---|---|---|"]
@@ -187,6 +201,8 @@ def write(designs: list[str]) -> None:
     out += ["", "## Crossover sweep (cold start from P*)", ""] + crossover_table(data, designs)
     out += ["", "## Retention and the hot step (2x crossover scale)", ""] + retention_table(
         data, designs)
+    out += ["", "## Checkpointing arm (VPR --place_checkpointing, default on vs off)",
+            ""] + checkpoint_table(designs)
     out += ["", "## Failed runs", ""] + failures(data, designs)
     out += ["", "## Method notes", "",
             "* Soft seeds are `--read_initial_place_file` with the cluster layout; `full` keeps "
@@ -200,6 +216,16 @@ def write(designs: list[str]) -> None:
             "recorded by VPR is S x its automatic estimate.",
             "* Retention = fraction of a seed's cluster CLBs whose exit position is inside the "
             "cluster's seed bounding box; displacement = mean CLB distance from the seed slot.",
+            "* Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III "
+            "BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom "
+            "names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm "
+            "constrains regions only, so it has no full/inter split. (3) Pad CLBs and mult_36 "
+            "macros stay anchored; adder carry chains move as a vertical run. (4) One VPR run "
+            "per configuration at `--seed 1` (deterministic). (5) Urd is degenerate (one "
+            "cluster) on designs whose Odin hierarchy has a single module.",
+            "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
+            "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
+            "sweep.",
             ""]
     path = nl.WS / "docs" / "plan" / "EXPERIMENT.md"
     path.write_text("\n".join(out) + "\n", encoding="utf-8")

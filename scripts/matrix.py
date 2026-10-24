@@ -92,7 +92,7 @@ def run_one(design: str, tag: str, extra: list[str], *, seed_place: Path | None 
         final_place = cwd / f"{design}.place"
         if final_place.is_file():
             shutil.copyfile(final_place, cwd / "final.place")
-        if seed_place is not None and final_place.is_file():
+        if (seed_place is not None or region_seed is not None) and final_place.is_file():
             retention = compute_retention(design, seed_place, cwd / "final.place", region_seed)
             rec.update(retention)
         if region_seed is None and seed_place is not None:
@@ -106,10 +106,14 @@ def run_one(design: str, tag: str, extra: list[str], *, seed_place: Path | None 
     return rec
 
 
-def compute_retention(design: str, seed_place: Path, final_place: Path,
+def compute_retention(design: str, seed_place: Path | None, final_place: Path,
                       region_seed: str | None) -> dict[str, object]:
-    """Seed retention (inside its cluster's region) and mean displacement, at CLB level."""
-    seed = nl.Place(seed_place).coords()
+    """Seed retention (inside its cluster's region) and mean displacement, at CLB level.
+
+    With no seed file (the hard arm) retention is still measured against the same cluster
+    regions; displacement needs seed coordinates and stays None.
+    """
+    seed = nl.Place(seed_place).coords() if seed_place is not None else {}
     final = nl.Place(final_place).coords()
     clusters_path = nl.runs_dir(design, "seeds", "clusters.json")
     seed_name = region_seed or ""
@@ -123,11 +127,12 @@ def compute_retention(design: str, seed_place: Path, final_place: Path,
                 clb_cluster[name] = str(cl)
     displ = []
     inside = total = 0
-    for name, (x, y, _s, _l) in seed.items():
-        if name not in final or name not in clb_cluster:
+    for name, (fx, fy, _fs, _fl) in final.items():
+        if name not in clb_cluster:
             continue
-        fx, fy, _fs, _fl = final[name]
-        displ.append(((fx - x) ** 2 + (fy - y) ** 2) ** 0.5)
+        if name in seed:
+            x, y = seed[name][0], seed[name][1]
+            displ.append(((fx - x) ** 2 + (fy - y) ** 2) ** 0.5)
         cluster = clb_cluster.get(name)
         if cluster is not None and cluster in regions:
             lox, loy, hix, hiy = regions[cluster]
@@ -166,9 +171,8 @@ def hard(design: str, seed: str, timeout: int | None = None) -> dict[str, object
     if not xml.is_file():
         print(f"{design}/{tag}: no constraints file")
         return {"design": design, "tag": tag, "rc": 2}
-    rec = run_one(design, tag, ["--read_vpr_constraints", str(xml)],
-                  arm="hard", timeout=timeout)
-    return rec
+    return run_one(design, tag, ["--read_vpr_constraints", str(xml)],
+                   region_seed=seed, arm="hard", timeout=timeout)
 
 
 def best_final(design: str) -> dict[str, object] | None:

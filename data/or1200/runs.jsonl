@@ -1,0 +1,12 @@
+{"arm": "baseline", "bb_final": 27595.0, "bb_initial": 30280.1, "chan_width": 82.0, "cpd_ns": 8.62237, "design": "or1200", "flow_s": 11.38, "init_t": 42500.66, "n_temperatures": 371, "place_s": 3.99, "rc": 0, "route_s": 7.1, "scale": null, "tag": "baseline", "wirelength": 41141.0}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-urd-full"}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-urd-inter"}
+{"arm": "hard", "bb_final": 29695.0, "bb_initial": 33909.4, "chan_width": 82.0, "cpd_ns": 8.59573, "design": "or1200", "flow_s": 11.2, "init_t": 42500.66, "n_temperatures": 346, "place_s": 3.92, "rc": 0, "retention": 1.0, "route_s": 6.99, "scale": null, "tag": "hard-urd", "wirelength": 44029.0}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-louvain-full"}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-louvain-inter"}
+{"arm": "hard", "bb_final": 28351.0, "bb_initial": 31703.2, "chan_width": 78.0, "cpd_ns": 9.00765, "design": "or1200", "flow_s": 13.11, "init_t": 42500.66, "n_temperatures": 367, "place_s": 3.95, "rc": 0, "retention": 1.0, "route_s": 8.88, "scale": null, "tag": "hard-louvain", "wirelength": 44118.0}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-spectral-full"}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-spectral-inter"}
+{"arm": "hard", "bb_final": 27886.0, "bb_initial": 34260.8, "chan_width": 82.0, "cpd_ns": 8.47688, "design": "or1200", "flow_s": 10.8, "init_t": 42500.66, "n_temperatures": 325, "place_s": 4.05, "rc": 0, "route_s": 6.46, "scale": null, "tag": "hard-spectral", "wirelength": 41268.0}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-affinity-full"}
+{"arm": "soft", "design": "or1200", "rc": 1, "scale": null, "tag": "soft-affinity-inter"}
