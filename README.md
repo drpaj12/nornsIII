@@ -21,7 +21,8 @@ Urd uses what the design was (the provenance hierarchy), Verdandi what is recove
 
 ## Running it
 
-    scripts/env.sh                       # paths; NR_PY is the Loki analysis venv
+    . scripts/env.sh                     # from the checkout; paths default to $WS_ROOT (~/odin3-ws),
+                                         # override ODIN3_ROOT, VTR_ROOT, LOKI_HOME, NR_PY, NORNS_LOCK
     scripts/run_design.sh ch_intrinsics  # front end, baseline, Loki clusters, seeds, matrix
     scripts/matrix.py checkpoint <design> # the --place_checkpointing off control sweep
     scripts/report.py                    # regenerate docs/plan/EXPERIMENT.md
@@ -30,7 +31,7 @@ Urd uses what the design was (the provenance hierarchy), Verdandi what is recove
 The Loki analysis venv (numpy, scipy, scikit-learn, networkx, cffi) is built per the Loki
 CLAUDE.md and kept outside the Loki checkout; Loki is imported from its checkout through
 `PYTHONPATH`, never installed into or edited. Every VPR run takes the heavy lock
-`/tmp/claude-1000/odin3-heavy.lock`, one at a time, smallest design first.
+`$NORNS_LOCK` (default `/tmp/claude-1000/odin3-heavy.lock`), one at a time, smallest design first.
 
 Part of [Yggdrasil III](https://github.com/drpaj12/YggdrasilIII) (hub documentation:
 <https://drpaj12.github.io/YggdrasilIII/>; this repository is a submodule under `components/`, and
