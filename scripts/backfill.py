@@ -48,6 +48,9 @@ def backfill(design: str) -> int:
         final = run_dir / "final.place"
         if not final.is_file():
             continue
+        log = run_dir / "vpr.out"
+        if log.is_file():
+            rec.update(nl.Metrics(log).values)
         seed, region = seed_of(design, rec)
         if seed is not None and not seed.is_file():
             seed = None
@@ -59,6 +62,16 @@ def backfill(design: str) -> int:
                 if rec.get(key) != value:
                     rec[key] = value
                     updated += 1
+    # reconcile: a run directory with metrics.json but no record (e.g. a rewrite raced an
+    # append) is restored from its kept metrics
+    seen = {str(r.get("tag")) for r in records}
+    for metrics_path in sorted(nl.runs_dir(design, "runs").glob("*/metrics.json")):
+        tag = metrics_path.parent.name
+        if tag in seen:
+            continue
+        rec = nl.read_json(metrics_path)
+        records.append(rec)
+        updated += 1
     path = matrix.record_path(design)
     path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in records),
                     encoding="utf-8")

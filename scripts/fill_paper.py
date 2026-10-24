@@ -105,7 +105,48 @@ def main(argv: list[str]) -> int:
                        f"{statistics.median(rets):.3f} \\\\")
         else:
             out.append(f"{label} & -- & -- \\\\")
-    out += ["", "% checkpointing (discussion): crossover scale medians"]
+    out += ["", "% discussion medians"]
+    soft_vals = []
+    inter_vals = []
+    hard_vals = []
+    chan_soft = []
+    run_soft = []
+    for design in designs:
+        base = report.pick(data[design], "baseline")
+        for seed in report.FAMILIES:
+            run = report.pick(data[design], "soft", seed, "full")
+            for target, metric in ((soft_vals, "wirelength"),):
+                r = report.ratio(run, base, metric)
+                if r is not None:
+                    target.append(r)
+            for target, metric in ((chan_soft, "chan_width"), (run_soft, "place_s")):
+                r = report.ratio(run, base, metric)
+                if r is not None:
+                    target.append(r)
+            r = report.ratio(report.pick(data[design], "soft", seed, "inter"), base, "wirelength")
+            if r is not None:
+                inter_vals.append(r)
+            r = report.ratio(report.pick(data[design], "hard", seed), base, "wirelength")
+            if r is not None:
+                hard_vals.append(r)
+    def g(v):
+        return nl.fmt(nl.geomean(v))
+    out.append(f"% soft-full WL={g(soft_vals)} inter WL={g(inter_vals)} hard WL={g(hard_vals)} "
+               f"soft chan={g(chan_soft)} soft runtime={g(run_soft)}")
+    ons = []
+    offs = []
+    for design in designs:
+        on = nl.runs_dir(design, "crossover", "crossover.json")
+        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        if on.is_file() and nl.read_json(on).get("crossover_scale") is not None:
+            ons.append(float(nl.read_json(on)["crossover_scale"]))
+        if off.is_file() and nl.read_json(off).get("crossover_scale_off") is not None:
+            offs.append(float(nl.read_json(off)["crossover_scale_off"]))
+    if ons:
+        out.append(f"% crossover scale median on={statistics.median(ons):g}")
+    if offs:
+        out.append(f"% crossover scale median off={statistics.median(offs):g}")
+    out += ["", "% checkpointing (discussion): crossover scale per design"]
     for design in designs:
         on = nl.runs_dir(design, "crossover", "crossover.json")
         off = nl.runs_dir(design, "crossover", "checkpoint.json")
@@ -114,6 +155,33 @@ def main(argv: list[str]) -> int:
                        f"off={nl.read_json(off).get('crossover_scale_off')}")
     path = nl.WS / "docs" / "plan" / "paper-numbers.tex"
     path.write_text("\n".join(out) + "\n", encoding="utf-8")
+    summary = {
+        "soft_wl": g(soft_vals), "inter_wl": g(inter_vals), "hard_wl": g(hard_vals),
+        "soft_chan": g(chan_soft), "soft_runtime": g(run_soft),
+        "crossover_on_median": statistics.median(ons) if ons else None,
+        "crossover_off_median": statistics.median(offs) if offs else None,
+    }
+    hot = {}
+    wins = {}
+    for seed in report.FAMILIES:
+        rets = []
+        won = 0
+        n = 0
+        for design in designs:
+            h = report.pick(data[design], "hot", seed)
+            if h is None or h.get("scale") is None:
+                continue
+            if h.get("retention") is not None:
+                rets.append(float(h["retention"]))
+            u = report.pick(data[design], "unseeded", scale=float(h["scale"]))
+            if u and h.get("wirelength") and u.get("wirelength"):
+                n += 1
+                won += 1 if float(h["wirelength"]) < float(u["wirelength"]) else 0
+        hot[seed] = round(statistics.median(rets), 3) if rets else None
+        wins[seed] = [won, n]
+    summary["hot_retention"] = hot
+    summary["hot_wins"] = wins
+    nl.write_json(nl.WS / "docs" / "plan" / "paper-summary.json", summary)
     print(f"wrote {path}")
     return 0
 

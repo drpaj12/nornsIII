@@ -108,8 +108,8 @@ def qor_table(data: dict[str, list[dict[str, object]]], designs: list[str]) -> l
 
 
 def crossover_table(data: dict[str, list[dict[str, object]]], designs: list[str]) -> list[str]:
-    rows = ["| design | P* seed | crossover scale | cold WL | unseeded WL | cold start T (ns) "
-            "| cold retention |", "|---|---|---|---|---|---|---|"]
+    rows = ["| design | P* seed | crossover scale | cold WL | unseeded WL | cold start T "
+            "(VPR cost units) | cold retention |", "|---|---|---|---|---|---|---|"]
     for design in designs:
         path = nl.runs_dir(design, "crossover", "crossover.json")
         if not path.is_file():
@@ -122,7 +122,7 @@ def crossover_table(data: dict[str, list[dict[str, object]]], designs: list[str]
         rows.append("| {} | {} | {} | {} | {} | {} | {} |".format(
             design, res.get("pstar"), scale if scale is not None else "> 16",
             cold.get("wirelength") if cold else "", unseeded.get("wirelength") if unseeded else "",
-            nl.fmt(cold.get("init_t")) if cold else "",
+            ("%.4g" % cold["init_t"]) if cold and cold.get("init_t") is not None else "",
             nl.fmt(cold.get("retention")) if cold else ""))
     return rows
 
@@ -234,7 +234,8 @@ def write(designs: list[str]) -> None:
             "cluster) on designs whose Odin hierarchy has a single module.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
-            "sweep.", ""]
+            "sweep (extended by doubling while the control still wins; the or1200 control is "
+            "still capped at 16 and is listed in the continuation section).", ""]
     remaining = [d for d in nl.DESIGN_ORDER if d not in designs]
     if remaining:
         out += ["", "## Remaining matrix (continuation lane)", "",
@@ -244,6 +245,9 @@ def write(designs: list[str]) -> None:
                 "then extend the crossover and the checkpointing control if the lane has time:", "",
                 "    . scripts/env.sh && $NR_PY scripts/matrix.py crossover <design>",
                 "    . scripts/env.sh && $NR_PY scripts/matrix.py checkpoint <design>",
+                "",
+                "Also pending for a continuation lane: extend the checkpointing-off control "
+                "sweep of or1200 past its current 16 cap (`matrix.py checkpoint or1200`).",
                 "    . scripts/env.sh && $NR_PY scripts/backfill.py && $NR_PY scripts/report.py", ""]
     path = nl.WS / "docs" / "plan" / "EXPERIMENT.md"
     path.write_text("\n".join(out) + "\n", encoding="utf-8")

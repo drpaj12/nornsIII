@@ -1,0 +1,48 @@
+{
+ "crossover_off_median": 16.0,
+ "crossover_on_median": 16.0,
+ "hard_wl": "1.060",
+ "hot_retention": {
+  "affinity": 0.461,
+  "kmeans_2k": 0.651,
+  "kmeans_4k": 0.601,
+  "kmeans_k": 0.686,
+  "louvain": 0.6,
+  "spectral": 0.62,
+  "urd": 0.771
+ },
+ "hot_wins": {
+  "affinity": [
+   6,
+   10
+  ],
+  "kmeans_2k": [
+   7,
+   10
+  ],
+  "kmeans_4k": [
+   3,
+   10
+  ],
+  "kmeans_k": [
+   5,
+   10
+  ],
+  "louvain": [
+   3,
+   10
+  ],
+  "spectral": [
+   5,
+   10
+  ],
+  "urd": [
+   2,
+   10
+  ]
+ },
+ "inter_wl": "1.007",
+ "soft_chan": "0.955",
+ "soft_runtime": "1.099",
+ "soft_wl": "1.002"
+}

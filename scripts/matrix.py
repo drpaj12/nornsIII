@@ -175,6 +175,17 @@ def hard(design: str, seed: str, timeout: int | None = None) -> dict[str, object
                    region_seed=seed, arm="hard", timeout=timeout)
 
 
+def invalidate_runs(design: str, arms: tuple[str, ...]) -> None:
+    """Delete kept runs of these arms and their records (e.g. after P* or the seeds change)."""
+    records = [r for r in load_records(design) if str(r.get("arm")) in arms]
+    for rec in records:
+        shutil.rmtree(nl.runs_dir(design, "runs", str(rec.get("tag"))), ignore_errors=True)
+    kept = [r for r in load_records(design) if str(r.get("arm")) not in arms]
+    path = record_path(design)
+    path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in kept),
+                    encoding="utf-8")
+
+
 def best_final(design: str) -> dict[str, object] | None:
     recs = [r for r in load_records(design)
             if r.get("rc") == 0 and r.get("arm") in ("soft", "hard")
@@ -212,6 +223,10 @@ def crossover(design: str, scales: list[float], timeout: int | None = None,
         return {}
     src = nl.runs_dir(design, "runs", str(best["tag"]), "final.place")
     pstar = nl.runs_dir(design, "crossover", "Pstar.place")
+    previous = nl.runs_dir(design, "crossover", "crossover.json")
+    if previous.is_file() and str(nl.read_json(previous).get("pstar")) != str(best["tag"]):
+        # P* changed: old cold starts began from the old placement and are not comparable
+        invalidate_runs(design, ("cold", "hot"))
     nl.ensure_dir(pstar.parent)
     shutil.copyfile(src, pstar)
     region_seed = str(best["tag"]).split("-")[1] if str(best["tag"]).startswith("soft") else \
@@ -273,11 +288,17 @@ def checkpoint_sweep(design: str, scales: list[float], timeout: int | None = Non
     pstar = nl.runs_dir(design, "crossover", "Pstar.place")
     region_seed = str(nl.read_json(res_path).get("region_seed", ""))
     rows = []
-    for scale in scales:
+    todo = list(scales)
+    while todo:
+        scale = todo.pop(0)
         u = unseeded_off(design, scale, timeout=timeout)
         c = cold_off(design, scale, pstar, region_seed=region_seed, timeout=timeout)
         rows.append({"scale": scale, "unseeded": u.get("wirelength"), "cold": c.get("wirelength"),
                      "cold_t": c.get("init_t"), "cold_ret": c.get("retention")})
+        wins = [r["scale"] for r in rows if r["cold"] and r["unseeded"]
+                and float(r["cold"]) < float(r["unseeded"])]
+        if len(wins) == len(rows) and scale < 256 and scale * 2 not in todo:
+            todo.append(scale * 2)
     wins = [r["scale"] for r in rows if r["cold"] and r["unseeded"]
             and float(r["cold"]) < float(r["unseeded"])]
     result = {"design": design, "pstar": str(best["tag"]), "scales": rows,

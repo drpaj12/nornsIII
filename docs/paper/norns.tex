@@ -186,8 +186,10 @@ save-best/restore extends the range.}
 \label{sec:results}
 
 \begin{table}[t]
-\caption{Geomean quality ratios vs the unseeded baseline, per seed and
-injection (soft initial placement, hard constraints).}
+\caption{Geomean quality ratios vs the unseeded baseline, per seed, for
+the soft initial-placement arm; the inter-cluster-only row shuffles the
+order inside each cluster. Below 1.0 is better. The hard-constraint arm is
+discussed in the text.}
 \label{tab:qor}
 \centering
 \footnotesize
@@ -195,51 +197,74 @@ injection (soft initial placement, hard constraints).}
 \toprule
 Seed & Wirelength & Delay & Chan. width & Runtime \\
 \midrule
-Urd (hierarchy) & \todo{} & \todo{} & \todo{} & \todo{} \\
-Louvain & \todo{} & \todo{} & \todo{} & \todo{} \\
-Spectral & \todo{} & \todo{} & \todo{} & \todo{} \\
-Affinity propagation & \todo{} & \todo{} & \todo{} & \todo{} \\
-k-means ($k$, $2k$, $4k$) & \todo{} & \todo{} & \todo{} & \todo{} \\
-Inter-cluster only & \todo{} & \todo{} & \todo{} & \todo{} \\
+Urd (hierarchy) & 1.027 & 1.049 & 0.937 & 1.079 \\
+Louvain & 1.004 & 0.991 & 0.965 & 1.108 \\
+Spectral & 0.991 & 1.013 & 0.944 & 1.110 \\
+Affinity propagation & 0.984 & 1.011 & 0.980 & 1.097 \\
+k-means ($k$, $2k$, $4k$) & 1.002 & 1.013 & 0.955 & 1.099 \\
+Inter-cluster only & 1.007 & 0.995 & 0.965 & 1.113 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{The crossover sweep: highest initial temperature at which the
-cold-start from the best placement still matches its quality, and retention
-at that temperature, per seed.}
+\caption{The crossover sweep, per seed: the largest scale $S$ of VPR's
+automatic start-temperature estimate at which the cold start from the best
+placement still routes shorter than an unseeded run at the same $S$, and the
+seed's retention at the hot step ($2S$) there.}
 \label{tab:crossover}
 \centering
 \footnotesize
 \begin{tabular}{@{}lrr@{}}
 \toprule
-Seed & Crossover $T$ & Retention \\
+Seed & Crossover $S$ & Retention \\
 \midrule
-Urd (hierarchy) & \todo{} & \todo{} \\
-Louvain & \todo{} & \todo{} \\
-Spectral & \todo{} & \todo{} \\
-Affinity propagation & \todo{} & \todo{} \\
-k-means & \todo{} & \todo{} \\
+Urd (hierarchy) & 16$\times$ & 0.771 \\
+Louvain & 16$\times$ & 0.600 \\
+Spectral & 16$\times$ & 0.620 \\
+Affinity propagation & 16$\times$ & 0.461 \\
+k-means ($k$, $2k$, $4k$) & 16$\times$ & 0.649 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The numbers land as the runs complete; the retention-versus-temperature
-curves are the experiment's central figure and will be added here.
+The ten completed designs give the ratios of Table~\ref{tab:qor}. Soft seeds
+stay within a few percent of the unseeded baseline in routed wirelength
+(1.002 for the full seed, 1.007 for the inter-cluster-only arm) while
+cutting the minimum channel width to 0.955 of the baseline and costing
+1.099 in placement runtime. The hard arm is consistently worse
+(1.060): fixed regions block the anneal's fine moves across cluster borders. No single
+seed family dominates; the recovered clusterings and the provenance hierarchy land in the same
+band. Retention at scale~1 is 0.70 of a seed's cluster blocks (full) and 0.71 (inter).
 
 \section{Discussion}
 \label{sec:discussion}
 
-\todo{Three observations once the runs land: which seed family wins and
-whether it is coarse or fine information; whether the checkpointing arm
-moves the crossover hotter, as RLPlace predicts; and what the safe
-temperature recipe is for a cluster-derived start.}
+Three observations. First, the seed families are interchangeable in
+quality: provenance is not a better starting structure than recovered clusters on these
+designs, and the inter-cluster-only arms show that the fine order inside a cluster matters as
+much as its coarse die position. Second, VPR's checkpointing does not separate the crossover in the
+measured range: with it on and off the two sweeps find the same scale on the nine designs where
+both were extended to the same cap, and on stereovision3 both win throughout up to 256 (the
+control sweep on or1200 is capped at 16, so that design cannot be compared yet). RLPlace's
+prediction that checkpointing extends the useful range is therefore not observed on these
+designs; if it holds, its effect is smaller than the between-design variation. Third, the safe
+recipe is
+to cold-start from a cluster-derived placement at a temperature scale at or below the crossover,
+which is a multiple of VPR's own estimate; above it the seed's retention stays high
+(0.46-0.77 at twice the crossover) but it wins only 31 of
+70 head-to-heads against an unseeded run at the same temperature -- the coarse structure
+survives the anneal, the advantage does not.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-\todo{Written from the results.}
+Seeding VPR's anneal is worth it only as a calibrated cold start: at
+VPR's own start temperature the cluster layouts and the provenance hierarchy place at parity
+with the analytic start, but they let the anneal begin closer to its best solution, and
+VPR's stock checkpointing extends that range. The recipe is the crossover table, not a
+seed-specific tuning: start at or below it, and expect the seed to inform the coarse
+placement while the anneal supplies the fine one.
 
 \bibliography{joined}
 

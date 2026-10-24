@@ -315,12 +315,24 @@ class Metrics:
 
     @staticmethod
     def _curve(text: str) -> list[dict[str, float]]:
+        """The annealing cost-curve rows, between their header and the next blank/header line."""
         rows: list[dict[str, float]] = []
+        header = re.compile(r"Tnum\s+Time\s+T\s+AvCost\s+Av BB Cost")
         rx = re.compile(r"^\s*(\d+)\s+([0-9.]+)\s+([0-9.eE+-]+)\s+([0-9.eE+-]+)\s+"
-                        r"([0-9.eE+-]+)\s+([0-9.eE+-]+)\s+([0-9.eE+-]+)")
+                        r"([0-9.eE+-]+)\s+([0-9.eE+-]+)")
+        inside = False
         for line in text.splitlines():
+            if header.search(line):
+                inside = True
+                continue
+            if not inside:
+                continue
+            if line.lstrip().startswith("----"):
+                continue
             m = rx.match(line)
             if not m:
+                if rows and not line.strip():
+                    inside = False
                 continue
             rows.append({"tnum": int(m.group(1)), "time": float(m.group(2)),
                          "T": float(m.group(3)), "cost": float(m.group(4)),
