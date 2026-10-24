@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 16.0,
+ "design": "mkDelayWorker32B",
+ "pstar": "hard-urd",
+ "region_seed": "urd",
+ "scales": [
+  {
+   "cold": 18460.0,
+   "cold_ret": 0.9658119658119658,
+   "cold_t": 0.00056,
+   "scale": 1.0,
+   "unseeded": 18028.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 18465.0,
+   "cold_ret": 0.9658119658119658,
+   "cold_t": 0.0011,
+   "scale": 2.0,
+   "unseeded": 19053.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 18299.0,
+   "cold_ret": 0.9658119658119658,
+   "cold_t": 0.0022,
+   "scale": 4.0,
+   "unseeded": 19250.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 19204.0,
+   "cold_ret": 0.9658119658119658,
+   "cold_t": 0.0045,
+   "scale": 8.0,
+   "unseeded": 21028.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 20804.0,
+   "cold_ret": 0.9658119658119658,
+   "cold_t": 0.009,
+   "scale": 16.0,
+   "unseeded": 21291.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}

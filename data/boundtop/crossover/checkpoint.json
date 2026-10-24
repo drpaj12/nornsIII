@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 16.0,
+ "design": "boundtop",
+ "pstar": "soft-kmeans_4k-inter",
+ "scales": [
+  {
+   "cold": 5610.0,
+   "cold_ret": 0.7272727272727273,
+   "cold_t": 0.0002,
+   "scale": 1.0,
+   "unseeded": 6109.0
+  },
+  {
+   "cold": 5627.0,
+   "cold_ret": 0.7272727272727273,
+   "cold_t": 0.00041,
+   "scale": 2.0,
+   "unseeded": 6185.0
+  },
+  {
+   "cold": 6618.0,
+   "cold_ret": 0.7272727272727273,
+   "cold_t": 0.00082,
+   "scale": 4.0,
+   "unseeded": 6373.0
+  },
+  {
+   "cold": 6043.0,
+   "cold_ret": 0.7272727272727273,
+   "cold_t": 0.0016,
+   "scale": 8.0,
+   "unseeded": 6384.0
+  },
+  {
+   "cold": 6208.0,
+   "cold_ret": 0.5818181818181818,
+   "cold_t": 0.0033,
+   "scale": 16.0,
+   "unseeded": 6510.0
+  }
+ ],
+ "wins_all": false
+}

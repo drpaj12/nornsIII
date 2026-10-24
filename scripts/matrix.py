@@ -64,6 +64,27 @@ def blif_of(design: str) -> Path:
     return nl.runs_dir(design, "netlist", f"{design}.blif")
 
 
+def keep_sweep(design: str, name: str) -> None:
+    """Keep a small sweep result with the committed records (runs/ is not committed)."""
+    src = nl.runs_dir(design, "crossover", name)
+    if src.is_file():
+        dst = nl.data_crossover(design, name)
+        nl.ensure_dir(dst.parent)
+        shutil.copyfile(src, dst)
+
+
+def vpr_error(log: Path) -> str:
+    """The decisive VPR error message of a failed run ('' when the log has none)."""
+    try:
+        text = log.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    for line in text.splitlines():
+        if line.startswith("Message: "):
+            return line[len("Message: "):].strip()
+    return ""
+
+
 def _clean(cwd: Path, design: str) -> None:
     """Keep the small records; drop VPR's bulky intermediates (route, packed net)."""
     for pattern in ("*.route", "*.net", "*.net.post_routing", "chanx_occupancy.txt",
@@ -97,6 +118,8 @@ def run_one(design: str, tag: str, extra: list[str], *, seed_place: Path | None 
             rec.update(retention)
         if region_seed is None and seed_place is not None:
             pass
+    else:
+        rec["error"] = vpr_error(log) or "VPR exited non-zero (no error message in vpr.out)"
     nl.write_json(cwd / "metrics.json", rec)
     _clean(cwd, design)
     append_record(design, rec)
@@ -248,6 +271,7 @@ def crossover(design: str, scales: list[float], timeout: int | None = None,
               "scales": rows, "crossover_scale": max(wins) if wins else None,
               "wins_all": len(wins) == len(rows)}
     nl.write_json(nl.runs_dir(design, "crossover", "crossover.json"), result)
+    keep_sweep(design, "crossover.json")
     print(f"{design}: P*={best['tag']} crossover_scale={result['crossover_scale']}")
     return result
 
@@ -305,6 +329,7 @@ def checkpoint_sweep(design: str, scales: list[float], timeout: int | None = Non
               "crossover_scale_off": max(wins) if wins else None,
               "wins_all": len(wins) == len(rows)}
     nl.write_json(nl.runs_dir(design, "crossover", "checkpoint.json"), result)
+    keep_sweep(design, "checkpoint.json")
     print(f"{design}: checkpointing off crossover_scale={result['crossover_scale_off']}")
     return result
 

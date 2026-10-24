@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 16.0,
+ "design": "mkSMAdapter4B",
+ "pstar": "hard-spectral",
+ "scales": [
+  {
+   "cold": 17602.0,
+   "cold_ret": 0.9765625,
+   "cold_t": 0.00013,
+   "scale": 1.0,
+   "unseeded": 16617.0
+  },
+  {
+   "cold": 16788.0,
+   "cold_ret": 0.96875,
+   "cold_t": 0.00026,
+   "scale": 2.0,
+   "unseeded": 16212.0
+  },
+  {
+   "cold": 17729.0,
+   "cold_ret": 0.984375,
+   "cold_t": 0.00052,
+   "scale": 4.0,
+   "unseeded": 17812.0
+  },
+  {
+   "cold": 17162.0,
+   "cold_ret": 0.984375,
+   "cold_t": 0.001,
+   "scale": 8.0,
+   "unseeded": 18534.0
+  },
+  {
+   "cold": 18403.0,
+   "cold_ret": 0.9296875,
+   "cold_t": 0.0021,
+   "scale": 16.0,
+   "unseeded": 18877.0
+  }
+ ],
+ "wins_all": false
+}

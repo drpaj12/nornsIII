@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 8.0,
+ "design": "sha",
+ "pstar": "soft-kmeans_4k-inter",
+ "scales": [
+  {
+   "cold": 13448.0,
+   "cold_ret": 0.9577464788732394,
+   "cold_t": 0.0002,
+   "scale": 1.0,
+   "unseeded": 13679.0
+  },
+  {
+   "cold": 13670.0,
+   "cold_ret": 0.9507042253521126,
+   "cold_t": 0.00039,
+   "scale": 2.0,
+   "unseeded": 13025.0
+  },
+  {
+   "cold": 13282.0,
+   "cold_ret": 0.9507042253521126,
+   "cold_t": 0.00079,
+   "scale": 4.0,
+   "unseeded": 13784.0
+  },
+  {
+   "cold": 13144.0,
+   "cold_ret": 0.9436619718309859,
+   "cold_t": 0.0016,
+   "scale": 8.0,
+   "unseeded": 13910.0
+  },
+  {
+   "cold": 13548.0,
+   "cold_ret": 0.9366197183098591,
+   "cold_t": 0.0031,
+   "scale": 16.0,
+   "unseeded": 13324.0
+  }
+ ],
+ "wins_all": false
+}

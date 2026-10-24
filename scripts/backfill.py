@@ -75,6 +75,9 @@ def backfill(design: str) -> int:
     path = matrix.record_path(design)
     path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in records),
                     encoding="utf-8")
+    # keep the small sweep results next to the records the generators read
+    matrix.keep_sweep(design, "crossover.json")
+    matrix.keep_sweep(design, "checkpoint.json")
     print(f"{design}: {updated} fields updated")
     return 0
 

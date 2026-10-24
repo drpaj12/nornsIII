@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 4.0,
+ "design": "ch_intrinsics",
+ "pstar": "soft-kmeans_k-full",
+ "region_seed": "kmeans_k",
+ "scales": [
+  {
+   "cold": 1299.0,
+   "cold_ret": null,
+   "cold_t": 1064.03,
+   "scale": 1.0,
+   "unseeded": 1461.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 1370.0,
+   "cold_ret": null,
+   "cold_t": 1064.03,
+   "scale": 2.0,
+   "unseeded": 1584.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 1321.0,
+   "cold_ret": null,
+   "cold_t": 1064.03,
+   "scale": 4.0,
+   "unseeded": 1470.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 1450.0,
+   "cold_ret": null,
+   "cold_t": 1064.03,
+   "scale": 8.0,
+   "unseeded": 1379.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 1362.0,
+   "cold_ret": null,
+   "cold_t": 1064.03,
+   "scale": 16.0,
+   "unseeded": 1289.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}

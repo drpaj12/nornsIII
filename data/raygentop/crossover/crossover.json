@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 8.0,
+ "design": "raygentop",
+ "pstar": "soft-kmeans_2k-full",
+ "region_seed": "kmeans_2k",
+ "scales": [
+  {
+   "cold": 24328.0,
+   "cold_ret": 0.6083916083916084,
+   "cold_t": 18261.93,
+   "scale": 1.0,
+   "unseeded": 22980.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 22689.0,
+   "cold_ret": 0.6153846153846154,
+   "cold_t": 18261.93,
+   "scale": 2.0,
+   "unseeded": 24110.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 23618.0,
+   "cold_ret": 0.6293706293706294,
+   "cold_t": 18261.93,
+   "scale": 4.0,
+   "unseeded": 23919.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 22527.0,
+   "cold_ret": 0.6083916083916084,
+   "cold_t": 18261.93,
+   "scale": 8.0,
+   "unseeded": 24070.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 23581.0,
+   "cold_ret": 0.5874125874125874,
+   "cold_t": 18261.93,
+   "scale": 16.0,
+   "unseeded": 23313.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}

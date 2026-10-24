@@ -50,6 +50,11 @@ def runs_dir(design: str, *parts: str) -> Path:
     return RUNS.joinpath(design, *parts)
 
 
+def data_crossover(design: str, name: str) -> Path:
+    """Committed copy of a crossover/checkpointing sweep result (runs/ is not committed)."""
+    return DATA / design / "crossover" / name
+
+
 def ensure_dir(path: Path) -> Path:
     path.mkdir(parents=True, exist_ok=True)
     return path

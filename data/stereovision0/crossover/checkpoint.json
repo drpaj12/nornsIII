@@ -1,0 +1,57 @@
+{
+ "crossover_scale_off": 32.0,
+ "design": "stereovision0",
+ "pstar": "soft-louvain-full",
+ "scales": [
+  {
+   "cold": 57849.0,
+   "cold_ret": 0.5141643059490085,
+   "cold_t": 1.4e-05,
+   "scale": 1.0,
+   "unseeded": 61311.0
+  },
+  {
+   "cold": 57391.0,
+   "cold_ret": 0.5113314447592068,
+   "cold_t": 2.8e-05,
+   "scale": 2.0,
+   "unseeded": 61528.0
+  },
+  {
+   "cold": 56141.0,
+   "cold_ret": 0.5198300283286119,
+   "cold_t": 5.5e-05,
+   "scale": 4.0,
+   "unseeded": 60816.0
+  },
+  {
+   "cold": 56210.0,
+   "cold_ret": 0.5141643059490085,
+   "cold_t": 0.00011,
+   "scale": 8.0,
+   "unseeded": 56213.0
+  },
+  {
+   "cold": 58337.0,
+   "cold_ret": 0.5056657223796034,
+   "cold_t": 0.00022,
+   "scale": 16.0,
+   "unseeded": 58872.0
+  },
+  {
+   "cold": 56800.0,
+   "cold_ret": 0.5198300283286119,
+   "cold_t": 0.00044,
+   "scale": 32.0,
+   "unseeded": 60070.0
+  },
+  {
+   "cold": 56984.0,
+   "cold_ret": 0.5354107648725213,
+   "cold_t": 0.00088,
+   "scale": 64.0,
+   "unseeded": 54024.0
+  }
+ ],
+ "wins_all": false
+}
