@@ -18,7 +18,6 @@ def main(argv: list[str]) -> int:
     s = nl.read_json(nl.WS / "docs" / "plan" / "paper-summary.json")
     wins = sum(v[0] for v in s["hot_wins"].values())
     n = sum(v[1] for v in s["hot_wins"].values())
-    fmt_scale = lambda v: "n/a" if v is None else f"{v:g}"
     import report
     data, designs = report.load_all()
     pairs = []
@@ -106,7 +105,9 @@ placement while the anneal supplies the fine one."""
     import re
     b = s.get("benchmarks")
     if b:
-        latex = lambda name: name.replace("_", "\\_")
+        def latex(name: str) -> str:
+            return name.replace("_", "\\_")
+
         bench = f"""The {b['n']} designs span two orders of magnitude after technology mapping:
 from {b['clb_min']} CLBs ({latex(b['smallest'])}) to {b['clb_max']} ({latex(b['largest'])}),
 {b['clb_total']} CLBs in total. The mean is {b['clb_mean']} CLBs and the median {b['clb_median']:g};

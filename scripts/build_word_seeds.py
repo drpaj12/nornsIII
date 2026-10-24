@@ -23,6 +23,7 @@ Usage: python scripts/build_word_seeds.py [--only=a,b] [design ...]
 from __future__ import annotations
 
 import collections
+import os
 import statistics
 import sys
 
@@ -162,6 +163,8 @@ def build(design: str, only: set[str] | None = None) -> int:
     result = nl.read_json(path) if path.is_file() else {"design": design, "seeds": {}}
     run("words", cluster_of["words"], words_map)
     wcl = {cl for cl in word_clbs}
+    if os.environ.get("NORNS_NO_BIT_FALLBACK"):  # audit only (scripts/audit_seeds.py)
+        wcl = set()
     run("slices", cluster_of["words"], words_map, extra_runs=runs, bit_order=bit_of_clb,
         bit_clusters=wcl)
     run("hier", cluster_of["urd"], urd, inner=inner)

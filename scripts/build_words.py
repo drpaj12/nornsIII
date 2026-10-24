@@ -96,7 +96,7 @@ def build(design: str) -> dict:
                 hard_by_leaf[net_key(net)].add(b["name"])
     member: dict[str, dict] = {}
     unjoined = 0
-    cell_groups: dict[str, list[int]] = collections.defaultdict(list)
+    overwrites = 0  # cells that joined a block another cell had already joined (last one wins)
     for c in nlst.cells:
         if c.kind == "const":
             continue
@@ -142,16 +142,21 @@ def build(design: str) -> dict:
             info["cell_id"] = int(c.id)
         else:
             info["word"] = None
+        if block in member:
+            overwrites += 1
         member[block] = info
     # carry-chain bit order for adder words (cin <- cout links among that word's adders)
     adders = {b["name"]: b for b in blocks if b.get("model") == "adder" and b.get("pins")}
     cout_of = {}
     for name, b in adders.items():
-        cout_of[b["pins"].get("cout", "")] = name
+        cout = b["pins"].get("cout", "")
+        if cout:  # an adder with no cout net must not claim the empty key
+            cout_of[cout] = name
     nxt = {}
     prev = set()
     for name, b in adders.items():
-        src = cout_of.get(b["pins"].get("cin", ""))
+        cin = b["pins"].get("cin", "")
+        src = cout_of.get(cin) if cin else None
         if src and src != name:
             nxt[src] = name
             prev.add(name)
@@ -176,6 +181,7 @@ def build(design: str) -> dict:
     summary = {
         "design": design, "blif_identical": same, "blocks": len(blocks),
         "final_cells": len(member), "unjoined_cells": unjoined,
+        "block_overwrites": overwrites,
         "by_rule": dict(kinds), "words": len(words),
         "words_ge2": sum(1 for s in sizes if s >= 2), "largest_words": sizes[:5],
         "blocks_in_word": sum(sizes), "bit_indexed": sum(1 for i in member.values()

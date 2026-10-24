@@ -1,6 +1,7 @@
 {
  "bit_indexed": 2585,
  "blif_identical": true,
+ "block_overwrites": 0,
  "blocks": 4263,
  "blocks_in_word": 2844,
  "by_kind": {

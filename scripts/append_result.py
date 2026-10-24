@@ -6,7 +6,6 @@ Usage: python scripts/append_result.py <brief path> <pushed head>
 from __future__ import annotations
 
 import statistics
-import subprocess
 import sys
 
 import nornlib as nl

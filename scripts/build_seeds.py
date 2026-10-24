@@ -148,7 +148,6 @@ def build(design: str) -> int:
     flat = nl.Flat(final_flat)
     parsed = nl.parse_blif(blif, set(flat.atoms), nl.arch_output_ports(nl.ARCH))
     blocks = parsed["blocks"]
-    models = block_models(blif, set(flat.atoms))
     seeds = block_clusters(design, blocks)
     place = nl.Place(init_place)
     chains = adder_chains(parsed["blocks"], flat,

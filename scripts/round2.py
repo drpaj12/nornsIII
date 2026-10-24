@@ -20,6 +20,7 @@ All records go to data/<design>/runs.jsonl like round 1 (arms soft, hard, cold-r
 
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 
@@ -94,25 +95,41 @@ def xover(design: str, fam: str) -> None:
     print(f"{design}: {fam} crossover_scale={res['crossover_scale']}")
 
 
+LONG_RUN_S = 60.0
+
+
+def long_run(design: str) -> bool:
+    """A design whose recorded flow (place + route) averages over LONG_RUN_S seconds per run."""
+    path = nl.DATA / design / "runs.jsonl"
+    if not path.is_file():
+        return False
+    times = [float(r["flow_s"]) for r in (json.loads(x) for x in path.read_text().splitlines() if x.strip())
+             if r.get("flow_s")]
+    return bool(times) and sum(times) / len(times) > LONG_RUN_S
+
+
 def chunk(mode: str, designs: list[str]) -> int:
     """Run one mode design by design, each design under ONE hold of the heavy lock.
 
     Under contention every run waits behind the other lanes' queue; one lock acquisition per
     design (a few minutes of small runs) instead of one per run. Still one VPR at a time. A
-    design whose runs are long (average run over 60 s) keeps the per-run lock.
+    design whose runs are long (recorded flow time averaging over LONG_RUN_S, see long_run) keeps
+    the per-run lock. Returns the worst child return code.
     """
     import os
     import subprocess
     here = nl.WS / "scripts"
+    worst = 0
     for design in designs:
-        if design == "stereovision2":
+        if long_run(design):
             rc = subprocess.run([sys.executable, str(here / "round2.py"), mode, design]).returncode
         else:
             env = dict(os.environ, NORNS_LOCK_HELD="1")
             rc = subprocess.run(["flock", "-x", str(nl.LOCK), sys.executable,
                                  str(here / "round2.py"), mode, design], env=env).returncode
         print(f"{design}: {mode} chunk rc={rc}", flush=True)
-    return 0
+        worst = max(worst, rc)
+    return worst
 
 
 def main(argv: list[str]) -> int:
