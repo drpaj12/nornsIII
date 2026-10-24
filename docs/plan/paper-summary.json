@@ -1,6 +1,34 @@
 {
  "crossover_off_median": 16.0,
  "crossover_on_median": 16.0,
+ "hard_design_wl": {
+  "blob_merge": "1.064",
+  "boundtop": "1.111",
+  "ch_intrinsics": "1.038",
+  "diffeq1": "1.028",
+  "diffeq2": "1.005",
+  "mkDelayWorker32B": "1.198",
+  "mkPktMerge": "1.176",
+  "mkSMAdapter4B": "1.081",
+  "or1200": "1.106",
+  "raygentop": "1.132",
+  "sha": "1.041",
+  "stereovision0": "1.100",
+  "stereovision1": "1.096",
+  "stereovision2": "1.280",
+  "stereovision3": "0.906"
+ },
+ "hard_family_wl": {
+  "affinity": "1.120",
+  "kmeans_2k": "1.079",
+  "kmeans_4k": "1.083",
+  "kmeans_k": "1.089",
+  "louvain": "1.108",
+  "spectral": "1.075",
+  "urd": "1.062"
+ },
+ "hard_runs": 104,
+ "hard_runs_better": 14,
  "hard_wl": "1.088",
  "hot_retention": {
   "affinity": 0.564,
@@ -11,6 +39,10 @@
   "spectral": 0.635,
   "urd": 0.744
  },
+ "hot_retention_range": [
+  0.213,
+  1.0
+ ],
  "hot_wins": {
   "affinity": [
    9,

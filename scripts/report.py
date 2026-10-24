@@ -111,7 +111,7 @@ def crossover_table(data: dict[str, list[dict[str, object]]], designs: list[str]
     rows = ["| design | P* seed | crossover scale | cold WL | unseeded WL | cold start T "
             "(VPR cost units) | cold retention |", "|---|---|---|---|---|---|---|"]
     for design in designs:
-        path = nl.runs_dir(design, "crossover", "crossover.json")
+        path = nl.data_crossover(design, "crossover.json")
         if not path.is_file():
             rows.append(f"| {design} | (no sweep) | | | | | |")
             continue
@@ -132,7 +132,7 @@ def retention_table(data: dict[str, list[dict[str, object]]], designs: list[str]
             "| hot WL | unseeded WL at hot |",
             "|---|---|---|---|---|---|---|---|"]
     for design in designs:
-        path = nl.runs_dir(design, "crossover", "crossover.json")
+        path = nl.data_crossover(design, "crossover.json")
         crossover = nl.read_json(path) if path.is_file() else {}
         hot_scale = (crossover.get("crossover_scale") or 0) * 2
         for seed in FAMILIES:
@@ -157,8 +157,8 @@ def checkpoint_table(designs: list[str]) -> list[str]:
     rows = ["| design | P* | crossover scale (checkpointing on) | crossover scale (off) |",
             "|---|---|---|---|"]
     for design in designs:
-        on = nl.runs_dir(design, "crossover", "crossover.json")
-        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        on = nl.data_crossover(design, "crossover.json")
+        off = nl.data_crossover(design, "checkpoint.json")
         a = nl.read_json(on) if on.is_file() else {}
         b = nl.read_json(off) if off.is_file() else {}
         rows.append("| {} | {} | {} | {} |".format(
@@ -192,8 +192,9 @@ def failures(data: dict[str, list[dict[str, object]]], designs: list[str]) -> li
         for tag in sorted(latest):
             r = latest[tag]
             if r.get("rc") != 0:
-                rows.append(f"| {design} | {tag} | rc={r.get('rc')} |")
-    return ["| design | tag | result |", "|---|---|---|"] + rows if rows else ["none."]
+                rows.append(f"| {design} | {tag} | rc={r.get('rc')} | "
+                            f"{r.get('error') or ''} |")
+    return ["| design | tag | result | cause |", "|---|---|---|---|"] + rows if rows else ["none."]
 
 
 def write(designs: list[str]) -> None:
@@ -219,19 +220,32 @@ def write(designs: list[str]) -> None:
             "* VPR's placement macros (adder carry chains, mult_36) are respected: chains move "
             "as a vertical run, mult macros and pads stay anchored.",
             "* Crossover = the largest `--anneal_auto_init_t_scale` S at which the cold start "
-            "still routes shorter than the unseeded run at the same S; the start temperature "
-            "recorded by VPR is S x its automatic estimate.",
+            "from P* still routes shorter than the unseeded run at the same S; the start "
+            "temperature recorded by VPR is S x its automatic estimate. The sweep is run once "
+            "per design: P* is the best scale-1 placement over all designs x seven seeds, so S "
+            "is design-level, and the hot step then cold-starts every seed at 2S. When the sweep "
+            "stopped at its cap (16, or 256 for or1200 and stereovision3), S is a lower bound on "
+            "the fall point.",
             "* Retention = fraction of a seed's cluster CLBs whose exit position is inside the "
             "cluster's seed bounding box; displacement = mean CLB distance from the seed slot. "
             "For the hard arm retention is 1 by construction (the constraints cannot be "
             "violated), so the hard rows only confirm the regions were respected.",
+            "* The unresolved blob_merge hard-kmeans_2k run is an initial-placement failure, not "
+            "packing infeasibility: VPR cannot place 9 CLBs inside the k-means_2k regions and "
+            "exits with 'the constraints may be too tight' (initial_placement.cpp:309). The hard "
+            "arm therefore has 104 runs, and every hard geomean excludes it.",
+            "* The crossover and checkpointing sweep results are kept in "
+            "`data/<design>/crossover/`; the generators read only these committed copies (the "
+            "run logs and placements under `runs/` are local).",
             "* Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III "
             "BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom "
             "names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm "
             "constrains regions only, so it has no full/inter split. (3) Pad CLBs and mult_36 "
             "macros stay anchored; adder carry chains move as a vertical run. (4) One VPR run "
-            "per configuration at `--seed 1` (deterministic). (5) Urd is degenerate (one "
-            "cluster) on designs whose Odin hierarchy has a single module.",
+            "per configuration at `--seed 1` (deterministic). (5) Urd has one cluster only on sha "
+            "and stereovision3; diffeq1 and diffeq2 (one module each) get two Urd clusters (the "
+            "module and a flat group), and the other designs get one cluster per populated "
+            "module (3 to 23).",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
             "sweep (extended by doubling while the control still wins, to the same 256 cap).", ""]

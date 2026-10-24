@@ -5,8 +5,10 @@ docs/plan/paper-numbers.tex, so norns.tex can be updated without retyping number
 
 Conventions: geomean ratios are seeded / unseeded (below 1 better) over the designs where the
 comparison exists; soft-full is the main soft arm, soft-inter is the inter-cluster-only row.
-Crossover is reported as the multiplier S of VPR's automatic start temperature; retention is at
-the hot step (2 x S), per seed family, median over designs.
+The k-means row pools the three k values, not all seven seed families. Crossover is reported as
+the multiplier S of VPR's automatic start temperature; retention is at the hot step (2 x S), per
+seed family, median over designs. Sweep results are read from the committed copies in
+data/<design>/crossover/ (runs/ is not committed).
 
 Usage: python scripts/fill_paper.py
 """
@@ -24,6 +26,8 @@ ROWS = (("urd", "Urd (hierarchy)", "Urd (hierarchy)"),
         ("spectral", "Spectral", "Spectral"),
         ("affinity", "Affinity propagation", "Affinity propagation"),
         ("kmeans", "k-means ($k$, $2k$, $4k$)", "k-means"))
+# The k-means row pools the three k values, not all seven seed families.
+KMEANS = ("kmeans_k", "kmeans_2k", "kmeans_4k")
 
 
 def main(argv: list[str]) -> int:
@@ -37,7 +41,7 @@ def main(argv: list[str]) -> int:
             values = []
             for design in designs:
                 base = report.pick(data[design], "baseline")
-                seeds = report.FAMILIES if fam == "kmeans" else (fam,)
+                seeds = KMEANS if fam == "kmeans" else (fam,)
                 for seed in seeds:
                     run = report.pick(data[design], "soft", seed, "full")
                     r = report.ratio(run, base, metric)
@@ -62,16 +66,34 @@ def main(argv: list[str]) -> int:
     # hard arm for the discussion
     out += ["", "% hard arm geomeans (discussion)"]
     values = {m: [] for m in report.METRICS}
+    hard_by_design = {}
+    hard_by_family = {f: [] for f in report.FAMILIES}
+    n_hard = 0
+    n_hard_better = 0
     for design in designs:
         base = report.pick(data[design], "baseline")
+        per_design = []
         for seed in report.FAMILIES:
             run = report.pick(data[design], "hard", seed)
+            if run is None:
+                continue
+            n_hard += 1
             for m in report.METRICS:
                 r = report.ratio(run, base, m)
                 if r is not None:
                     values[m].append(r)
+            wl = report.ratio(run, base, "wirelength")
+            if wl is not None:
+                per_design.append(wl)
+                hard_by_family[seed].append(wl)
+                if wl < 1:
+                    n_hard_better += 1
+        if per_design:
+            hard_by_design[design] = nl.fmt(nl.geomean(per_design))
     out.append("% hard " + " ".join(f"{m}={nl.fmt(nl.geomean(values[m]))}"
                                     for m in report.METRICS))
+    out.append(f"% hard runs {n_hard}, {n_hard_better} better than baseline; per design "
+               + " ".join(f"{d}={v}" for d, v in hard_by_design.items()))
     # tab:crossover rows
     out += ["", "% tab:crossover rows"]
     for fam, label, _ in ROWS:
@@ -79,21 +101,22 @@ def main(argv: list[str]) -> int:
         temps = []
         rets = []
         for design in designs:
-            path = nl.runs_dir(design, "crossover", "crossover.json")
+            path = nl.data_crossover(design, "crossover.json")
             if not path.is_file():
                 continue
             res = nl.read_json(path)
             scale = res.get("crossover_scale")
             if scale is None:
                 continue
-            seeds = report.FAMILIES if fam == "kmeans" else (fam,)
+            seeds = KMEANS if fam == "kmeans" else (fam,)
             for seed in seeds:
                 hot = report.pick(data[design], "hot", seed)
                 cold = report.pick(data[design], "cold", scale=float(scale))
                 if hot is None or cold is None:
                     continue
                 scales.append(float(scale))
-                temps.append(float(cold.get("init_t") or 0) * float(scale))
+                # init_t is already the scaled VPR start temperature; do not scale it again.
+                temps.append(float(cold.get("init_t") or 0))
                 if hot.get("retention") is not None:
                     rets.append(float(hot["retention"]))
         if scales:
@@ -136,8 +159,8 @@ def main(argv: list[str]) -> int:
     ons = []
     offs = []
     for design in designs:
-        on = nl.runs_dir(design, "crossover", "crossover.json")
-        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        on = nl.data_crossover(design, "crossover.json")
+        off = nl.data_crossover(design, "checkpoint.json")
         if on.is_file() and nl.read_json(on).get("crossover_scale") is not None:
             ons.append(float(nl.read_json(on)["crossover_scale"]))
         if off.is_file() and nl.read_json(off).get("crossover_scale_off") is not None:
@@ -148,8 +171,8 @@ def main(argv: list[str]) -> int:
         out.append(f"% crossover scale median off={statistics.median(offs):g}")
     out += ["", "% checkpointing (discussion): crossover scale per design"]
     for design in designs:
-        on = nl.runs_dir(design, "crossover", "crossover.json")
-        off = nl.runs_dir(design, "crossover", "checkpoint.json")
+        on = nl.data_crossover(design, "crossover.json")
+        off = nl.data_crossover(design, "checkpoint.json")
         if on.is_file() and off.is_file():
             out.append(f"% {design}: on={nl.read_json(on).get('crossover_scale')} "
                        f"off={nl.read_json(off).get('crossover_scale_off')}")
@@ -160,6 +183,9 @@ def main(argv: list[str]) -> int:
         "soft_chan": g(chan_soft), "soft_runtime": g(run_soft),
         "crossover_on_median": statistics.median(ons) if ons else None,
         "crossover_off_median": statistics.median(offs) if offs else None,
+        "hard_runs": n_hard, "hard_runs_better": n_hard_better,
+        "hard_design_wl": hard_by_design,
+        "hard_family_wl": {f: nl.fmt(nl.geomean(v)) for f, v in hard_by_family.items() if v},
     }
     hot = {}
     wins = {}
@@ -181,6 +207,11 @@ def main(argv: list[str]) -> int:
         wins[seed] = [won, n]
     summary["hot_retention"] = hot
     summary["hot_wins"] = wins
+    hot_all = [float(h["retention"]) for seed in report.FAMILIES for design in designs
+               for h in [report.pick(data[design], "hot", seed)]
+               if h is not None and h.get("retention") is not None]
+    summary["hot_retention_range"] = ([round(min(hot_all), 3), round(max(hot_all), 3)]
+                                      if hot_all else None)
     nl.write_json(nl.WS / "docs" / "plan" / "paper-summary.json", summary)
     print(f"wrote {path}")
     return 0
