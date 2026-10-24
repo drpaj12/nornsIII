@@ -114,7 +114,8 @@ hypotheses we test.
 The provenance hierarchy (Urd) is the module structure Odin~III records on
 every netlist object; it needs no recovery. Urd has a single cluster only on
 sha and stereovision3, two on diffeq1 and diffeq2 (their one module plus a
-flat group), and one per populated module (3 to 23) on the other designs, so
+flat group), and one per populated module plus a flat group (3 to 23) on the
+other designs, so
 its signal is degenerate on the two one-cluster designs. The recovered
 clusters (Verdandi)
 are Loki~III L2 partitions: Louvain, spectral, affinity propagation and
@@ -137,6 +138,95 @@ by inter-cluster net cuts, lay the quotient out by a coarse force-directed
 solve, and scale it to the die. Inside a cluster, blocks take the seed's
 internal order, or a shuffle in the inter-cluster-only arm; the two arms
 differ only in that intra-cluster order, not in the coarse cluster layout.
+
+\subsection{Seed construction in detail}
+\label{sec:seed-detail}
+
+\textbf{One die, one netlist.} Every seed targets the same die: VPR's
+\code{k6\_frac\_N10\_frac\_chain\_mem32K\_40nm} architecture with six-input
+LUTs (K~=~6). The netlist is the VTR-dialect BLIF that Odin~III's front end
+writes for each design: \code{read\_verilog --nolatches --vtr-compat},
+\code{proc}, \code{fsm}, \code{opt}, \code{flatten}, \code{opt -full},
+\code{wreduce}, \code{hardmap}, \code{lower}, \code{abc --lut 6},
+\code{stats}, and \code{write\_blif --vtr --lut-k 6 --name-style provenance}.
+Each configuration is one deterministic VPR run (\code{--seed 1}). The
+unseeded baseline run is the comparison point and also supplies the seed
+builders: its analytic initial placement (\code{initial.place}) gives every
+soft seed legal slots and its fine order, and its \code{final.flat\_place} is
+the reference the retention metric uses.
+
+\textbf{Coarse layout.} Every soft seed shares one die-level arrangement, the
+quotient-graph layout. Each cluster is contracted to one node and each pair of
+clusters is weighted by the number of nets cut between them; the weighted
+quotient graph is laid out by a force-directed solve
+(\code{networkx.spring\_layout}, fixed seed), and the embedding is scaled onto
+the die's logic-slot bounding box. Each cluster then takes the free CLB slots
+nearest its laid-out point, nearest first. Clusters that exchange many nets
+therefore start close together, and the die fills in cluster-sized groups
+instead of a scatter.
+
+\textbf{Fine order.} The soft arm has two variants that differ only inside a
+cluster. \code{Full} keeps the baseline analytic order: a cluster's blocks
+keep their relative analytic positions when they are assigned the cluster's
+slots. \code{Inter} shuffles the intra-cluster order under a fixed shuffle
+seed, so only the inter-cluster structure survives; because the coarse
+cluster layout is identical in the two variants, the pair isolates the fine
+order. The hard arm has no fine-order choice: it hands VPR one
+\code{PartitionRegion} per cluster, sized from the full seed's slots and
+expanded until it holds the cluster's logic (and nudged to cover a memory or
+multiplier site the cluster needs), and VPR's placement orders the blocks
+inside each region.
+
+\textbf{Placement macros.} Every seed honours the die's placement macros: pad
+CLBs never move (their I/O sites are fixed by the architecture),
+\code{mult\_36} macros stay anchored on their tile footprint, and an adder
+carry chain moves as one vertical run in a single column, head at the top
+(VPR places a chain as a direct vertical macro). Chains are assigned slots
+before the nearest-first fill, so a chain is never split.
+
+\textbf{The seed families.} The Urd seed is the provenance hierarchy made
+explicit: Odin~III writes each block's HDL module into its netlist name, the
+seed builder reads that module from the BLIF, and each populated module
+becomes one cluster; blocks that carry no module name join one flat cluster.
+Urd is one cluster on sha and stereovision3, two on diffeq1 and diffeq2 (one
+module plus the flat group), and one per populated module plus the flat group
+on the other designs, 3 to 23 clusters. The rationale is the designer's
+locality: modules are the units the designer grouped, and logic inside a
+module was written to communicate (shared words, state, control), so a module
+cluster concentrates the connectivity the placer is paid to shorten. That is
+the hypothesis the Urd arm tests.
+
+The Verdandi seeds are Loki~III's L2 clusterings of the flat netlist:
+Louvain, spectral, affinity propagation, and k-means at $k$, $2k$ and $4k$,
+with $k$ the design's module count (two where the design has one module).
+Norns builds the L0 \code{graph.json} the clusterings read from the same
+Odin~III BLIF, because Loki's \code{key.json} uses Odin API names that do not
+join to VPR atom names; the clustering code is Loki's. A recovered cluster
+approximates the provenance grouping from connectivity alone, so comparing
+Urd with Verdandi isolates what the HDL structure adds over the graph.
+
+\textbf{Why a seed should beat a random start.} A random placement scatters
+communicating logic across the die; the quotient layout puts each cluster's
+logic together and puts clusters that exchange nets next to each other, so
+the anneal starts from the structure it is meant to find and refines from
+there. The experiment tests that mechanism rather than assuming it, and it
+compares against VPR's analytic start, which already respects connectivity,
+not against a random placement. Two measurements report what the seed did:
+retention, the fraction of a seed's CLBs found inside its seed cluster's
+region at exit, has medians 0.68 (full) and 0.70 (inter) at VPR's own start
+temperature and 0.52--0.74 per family at twice the crossover; and the
+crossover sweep finds the largest tested temperature scale at which the seed
+still wins, the point where its contribution stops surviving the anneal.
+
+\textbf{What the HDL constructs say about a good start.} HDL modules, buses,
+datapath words and finite-state machines group logic that communicates: a bus
+is one word fanned out to every consumer, a datapath chain is a dataflow
+line, and an FSM's next-state logic and registers exchange signals every
+cycle. Provenance preserves that grouping in the netlist, so a seed built
+from it starts the placer with the designer's locality already on the die;
+L2 clusters rediscover most of it from connectivity alone. That is why Urd
+and Verdandi are the arms, and why the paper asks whether recovered structure
+is interchangeable with provenance.
 
 \subsection{Injection}
 
