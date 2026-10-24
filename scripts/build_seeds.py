@@ -198,7 +198,22 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                clb_types: dict[str, str], base_slots: dict[str, list[tuple[int, int, int, int]]],
                place: nl.Place, width: int, height: int,
                blocks: list[dict[str, object]], block_cluster: dict[str, int],
-               flat: nl.Flat, chains: list[dict[str, object]]) -> dict[str, object]:
+               flat: nl.Flat, chains: list[dict[str, object]], *, layout: str = "spring",
+               extra_runs: list[dict[str, object]] | None = None,
+               fixed: dict[str, tuple[int, int, int, int]] | None = None,
+               inner: dict[str, tuple[str, float]] | None = None) -> dict[str, object]:
+    """One seed. Round-2 options (all default to the round-1 behaviour):
+
+    layout     "spring" quotient layout; "shuffle" the same layout with the cluster positions
+               permuted (the coarse-random arm); "random" a random legal placement (the CLB
+               order, slots and chain windows are drawn at random).
+    extra_runs word runs: ordered CLB lists placed like carry chains (bit-slice layout), after
+               the true chains.
+    fixed      CLBs that keep the given coordinates (the partial seed); their slots are removed
+               from the pool.
+    inner      CLB -> (word key, bit order): inside each cluster the words are laid out as
+               aligned vertical runs in bit order (the hierarchical seed).
+    """
     import networkx as nx
 
     # quotient graph: one node per cluster, weight = inter-cluster net count
@@ -220,8 +235,16 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                 cut[(min(src_cl, dst_cl), max(src_cl, dst_cl))] += 1
     for (a, b), w in cut.items():
         g.add_edge(a, b, weight=w)
-    if len(g) > 1:
+    layout_rng = random.Random(11)
+    if layout == "random":
+        pos = {cl: (layout_rng.uniform(-1, 1), layout_rng.uniform(-1, 1)) for cl in g}
+    elif len(g) > 1:
         pos = nx.spring_layout(g, seed=1, weight="weight", iterations=80)
+        if layout == "shuffle":
+            ids = sorted(pos)
+            moved = list(ids)
+            layout_rng.shuffle(moved)
+            pos = {cl: pos[src] for cl, src in zip(ids, moved)}
     else:
         pos = {next(iter(g)): (0.0, 0.0)}
     logic_xy = base_slots.get("logic", [])
@@ -246,7 +269,12 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                     assignment_full[r["name"]] = coords
                     assignment_inter[r["name"]] = coords
             continue
-        slots = list(base_slots.get(cls, []))
+        fixed_slots = {fixed[n] for n in fixed if clb_types.get(n) == cls} if fixed else set()
+        for n in (fixed or {}):
+            if clb_types.get(n) == cls:
+                assignment_full[n] = fixed[n]
+                assignment_inter[n] = fixed[n]
+        slots = [s for s in base_slots.get(cls, []) if s not in fixed_slots]
         need: list[tuple[float, int, str]] = []
         for cl, names in clusters.items():
             for name in names:
@@ -264,10 +292,13 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
         # y_offset -1); its CLBs keep that run in both variants
         chain_names: set[str] = set()
         clb2cl = {c: cl for cl, members in clusters.items() for c in members}
-        if cls == "logic" and chains:
+        if cls == "logic" and (chains or extra_runs):
             runs = slot_runs(slots)
-            for chain in sorted(chains, key=lambda c: -len(c["clbs"])):
-                members = [c for c in chain["clbs"] if clb_types.get(c) == "logic"]
+            ordered = sorted(chains, key=lambda c: -len(c["clbs"]))
+            ordered += sorted(extra_runs or [], key=lambda c: -len(c["clbs"]))
+            for chain in ordered:
+                members = [c for c in chain["clbs"] if clb_types.get(c) == "logic"
+                           and c not in assignment_full]
                 if len(members) < 2:
                     continue
                 counts = collections.Counter(clb2cl[c] for c in members if c in clb2cl)
@@ -292,6 +323,8 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                         cx = head[0][1][0]
                         cy = sum(s[1] for _i, s in head) / n
                         dist = (cx - px) ** 2 + (cy - py) ** 2
+                        if layout == "random":
+                            dist = layout_rng.random()
                         if best is None or dist < best[0]:
                             best = (dist, head)
                 if best is None:
@@ -307,14 +340,20 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                 continue
             px, py = target[cl]
             avail = [(i, s) for i, s in enumerate(slots) if i not in used]
-            avail.sort(key=lambda item: (item[1][0] - px) ** 2 + (item[1][1] - py) ** 2)
+            if layout == "random":
+                layout_rng.shuffle(avail)
+            else:
+                avail.sort(key=lambda item: (item[1][0] - px) ** 2 + (item[1][1] - py) ** 2)
             picked = [s for _i, s in avail[:len(names)]]
             picked_ids = {i for i, _s in avail[:len(names)]}
             used |= picked_ids
             # full: preserve the analytic fine order inside the cluster
             fine = sorted(names, key=lambda n: base_xy.get(n, (0.0, 0.0)))
-            for name, slot in zip(fine, sorted(picked)):
-                assignment_full[name] = slot
+            if inner is not None and cls == "logic":
+                assignment_full.update(inner_place(fine, picked, inner))
+            else:
+                for name, slot in zip(fine, sorted(picked)):
+                    assignment_full[name] = slot
             shuffled = list(picked)
             rng.shuffle(shuffled)
             for name, slot in zip(names, shuffled):
@@ -367,6 +406,50 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
     return {"n_clusters": len(clusters), "clb_counts": {str(k): len(v) for k, v in clusters.items()},
             "clbs": {str(k): sorted(v) for k, v in clusters.items()},
             "regions": {str(k): v for k, v in regions.items()}}
+
+
+def inner_place(names: list[str], picked: list[tuple[int, int, int, int]],
+                inner: dict[str, tuple[str, float]]) -> dict[str, tuple[int, int, int, int]]:
+    """Lay the words of one cluster out as aligned vertical runs in bit order.
+
+    names are in the analytic fine order. Each word (>= 2 CLBs here) takes the first free
+    window of its length in the cluster's slot runs (leftmost column, top first, windows
+    aligned to multiples of the word length so equal-sized words share rows); the CLBs that
+    are in no word then fill the remaining slots in the analytic order.
+    """
+    out: dict[str, tuple[int, int, int, int]] = {}
+    words: dict[str, list[str]] = collections.defaultdict(list)
+    for n in names:
+        if n in inner:
+            words[inner[n][0]].append(n)
+    runs = slot_runs(list(picked))
+    used: set[tuple[int, int, int, int]] = set()
+    pos = {n: i for i, n in enumerate(names)}
+    for key in sorted(words, key=lambda k: (-len(words[k]), k)):
+        members = sorted(words[key], key=lambda n: (inner[n][1], pos[n]))
+        n = len(members)
+        if n < 2:
+            continue
+        done = False
+        for run in runs:
+            starts = list(range(0, len(run) - n + 1, n))
+            if starts and starts[-1] + n < len(run):
+                starts.append(len(run) - n)
+            for start in starts:
+                head = run[start:start + n]
+                if len(head) == n and not any(s in used for _i, s in head):
+                    for name, (_i, slot) in zip(members, head):
+                        out[name] = slot
+                        used.add(slot)
+                    done = True
+                    break
+            if done:
+                break
+    rest = [n for n in names if n not in out]
+    free = sorted(s for s in picked if s not in used)
+    for name, slot in zip(rest, free):
+        out[name] = slot
+    return out
 
 
 def write_place(design: str, seed: str, variant: str, place: nl.Place,

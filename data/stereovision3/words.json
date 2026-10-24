@@ -1,0 +1,40 @@
+{
+ "bit_indexed": 148,
+ "blif_identical": true,
+ "blocks": 324,
+ "blocks_in_word": 193,
+ "by_kind": {
+  "ff": 117,
+  "hard": 31,
+  "lut": 45
+ },
+ "by_rule": {
+  "b": 117,
+  "c": 76,
+  "none": 124
+ },
+ "design": "stereovision3",
+ "final_cells": 317,
+ "kind_total": {
+  "ff": 117,
+  "hard": 31,
+  "lut": 169
+ },
+ "largest_words": [
+  35,
+  26,
+  19,
+  17,
+  12
+ ],
+ "line_groups_largest": [
+  98,
+  52,
+  35,
+  28,
+  26
+ ],
+ "unjoined_cells": 3,
+ "words": 20,
+ "words_ge2": 14
+}

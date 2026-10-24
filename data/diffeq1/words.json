@@ -1,0 +1,40 @@
+{
+ "bit_indexed": 329,
+ "blif_identical": true,
+ "blocks": 631,
+ "blocks_in_word": 398,
+ "by_kind": {
+  "ff": 193,
+  "hard": 141,
+  "lut": 64
+ },
+ "by_rule": {
+  "b": 193,
+  "c": 205,
+  "none": 230
+ },
+ "design": "diffeq1",
+ "final_cells": 628,
+ "kind_total": {
+  "ff": 193,
+  "hard": 141,
+  "lut": 294
+ },
+ "largest_words": [
+  66,
+  66,
+  34,
+  34,
+  32
+ ],
+ "line_groups_largest": [
+  230,
+  136,
+  97,
+  34,
+  34
+ ],
+ "unjoined_cells": 0,
+ "words": 16,
+ "words_ge2": 10
+}

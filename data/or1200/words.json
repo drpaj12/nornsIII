@@ -1,0 +1,40 @@
+{
+ "bit_indexed": 1562,
+ "blif_identical": true,
+ "blocks": 3776,
+ "blocks_in_word": 1896,
+ "by_kind": {
+  "ff": 666,
+  "hard": 546,
+  "lut": 684
+ },
+ "by_rule": {
+  "b": 1146,
+  "c": 750,
+  "none": 1823
+ },
+ "design": "or1200",
+ "final_cells": 3719,
+ "kind_total": {
+  "ff": 666,
+  "hard": 628,
+  "lut": 2425
+ },
+ "largest_words": [
+  130,
+  66,
+  66,
+  66,
+  64
+ ],
+ "line_groups_largest": [
+  428,
+  349,
+  257,
+  145,
+  139
+ ],
+ "unjoined_cells": 9,
+ "words": 103,
+ "words_ge2": 82
+}
