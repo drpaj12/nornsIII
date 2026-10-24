@@ -21,6 +21,10 @@ start, RL-chosen move types, and checkpointing to prevent oscillation.
   `--write_initial_place_file` (dump the analytic start). The only likely
   patch is checkpointing (save-best/restore in the anneal loop), default-off.
 
+Verified interfaces on the pinned build (flags, source lines and the semantics as exercised):
+`docs/plan/vtr-interfaces.md`. Note that checkpointing is a stock VPR flag
+(`--place_checkpointing`, on by default), so no VTR patch is needed; see `patches/README.md`.
+
 ## Seeds (one arm each)
 
 - Urd: the provenance hierarchy (one region per HDL module, die partitioned
