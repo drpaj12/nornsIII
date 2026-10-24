@@ -234,8 +234,7 @@ def write(designs: list[str]) -> None:
             "cluster) on designs whose Odin hierarchy has a single module.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
-            "sweep (extended by doubling while the control still wins; the or1200 control is "
-            "still capped at 16 and is listed in the continuation section).", ""]
+            "sweep (extended by doubling while the control still wins, to the same 256 cap).", ""]
     remaining = [d for d in nl.DESIGN_ORDER if d not in designs]
     if remaining:
         out += ["", "## Remaining matrix (continuation lane)", "",
