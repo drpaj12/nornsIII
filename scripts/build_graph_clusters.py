@@ -32,8 +32,8 @@ def _label(name: str, kind: str, cell_type: str, module: str, line: int) -> dict
     }
 
 
-def build_graph(blif: Path, design: str) -> dict[str, object]:
-    parsed = nl.parse_blif(blif)
+def build_graph(blif: Path, design: str, atom_names: set[str] | None = None) -> dict[str, object]:
+    parsed = nl.parse_blif(blif, atom_names, nl.arch_output_ports(nl.ARCH))
     skip = {"gnd", "vcc", "unconn", ""}
     blocks = [b for b in parsed["blocks"] if b["name"] and b["name"] not in skip]
     driver: dict[str, str] = {}
@@ -105,8 +105,13 @@ def run_design(design: str) -> int:
         print(f"{design}: no BLIF (run scripts/frontend.py)")
         return 2
     modules = nl.read_json(info_path).get("modules") or 1
+    flat_path = nl.runs_dir(design, "runs", "baseline", "final.flat_place")
+    atom_names = set(nl.Flat(flat_path).atoms) if flat_path.is_file() else None
+    if atom_names is None:
+        print(f"{design}: no baseline flat placement (run matrix.py baseline first)")
+        return 2
     graph_path = nl.runs_dir(design, "graph.json")
-    graph = build_graph(blif, design)
+    graph = build_graph(blif, design, atom_names)
     cluster_mod, load_graph, dump_json = _loki()
     from loki.schemas import validate_graph
     errors = validate_graph(graph)

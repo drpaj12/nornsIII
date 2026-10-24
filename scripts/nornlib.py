@@ -105,7 +105,22 @@ def module_of(name: str) -> str:
     return provenance_parts(name)[0]
 
 
-def parse_blif(path: Path) -> dict[str, Any]:
+def arch_output_ports(arch_xml: Path) -> dict[str, set[str]]:
+    """model name -> output port names, from the VPR architecture's <model> definitions."""
+    import xml.etree.ElementTree as ET
+    root = ET.parse(str(arch_xml)).getroot()
+    out: dict[str, set[str]] = {}
+    for model in root.iter("model"):
+        name = model.get("name")
+        if not name:
+            continue
+        ports = {p.get("name") for p in model.findall("output_ports/port") if p.get("name")}
+        out[name] = ports
+    return out
+
+
+def parse_blif(path: Path, atom_names: set[str] | None = None,
+               model_outputs: dict[str, set[str]] | None = None) -> dict[str, Any]:
     """Blocks of a VTR-dialect BLIF: name, kind (lut/latch/hard/const), inputs, table.
 
     The block name is the output net of a ``.names``/``.latch`` and the ``out=`` actual of a
@@ -149,8 +164,18 @@ def parse_blif(path: Path) -> dict[str, Any]:
                 if "=" in item:
                     formal, actual = item.split("=", 1)
                     pins[formal] = actual
-            outs = [actual for formal, actual in pins.items()
-                    if formal.lower().startswith("out") or formal.lower() in ("o", "q", "z")]
+            outs = []
+            if model_outputs is not None and model_name in model_outputs:
+                outs = [actual for formal, actual in pins.items()
+                        if formal.split("[")[0] in model_outputs[model_name]]
+            if not outs:
+                outs = [actual for formal, actual in pins.items()
+                        if formal.lower().startswith("out")
+                        or formal.lower() in ("o", "q", "z")]
+            if atom_names and not outs:
+                # VPR names a hard block after one of its port nets; the atom list is the truth
+                matched = [actual for actual in pins.values() if actual in atom_names]
+                outs = matched or outs
             if not outs:
                 outs = list(pins.values())
             blocks.append({"name": outs[0] if outs else "", "kind": "hard",

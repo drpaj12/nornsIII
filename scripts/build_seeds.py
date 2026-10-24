@@ -35,9 +35,9 @@ def baseline_paths(design: str) -> tuple[Path, Path, Path]:
     return base / "initial.place", base / "final.flat_place", base / "vpr.out"
 
 
-def block_models(blif: Path) -> dict[str, str]:
+def block_models(blif: Path, atom_names: set[str] | None = None) -> dict[str, str]:
     out = {}
-    for b in nl.parse_blif(blif)["blocks"]:
+    for b in nl.parse_blif(blif, atom_names, nl.arch_output_ports(nl.ARCH))["blocks"]:
         out[b["name"]] = b.get("model", b["kind"])
     return out
 
@@ -77,11 +77,11 @@ def build(design: str) -> int:
     if not (blif.is_file() and init_place.is_file() and final_flat.is_file()):
         print(f"{design}: missing inputs (frontend, clusters or baseline)")
         return 2
-    parsed = nl.parse_blif(blif)
-    blocks = parsed["blocks"]
-    models = block_models(blif)
-    seeds = block_clusters(design, blocks)
     flat = nl.Flat(final_flat)
+    parsed = nl.parse_blif(blif, set(flat.atoms), nl.arch_output_ports(nl.ARCH))
+    blocks = parsed["blocks"]
+    models = block_models(blif, set(flat.atoms))
+    seeds = block_clusters(design, blocks)
     place = nl.Place(init_place)
     width, height = nl.grid_size(place)
     clb_types = {clb: classify(types) for clb, types in flat.clb_types().items()}
