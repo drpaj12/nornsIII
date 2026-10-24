@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 8.0,
+ "design": "raygentop",
+ "pstar": "soft-kmeans_2k-full",
+ "scales": [
+  {
+   "cold": 24328.0,
+   "cold_ret": 0.7552447552447552,
+   "cold_t": 7.4e-05,
+   "scale": 1.0,
+   "unseeded": 22980.0
+  },
+  {
+   "cold": 22689.0,
+   "cold_ret": 0.7342657342657343,
+   "cold_t": 0.00015,
+   "scale": 2.0,
+   "unseeded": 24110.0
+  },
+  {
+   "cold": 23618.0,
+   "cold_ret": 0.7482517482517482,
+   "cold_t": 0.0003,
+   "scale": 4.0,
+   "unseeded": 23919.0
+  },
+  {
+   "cold": 22527.0,
+   "cold_ret": 0.7552447552447552,
+   "cold_t": 0.00059,
+   "scale": 8.0,
+   "unseeded": 25156.0
+  },
+  {
+   "cold": 23581.0,
+   "cold_ret": 0.7202797202797203,
+   "cold_t": 0.0012,
+   "scale": 16.0,
+   "unseeded": 23313.0
+  }
+ ],
+ "wins_all": false
+}

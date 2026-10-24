@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 16.0,
+ "design": "stereovision0",
+ "pstar": "soft-louvain-full",
+ "region_seed": "louvain",
+ "scales": [
+  {
+   "cold": 57849.0,
+   "cold_ret": 0.5141643059490085,
+   "cold_t": 1.4e-05,
+   "scale": 1.0,
+   "unseeded": 61311.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 57391.0,
+   "cold_ret": 0.5113314447592068,
+   "cold_t": 2.8e-05,
+   "scale": 2.0,
+   "unseeded": 61528.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 56141.0,
+   "cold_ret": 0.5198300283286119,
+   "cold_t": 5.5e-05,
+   "scale": 4.0,
+   "unseeded": 60816.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 60019.0,
+   "cold_ret": 0.5141643059490085,
+   "cold_t": 0.00011,
+   "scale": 8.0,
+   "unseeded": 56213.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 58337.0,
+   "cold_ret": 0.5056657223796034,
+   "cold_t": 0.00022,
+   "scale": 16.0,
+   "unseeded": 58872.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}

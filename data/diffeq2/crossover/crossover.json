@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 1.0,
+ "design": "diffeq2",
+ "pstar": "soft-spectral-inter",
+ "region_seed": "spectral",
+ "scales": [
+  {
+   "cold": 7735.0,
+   "cold_ret": 0.35,
+   "cold_t": 8.2e-05,
+   "scale": 1.0,
+   "unseeded": 8296.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 9282.0,
+   "cold_ret": 0.4,
+   "cold_t": 0.00016,
+   "scale": 2.0,
+   "unseeded": 7830.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 8796.0,
+   "cold_ret": 0.45,
+   "cold_t": 0.00033,
+   "scale": 4.0,
+   "unseeded": 7297.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 8691.0,
+   "cold_ret": 0.45,
+   "cold_t": 0.00066,
+   "scale": 8.0,
+   "unseeded": 7839.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 8356.0,
+   "cold_ret": 0.35,
+   "cold_t": 0.0013,
+   "scale": 16.0,
+   "unseeded": 8293.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}

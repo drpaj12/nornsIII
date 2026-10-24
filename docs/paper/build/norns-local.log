@@ -493,55 +493,20 @@ LaTeX Font Info:    ... okay on input line 37.
 
 -- Lines per column: 56 (exact).
 \c@lstlisting=\count315
-
-LaTeX Warning: Citation `gharibian2010finding' on page 1 undefined on input lin
-e 73.
-
-
-LaTeX Warning: Citation `gharibian2013analyzing' on page 1 undefined on input l
-ine 73.
-
-
-LaTeX Warning: Citation `gharibian2014identifying' on page 1 undefined on input
- line 73.
-
-
-LaTeX Warning: Citation `gharibian2010finding' on page 1 undefined on input lin
-e 75.
-
-
-LaTeX Warning: Citation `elgammal2022rlplace' on page 1 undefined on input line
- 76.
-
-
-LaTeX Warning: Citation `luu2014vtr7' on page 1 undefined on input line 99.
-
-
-LaTeX Warning: Citation `murray2020vtr8' on page 1 undefined on input line 99.
-
-
-LaTeX Warning: Citation `elgammal2022rlplace' on page 1 undefined on input line
- 104.
-
 [1
 
 
 ]
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
-35.
+44.
  (ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 2229) in paragraph at lines 134--140
+Underfull \hbox (badness 2229) in paragraph at lines 143--157
 \OT1/ptm/m/n/10 build (v8.0.0+18416): soft, as an ini-tial place-ment file
  []
 
-(IMAGE/fig_norns)
-Overfull \hbox (7.64772pt too wide) in paragraph at lines 185--197
- [][] 
- []
-
-(norns-local.bbl)
+(IMAGE/fig_norns) [2] (norns-local.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -553,12 +518,9 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[2] (norns-local.aux)
+[3] (norns-local.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
  ) )
-Output written on norns-local.xdv (2 pages, 28092 bytes).
+Output written on norns-local.xdv (3 pages, 36648 bytes).

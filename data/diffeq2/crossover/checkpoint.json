@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 1.0,
+ "design": "diffeq2",
+ "pstar": "soft-spectral-inter",
+ "scales": [
+  {
+   "cold": 7735.0,
+   "cold_ret": 0.35,
+   "cold_t": 3924.13,
+   "scale": 1.0,
+   "unseeded": 8296.0
+  },
+  {
+   "cold": 9282.0,
+   "cold_ret": 0.4,
+   "cold_t": 3924.13,
+   "scale": 2.0,
+   "unseeded": 7830.0
+  },
+  {
+   "cold": 8796.0,
+   "cold_ret": 0.45,
+   "cold_t": 3924.13,
+   "scale": 4.0,
+   "unseeded": 7297.0
+  },
+  {
+   "cold": 8691.0,
+   "cold_ret": 0.45,
+   "cold_t": 3924.13,
+   "scale": 8.0,
+   "unseeded": 7839.0
+  },
+  {
+   "cold": 8356.0,
+   "cold_ret": 0.35,
+   "cold_t": 3924.13,
+   "scale": 16.0,
+   "unseeded": 8293.0
+  }
+ ],
+ "wins_all": false
+}

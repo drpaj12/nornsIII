@@ -1,0 +1,43 @@
+{
+ "crossover_scale_off": 16.0,
+ "design": "mkPktMerge",
+ "pstar": "soft-kmeans_4k-inter",
+ "scales": [
+  {
+   "cold": 13271.0,
+   "cold_ret": 0.7428571428571429,
+   "cold_t": 14156.17,
+   "scale": 1.0,
+   "unseeded": 13921.0
+  },
+  {
+   "cold": 13423.0,
+   "cold_ret": 0.7428571428571429,
+   "cold_t": 14156.17,
+   "scale": 2.0,
+   "unseeded": 13731.0
+  },
+  {
+   "cold": 13373.0,
+   "cold_ret": 0.6857142857142857,
+   "cold_t": 14156.17,
+   "scale": 4.0,
+   "unseeded": 14149.0
+  },
+  {
+   "cold": 13366.0,
+   "cold_ret": 0.6571428571428571,
+   "cold_t": 14156.17,
+   "scale": 8.0,
+   "unseeded": 14441.0
+  },
+  {
+   "cold": 13520.0,
+   "cold_ret": 0.6857142857142857,
+   "cold_t": 14156.17,
+   "scale": 16.0,
+   "unseeded": 14194.0
+  }
+ ],
+ "wins_all": true
+}

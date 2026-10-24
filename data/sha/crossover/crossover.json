@@ -1,0 +1,49 @@
+{
+ "crossover_scale": 8.0,
+ "design": "sha",
+ "pstar": "soft-kmeans_4k-inter",
+ "region_seed": "kmeans_4k",
+ "scales": [
+  {
+   "cold": 13448.0,
+   "cold_ret": 0.8873239436619719,
+   "cold_t": 9274.71,
+   "scale": 1.0,
+   "unseeded": 13679.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 13670.0,
+   "cold_ret": 0.8802816901408451,
+   "cold_t": 9274.71,
+   "scale": 2.0,
+   "unseeded": 14707.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 13282.0,
+   "cold_ret": 0.8873239436619719,
+   "cold_t": 9274.71,
+   "scale": 4.0,
+   "unseeded": 13784.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 13541.0,
+   "cold_ret": 0.8661971830985915,
+   "cold_t": 9274.71,
+   "scale": 8.0,
+   "unseeded": 14707.0,
+   "unseeded_ret": null
+  },
+  {
+   "cold": 13236.0,
+   "cold_ret": 0.8591549295774648,
+   "cold_t": 9274.71,
+   "scale": 16.0,
+   "unseeded": 13070.0,
+   "unseeded_ret": null
+  }
+ ],
+ "wins_all": false
+}
