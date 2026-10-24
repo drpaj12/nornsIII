@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "mkDelayWorker32B",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 18561.0,
+   "cold_ret": 0.2727272727272727,
+   "scale": 1.0,
+   "unseeded": 18028.0
+  },
+  {
+   "cold": 18337.0,
+   "cold_ret": 0.22727272727272727,
+   "scale": 2.0,
+   "unseeded": 19053.0
+  },
+  {
+   "cold": 18498.0,
+   "cold_ret": 0.5,
+   "scale": 4.0,
+   "unseeded": 19250.0
+  },
+  {
+   "cold": 18532.0,
+   "cold_ret": 0.5909090909090909,
+   "scale": 8.0,
+   "unseeded": 21028.0
+  },
+  {
+   "cold": 20433.0,
+   "cold_ret": 0.22727272727272727,
+   "scale": 16.0,
+   "unseeded": 21291.0
+  }
+ ],
+ "wins_all": false
+}

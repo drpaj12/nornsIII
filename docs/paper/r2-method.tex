@@ -10,26 +10,26 @@ adds a bit-level seeding aspect that keeps the module hierarchy at the coarse le
 \paragraph{Word membership from Odin~III data, not names.}
 The obvious source, the provenance BLIF's block name \code{module/\$nN@file:line}, is too
 coarse: the line is the HDL \emph{statement}, so one \code{always} block is one group (the
-largest (module, file:line) group in any design holds up to 1739 blocks,
-and sha's holds 1739 of its 2506 blocks; 59 of the 161 statement lines that
-hold word blocks hold more than one word, up to 51). The finer records exist in the Odin~III session that
+largest (module, file:line) group in any design holds up to 5248 blocks,
+and sha's holds 1739 of its 2506 blocks; 370 of the 790 statement lines that
+hold word blocks hold more than one word, up to 320). The finer records exist in the Odin~III session that
 writes the BLIF, so the seed builder reruns the identical script, checks that the BLIF it
-writes equals the kept one byte for byte (all 9 designs
+writes equals the kept one byte for byte (all 15 designs
 match), and reads the records Loki~III's labeller reads: the HDL name \code{bus[i]} of a
 cell's output net and the source spans of each cell, matched to the word-level cells that
 exist before technology mapping. A final cell joins its BLIF block through the net id the BLIF
 name carries (\code{\$n<id>}), so the join is by identifier, not by string
-(241 of 11198 cells, 2.2\%, found no BLIF block and are left unlabelled;
+(1204 of 106793 cells, 1.1\%, found no BLIF block and are left unlabelled;
 the writer legalises dotted names, handled explicitly). A block's word is the first rule
 that applies: (bus) an output net named \code{bus[i]} puts it in word \code{bus} at bit $i$,
 which holds for every flip-flop that keeps a register name; (cell) exactly one word-level cell's
 spans lie inside the block's spans, which is true for adders, multipliers, memories and
 single-statement LUTs; otherwise (none) the block has no word. Bit order inside an adder word is
 the carry-chain position. ABC's cone provenance merges the spans of a LUT that mixes words,
-and its edge budget makes some runs share one record, so 21\% of the LUTs get a word
+and its edge budget makes some runs share one record, so 49\% of the LUTs get a word
 against 100\% of the flip-flops and 99\% of the hard cells. Over all designs,
-58.7\% of the blocks are in a word (per-design median
-63.1\%); 444 words in all.
+80.6\% of the blocks are in a word (per-design median
+66.7\%); 5190 words in all.
 
 \paragraph{Seed families.}
 A CLB joins a word cluster when at least one third of its atoms carry a word and that word is
@@ -60,7 +60,7 @@ coordinates permuted, 20 samples). Coherence is the NMI between a $g\times g$ gr
 gain with three structure measures of the netlist graph: Louvain modularity $Q$; the $z$-score of
 $Q$ against a degree-preserving null (double edge swaps, 20 samples); and the inverse Rent
 exponent $-p$, with $p$ fitted from the terminals of BFS balls of geometric sizes (a lower
-exponent is a more local design). Spearman's $\rho$ and $p$-value are reported with $n=9$,
+exponent is a more local design). Spearman's $\rho$ and $p$-value are reported with $n=15$,
 which is small.
 
 \paragraph{Hypotheses and decision rules.}
@@ -75,5 +75,5 @@ H1: the baseline's final placement is module- and word-coherent (supported if, f
 at least two thirds of the designs lie more than two null standard deviations above the null in both
 NMI and compactness). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
-correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
+positive correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.

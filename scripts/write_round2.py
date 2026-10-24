@@ -61,6 +61,7 @@ def round1() -> dict:
             "hard_better": s["hard_runs_better"],
             "hot_wins": sum(v[0] for v in s["hot_wins"].values()),
             "hot_n": sum(v[1] for v in s["hot_wins"].values()),
+            "clb_median": s["benchmarks"]["clb_median"],
             "ret_full": f"{ret['full']:.2f}", "ret_inter": f"{ret['inter']:.2f}"}
 
 
@@ -145,7 +146,7 @@ H1: the baseline's final placement is module- and word-coherent (supported if, f
 at least two thirds of the designs lie more than two null standard deviations above the null in both
 NMI and compactness). H2: structure predicts gain (supported if at least two of the three
 measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
-correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\\ge$ analytic start in
+positive correlation reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\\ge$ analytic start in
 wirelength ratio, for Urd and for the best new family.
 """
 
@@ -208,7 +209,7 @@ H7d is {d['status']}: \\code{{words\\_partial}} over \\code{{words}} is {f3(d['g
     out += f"""Ties (identical results) are left out of the sign tests: {a['ties']} for H7a, {b['ties']} for H7b and
 {d['ties']} for H7d. A family with nothing to rearrange reproduces its reference exactly (a design whose words are
 all single-CLB, or that has one module): \\code{{slices}} equals \\code{{words}} on {len(R['same']['slices_words'])}
-designs, \\code{{hier}} equals Urd on {len(R['same']['hier_urd'])} and \\code{{words\\_partial}} equals \\code{{words}} on
+design(s), \\code{{hier}} equals Urd on {len(R['same']['hier_urd'])} and \\code{{words\\_partial}} equals \\code{{words}} on
 {len(R['same']['partial_words'])}.
 """
     if best:
@@ -220,6 +221,10 @@ soft arms were complete when the hard and crossover arms were queued"""
         if hb and hb["n"]:
             out += f""" Its hard arm (one region per cluster, scale~1) is {f3(hb['gm'])} in wirelength over
 {hb['n']} designs, better than the baseline on {hb['wins']}; round one's hard arm pooled to {R['r1']['hard_wl']}."""
+            if hb["failed"]:
+                out += (f""" The hard arm failed in VPR's initial placement on {len(hb['failed'])} designs
+({', '.join(design_tex(x) for x in hb['failed'])}: no free sites for the constrained blocks, the same failure round one
+had on blob\\_merge) and those are left out.""")
         if xo and xo["n"]:
             out += f""" Its crossover sweep, started from its own scale-1 placement, has median crossover scale
 {xo['median']:g} against {xo['r1_median']:g} for round one's best-of-seven $P^*$ (at least round one's on
@@ -232,9 +237,17 @@ ratios are random start {f3(ur['random'])}, permuted cluster positions {f3(ur['s
 layout {f3(ur['quotient'])}"""
     if bq["quotient"] == bq["quotient"] and best:
         out += f"""; for {code(best)} they are {f3(bq['random'])}, {f3(bq['shuffled'])} and {f3(bq['quotient'])}"""
-    out += """. The analytic baseline is 1 by definition, so a random start above 1 means VPR's analytic
-start is better than a random one, and the gap between the permuted and the quotient arm is what
-the coarse layout is worth beyond the clustering itself.\n\n"""
+    out += """. The analytic baseline is 1 by definition, so a random start """
+    out += ("below 1 means the anneal from a random start ended with shorter wire than from VPR's analytic start"
+            if ur["random"] < 1 else
+            "above 1 means VPR's analytic start is better than a random one")
+    out += """; the gap between the permuted and the quotient arm is what
+the coarse layout is worth beyond the clustering itself."""
+    if bq["quotient"] == bq["quotient"] and bq["shuffled"] == bq["shuffled"] and best:
+        out += (f""" Permuting the cluster positions changes the wirelength by
+{100 * (ur['shuffled'] / ur['quotient'] - 1):+.1f}\\% for Urd and {100 * (bq['shuffled'] / bq['quotient'] - 1):+.1f}\\% for
+{code(best)} relative to the quotient layout (negative is shorter).""")
+    out += "\n\n"
     if n1:
         m, w = n1["module"], n1["word"]
         out += f"""\\textbf{{RQ-N1, does VPR rediscover the hierarchy?}} H1 is {h['H1']['status']}. Table~\\ref{{tab:r2n1}}
@@ -267,8 +280,8 @@ Word & {w['n']} & {f2(w['nmi_initial'])}/{f2(w['nmi_final'])}/{f2(w['nmi_null'])
         def cell(g, p):
             v = sp.get(f"{g}~{p}")
             return "--" if v is None else f"{v['rho']:.2f} ({pfmt(v['p'])})"
-        out += f"""\\textbf{{RQ-N2, does structure predict the gain?}} H2 is {h['H2']['status']}: {h['H2']['n_sig']} of
-{h['H2']['n_pairs']} correlations reach $p<0.05$ (no multiple-comparison correction; $n=15$ designs, so only a
+        out += f"""\\textbf{{RQ-N2, does structure predict the gain?}} H2 is {h['H2']['status']}: {h['H2']['n_pos']} of
+{h['H2']['n_pairs']} correlations are positive at $p<0.05$ and {h['H2']['n_neg']} negative (the hypothesis predicts positive; no multiple-comparison correction; $n=15$ designs, so only a
 large $\\rho$ can be told from chance). Table~\\ref{{tab:r2n2}} lists Spearman's $\\rho$ (and $p$).
 
 \\begin{{table}}[t]
@@ -294,6 +307,7 @@ Best new family & {cell('best_r2', 'q')} & {cell('best_r2', 'q_z')} & {cell('bes
 
 def discussion(R: dict) -> str:
     h = R["hyp"]
+    n1 = R["n1"]
     best = R["best"]
     vb = R["vs_base"]
     a, b, c_, d = h["H7a"], h["H7b"], h["H7c"], h["H7d"]
@@ -307,24 +321,36 @@ membership available from Odin~III covers the flip-flops, adders, multipliers an
 mixed logic, so the word seeds are datapath-register seeds more than whole-datapath seeds; a result
 against bitwise seeding here is a result about that coverage as much as about the idea."""
     t0 = lambda k: f3(vb[k]["init_t"]) if k in vb and vb[k]["n"] else "n/a"
+    bands = [vb[k]["wirelength"] for k in ("urd", "words", "words_inter", "slices", "hier", "words_partial",
+                                           "random", "urd_shuf") if k in vb and vb[k]["n"]]
+    if bands:
+        s += f"""
+
+Every soft arm of Table~\\ref{{tab:r2qor}}, bitwise or not, random start included, lands between {f3(min(bands))} and
+{f3(max(bands))} of the baseline's wirelength: a band of {100 * (max(bands) / min(bands) - 1):.1f}\\% in a geomean over
+{R['n_designs']} designs. The conclusions below are conclusions about differences inside that band."""
     s += f"""
 
 One confound the scale-1 comparison cannot remove: VPR derives its start temperature from the starting
 placement, so a start that is worse than the analytic one is annealed hotter and, in these runs, longer. The
-geomean start temperature relative to the baseline is {t0('random')} for the random start,
-{t0('urd')} for Urd and {t0(best) if best else 'n/a'} for the best new family, and placement runtime moves with it
+geomean start temperature relative to the baseline is {f2(vb['random']['init_t'])} for the random start,
+{f2(vb['urd']['init_t'])} for Urd and {f2(vb[best]['init_t']) if best else 'n/a'} for the best new family, and placement runtime moves with it
 (Table~\\ref{{tab:r2qor}}). The arms are therefore compared at VPR's own temperature, not at equal anneal effort, and
 the random start beating a connectivity-aware start would be a statement about the schedule as much as about the start;
 the effort curve (N3) is the experiment that separates them and stays open."""
     s += f"""
 
-On the coarse-versus-fine question that round one left open, the arms give the answer for these
-designs: H4 is {h['H4']['status']}, with Urd at random {f3(h['H4']['urd']['random'])}, permuted
-{f3(h['H4']['urd']['shuffled'])} and quotient {f3(h['H4']['urd']['quotient'])}. RQ-N1 explains part of the
-round-one parity: VPR's own final placement is already clearly more module- and word-compact than a random
-placement (H1 {h['H1']['status']}), so a seed that says the same thing adds little. Whether the structure of the
-netlist predicts where a seed helps is H2, {h['H2']['status']}. All of this is $n=15$ designs, median 125 CLBs, one VPR
-seed per configuration; differences of a percent are within what a different VPR seed can move."""
+On the coarse-versus-fine question that round one left open, the arms give these numbers: H4 is {h['H4']['status']}, with Urd at random {f3(h['H4']['urd']['random'])}, permuted
+{f3(h['H4']['urd']['shuffled'])} and quotient {f3(h['H4']['urd']['quotient'])}. RQ-N1 measures part of the
+round-one parity: VPR's final placement has {f2(n1['module']['dens_final'] / n1['module']['dens_null'])}$\\times$ the null's
+module compactness and {f2(n1['word']['dens_final'] / n1['word']['dens_null'])}$\\times$ its word compactness (medians), which
+is {h['H1']['status']} as a rediscovery of the hierarchy by the NMI-and-compactness rule; which suggests the placer already groups much of
+what a module or word seed would group. Whether the structure of the
+netlist predicts where a seed helps is H2, {h['H2']['status']}"""
+    if h["H2"].get("n_neg"):
+        s += f""" (the one correlation that reaches $p<0.05$ is negative: {', '.join(code(k.replace('~', ' vs ')) for k in h['H2']['neg'])})"""
+    s += """. All of this is $n=15$ designs, median {R['r1']['clb_median']:g} CLBs, one VPR
+seed per configuration; the seed-to-seed spread of VPR is not measured here, so differences of about a percent should not be read as effects."""
     return s
 
 
@@ -362,7 +388,7 @@ def appendix(R: dict) -> str:
                         f"{n1['word']['above_null']}/{n1['word']['n_z']} word"))
     if "n2" in R:
         rows.append(row("N2", "H2 structure predicts gain", "2", h["H2"]["status"],
-                        f"{h['H2']['n_sig']}/{h['H2']['n_pairs']} at $p<0.05$"))
+                        f"{h['H2']['n_pos']}+/{h['H2']['n_neg']}- of {h['H2']['n_pairs']} at $p<0.05$"))
     r1 = R["r1"]
     return f"""\\appendix
 \\section{{Research log}}
@@ -384,7 +410,7 @@ crossover; Urd was the worst soft and the best hard seed.
 \\paragraph{{2026-10-24, what it suggested.}} The baseline is VPR's connectivity-aware analytic
 start, so \\emph{{better than random}} was never tested; the anneal budget may erase what a seed adds (an
 effort curve is untested, N3); VPR's flat placement may already rediscover the structure the seed carries (N1); the
-designs are small, median 125 CLBs (size effect untested, N5); and whether the gain is the clustering or the coarse
+designs are small, median {r1['clb_median']:g} CLBs (size effect untested, N5); and whether the gain is the clustering or the coarse
 layout was not separable (N4).
 
 \\paragraph{{2026-10-24, Peter's bitwise idea.}} ``{QUOTE}''

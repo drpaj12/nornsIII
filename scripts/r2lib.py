@@ -218,12 +218,14 @@ def compute() -> dict:
         out["n2"] = n2
         sp = n2["spearman"]
         pos = [k for k, v in sp.items() if k.startswith("best_r2~") and v["rho"] > 0 and v["p"] < 0.05]
-        anysig = [k for k, v in sp.items() if v["p"] < 0.05]
+        anypos = [k for k, v in sp.items() if v["rho"] > 0 and v["p"] < 0.05]
+        neg = [k for k, v in sp.items() if v["rho"] < 0 and v["p"] < 0.05]
         h["H2"] = {"status": "supported" if len(pos) >= 2 else
-                   "not supported" if not anysig else "inconclusive",
-                   "n_sig": len(anysig), "n_pairs": len(sp)}
+                   "not supported" if not anypos else "inconclusive",
+                   "n_sig": len(anypos) + len(neg), "n_pos": len(anypos), "n_neg": len(neg),
+                   "neg": neg, "n_pairs": len(sp)}
     h.setdefault("H1", {"status": "not run"})
-    h.setdefault("H2", {"status": "not run", "n_sig": 0, "n_pairs": 0})
+    h.setdefault("H2", {"status": "not run", "n_sig": 0, "n_pos": 0, "n_neg": 0, "n_pairs": 0})
     # hard arm and crossover of the best family
     if best:
         hv = []
@@ -232,8 +234,16 @@ def compute() -> dict:
                              "wirelength")
             if r is not None:
                 hv.append(r)
+        failed = []
+        for d in designs:
+            latest = {}
+            for r in report.load_records(d):
+                latest[str(r.get("tag"))] = r
+            r = latest.get(f"hard-{best}")
+            if r is not None and r.get("rc") != 0:
+                failed.append(d)
         out["hard_best"] = {"n": len(hv), "gm": nl.geomean(hv) if hv else float("nan"),
-                            "wins": sum(1 for v in hv if v < 1)}
+                            "wins": sum(1 for v in hv if v < 1), "failed": failed}
         xs, r1s, rets, hotw, hotn = [], [], [], 0, 0
         for d in designs:
             p = nl.data_crossover(d, f"xover-{best}.json")

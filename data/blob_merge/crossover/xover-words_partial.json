@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "blob_merge",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 59666.0,
+   "cold_ret": 0.056074766355140186,
+   "scale": 1.0,
+   "unseeded": 60279.0
+  },
+  {
+   "cold": 59393.0,
+   "cold_ret": 0.03115264797507788,
+   "scale": 2.0,
+   "unseeded": 60102.0
+  },
+  {
+   "cold": 62454.0,
+   "cold_ret": 0.056074766355140186,
+   "scale": 4.0,
+   "unseeded": 58744.0
+  },
+  {
+   "cold": 58467.0,
+   "cold_ret": 0.0529595015576324,
+   "scale": 8.0,
+   "unseeded": 59239.0
+  },
+  {
+   "cold": 58344.0,
+   "cold_ret": 0.0529595015576324,
+   "scale": 16.0,
+   "unseeded": 61609.0
+  }
+ ],
+ "wins_all": false
+}

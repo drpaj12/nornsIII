@@ -205,28 +205,29 @@ Round-two arms at scale 1, geomean ratios vs the unseeded baseline (below 1.0 is
 
 | arm | wirelength | delay | chan width | place runtime | start T | better |
 |---|---|---|---|---|---|---|
-| urd | 1.026 | 1.047 | 0.933 | 1.061 | 2.96 | 2/9 |
-| words | 1.013 | 0.997 | 0.945 | 1.257 | 5.83 | 3/9 |
-| slices | 0.969 | 0.998 | 1.002 | 1.278 | 8.92 | 7/9 |
-| hier | 1.010 | 1.006 | 0.968 | 1.257 | 4.40 | 4/9 |
-| words_partial | 0.985 | 1.008 | 0.936 | 1.262 | 5.42 | 5/9 |
-| words_inter | 1.018 | 1.006 | 0.944 | 1.272 | 7.04 | 3/9 |
-| random | 0.975 | 1.003 | 0.996 | 1.274 | 6.94 | 5/9 |
-| urd_shuf | 1.035 | 1.011 | 0.941 | 1.241 | 2.91 | 2/9 |
+| urd | 1.029 | 1.004 | 0.958 | 1.068 | 3.23 | 3/15 |
+| words | 1.015 | 0.980 | 0.964 | 1.254 | 6.24 | 5/15 |
+| slices | 0.996 | 0.986 | 0.995 | 1.268 | 8.07 | 9/15 |
+| hier | 1.014 | 1.002 | 0.982 | 1.247 | 4.52 | 6/15 |
+| words_partial | 0.994 | 0.980 | 0.962 | 1.257 | 4.63 | 7/15 |
+| words_inter | 1.017 | 0.984 | 0.970 | 1.264 | 7.35 | 6/15 |
+| random | 0.997 | 0.978 | 1.012 | 1.275 | 9.24 | 8/15 |
+| urd_shuf | 1.020 | 0.992 | 0.972 | 1.227 | 3.09 | 4/15 |
+| words_partial_shuf | 0.980 | 0.972 | 0.988 | 1.179 | 5.19 | 7/15 |
 
-Best new family: slices.
+Best new family: words_partial.
 
 | hypothesis | status | deciding number |
 |---|---|---|
-| H7a | inconclusive | geomean 0.986, better on 5/9, p=1.000 |
-| H7b | inconclusive | geomean 0.957, better on 7/9, p=0.180 |
-| H7c | not supported | hier rank 8/11 (1.010); best slices |
-| H7d | supported | geomean 0.973, better on 6/9, p=0.508 |
-| H4 | not supported | urd: random 0.975 > permuted 1.035 > quotient 1.026; best: random 0.975 > permuted n/a > quotient 0.969 |
+| H7a | inconclusive | geomean 0.986, better on 10/15, p=0.302 |
+| H7b | inconclusive | geomean 0.982, better on 8/15, p=0.791 |
+| H7c | not supported | hier rank 8/11 (1.014); best words_partial |
+| H7d | supported | geomean 0.980, better on 9/15, p=0.607 |
+| H4 | not supported | urd: random 0.997 > permuted 1.020 > quotient 1.029; best: random 0.997 > permuted 0.980 > quotient 0.994 |
 | H1 | inconclusive | module: 8/13 NMI, 10/13 compactness above null+2sd; word: 9/15 NMI, 14/15 compactness above null+2sd |
-| H2 | not supported | 0/9 correlations at p<0.05 (n=15) |
+| H2 | not supported | 0 positive and 1 negative of 9 correlations at p<0.05 (n=15) |
 
-Word membership (Odin III bus names and spans joined by net id): 6576/11198 blocks in a word; flip-flops 3351/3351, LUTs 1087/5106, hard cells 2138/2155; 241 Odin cells found no BLIF block; the rerun BLIF equals the kept one on all designs: True.
+Word membership (Odin III bus names and spans joined by net id): 86043/106793 blocks in a word; flip-flops 41962/41962, LUTs 18402/37244, hard cells 25679/25852; 1204 Odin cells found no BLIF block; the rerun BLIF equals the kept one on all designs: True.
 
 | design | blocks | in a word | words | words >= 2 | largest (module,file:line) group |
 |---|---|---|---|---|---|
@@ -239,6 +240,12 @@ Word membership (Odin III bus names and spans joined by net id): 6576/11198 bloc
 | sha | 2506 | 1245 | 45 | 44 | 1739 |
 | boundtop | 1156 | 786 | 76 | 62 | 243 |
 | mkSMAdapter4B | 2365 | 1143 | 96 | 74 | 623 |
+| or1200 | 3776 | 1896 | 103 | 82 | 428 |
+| stereovision0 | 21089 | 16408 | 1617 | 1596 | 3498 |
+| stereovision1 | 19414 | 16166 | 1199 | 1068 | 5248 |
+| mkDelayWorker32B | 4263 | 2844 | 150 | 138 | 617 |
+| stereovision2 | 36645 | 34857 | 1295 | 1285 | 2256 |
+| blob_merge | 10408 | 7296 | 382 | 375 | 701 |
 
 N1 medians over designs (NMI / compactness): analytic start, VPR final, random null.
 
@@ -254,17 +261,22 @@ N2 Spearman rho (p, n) between structure and gain (1 - wirelength ratio).
 | best_r1~q | -0.093 | 0.742 | 15 |
 | best_r1~q_z | -0.239 | 0.390 | 15 |
 | best_r1~rent_p | -0.164 | 0.558 | 15 |
-| best_r2~q | 0.150 | 0.700 | 9 |
-| best_r2~q_z | -0.367 | 0.332 | 9 |
-| best_r2~rent_p | 0.433 | 0.244 | 9 |
+| best_r2~q | -0.357 | 0.191 | 15 |
+| best_r2~q_z | -0.589 | 0.021 | 15 |
+| best_r2~rent_p | 0.129 | 0.648 | 15 |
 | urd~q | -0.175 | 0.533 | 15 |
 | urd~q_z | -0.454 | 0.089 | 15 |
 | urd~rent_p | 0.125 | 0.657 | 15 |
+
+Crossover of the best new family: median scale 16 vs round one 16 (n=13); retention at 2S median 0.20; wins vs unseeded at 2S 5/13.
 
 ## Failed runs
 
 | design | tag | result | cause |
 |---|---|---|---|
+| stereovision0 | hard-words_partial | rc=1 | 41 blocks could not be placed during initial placement; no spaces were available for them on the grid. |
+| stereovision1 | hard-words_partial | rc=1 | 42 blocks could not be placed during initial placement; no spaces were available for them on the grid. |
+| stereovision2 | hard-words_partial | rc=1 | 10 blocks could not be placed during initial placement; no spaces were available for them on the grid. |
 | blob_merge | hard-kmeans_2k | rc=1 | initial placement: 9 CLB blocks could not be placed; floorplan constraints too tight (vpr initial_placement.cpp:309) |
 
 ## Method notes

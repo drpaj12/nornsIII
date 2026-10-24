@@ -14,41 +14,49 @@ starting placement. Below 1.0 is better (except $T_0$, a diagnostic).}
 \toprule
 Seed & WL & Delay & Chan.\ & Time & $T_0$ & Better \\
 \midrule
-Urd (round 1) & 1.026 & 1.047 & 0.933 & 1.061 & 2.96 & 2/9 \\
-Words & 1.013 & 0.997 & 0.945 & 1.257 & 5.83 & 3/9 \\
-Words, inter only & 1.018 & 1.006 & 0.944 & 1.272 & 7.04 & 3/9 \\
-Slices & 0.969 & 0.998 & 1.002 & 1.278 & 8.92 & 7/9 \\
-Hier & 1.010 & 1.006 & 0.968 & 1.257 & 4.40 & 4/9 \\
-Words, partial & 0.985 & 1.008 & 0.936 & 1.262 & 5.42 & 5/9 \\
-Random start & 0.975 & 1.003 & 0.996 & 1.274 & 6.94 & 5/9 \\
-Urd, permuted & 1.035 & 1.011 & 0.941 & 1.241 & 2.91 & 2/9 \\
+Urd (round 1) & 1.029 & 1.004 & 0.958 & 1.068 & 3.23 & 3/15 \\
+Words & 1.015 & 0.980 & 0.964 & 1.254 & 6.24 & 5/15 \\
+Words, inter only & 1.017 & 0.984 & 0.970 & 1.264 & 7.35 & 6/15 \\
+Slices & 0.996 & 0.986 & 0.995 & 1.268 & 8.07 & 9/15 \\
+Hier & 1.014 & 1.002 & 0.982 & 1.247 & 4.52 & 6/15 \\
+Words, partial & 0.994 & 0.980 & 0.962 & 1.257 & 4.63 & 7/15 \\
+Random start & 0.997 & 0.978 & 1.012 & 1.275 & 9.24 & 8/15 \\
+Urd, permuted & 1.020 & 0.992 & 0.972 & 1.227 & 3.09 & 4/15 \\
+Words, permuted & 0.980 & 0.972 & 0.988 & 1.179 & 5.19 & 7/15 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{RQ-N7, bitwise seeds (9 designs, one VPR seed each).}
-H7a is inconclusive: \code{words} over Urd is 0.986 in wirelength, better on 5 of
-9 designs (sign test $p=1.000$).
-H7b is inconclusive: \code{slices} over \code{words} is 0.957 in wirelength
-(better on 7 of 9, $p=0.180$) and 1.060 in channel width
-(better on 3 of 9).
+\textbf{RQ-N7, bitwise seeds (15 designs, one VPR seed each).}
+H7a is inconclusive: \code{words} over Urd is 0.986 in wirelength, better on 10 of
+15 designs (sign test $p=0.302$).
+H7b is inconclusive: \code{slices} over \code{words} is 0.982 in wirelength
+(better on 8 of 15, $p=0.791$) and 1.033 in channel width
+(better on 6 of 15).
 H7c is not supported: \code{hier} ranks 8 of 11 families at
-1.010; the lowest is \code{slices} at 0.969.
-H7d is supported: \code{words\_partial} over \code{words} is 0.973
-(better on 6 of 9, $p=0.508$).
-Ties (identical results) are left out of the sign tests: 0 for H7a, 0 for H7b and
+1.014; the lowest is \code{words\_partial} at 0.994.
+H7d is supported: \code{words\_partial} over \code{words} is 0.980
+(better on 9 of 15, $p=0.607$).
+Ties (identical results) are left out of the sign tests: 0 for H7a, 1 for H7b and
 0 for H7d. A family with nothing to rearrange reproduces its reference exactly (a design whose words are
-all single-CLB, or that has one module): \code{slices} equals \code{words} on 0
-designs, \code{hier} equals Urd on 0 and \code{words\_partial} equals \code{words} on
+all single-CLB, or that has one module): \code{slices} equals \code{words} on 1
+design(s), \code{hier} equals Urd on 1 and \code{words\_partial} equals \code{words} on
 0.
-The best new family by geomean wirelength is \code{slices}, so the coarse-random, hard and
-crossover arms below use it.
+The best new family by geomean wirelength is \code{words\_partial} (chosen on the 13 designs whose
+soft arms were complete when the hard and crossover arms were queued), so the coarse-random, hard and crossover arms below use it. Its hard arm (one region per cluster, scale~1) is 1.141 in wirelength over
+12 designs, better than the baseline on 2; round one's hard arm pooled to 1.088. The hard arm failed in VPR's initial placement on 3 designs
+(stereovision0, stereovision1, stereovision2: no free sites for the constrained blocks, the same failure round one
+had on blob\_merge) and those are left out. Its crossover sweep, started from its own scale-1 placement, has median crossover scale
+16 against 16 for round one's best-of-seven $P^*$ (at least round one's on
+11 of 13 designs); at twice the crossover the retention median is 0.20 and the
+seed beats an unseeded run at the same temperature on 5 of 13 designs.
 
 \textbf{RQ-N4, clustering versus coarse layout.} H4 is not supported. For Urd the wirelength
-ratios are random start 0.975, permuted cluster positions 1.035, quotient
-layout 1.026; for \code{slices} they are 0.975, n/a and 0.969. The analytic baseline is 1 by definition, so a random start above 1 means VPR's analytic
-start is better than a random one, and the gap between the permuted and the quotient arm is what
-the coarse layout is worth beyond the clustering itself.
+ratios are random start 0.997, permuted cluster positions 1.020, quotient
+layout 1.029; for \code{words\_partial} they are 0.997, 0.980 and 0.994. The analytic baseline is 1 by definition, so a random start below 1 means the anneal from a random start ended with shorter wire than from VPR's analytic start; the gap between the permuted and the quotient arm is what
+the coarse layout is worth beyond the clustering itself. Permuting the cluster positions changes the wirelength by
+-0.9\% for Urd and -1.4\% for
+\code{words\_partial} relative to the quotient layout (negative is shorter).
 
 \textbf{RQ-N1, does VPR rediscover the hierarchy?} H1 is inconclusive. Table~\ref{tab:r2n1}
 gives medians over designs: the final placement is above the random null in NMI on 8 of 13
@@ -76,7 +84,7 @@ Word & 15 & 0.72/0.73/0.66 & 0.33/0.32/0.08 \\
 \end{table}
 
 \textbf{RQ-N2, does structure predict the gain?} H2 is not supported: 0 of
-9 correlations reach $p<0.05$ (no multiple-comparison correction; $n=15$ designs, so only a
+9 correlations are positive at $p<0.05$ and 1 negative (the hypothesis predicts positive; no multiple-comparison correction; $n=15$ designs, so only a
 large $\rho$ can be told from chance). Table~\ref{tab:r2n2} lists Spearman's $\rho$ (and $p$).
 
 \begin{table}[t]
@@ -92,7 +100,7 @@ Gain & $Q$ & $z(Q)$ & $-p_{\text{Rent}}$ \\
 \midrule
 Urd, round one & -0.17 (0.533) & -0.45 (0.089) & 0.12 (0.657) \\
 Best round one & -0.09 (0.742) & -0.24 (0.390) & -0.16 (0.558) \\
-Best new family & 0.15 (0.700) & -0.37 (0.332) & 0.43 (0.244) \\
+Best new family & -0.36 (0.191) & -0.59 (0.021) & 0.13 (0.648) \\
 \bottomrule
 \end{tabular}
 \end{table}

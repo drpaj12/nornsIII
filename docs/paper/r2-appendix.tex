@@ -29,7 +29,7 @@ structure is a seeding aspect of its own, with the module hierarchy kept at the 
 N1: H1 (VPR rediscovers the hierarchy). N2: H2 (structure predicts the gain). N4: H4 (random start,
 permuted clusters, quotient layout, analytic start). The word membership had to come from data: the
 provenance BLIF line is a statement, so the membership is read from Odin~III's bus names and source spans and
-joined by net id (Section~\ref{sec:r2-method}); only about 21\%
+joined by net id (Section~\ref{sec:r2-method}); only about 49\%
 of the LUTs get a word.
 
 \paragraph{2026-10-24, round two: outcomes.} Inconclusive for H7a, inconclusive for H7b,
@@ -53,13 +53,13 @@ RQ & Hypothesis & Round & Status & Deciding number \\
 R1 & soft seed stays at parity & 1 & supported & wirelength 1.009 \\
 R1 & hard regions help & 1 & not supported & 1.088 (14/104) \\
 R1 & seeds win at $2\times$ crossover & 1 & not supported & 57/105 \\
-N7 & H7a words beat Urd & 2 & inconclusive & 0.986 (5/9) \\
-N7 & H7b slices beat words & 2 & inconclusive & WL 0.957, ch.\ 1.060 \\
+N7 & H7a words beat Urd & 2 & inconclusive & 0.986 (10/15) \\
+N7 & H7b slices beat words & 2 & inconclusive & WL 0.982, ch.\ 1.033 \\
 N7 & H7c hier is best & 2 & not supported & rank 8/11 \\
-N7 & H7d partial $\ge$ full & 2 & supported & 0.973 \\
-N4 & H4 random $<$ permuted $<$ quotient & 2 & not supported & 0.975/1.035/1.026 \\
+N7 & H7d partial $\ge$ full & 2 & supported & 0.980 \\
+N4 & H4 random $<$ permuted $<$ quotient & 2 & not supported & 0.997/1.020/1.029 \\
 N1 & H1 baseline already coherent & 2 & inconclusive & 8/13 mod., 9/15 word \\
-N2 & H2 structure predicts gain & 2 & not supported & 0/9 at $p<0.05$ \\
+N2 & H2 structure predicts gain & 2 & not supported & 0+/1- of 9 at $p<0.05$ \\
 \bottomrule
 \end{tabular}
 \end{table}

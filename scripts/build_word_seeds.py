@@ -14,10 +14,10 @@ seeds/clusters.json):
                  bit-sliced runs
   words_partial  only the word CLBs are seeded; every other CLB keeps VPR's analytic position
   random         a random legal placement (the true random start, RQ-N4)
-  urd_shuf, words_shuf, slices_shuf, hier_shuf
+  urd_shuf, words_shuf, slices_shuf, hier_shuf, words_partial_shuf
                  the coarse-random arm: clusters kept, cluster positions permuted
 
-Usage: python scripts/build_word_seeds.py [design ...]
+Usage: python scripts/build_word_seeds.py [--only=a,b] [design ...]
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ def majority_word(place, clb_atoms, word_map: dict[str, int]) -> dict[str, int |
     return out
 
 
-def build(design: str) -> int:
+def build(design: str, only: set[str] | None = None) -> int:
     words_path = nl.runs_dir(design, "words", "members.json")
     if not words_path.is_file():
         print(f"{design}: no word membership (run build_words.py)")
@@ -147,6 +147,8 @@ def build(design: str) -> int:
         return out
 
     def run(seed: str, per, mapping, **kw) -> None:
+        if only and seed not in only:
+            return
         clusters = to_clusters(per, kw.pop("keep", None))
         if not clusters:
             return
@@ -166,6 +168,8 @@ def build(design: str) -> int:
     run("words_partial", cluster_of["words"], only_words, fixed=fixed, keep=seeded)
     per_clb = {r["name"]: i for i, r in enumerate(place.rows)}
     run("random", per_clb, {}, layout="random")
+    run("words_partial_shuf", cluster_of["words"], only_words, layout="shuffle", fixed=fixed,
+        keep=seeded)
     run("urd_shuf", cluster_of["urd"], urd, layout="shuffle")
     run("words_shuf", cluster_of["words"], words_map, layout="shuffle")
     run("slices_shuf", cluster_of["words"], words_map, layout="shuffle", extra_runs=runs,
@@ -176,9 +180,13 @@ def build(design: str) -> int:
 
 
 def main(argv: list[str]) -> int:
+    only = None
+    if argv and argv[0].startswith("--only="):
+        only = set(argv[0].split("=", 1)[1].split(","))
+        argv = argv[1:]
     rc = 0
     for design in argv or list(nl.DESIGN_ORDER):
-        rc |= build(design)
+        rc |= build(design, only)
     return rc
 
 

@@ -235,7 +235,8 @@ def round2_section() -> list[str]:
                             f"{a['n_z']} compactness above null+2sd"
                             for lab, a in R["n1"].items())
         else:
-            num = f"{v['n_sig']}/{v['n_pairs']} correlations at p<0.05 (n=15)"
+            num = (f"{v['n_pos']} positive and {v['n_neg']} negative of {v['n_pairs']} correlations "
+                   f"at p<0.05 (n=15)")
         out.append(f"| {key} | {v['status']} | {num} |")
     c = R["coverage_all"]
     out += ["", "Word membership (Odin III bus names and spans joined by net id): "
