@@ -26,9 +26,13 @@ Checked on the pinned build `/home/jamiespa/odin3-ws/external/vtr-verilog-to-rou
 * Manual schedule: specifying any of `--init_t`, `--exit_t`, `--alpha_t` switches to
   `USER_SCHED` (`read_options.cpp:4169`); the automatic schedule is the default and is what the
   matrix uses so the cooling shape is unchanged across scales.
-* `--save_placement_per_temperature FILE` saves per-temperature placements (debugging); there is
-  no mid-anneal stop/resume flag, so checkpointing cannot be emulated from the command line
-  (see `patches/`).
+* `--save_placement_per_temperature N` saves N placements inside each temperature (debugging
+  files `placement_<temp>_<n>.place`); there is no mid-anneal stop/resume flag.
+* `--place_checkpointing {on, off}` (default **on**): VPR saves the best late-anneal placement
+  (`Checkpoint saved: bb_costs=...` in the log) and restores it before the quench
+  (`vpr/src/place/placer.cpp:384,440`). Effective because `--RL_agent_placement on` and
+  `--place_agent_multistate on` are also defaults. The experiment therefore needs no VTR patch:
+  on is the main matrix, off is the control sweep (`matrix.py checkpoint`).
 
 ## Metrics in the log
 

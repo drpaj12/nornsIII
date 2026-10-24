@@ -227,6 +227,57 @@ def crossover(design: str, scales: list[float], timeout: int | None = None) -> d
     return result
 
 
+def unseeded_off(design: str, scale: float, timeout: int | None = None) -> dict[str, object]:
+    tag = f"unseededoff-{scale:g}"
+    if done(design, tag):
+        return nl.read_json(nl.runs_dir(design, "runs", tag, "metrics.json"))
+    return run_one(design, tag, ["--anneal_auto_init_t_scale", f"{scale:g}",
+                                 "--place_checkpointing", "off"],
+                   arm="unseeded-off", scale=scale, timeout=timeout)
+
+
+def cold_off(design: str, scale: float, pstar: Path, region_seed: str | None = None,
+             timeout: int | None = None) -> dict[str, object]:
+    tag = f"coldoff-{scale:g}"
+    if done(design, tag):
+        return nl.read_json(nl.runs_dir(design, "runs", tag, "metrics.json"))
+    return run_one(design, tag, ["--read_initial_place_file", str(pstar),
+                                 "--anneal_auto_init_t_scale", f"{scale:g}",
+                                 "--place_checkpointing", "off"],
+                   seed_place=pstar, region_seed=region_seed, arm="cold-off", scale=scale,
+                   timeout=timeout)
+
+
+def checkpoint_sweep(design: str, scales: list[float], timeout: int | None = None) -> dict[str, object]:
+    """The same cold-start sweep with VPR's checkpointing disabled (the control arm).
+
+    VPR 8's checkpointing (`--place_checkpointing`, default on) saves the best late-anneal
+    placement and restores it before the quench; the design's prediction (RLPlace) is that the
+    crossover moves hotter with it on. No VTR patch is needed for this arm.
+    """
+    best = best_final(design)
+    res_path = nl.runs_dir(design, "crossover", "crossover.json")
+    if best is None or not res_path.is_file():
+        print(f"{design}: no P* for the checkpointing control")
+        return {}
+    pstar = nl.runs_dir(design, "crossover", "Pstar.place")
+    region_seed = str(nl.read_json(res_path).get("region_seed", ""))
+    rows = []
+    for scale in scales:
+        u = unseeded_off(design, scale, timeout=timeout)
+        c = cold_off(design, scale, pstar, region_seed=region_seed, timeout=timeout)
+        rows.append({"scale": scale, "unseeded": u.get("wirelength"), "cold": c.get("wirelength"),
+                     "cold_t": c.get("init_t"), "cold_ret": c.get("retention")})
+    wins = [r["scale"] for r in rows if r["cold"] and r["unseeded"]
+            and float(r["cold"]) < float(r["unseeded"])]
+    result = {"design": design, "pstar": str(best["tag"]), "scales": rows,
+              "crossover_scale_off": max(wins) if wins else None,
+              "wins_all": len(wins) == len(rows)}
+    nl.write_json(nl.runs_dir(design, "crossover", "checkpoint.json"), result)
+    print(f"{design}: checkpointing off crossover_scale={result['crossover_scale_off']}")
+    return result
+
+
 def hot(design: str, seeds: list[str], scale: float, timeout: int | None = None) -> None:
     """Each seed's final placement at the hot scale, vs the unseeded run at the same scale."""
     unseeded(design, scale, timeout=timeout)
@@ -261,11 +312,15 @@ def run_design(design: str, args: argparse.Namespace) -> None:
         res = crossover(design, scales, timeout=args.timeout)
         if res.get("crossover_scale") is not None:
             hot(design, seeds, float(res["crossover_scale"]) * 2, timeout=args.timeout)
+    if args.mode in ("checkpoint", "all") and \
+            nl.runs_dir(design, "crossover", "crossover.json").is_file():
+        checkpoint_sweep(design, [float(x) for x in args.scales.split(",")],
+                         timeout=args.timeout)
 
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=("baseline", "seeds", "crossover", "all"))
+    ap.add_argument("mode", choices=("baseline", "seeds", "crossover", "checkpoint", "all"))
     ap.add_argument("designs", nargs="*")
     ap.add_argument("--seeds", default="")
     ap.add_argument("--variants", default="")
