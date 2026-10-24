@@ -60,6 +60,73 @@ def block_clusters(design: str, blocks: list[dict[str, object]]) -> dict[str, di
     return seeds
 
 
+
+def adder_chains(blocks: list[dict[str, object]], flat: nl.Flat,
+                 id2name: dict[str, str]) -> list[dict[str, object]]:
+    """Carry-chain groups: VPR places a chain as a vertical run (direct y_offset -1).
+
+    A chain is an ordered list of CLBs, head first (head.cout drives the next adder's cin).
+    Seeds must move a whole chain as a run kept in the same column, or VPR's macro
+    verification rejects the placement.
+    """
+    adders = [b for b in blocks if b.get("model") == "adder" and b.get("pins")]
+    cout_of: dict[str, str] = {}
+    cin_to: dict[str, str] = {}
+    for b in adders:
+        pins = {k.split("[")[0]: v for k, v in b["pins"].items()}
+        if "cout" in pins:
+            cout_of.setdefault(pins["cout"], str(b["name"]))
+        if "cin" in pins:
+            cin_to[str(b["name"])] = pins["cin"]
+    succ: dict[str, str] = {}
+    has_pred: set[str] = set()
+    for name, cin_net in cin_to.items():
+        pred = cout_of.get(cin_net)
+        if pred is not None and pred != name:
+            succ[pred] = name
+            has_pred.add(name)
+    chains: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for head in [n for n in succ if n not in has_pred] + list(succ):
+        if head in seen:
+            continue
+        run = [head]
+        seen.add(head)
+        while run[-1] in succ and succ[run[-1]] not in seen:
+            nxt = succ[run[-1]]
+            if flat.clb_of(nxt) is None or flat.clb_of(nxt) == flat.clb_of(run[-1]):
+                break
+            run.append(nxt)
+            seen.add(nxt)
+        clbs = [id2name.get(str(flat.clb_of(n))) for n in run]
+        if len(clbs) > 1 and all(clbs):
+            chains.append({"blocks": run, "clbs": clbs})
+    return chains
+
+
+
+def slot_runs(slots: list[tuple[int, int, int, int]]) -> list[list[tuple[int, tuple[int, int, int, int]]]]:
+    """Vertical runs of logic slots: same x, consecutive y (descending), with their indices."""
+    by_x: dict[int, list[tuple[int, tuple[int, int, int, int]]]] = collections.defaultdict(list)
+    for i, slot in enumerate(slots):
+        by_x[slot[0]].append((i, slot))
+    runs = []
+    for x in sorted(by_x):
+        column = sorted(by_x[x], key=lambda item: -item[1][1])
+        run: list[tuple[int, tuple[int, int, int, int]]] = []
+        last_y = None
+        for item in column:
+            y = item[1][1]
+            if last_y is not None and y != last_y - 1:
+                runs.append(run)
+                run = []
+            run.append(item)
+            last_y = y
+        if run:
+            runs.append(run)
+    return runs
+
+
 def classify(pb_types: set[str]) -> str:
     if pb_types and pb_types <= {"inpad", "outpad"}:
         return "pad"
@@ -83,6 +150,8 @@ def build(design: str) -> int:
     models = block_models(blif, set(flat.atoms))
     seeds = block_clusters(design, blocks)
     place = nl.Place(init_place)
+    chains = adder_chains(parsed["blocks"], flat,
+                          {r["num"]: r["name"] for r in place.rows})
     width, height = nl.grid_size(place)
     clb_types = {clb: classify(types) for clb, types in flat.clb_types().items()}
     clb_class = {r["name"]: clb_types.get(r["num"], "logic") for r in place.rows}
@@ -111,12 +180,12 @@ def build(design: str) -> int:
     for seed, per in clb_cluster.items():
         clusters: dict[int, list[str]] = collections.defaultdict(list)
         for clb, cl in per.items():
-            if cl is not None and clb_class.get(clb) != "pad":
+            if cl is not None and clb_class.get(clb) not in ("pad", "mult"):
                 clusters[cl].append(clb)
         if not clusters:
             continue
         result = build_seed(design, seed, clusters, clb_class, base_slots, place, width, height,
-                            blocks, block_cluster[seed], flat)
+                            blocks, block_cluster[seed], flat, chains)
         out["seeds"][seed] = result
         print(f"{design}/{seed}: {len(clusters)} clusters, "
               f"{sum(len(v) for v in clusters.values())} CLBs")
@@ -128,7 +197,7 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                clb_types: dict[str, str], base_slots: dict[str, list[tuple[int, int, int, int]]],
                place: nl.Place, width: int, height: int,
                blocks: list[dict[str, object]], block_cluster: dict[str, int],
-               flat: nl.Flat) -> dict[str, object]:
+               flat: nl.Flat, chains: list[dict[str, object]]) -> dict[str, object]:
     import networkx as nx
 
     # quotient graph: one node per cluster, weight = inter-cluster net count
@@ -167,9 +236,11 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
     assignment_inter: dict[str, tuple[int, int, int, int]] = {}
     rng = random.Random(7)
     for cls in CLASSES:
-        if cls == "pad":
+        if cls in ("pad", "mult"):
+            # pad sites are fixed by the arch; mult_36 macros have a placement orientation and
+            # stay anchored where the analytic placer put them (agent default, EXPERIMENT.md)
             for r in place.rows:
-                if clb_types.get(r["name"]) == "pad":
+                if clb_types.get(r["name"]) == cls:
                     coords = (int(r["x"]), int(r["y"]), int(r["sub"]), int(r["layer"]))
                     assignment_full[r["name"]] = coords
                     assignment_inter[r["name"]] = coords
@@ -189,8 +260,45 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
         used: set[int] = set()
         chosen: dict[int, list[tuple[int, int, int, int]]] = {}
         base_xy = {r["name"]: (float(r["x"]), float(r["y"])) for r in place.rows}
+        # carry chains first: a chain occupies one vertical run, head at the top (VPR direct
+        # y_offset -1); its CLBs keep that run in both variants
+        chain_names: set[str] = set()
+        clb2cl = {c: cl for cl, members in clusters.items() for c in members}
+        if cls == "logic" and chains:
+            runs = slot_runs(slots)
+            for chain in sorted(chains, key=lambda c: -len(c["clbs"])):
+                members = [c for c in chain["clbs"] if clb_types.get(c) == "logic"]
+                if len(members) < 2:
+                    continue
+                counts = collections.Counter(clb2cl[c] for c in members if c in clb2cl)
+                if counts:
+                    cl = counts.most_common(1)[0][0]
+                    px, py = target.get(cl, (0.0, 0.0))
+                else:
+                    px, py = (x0 + x1) / 2.0, (y0 + y1) / 2.0
+                best = None
+                n = len(members)
+                for run in runs:
+                    for start in range(0, len(run) - n + 1):
+                        head = run[start:start + n]
+                        if any(i in used for i, _s in head):
+                            continue
+                        cx = head[0][1][0]
+                        cy = sum(s[1] for _i, s in head) / n
+                        dist = (cx - px) ** 2 + (cy - py) ** 2
+                        if best is None or dist < best[0]:
+                            best = (dist, head)
+                if best is None:
+                    continue
+                for name, (i, slot) in zip(members, best[1]):
+                    assignment_full[name] = slot
+                    assignment_inter[name] = slot
+                    used.add(i)
+                    chain_names.add(name)
         for cl in order:
-            names = by_cluster[cl]
+            names = [n for n in by_cluster[cl] if n not in chain_names]
+            if not names:
+                continue
             px, py = target[cl]
             avail = [(i, s) for i, s in enumerate(slots) if i not in used]
             avail.sort(key=lambda item: (item[1][0] - px) ** 2 + (item[1][1] - py) ** 2)

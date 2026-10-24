@@ -179,7 +179,8 @@ def parse_blif(path: Path, atom_names: set[str] | None = None,
             if not outs:
                 outs = list(pins.values())
             blocks.append({"name": outs[0] if outs else "", "kind": "hard",
-                           "inputs": list(pins.values()), "model": model_name, "rows": []})
+                           "inputs": list(pins.values()), "pins": pins,
+                           "model": model_name, "rows": []})
     for b in blocks:
         b.setdefault("rows", [])
         b["module"] = module_of(b["name"])

@@ -50,7 +50,14 @@ def load_records(design: str) -> list[dict[str, object]]:
 
 
 def done(design: str, tag: str) -> bool:
-    return (nl.runs_dir(design, "runs", tag, "metrics.json")).is_file()
+    """A tag is done only when its kept record says the run succeeded (rc 0)."""
+    path = nl.runs_dir(design, "runs", tag, "metrics.json")
+    if not path.is_file():
+        return False
+    try:
+        return nl.read_json(path).get("rc") == 0
+    except (ValueError, OSError):
+        return False
 
 
 def blif_of(design: str) -> Path:
