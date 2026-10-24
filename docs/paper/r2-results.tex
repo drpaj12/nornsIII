@@ -1,0 +1,156 @@
+\subsection{Round two results}
+\label{sec:r2-results}
+
+\begin{table}[t]
+\caption{Round two: geomean ratios vs the unseeded baseline at scale~1 for the soft arms (Urd from
+round one for reference). The last column is the number of designs where the routed wirelength is
+below the baseline. WL is routed wirelength, Chan.\ the minimum channel width, Time the
+placement runtime, $T_0$ the anneal's start temperature that VPR derives from the
+starting placement. Below 1.0 is better (except $T_0$, a diagnostic).}
+\label{tab:r2qor}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+Seed & WL & Delay & Chan.\ & Time & $T_0$ & Better \\
+\midrule
+Urd (round 1) & 1.029 & 1.004 & 0.958 & 1.068 & 3.23 & 3/15 \\
+Words & 1.015 & 0.980 & 0.964 & 1.254 & 6.24 & 5/15 \\
+Words, inter only & 1.017 & 0.984 & 0.970 & 1.264 & 7.35 & 6/15 \\
+Slices & 0.996 & 0.986 & 0.995 & 1.268 & 8.07 & 9/15 \\
+Hier & 1.014 & 1.002 & 0.982 & 1.247 & 4.52 & 6/15 \\
+Words, partial & 0.994 & 0.980 & 0.962 & 1.257 & 4.63 & 7/15 \\
+Random start & 0.997 & 0.978 & 1.012 & 1.275 & 9.24 & 8/15 \\
+Urd, permuted & 1.020 & 0.992 & 0.972 & 1.227 & 3.09 & 4/15 \\
+Words, partial, permuted & 0.980 & 0.972 & 0.988 & 1.179 & 5.19 & 7/15 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{RQ-N7, bitwise seeds (15 designs, one VPR seed each).}
+H7a is inconclusive: \code{words} over Urd is 0.986 in wirelength, better on 10 of
+15 designs (sign test $p=0.302$).
+H7b is inconclusive: \code{slices} over \code{words} is 0.982 in wirelength
+(better on 8 of 15, $p=0.791$) and 1.033 in channel width
+(better on 6 of 15).
+H7c is not supported: \code{hier} ranks 8 of 11 families at
+1.014; the lowest is \code{words\_partial} at 0.994.
+H7d is inconclusive (no evidence of a difference): \code{words\_partial} over \code{words} is 0.980
+(better on 9 of 15, $p=0.607$).
+Ties (identical results) are left out of the sign tests: 0 for H7a, 1 for H7b and
+0 for H7d. A family with nothing to rearrange reproduces its reference exactly (a design whose words are
+all single-CLB, or that has one module): \code{slices} equals \code{words} on 1
+design(s), \code{hier} equals Urd on 1 and \code{words\_partial} equals \code{words} on
+0.
+Seed audit. Rebuilding the seven round-two seed families from the kept word membership with the committed builders gives
+seed files byte-identical to the ones VPR ran from on all 15 designs;
+so every \code{slices} run used the column-major bit-order fallback of the committed code, and that fallback changes the slices
+seed on 6 designs (ch\_intrinsics, diffeq1, mkPktMerge, raygentop, stereovision0, stereovision2). The designs where \code{slices} equals \code{words} as a seed file
+(mkDelayWorker32B) and where \code{hier} equals Urd (mkDelayWorker32B) are equal because there is nothing to rearrange, not because
+a code path was skipped. On \code{mkDelayWorker32B} only 9 CLBs carry a word label, in 7 words, and no word has two CLBs off the carry chains.
+
+\code{words\_partial} places only the word CLBs, so how much of each design it moves matters for H7d
+(Table~\ref{tab:r2partial}). Of the logic and memory CLBs the seed moves a median of 79\% per design
+(6 of 15 designs at 90\% or more, down to 15\% on mkDelayWorker32B); counting every placed block, pads and
+multipliers included, which are anchored in every arm, the median is only 18\% (for example
+11 of 243 on ch\_intrinsics). Where the seed covers nearly all logic CLBs,
+\code{words\_partial} differs little from \code{words}, so H7d compares two similar placements; where it covers little (for example
+mkDelayWorker32B), most of the seed is VPR's own analytic start. H7d is
+therefore a weak test of ``seeding fewer CLBs'' on the designs where the share is high.
+The best new family by geomean wirelength is \code{words\_partial} (chosen on the 13 designs whose
+soft arms were complete when the hard and crossover arms were queued), so the coarse-random, hard and crossover arms below use it. Its geomean of
+0.994 is a selected figure: the family was the best of four on those 13 designs and is reported on
+them (and on the 2 added later), so it is biased low, and it lies inside the band of the other arms. Its hard arm (one region per cluster, scale~1) is 1.141 in wirelength over
+12 designs, better than the baseline on 2; round one's hard arm pooled to 1.088 (all families, all designs). That figure is over the 12 survivors only, and the 3 designs that failed are among the largest, so
+survivors flatter it. Round one's Urd hard arm over the same 12 designs is 1.042 (better on 3):
+on equal designs the bitwise family's hard arm is worse than Urd's. The hard arm failed in VPR's initial placement on 3 designs
+(stereovision0, stereovision1, stereovision2: no free sites for the constrained blocks, the same failure round one
+had on blob\_merge) and those are left out. The builder's region check counts a box as large enough when it holds as many logic sites
+as the cluster's own CLBs; it does not count the unseeded CLBs that this family leaves at their analytic positions,
+which can sit inside a box, so these failures may be builder-side rather than a property of hard regions. Its crossover sweep, started from its own scale-1 placement, has median crossover scale
+16 against 16 for round one's best-of-seven $P^*$ over the 13 of 15 designs where
+it won at some scale (at least round one's on 11 of 13); at twice the crossover the retention median is
+0.20 and the seed beats an unseeded run at the same temperature on 5 of 13 designs. stereovision3 and mkPktMerge had no winning scale at all and are left out of
+those medians and counts (round one won up to 256$\times$ on stereovision3 and 16$\times$ on mkPktMerge). Counting them as failures, the family is at least round one's on
+11 of 15 designs, and the median over all 15 (a failure taken as below the lowest scale) is
+16 against 16.
+
+\textbf{RQ-N4, clustering versus coarse layout.} H4 is not supported. For Urd the wirelength
+ratios are random start 0.997, permuted cluster positions 1.020, quotient
+layout 1.029; for \code{words\_partial} they are 0.997, 0.980 and 0.994. The analytic baseline is 1 by definition, so a random start below 1 means the anneal from a random start ended with shorter wire than from VPR's analytic start; the gap between the permuted and the quotient arm is what
+the coarse layout is worth beyond the clustering itself. Permuting the cluster positions changes the wirelength by
+-0.9\% for Urd and -1.4\% for
+\code{words\_partial} relative to the quotient layout (negative is shorter).
+
+\textbf{RQ-N1, does VPR rediscover the hierarchy?} H1 is inconclusive. Table~\ref{tab:r2n1}
+gives medians over designs: the final placement is above the random null in NMI on 8 of 11
+designs for modules and 9 of 15 for words, and in compactness on 10 of 11
+and 14 of 15 (more than two null standard deviations). Modules are counted over 11 designs, not 15 or 13:
+\code{diffeq1} and \code{diffeq2} have a single module, whose second label is the artificial flat group, and \code{sha} and
+\code{stereovision3} have none. Label sets with fewer than 20 labelled CLBs carry little information (module labels on ch\_intrinsics; word labels on ch\_intrinsics, stereovision3, mkDelayWorker32B). Final and analytic placements are close, and the final
+NMI is at least the analytic one on 5 of 11 (modules) and 7 of 15
+(words) designs. With many small labels the NMI of a random placement is itself high (word null
+0.66), so compactness is the cleaner signal.
+
+\begin{table}[t]
+\caption{RQ-N1: medians over designs of the grid-partition NMI and label compactness of the
+analytic start, VPR's final placement and a random null (20 permutations). Designs with fewer
+than two real modules have no module label and are left out of that row.}
+\label{tab:r2n1}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+Labels & $n$ & NMI (start/final/null) & Comp.\ (start/final/null) \\
+\midrule
+Module & 11 & 0.26/0.31/0.12 & 0.20/0.26/0.09 \\
+Word & 15 & 0.72/0.73/0.66 & 0.33/0.32/0.08 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{RQ-N2, does structure predict the gain?} H2 is inconclusive: 0 of
+9 correlations are positive at $p<0.05$ and 1 negative (the hypothesis predicts positive; no multiple-comparison correction; $n=15$ designs, so only a
+large $\rho$ can be told from chance). Table~\ref{tab:r2n2} lists Spearman's $\rho$ (and $p$).
+
+\begin{table}[t]
+\caption{RQ-N2: Spearman $\rho$ ($p$) between per-design structure and seed gain
+(1 - wirelength ratio): Urd round one, best of seven round-one families, best new family. The
+inverse Rent exponent is $-p$.}
+\label{tab:r2n2}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+Gain & $Q$ & $z(Q)$ & $-p_{\text{Rent}}$ \\
+\midrule
+Urd, round one & -0.17 (0.533) & -0.44 (0.098) & 0.12 (0.657) \\
+Best round one & -0.09 (0.742) & -0.23 (0.413) & -0.16 (0.558) \\
+Best new family & -0.36 (0.191) & -0.58 (0.023) & 0.13 (0.648) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Graph size is a confounder. The measure $z(Q)$ rises with the number of edges ($\rho=0.85$ ($p<0.001$)), and the gains fall with it: the best
+new-family gain against edges is $\rho=-0.60$ ($p=0.017$), the best round-one gain $\rho=-0.29$ ($p=0.289$), Urd's $\rho=-0.37$ ($p=0.177$). Table~\ref{tab:r2n2p}
+repeats the correlations of Table~\ref{tab:r2n2} as partial Spearman correlations with the rank of the edge count regressed out of both
+variables. The null graphs behind $z(Q)$ use 10 double edge swaps per edge on every design (an earlier run capped the swaps at 200000, which left
+3.8 to 9.8 per edge on the five graphs above 20000 edges; the cap was removed and the null recomputed). The best-of-$k$ gains are maxima over $k$
+families per design ($k=7$ round one, $k=4$ round two), a positively biased gain, and the noise of a single VPR seed per configuration is unquantified.
+
+\begin{table}[t]
+\caption{RQ-N2 with graph size controlled: partial Spearman $\rho$ ($p$) between structure and seed gain, the rank of the edge count
+regressed out of both.}
+\label{tab:r2n2p}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+Gain & $Q$ & $z(Q)$ & $-p_{\text{Rent}}$ \\
+\midrule
+Urd, round one & 0.11 (0.710) & -0.27 (0.358) & 0.18 (0.543) \\
+Best round one & 0.15 (0.607) & 0.04 (0.891) & -0.14 (0.634) \\
+Best new family & 0.09 (0.761) & -0.16 (0.574) & 0.24 (0.401) \\
+\bottomrule
+\end{tabular}
+\end{table}

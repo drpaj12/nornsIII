@@ -1,0 +1,124 @@
+{
+ "designs": [
+  {
+   "design": "ch_intrinsics",
+   "logic_memory_clbs": 14,
+   "moved_words": 11,
+   "moved_words_partial": 11,
+   "placed_blocks": 243,
+   "seeded": 12
+  },
+  {
+   "design": "stereovision3",
+   "logic_memory_clbs": 15,
+   "moved_words": 12,
+   "moved_words_partial": 11,
+   "placed_blocks": 56,
+   "seeded": 11
+  },
+  {
+   "design": "diffeq2",
+   "logic_memory_clbs": 22,
+   "moved_words": 20,
+   "moved_words_partial": 15,
+   "placed_blocks": 189,
+   "seeded": 16
+  },
+  {
+   "design": "diffeq1",
+   "logic_memory_clbs": 37,
+   "moved_words": 35,
+   "moved_words_partial": 33,
+   "placed_blocks": 300,
+   "seeded": 33
+  },
+  {
+   "design": "mkPktMerge",
+   "logic_memory_clbs": 36,
+   "moved_words": 35,
+   "moved_words_partial": 25,
+   "placed_blocks": 503,
+   "seeded": 35
+  },
+  {
+   "design": "raygentop",
+   "logic_memory_clbs": 144,
+   "moved_words": 141,
+   "moved_words_partial": 132,
+   "placed_blocks": 691,
+   "seeded": 132
+  },
+  {
+   "design": "sha",
+   "logic_memory_clbs": 142,
+   "moved_words": 142,
+   "moved_words_partial": 130,
+   "placed_blocks": 216,
+   "seeded": 130
+  },
+  {
+   "design": "boundtop",
+   "logic_memory_clbs": 55,
+   "moved_words": 53,
+   "moved_words_partial": 53,
+   "placed_blocks": 444,
+   "seeded": 53
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "logic_memory_clbs": 130,
+   "moved_words": 124,
+   "moved_words_partial": 94,
+   "placed_blocks": 528,
+   "seeded": 96
+  },
+  {
+   "design": "or1200",
+   "logic_memory_clbs": 254,
+   "moved_words": 247,
+   "moved_words_partial": 155,
+   "placed_blocks": 1034,
+   "seeded": 158
+  },
+  {
+   "design": "stereovision0",
+   "logic_memory_clbs": 707,
+   "moved_words": 707,
+   "moved_words_partial": 696,
+   "placed_blocks": 1073,
+   "seeded": 696
+  },
+  {
+   "design": "stereovision1",
+   "logic_memory_clbs": 788,
+   "moved_words": 785,
+   "moved_words_partial": 785,
+   "placed_blocks": 1091,
+   "seeded": 786
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "logic_memory_clbs": 117,
+   "moved_words": 88,
+   "moved_words_partial": 18,
+   "placed_blocks": 1176,
+   "seeded": 22
+  },
+  {
+   "design": "stereovision2",
+   "logic_memory_clbs": 1956,
+   "moved_words": 1956,
+   "moved_words_partial": 1948,
+   "placed_blocks": 2479,
+   "seeded": 1952
+  },
+  {
+   "design": "blob_merge",
+   "logic_memory_clbs": 494,
+   "moved_words": 492,
+   "moved_words_partial": 321,
+   "placed_blocks": 630,
+   "seeded": 321
+  }
+ ]
+}

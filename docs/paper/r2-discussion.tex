@@ -1,0 +1,34 @@
+Round two. The bitwise idea is tested in four forms, and the evidence is this: word clusters
+against module clusters are inconclusive (0.986); laying the words out bit-sliced against the quotient layout of the same
+clusters is inconclusive (0.982 in wirelength); the hierarchical
+combination is not supported as the best seed (rank 8 of 11); and seeding only the
+word cells is not distinguishable from seeding everything (H7d inconclusive, 0.980, better on 9 of 15). The word
+membership available from Odin~III covers the flip-flops, adders, multipliers and memories but only
+49\% of the LUTs, because ABC's cone provenance merges the spans of
+mixed logic, so the word seeds are datapath-register seeds more than whole-datapath seeds; a result
+against bitwise seeding here is a result about that coverage as much as about the idea.
+
+Every soft arm of Table~\ref{tab:r2qor}, bitwise or not, random start included, lands between 0.980 and
+1.029 of the baseline's wirelength: a band of 4.9\% in a geomean over
+15 designs. The conclusions below are conclusions about differences inside that band.
+
+One confound the scale-1 comparison cannot remove: VPR derives its start temperature $T_0$ from the starting
+placement, so a start that is worse than the analytic one is annealed hotter and, in these runs, longer. The
+geomean start temperature relative to the baseline is 9.24 for the random start,
+3.23 for Urd and 4.63 for the best new family, and placement runtime moves with it
+(Table~\ref{tab:r2qor}). The arms are therefore compared at VPR's own temperature, not at equal anneal effort. The confound
+bears directly on four comparisons: H4 (random start, permuted and quotient layouts have $T_0$ of 9.24, 3.09 and 3.23 times the baseline's, for Urd),
+H7a (\code{words} 6.24 against Urd 3.23), H7b (\code{slices} 8.07 against \code{words} 6.24) and H7d
+(\code{words\_partial} 4.63 against \code{words} 6.24; against the permuted Urd arm 3.09). The start temperatures
+of the arms differ by 3.1 to 9.2 times the baseline's, and the direction of the bias is unknown: a hotter
+start can erase more of the seed, or give the anneal more moves to repair a worse one. A random start beating a connectivity-aware start
+would be a statement about the schedule as much as about the start. The effort curve (N3) is the experiment that separates the two, and it stays open.
+
+On the coarse-versus-fine question that round one left open, the arms give these numbers: H4 is not supported, with Urd at random 0.997, permuted
+1.020 and quotient 1.029. RQ-N1 measures part of the
+round-one parity: VPR's final placement has 2.78$\times$ the null's
+module compactness and 3.79$\times$ its word compactness (medians), which
+is inconclusive as a rediscovery of the hierarchy by the NMI-and-compactness rule, which suggests the placer already groups much of
+what a module or word seed would group. Whether the structure of the
+netlist predicts where a seed helps is H2, inconclusive (the one correlation that reaches $p<0.05$ is negative: the best new-family gain vs $z(Q)$; it tracks graph size, and with the edge count regressed out the partial $\rho$ is -0.16, $p=0.574$). All of this is $n=15$ designs, median 125 CLBs, one VPR
+seed per configuration; the seed-to-seed spread of VPR is not measured here, so differences of about a percent should not be read as effects.

@@ -1,0 +1,62 @@
+{
+ "crossover_scale": 256.0,
+ "design": "or1200",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 44347.0,
+   "cold_ret": 0.3227848101265823,
+   "scale": 1.0,
+   "unseeded": 41141.0
+  },
+  {
+   "cold": 41123.0,
+   "cold_ret": 0.3227848101265823,
+   "scale": 2.0,
+   "unseeded": 40082.0
+  },
+  {
+   "cold": 42920.0,
+   "cold_ret": 0.3037974683544304,
+   "scale": 4.0,
+   "unseeded": 40477.0
+  },
+  {
+   "cold": 42929.0,
+   "cold_ret": 0.2911392405063291,
+   "scale": 8.0,
+   "unseeded": 41444.0
+  },
+  {
+   "cold": 42420.0,
+   "cold_ret": 0.2848101265822785,
+   "scale": 16.0,
+   "unseeded": 43029.0
+  },
+  {
+   "cold": 41263.0,
+   "cold_ret": 0.3291139240506329,
+   "scale": 32.0,
+   "unseeded": 43874.0
+  },
+  {
+   "cold": 41358.0,
+   "cold_ret": 0.34177215189873417,
+   "scale": 64.0,
+   "unseeded": 42339.0
+  },
+  {
+   "cold": 41760.0,
+   "cold_ret": 0.34810126582278483,
+   "scale": 128.0,
+   "unseeded": 42393.0
+  },
+  {
+   "cold": 40953.0,
+   "cold_ret": 0.36075949367088606,
+   "scale": 256.0,
+   "unseeded": 44701.0
+  }
+ ],
+ "wins_all": false
+}

@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "boundtop",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 5883.0,
+   "cold_ret": 0.1509433962264151,
+   "scale": 1.0,
+   "unseeded": 6109.0
+  },
+  {
+   "cold": 5808.0,
+   "cold_ret": 0.1320754716981132,
+   "scale": 2.0,
+   "unseeded": 6185.0
+  },
+  {
+   "cold": 6016.0,
+   "cold_ret": 0.1509433962264151,
+   "scale": 4.0,
+   "unseeded": 6373.0
+  },
+  {
+   "cold": 5670.0,
+   "cold_ret": 0.1509433962264151,
+   "scale": 8.0,
+   "unseeded": 6384.0
+  },
+  {
+   "cold": 6129.0,
+   "cold_ret": 0.22641509433962265,
+   "scale": 16.0,
+   "unseeded": 6510.0
+  }
+ ],
+ "wins_all": true
+}

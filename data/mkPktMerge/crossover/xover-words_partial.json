@@ -1,0 +1,38 @@
+{
+ "crossover_scale": null,
+ "design": "mkPktMerge",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 14640.0,
+   "cold_ret": 0.5428571428571428,
+   "scale": 1.0,
+   "unseeded": 13921.0
+  },
+  {
+   "cold": 14663.0,
+   "cold_ret": 0.5428571428571428,
+   "scale": 2.0,
+   "unseeded": 13731.0
+  },
+  {
+   "cold": 14607.0,
+   "cold_ret": 0.5428571428571428,
+   "scale": 4.0,
+   "unseeded": 14149.0
+  },
+  {
+   "cold": 14910.0,
+   "cold_ret": 0.5142857142857142,
+   "scale": 8.0,
+   "unseeded": 14441.0
+  },
+  {
+   "cold": 15163.0,
+   "cold_ret": 0.5428571428571428,
+   "scale": 16.0,
+   "unseeded": 14194.0
+  }
+ ],
+ "wins_all": false
+}

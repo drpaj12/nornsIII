@@ -1,0 +1,62 @@
+{
+ "crossover_scale": null,
+ "design": "stereovision3",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 1.0,
+   "unseeded": 1288.0
+  },
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 2.0,
+   "unseeded": 1130.0
+  },
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 4.0,
+   "unseeded": 1206.0
+  },
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 8.0,
+   "unseeded": 1090.0
+  },
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 16.0,
+   "unseeded": 1044.0
+  },
+  {
+   "cold": 1334.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 32.0,
+   "unseeded": 1027.0
+  },
+  {
+   "cold": 1361.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 64.0,
+   "unseeded": 1160.0
+  },
+  {
+   "cold": 1250.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 128.0,
+   "unseeded": 1089.0
+  },
+  {
+   "cold": 1341.0,
+   "cold_ret": 0.9090909090909091,
+   "scale": 256.0,
+   "unseeded": 1280.0
+  }
+ ],
+ "wins_all": false
+}

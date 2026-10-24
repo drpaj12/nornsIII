@@ -367,6 +367,10 @@ def run(cmd: list[str], *, cwd: Path | None = None, env: dict[str, str] | None =
 
 def vpr_command(blif: Path, extra: list[str]) -> list[str]:
     ensure_dir(LOCK.parent)
+    if os.environ.get("NORNS_LOCK_HELD") == "1":
+        # the caller holds the heavy lock for this whole process (scripts/round2.py chunk):
+        # still one VPR at a time, the lock is taken once per chunk instead of once per run
+        return [str(VPR), str(ARCH), str(blif)] + extra
     return ["flock", "-x", str(LOCK), str(VPR), str(ARCH), str(blif)] + extra
 
 

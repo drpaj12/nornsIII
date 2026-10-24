@@ -1,0 +1,44 @@
+{
+ "bit_indexed": 1137,
+ "blif_identical": true,
+ "block_overwrites": 0,
+ "blocks": 2365,
+ "blocks_in_word": 1143,
+ "by_kind": {
+  "ff": 636,
+  "hard": 356,
+  "lut": 151
+ },
+ "by_rule": {
+  "b": 821,
+  "c": 322,
+  "none": 1043
+ },
+ "design": "mkSMAdapter4B",
+ "final_cells": 2186,
+ "kind_total": {
+  "ff": 636,
+  "hard": 370,
+  "lut": 1180
+ },
+ "largest_words": [
+  59,
+  57,
+  34,
+  34,
+  34
+ ],
+ "line_groups_largest": [
+  623,
+  254,
+  232,
+  126,
+  87
+ ],
+ "lines_with_several_words": 6,
+ "max_words_on_line": 51,
+ "statement_lines": 36,
+ "unjoined_cells": 163,
+ "words": 96,
+ "words_ge2": 74
+}

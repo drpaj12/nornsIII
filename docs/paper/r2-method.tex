@@ -1,0 +1,96 @@
+\subsection{Round two: bitwise seeds and structure analyses}
+\label{sec:r2-method}
+
+Round one seeded VPR with module-level clusters. Datapath logic is bit-level: a
+32-bit register or adder is a regular stack of identical bit cells, and the carry chain
+already shows that VPR places such stacks as ordered vertical runs. Round two therefore
+adds a bit-level seeding aspect that keeps the module hierarchy at the coarse level
+(Section~\ref{sec:r2-appendix} records where the idea came from).
+
+\paragraph{Word membership from Odin~III data, not names.}
+The obvious source, the provenance BLIF's block name \code{module/\$nN@file:line}, is too
+coarse: the line is the HDL \emph{statement}, so one \code{always} block is one group (the
+largest (module, file:line) group in any design holds up to 5248 blocks,
+and sha's holds 1739 of its 2506 blocks; 370 of the 790 statement lines that
+hold word blocks hold more than one word, up to 320). The finer records exist in the Odin~III session that
+writes the BLIF, so the seed builder reruns the identical script, checks that the BLIF it
+writes equals the kept one byte for byte (all 15 designs
+match), and reads the records Loki~III's labeller reads: the HDL name \code{bus[i]} of a
+cell's output net and the source spans of each cell, matched to the word-level cells that
+exist before technology mapping. A final cell joins its BLIF block through the net id the BLIF
+name carries (\code{\$n<id>}), so the join is by identifier, not by string
+(1204 of the 106262 Odin~III final cells, 1.1\%, found no BLIF block and are left unlabelled,
+from none to 22.2\% per design, the worst being \code{mkDelayWorker32B} with 942 of 4235;
+the writer legalises dotted names, handled explicitly). A block's word is the first rule
+that applies: (bus) an output net named \code{bus[i]} puts it in word \code{bus} at bit $i$,
+which holds for every flip-flop that keeps a register name; (cell) exactly one word-level cell's
+spans lie inside the block's spans, which is true for adders, multipliers, memories and
+single-statement LUTs; otherwise (none) the block has no word. Bit order inside an adder word is
+the carry-chain position. ABC's cone provenance merges the spans of a LUT that mixes words,
+and its edge budget makes some runs share one record, so 49\% of the LUTs get a word
+against 100\% of the flip-flops and 99\% of the hard cells. Over all designs,
+80.6\% of the blocks are in a word (per-design median
+66.7\%); 5190 words in all.
+
+\paragraph{Seed families.}
+A CLB joins a word cluster when at least one third of its atoms carry a word and that word is
+the plurality; otherwise it keeps its Urd module cluster. Four families follow, each entering
+VPR as a soft initial placement at VPR's own start temperature (scale~1).
+\code{words}: the word CLB groups are the clusters, arranged by the round-one quotient-graph
+layout. \code{slices}: the same clusters, but each word is laid out as a vertical run in bit
+order (bit~0 on top, the carry-chain direction), runs of equal length aligned to the same rows,
+so that bit $i$ of connected words shares a row; true carry chains are untouched.
+\code{hier}: Urd module clusters at the coarse level and, inside each module, the words as
+bit-sliced runs. \code{words\_partial}: only the word CLBs are seeded, every other CLB keeps
+VPR's analytic position (and every carry chain with an unseeded CLB stays whole). The
+\code{words} family also has the inter-cluster-only variant. Pads and multipliers stay
+anchored as in round one.
+
+\paragraph{Random and coarse-random arms (RQ-N4).}
+\code{random} is a random legal start: every logic CLB takes a random slot and carry chains a
+random window, fed as a soft seed at scale~1. The coarse-random arm keeps the clusters and
+their within-cluster order but permutes the cluster positions on the die (\code{urd\_shuf} for
+Urd, and the \code{*\_shuf} twin of the best new family).
+
+\paragraph{Structure analyses (no VPR runs).}
+RQ-N1 measures, on each design's unseeded baseline, how module- and word-coherent three
+placements are: VPR's analytic start, its final placement, and a random null (logic-CLB
+coordinates permuted, 20 samples). A logic CLB carries the plurality label of its atoms (module: the Urd module; word:
+the word with most atoms in the CLB; a CLB without one is unlabelled). Coherence is the NMI between a $g\times g$ grid partition
+of the labelled CLBs ($g=\max(2,\lceil\sqrt{\#\text{labels}}\rceil)$, the grid spanning the labelled CLBs' bounding box) and the labels. The compactness is a
+separate metric that does not use the grid: the CLB-weighted mean over labels with at least two CLBs of the label's CLBs divided
+by the area, in tiles, of the label's bounding box. A labelling is scored only with at least four labelled CLBs and two labels, and a design
+is counted against the null only when the null's standard deviation is positive (counted separately for the two metrics). A design with
+fewer than two real Urd modules (\code{diffeq1} and \code{diffeq2}, which have one module plus the artificial flat group, and \code{sha} and \code{stereovision3}, which have none)
+has no module row. Label sets with fewer than 20 labelled CLBs are flagged in the results. RQ-N2 correlates the seed
+gain with three structure measures of the netlist graph: Louvain modularity $Q$; the $z$-score of
+$Q$ against a degree-preserving null (double edge swaps, 10 per edge, 20 samples); and the inverse Rent
+exponent $-p$, with $p$ fitted from the terminals of BFS balls of geometric sizes (a lower
+exponent is a more local design). Spearman's $\rho$ and $p$-value are reported with $n=15$,
+which is small, and again as partial correlations with the edge count regressed out, because graph size drives both $z(Q)$ and the gain.
+
+\paragraph{Hypotheses and decision rules.}
+Paired comparisons are per design (variant over reference), reported as a geomean ratio, the number of
+designs where the variant is better and a two-sided exact sign test. H7a: \code{words} beats Urd in
+soft wirelength (supported if the geomean is below 1 and $p<0.05$, not supported if the
+geomean is at least 1, else inconclusive). H7b: \code{slices} beats \code{words} on wirelength and
+channel width (supported if both geomeans are below 1 and the wirelength sign test has $p<0.05$).
+H7c: \code{hier} has the lowest geomean wirelength of all eleven soft families. H7d: \code{words\_partial}
+is better than the full word seed (supported if the geomean ratio is below 1 and the wirelength sign test has $p<0.05$, not supported
+if it is above 1 with $p<0.05$, else inconclusive; no equivalence margin was fixed, so ``at least as good'' is not testable here).
+H1: the baseline's final placement is module- and word-coherent (supported if, for both labellings,
+at least two thirds of the designs lie more than two null standard deviations above the null in NMI and at least two thirds in
+compactness, the two counted separately; not supported if fewer than a third do for both labellings and both metrics). H2: structure predicts gain (supported if at least two of the three
+measures correlate positively with the best round-two gain at $p<0.05$; not supported if no
+correlation of either sign reaches $p<0.05$). H4: random start $>$ permuted clusters $>$ quotient layout $\ge$ analytic start in
+wirelength ratio, for Urd and for the best new family.
+
+\paragraph{Which rules predate the data.}
+These rules were not registered anywhere outside the repository, so their order is stated from the commit times of
+that repository. The decision-rule code for H7a to H7d and H4 was committed at 15:21 on 2026-10-24 and H1's rule (with the compactness
+criterion) at 15:24, before the first round-two VPR data (15:38). Some of those rules were later found weak and
+changed; the appendix lists the changes. After the first data: tie handling in the sign tests (ties left out) came with the first data
+commit; the methodology text that states the rules was written at 17:31, after nine designs; the best family was frozen at
+13 designs after their results were seen (so the hard, crossover and permuted arms of the best family use a choice made
+on data); the H2 rule was briefly changed and reverted, and the H7d rule was replaced after review. The next round fixes every decision rule, and the equivalence margin of
+H7d, in a commit before any run.

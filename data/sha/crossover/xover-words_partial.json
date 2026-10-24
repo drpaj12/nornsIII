@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 8.0,
+ "design": "sha",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 12823.0,
+   "cold_ret": 0.46153846153846156,
+   "scale": 1.0,
+   "unseeded": 13679.0
+  },
+  {
+   "cold": 15747.0,
+   "cold_ret": 0.4307692307692308,
+   "scale": 2.0,
+   "unseeded": 14707.0
+  },
+  {
+   "cold": 13562.0,
+   "cold_ret": 0.4230769230769231,
+   "scale": 4.0,
+   "unseeded": 13784.0
+  },
+  {
+   "cold": 13696.0,
+   "cold_ret": 0.38461538461538464,
+   "scale": 8.0,
+   "unseeded": 14707.0
+  },
+  {
+   "cold": 14486.0,
+   "cold_ret": 0.4153846153846154,
+   "scale": 16.0,
+   "unseeded": 13070.0
+  }
+ ],
+ "wins_all": false
+}

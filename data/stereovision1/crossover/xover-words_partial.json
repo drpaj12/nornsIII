@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "stereovision1",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 124137.0,
+   "cold_ret": 0.13231552162849872,
+   "scale": 1.0,
+   "unseeded": 124224.0
+  },
+  {
+   "cold": 121979.0,
+   "cold_ret": 0.13358778625954199,
+   "scale": 2.0,
+   "unseeded": 121333.0
+  },
+  {
+   "cold": 120096.0,
+   "cold_ret": 0.1183206106870229,
+   "scale": 4.0,
+   "unseeded": 127859.0
+  },
+  {
+   "cold": 122535.0,
+   "cold_ret": 0.11959287531806616,
+   "scale": 8.0,
+   "unseeded": 127635.0
+  },
+  {
+   "cold": 122989.0,
+   "cold_ret": 0.12849872773536897,
+   "scale": 16.0,
+   "unseeded": 126464.0
+  }
+ ],
+ "wins_all": false
+}

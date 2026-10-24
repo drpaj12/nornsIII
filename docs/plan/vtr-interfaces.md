@@ -1,6 +1,6 @@
 # Verified VTR interfaces (pinned build v8.0.0+18416, VPR 9.0.0-dev)
 
-Checked on the pinned build `/home/jamiespa/odin3-ws/external/vtr-verilog-to-routing/build/vpr/vpr`
+Checked on the pinned build `$WS_ROOT/external/vtr-verilog-to-routing/build/vpr/vpr`
 (2026-10-23) by reading `vpr --help` and the source; every flag below was exercised on
 `ch_intrinsics` before the matrix runs. Read-only checkout; nothing here changes VTR.
 

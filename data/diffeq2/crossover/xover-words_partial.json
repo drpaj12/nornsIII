@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "diffeq2",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 7936.0,
+   "cold_ret": 0.5,
+   "scale": 1.0,
+   "unseeded": 8296.0
+  },
+  {
+   "cold": 8501.0,
+   "cold_ret": 0.4375,
+   "scale": 2.0,
+   "unseeded": 7830.0
+  },
+  {
+   "cold": 7080.0,
+   "cold_ret": 0.4375,
+   "scale": 4.0,
+   "unseeded": 7297.0
+  },
+  {
+   "cold": 8202.0,
+   "cold_ret": 0.4375,
+   "scale": 8.0,
+   "unseeded": 7839.0
+  },
+  {
+   "cold": 8188.0,
+   "cold_ret": 0.5,
+   "scale": 16.0,
+   "unseeded": 8293.0
+  }
+ ],
+ "wins_all": false
+}

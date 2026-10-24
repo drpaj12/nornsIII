@@ -28,6 +28,20 @@ Urd uses what the design was (the provenance hierarchy), Verdandi what is recove
     scripts/report.py                    # regenerate docs/plan/EXPERIMENT.md
     scripts/fill_paper.py                # regenerate docs/plan/paper-numbers.tex
 
+Round two (bitwise seeds, N1/N2). Steps 1 to 5 need the local `runs/` tree (Odin III, Loki and VPR
+outputs; not committed; `round2.py` and `matrix.py` write the run records straight into `data/`). Steps 6 to 9
+read only the committed `data/` and regenerate every document byte-identically from a fresh checkout:
+
+    1. scripts/build_words.py            # word membership per design (reruns the Odin III script)
+    2. scripts/build_word_seeds.py       # the round-two seed files (words, slices, hier, words_partial, ...)
+    3. scripts/round2.py soft|chunk stage2 [design ...]   # the VPR runs (heavy lock, one at a time)
+    4. scripts/round2.py freeze          # record the best new family (data/analysis/best.json)
+    5. scripts/structure.py all|graph|partial   # N1, N2 and the seeded share -> data/analysis/*.json
+    6. scripts/report.py                 # docs/plan/EXPERIMENT.md
+    7. scripts/fill_paper.py             # docs/plan/paper-numbers.tex, paper-summary.json
+    8. scripts/write_paper_prose.py      # fills docs/paper/norns.tex from the numbers
+    9. scripts/write_round2.py           # docs/paper/r2-*.tex (the round-two sections and appendix)
+
 The Loki analysis venv (numpy, scipy, scikit-learn, networkx, cffi) is built per the Loki
 CLAUDE.md and kept outside the Loki checkout; Loki is imported from its checkout through
 `PYTHONPATH`, never installed into or edited. Every VPR run takes the heavy lock

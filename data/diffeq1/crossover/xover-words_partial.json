@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "diffeq1",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 10893.0,
+   "cold_ret": 0.42424242424242425,
+   "scale": 1.0,
+   "unseeded": 10078.0
+  },
+  {
+   "cold": 10170.0,
+   "cold_ret": 0.45454545454545453,
+   "scale": 2.0,
+   "unseeded": 10366.0
+  },
+  {
+   "cold": 9711.0,
+   "cold_ret": 0.5757575757575758,
+   "scale": 4.0,
+   "unseeded": 8863.0
+  },
+  {
+   "cold": 9354.0,
+   "cold_ret": 0.42424242424242425,
+   "scale": 8.0,
+   "unseeded": 10572.0
+  },
+  {
+   "cold": 9910.0,
+   "cold_ret": 0.5757575757575758,
+   "scale": 16.0,
+   "unseeded": 10328.0
+  }
+ ],
+ "wins_all": false
+}

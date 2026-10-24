@@ -1,0 +1,44 @@
+{
+ "bit_indexed": 1535,
+ "blif_identical": true,
+ "block_overwrites": 0,
+ "blocks": 2633,
+ "blocks_in_word": 1699,
+ "by_kind": {
+  "ff": 942,
+  "hard": 465,
+  "lut": 292
+ },
+ "by_rule": {
+  "b": 1106,
+  "c": 593,
+  "none": 826
+ },
+ "design": "raygentop",
+ "final_cells": 2525,
+ "kind_total": {
+  "ff": 942,
+  "hard": 468,
+  "lut": 1115
+ },
+ "largest_words": [
+  66,
+  64,
+  64,
+  63,
+  48
+ ],
+ "line_groups_largest": [
+  421,
+  220,
+  178,
+  164,
+  144
+ ],
+ "lines_with_several_words": 22,
+ "max_words_on_line": 20,
+ "statement_lines": 55,
+ "unjoined_cells": 29,
+ "words": 147,
+ "words_ge2": 110
+}

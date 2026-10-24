@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 8.0,
+ "design": "raygentop",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 22185.0,
+   "cold_ret": 0.25757575757575757,
+   "scale": 1.0,
+   "unseeded": 22980.0
+  },
+  {
+   "cold": 22544.0,
+   "cold_ret": 0.2803030303030303,
+   "scale": 2.0,
+   "unseeded": 24110.0
+  },
+  {
+   "cold": 22422.0,
+   "cold_ret": 0.25757575757575757,
+   "scale": 4.0,
+   "unseeded": 23919.0
+  },
+  {
+   "cold": 23226.0,
+   "cold_ret": 0.25757575757575757,
+   "scale": 8.0,
+   "unseeded": 24070.0
+  },
+  {
+   "cold": 24136.0,
+   "cold_ret": 0.2727272727272727,
+   "scale": 16.0,
+   "unseeded": 23313.0
+  }
+ ],
+ "wins_all": false
+}
