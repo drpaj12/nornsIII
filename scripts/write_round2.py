@@ -28,6 +28,10 @@ LABEL = {"urd": "Urd (round 1)", "louvain": "Louvain", "spectral": "Spectral",
          "urd_shuf": "Urd, permuted"}
 
 
+GAIN = {"urd": "the Urd gain", "best_r1": "the best round-one gain", "best_r2": "the best new-family gain"}
+MEAS = {"q": "$Q$", "q_z": "$z(Q)$", "rent_p": "$-p$"}
+
+
 def code(s: str) -> str:
     return "\\code{" + s.replace("_", "\\_") + "}"
 
@@ -344,12 +348,12 @@ On the coarse-versus-fine question that round one left open, the arms give these
 {f3(h['H4']['urd']['shuffled'])} and quotient {f3(h['H4']['urd']['quotient'])}. RQ-N1 measures part of the
 round-one parity: VPR's final placement has {f2(n1['module']['dens_final'] / n1['module']['dens_null'])}$\\times$ the null's
 module compactness and {f2(n1['word']['dens_final'] / n1['word']['dens_null'])}$\\times$ its word compactness (medians), which
-is {h['H1']['status']} as a rediscovery of the hierarchy by the NMI-and-compactness rule; which suggests the placer already groups much of
+is {h['H1']['status']} as a rediscovery of the hierarchy by the NMI-and-compactness rule, which suggests the placer already groups much of
 what a module or word seed would group. Whether the structure of the
 netlist predicts where a seed helps is H2, {h['H2']['status']}"""
     if h["H2"].get("n_neg"):
-        s += f""" (the one correlation that reaches $p<0.05$ is negative: {', '.join(code(k.replace('~', ' vs ')) for k in h['H2']['neg'])})"""
-    s += """. All of this is $n=15$ designs, median {R['r1']['clb_median']:g} CLBs, one VPR
+        s += f""" (the one correlation that reaches $p<0.05$ is negative: {', '.join(GAIN[k.split('~')[0]] + ' vs ' + MEAS[k.split('~')[1]] for k in h['H2']['neg'])})"""
+    s += f""". All of this is $n=15$ designs, median {R['r1']['clb_median']:g} CLBs, one VPR
 seed per configuration; the seed-to-seed spread of VPR is not measured here, so differences of about a percent should not be read as effects."""
     return s
 
