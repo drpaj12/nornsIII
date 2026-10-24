@@ -35,7 +35,7 @@ def main(argv: list[str]) -> int:
             res = nl.read_json(path)
             rows.append(f"{design}: P*={res.get('pstar')} S={res.get('crossover_scale')}")
     text = f"""
-## Result
+## Result (PAUSED by coordinator reorder, 2026-10-23: Loki f3 runs first; Norns resumes after)
 
 Pushed head: {head} (branch exp/first-run, verified with git ls-remote).
 
@@ -48,11 +48,14 @@ VTR interfaces verified on the pinned build (v8.0.0+18416): `--read_initial_plac
 save-best/restore, default ON with the default RL agent multistate). Details and source lines:
 `docs/plan/vtr-interfaces.md`. No VTR patch was needed; `patches/README.md` records why.
 
-Run matrix completed: {len(designs)} designs ({", ".join(designs)}), each with the unseeded
+Done: {len(designs)} designs ({", ".join(designs)}), each with the unseeded
 baseline, seven seeds x soft-full, soft-inter and hard, an extended cold-start crossover sweep
 (doubling S until the cold start stops winning), the hot step per seed, and the
 checkpointing-off control sweep. Not run in this lane: {", ".join(remaining)}; the exact
-continuation commands are in `docs/plan/EXPERIMENT.md`.
+continuation commands are in `docs/plan/EXPERIMENT.md`. Remaining arms after this pause: the
+five designs above (full matrix), and the checkpointing-off control sweep of or1200, still
+capped at 16 (extend with `matrix.py checkpoint or1200`). Nothing is mid-run; the heavy lock is
+free.
 
 Crossover table (per design; full table with cold/unseeded wirelength, start temperature and
 retention in `docs/plan/EXPERIMENT.md`, seed-family summary in
