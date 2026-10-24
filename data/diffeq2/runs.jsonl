@@ -1,0 +1,75 @@
+{"arm": "baseline", "bb_final": 3743.0, "bb_initial": 4001.37, "chan_width": 48.0, "cpd_ns": 13.6963, "design": "diffeq2", "flow_s": 3.11, "init_t": 3924.13, "n_temperatures": 339, "place_s": 0.48, "rc": 0, "route_s": 2.57, "scale": null, "tag": "baseline", "wirelength": 8296.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-inter"}
+{"arm": "hard", "bb_final": 3746.0, "bb_initial": 4232.55, "chan_width": 52.0, "cpd_ns": 14.6932, "design": "diffeq2", "flow_s": 2.71, "init_t": 3924.13, "n_temperatures": 352, "place_s": 0.49, "rc": 0, "route_s": 2.15, "scale": null, "tag": "hard-urd", "wirelength": 8939.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-inter"}
+{"arm": "hard", "design": "diffeq2", "rc": 1, "scale": null, "tag": "hard-louvain"}
+{"arm": "soft", "bb_final": 3790.0, "bb_initial": 4138.21, "chan_width": 62.0, "cpd_ns": 13.1193, "design": "diffeq2", "displacement": 3.63767665928621, "flow_s": 2.38, "init_t": 3924.13, "n_temperatures": 358, "place_s": 0.49, "rc": 0, "retention": 0.96, "route_s": 1.82, "scale": null, "tag": "soft-spectral-full", "wirelength": 7307.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-spectral-inter"}
+{"arm": "hard", "bb_final": 3766.0, "bb_initial": 4028.4, "chan_width": 64.0, "cpd_ns": 13.016, "design": "diffeq2", "flow_s": 2.26, "init_t": 3924.13, "n_temperatures": 380, "place_s": 0.48, "rc": 0, "route_s": 1.71, "scale": null, "tag": "hard-spectral", "wirelength": 7171.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-inter"}
+{"arm": "hard", "bb_final": 4208.0, "bb_initial": 4456.64, "chan_width": 62.0, "cpd_ns": 13.3438, "design": "diffeq2", "flow_s": 5.56, "init_t": 3924.13, "n_temperatures": 362, "place_s": 0.49, "rc": 0, "route_s": 4.99, "scale": null, "tag": "hard-affinity", "wirelength": 9164.0}
+{"arm": "soft", "bb_final": 3764.0, "bb_initial": 4699.06, "chan_width": 48.0, "cpd_ns": 13.4144, "design": "diffeq2", "displacement": 4.839136720464878, "flow_s": 3.03, "init_t": 3924.13, "n_temperatures": 389, "place_s": 0.54, "rc": 0, "retention": 0.8, "route_s": 2.43, "scale": null, "tag": "soft-kmeans_k-full", "wirelength": 7811.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_k-inter"}
+{"arm": "hard", "bb_final": 3916.0, "bb_initial": 4054.56, "chan_width": 60.0, "cpd_ns": 13.3507, "design": "diffeq2", "flow_s": 3.13, "init_t": 3924.13, "n_temperatures": 347, "place_s": 0.45, "rc": 0, "route_s": 2.61, "scale": null, "tag": "hard-kmeans_k", "wirelength": 8289.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-inter"}
+{"arm": "hard", "design": "diffeq2", "rc": 1, "scale": null, "tag": "hard-kmeans_2k"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-inter"}
+{"arm": "hard", "bb_final": 4102.0, "bb_initial": 4462.33, "chan_width": 66.0, "cpd_ns": 13.4471, "design": "diffeq2", "flow_s": 2.11, "init_t": 3924.13, "n_temperatures": 310, "place_s": 0.47, "rc": 0, "route_s": 1.57, "scale": null, "tag": "hard-kmeans_4k", "wirelength": 7915.0}
+{"arm": "unseeded", "bb_final": 3743.0, "bb_initial": 4001.37, "chan_width": 48.0, "cpd_ns": 13.6963, "design": "diffeq2", "flow_s": 3.08, "init_t": 3924.13, "n_temperatures": 339, "place_s": 0.48, "rc": 0, "route_s": 2.54, "scale": 1.0, "tag": "unseeded-1", "wirelength": 8296.0}
+{"arm": "cold", "bb_final": 3745.0, "bb_initial": 3766.13, "chan_width": 60.0, "cpd_ns": 12.8103, "design": "diffeq2", "displacement": 0.0, "flow_s": 2.24, "init_t": 3924.13, "n_temperatures": 299, "place_s": 0.42, "rc": 0, "retention": 1.0, "route_s": 1.75, "scale": 1.0, "tag": "cold-1", "wirelength": 7276.0}
+{"arm": "unseeded", "bb_final": 3747.0, "bb_initial": 4001.37, "chan_width": 50.0, "cpd_ns": 13.65, "design": "diffeq2", "flow_s": 1.97, "init_t": 3924.13, "n_temperatures": 307, "place_s": 0.49, "rc": 0, "route_s": 1.4, "scale": 2.0, "tag": "unseeded-2", "wirelength": 7830.0}
+{"arm": "cold", "bb_final": 3741.0, "bb_initial": 3766.13, "chan_width": 52.0, "cpd_ns": 13.5475, "design": "diffeq2", "displacement": 0.2, "flow_s": 2.22, "init_t": 3924.13, "n_temperatures": 279, "place_s": 0.44, "rc": 0, "retention": 1.0, "route_s": 1.72, "scale": 2.0, "tag": "cold-2", "wirelength": 7935.0}
+{"arm": "unseeded", "bb_final": 3634.0, "bb_initial": 4001.37, "chan_width": 60.0, "cpd_ns": 13.142, "design": "diffeq2", "flow_s": 2.41, "init_t": 3924.13, "n_temperatures": 362, "place_s": 0.5, "rc": 0, "route_s": 1.84, "scale": 4.0, "tag": "unseeded-4", "wirelength": 7297.0}
+{"arm": "cold", "bb_final": 3769.0, "bb_initial": 3766.13, "chan_width": 56.0, "cpd_ns": 13.1476, "design": "diffeq2", "displacement": 0.0, "flow_s": 2.31, "init_t": 3924.13, "n_temperatures": 345, "place_s": 0.47, "rc": 0, "retention": 1.0, "route_s": 1.78, "scale": 4.0, "tag": "cold-4", "wirelength": 7415.0}
+{"arm": "unseeded", "bb_final": 3731.0, "bb_initial": 4001.37, "chan_width": 52.0, "cpd_ns": 13.6437, "design": "diffeq2", "flow_s": 2.04, "init_t": 3924.13, "n_temperatures": 350, "place_s": 0.52, "rc": 0, "route_s": 1.45, "scale": 8.0, "tag": "unseeded-8", "wirelength": 7839.0}
+{"arm": "cold", "bb_final": 3761.0, "bb_initial": 3766.13, "chan_width": 54.0, "cpd_ns": 13.7246, "design": "diffeq2", "displacement": 0.0, "flow_s": 2.43, "init_t": 3924.13, "n_temperatures": 348, "place_s": 0.48, "rc": 0, "retention": 1.0, "route_s": 1.89, "scale": 8.0, "tag": "cold-8", "wirelength": 8016.0}
+{"arm": "unseeded", "bb_final": 3777.0, "bb_initial": 4001.37, "chan_width": 46.0, "cpd_ns": 14.4645, "design": "diffeq2", "flow_s": 2.48, "init_t": 3924.13, "n_temperatures": 346, "place_s": 0.52, "rc": 0, "route_s": 1.89, "scale": 16.0, "tag": "unseeded-16", "wirelength": 8293.0}
+{"arm": "cold", "bb_final": 3737.0, "bb_initial": 3766.13, "chan_width": 58.0, "cpd_ns": 13.0038, "design": "diffeq2", "displacement": 0.5577708763999664, "flow_s": 2.1, "init_t": 3924.13, "n_temperatures": 330, "place_s": 0.5, "rc": 0, "retention": 1.0, "route_s": 1.53, "scale": 16.0, "tag": "cold-16", "wirelength": 7258.0}
+{"arm": "unseeded", "bb_final": 3532.0, "bb_initial": 4001.37, "chan_width": 52.0, "cpd_ns": 13.7017, "design": "diffeq2", "flow_s": 2.52, "init_t": 3924.13, "n_temperatures": 391, "place_s": 0.54, "rc": 0, "route_s": 1.91, "scale": 32.0, "tag": "unseeded-32", "wirelength": 7821.0}
+{"arm": "hot", "bb_final": 3791.0, "bb_initial": 3790.12, "chan_width": 54.0, "cpd_ns": 13.7615, "design": "diffeq2", "displacement": 1.3769467482145372, "flow_s": 2.55, "init_t": 3924.13, "n_temperatures": 353, "place_s": 0.49, "rc": 0, "retention": 0.96, "route_s": 1.99, "scale": 32.0, "tag": "hot-spectral", "wirelength": 8430.0}
+{"arm": "hot", "bb_final": 3737.0, "bb_initial": 3763.83, "chan_width": 48.0, "cpd_ns": 13.683, "design": "diffeq2", "displacement": 0.6445248911914814, "flow_s": 2.83, "init_t": 3924.13, "n_temperatures": 356, "place_s": 0.49, "rc": 0, "retention": 0.8, "route_s": 2.27, "scale": 32.0, "tag": "hot-kmeans_k", "wirelength": 8152.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-inter"}
+{"arm": "hard", "bb_final": 3842.0, "bb_initial": 4222.24, "chan_width": 66.0, "cpd_ns": 13.454, "design": "diffeq2", "flow_s": 2.16, "init_t": 3924.13, "n_temperatures": 308, "place_s": 0.45, "rc": 0, "route_s": 1.64, "scale": null, "tag": "hard-louvain", "wirelength": 7707.0}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-spectral-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_k-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-inter"}
+{"arm": "hard", "design": "diffeq2", "rc": 1, "scale": null, "tag": "hard-kmeans_2k"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-urd-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-louvain-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-spectral-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-affinity-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_k-inter"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_2k-inter"}
+{"arm": "hard", "design": "diffeq2", "rc": 1, "scale": null, "tag": "hard-kmeans_2k"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-full"}
+{"arm": "soft", "design": "diffeq2", "rc": 1, "scale": null, "tag": "soft-kmeans_4k-inter"}
+{"arm": "soft", "bb_final": 3903.0, "bb_initial": 4744.54, "chan_width": 46.0, "cpd_ns": 13.4643, "design": "diffeq2", "displacement": 6.169673623052915, "flow_s": 2.46, "init_t": 3924.13, "n_temperatures": 363, "place_s": 0.51, "rc": 0, "retention": 0.13636363636363635, "route_s": 1.88, "scale": null, "tag": "soft-urd-full", "wirelength": 8165.0}
+{"arm": "soft", "bb_final": 3743.0, "bb_initial": 4726.68, "chan_width": 56.0, "cpd_ns": 13.215, "design": "diffeq2", "displacement": 6.135348234075159, "flow_s": 2.28, "init_t": 3924.13, "n_temperatures": 384, "place_s": 0.54, "rc": 0, "retention": 0.22727272727272727, "route_s": 1.68, "scale": null, "tag": "soft-urd-inter", "wirelength": 7376.0}
+{"arm": "soft", "bb_final": 3847.0, "bb_initial": 4590.07, "chan_width": 50.0, "cpd_ns": 13.6144, "design": "diffeq2", "displacement": 5.850873493118956, "flow_s": 2.05, "init_t": 3924.13, "n_temperatures": 304, "place_s": 0.51, "rc": 0, "retention": 0.0, "route_s": 1.48, "scale": null, "tag": "soft-louvain-full", "wirelength": 8492.0}
+{"arm": "soft", "bb_final": 3660.0, "bb_initial": 4594.18, "chan_width": 60.0, "cpd_ns": 13.1263, "design": "diffeq2", "displacement": 5.000985406953863, "flow_s": 2.52, "init_t": 3924.13, "n_temperatures": 351, "place_s": 0.51, "rc": 0, "retention": 0.1, "route_s": 1.94, "scale": null, "tag": "soft-louvain-inter", "wirelength": 7402.0}
+{"arm": "soft", "bb_final": 3697.0, "bb_initial": 4718.51, "chan_width": 66.0, "cpd_ns": 13.1696, "design": "diffeq2", "displacement": 5.093351871629695, "flow_s": 1.94, "init_t": 3924.13, "n_temperatures": 333, "place_s": 0.53, "rc": 0, "retention": 0.2, "route_s": 1.35, "scale": null, "tag": "soft-spectral-inter", "wirelength": 7195.0}
+{"arm": "soft", "bb_final": 3732.0, "bb_initial": 4492.65, "chan_width": 50.0, "cpd_ns": 13.4331, "design": "diffeq2", "displacement": 4.736795132168714, "flow_s": 1.89, "init_t": 3924.13, "n_temperatures": 284, "place_s": 0.49, "rc": 0, "retention": 0.2, "route_s": 1.33, "scale": null, "tag": "soft-affinity-full", "wirelength": 7888.0}
+{"arm": "soft", "bb_final": 3712.0, "bb_initial": 4673.81, "chan_width": 54.0, "cpd_ns": 13.5712, "design": "diffeq2", "displacement": 5.214694511632823, "flow_s": 2.49, "init_t": 3924.13, "n_temperatures": 373, "place_s": 0.52, "rc": 0, "retention": 0.2, "route_s": 1.91, "scale": null, "tag": "soft-affinity-inter", "wirelength": 7675.0}
+{"arm": "soft", "bb_final": 3745.0, "bb_initial": 4962.83, "chan_width": 50.0, "cpd_ns": 13.2974, "design": "diffeq2", "displacement": 5.16133068232218, "flow_s": 2.09, "init_t": 3924.13, "n_temperatures": 334, "place_s": 0.53, "rc": 0, "retention": 0.25, "route_s": 1.49, "scale": null, "tag": "soft-kmeans_k-inter", "wirelength": 8174.0}
+{"arm": "soft", "bb_final": 3746.0, "bb_initial": 4333.0, "chan_width": 58.0, "cpd_ns": 13.0766, "design": "diffeq2", "displacement": 4.972533581366762, "flow_s": 2.22, "init_t": 3924.13, "n_temperatures": 360, "place_s": 0.51, "rc": 0, "retention": 0.3, "route_s": 1.65, "scale": null, "tag": "soft-kmeans_2k-full", "wirelength": 7426.0}
+{"arm": "soft", "bb_final": 3778.0, "bb_initial": 4371.01, "chan_width": 58.0, "cpd_ns": 13.0936, "design": "diffeq2", "displacement": 4.387127337965429, "flow_s": 2.33, "init_t": 3924.13, "n_temperatures": 335, "place_s": 0.51, "rc": 0, "retention": 0.2, "route_s": 1.75, "scale": null, "tag": "soft-kmeans_2k-inter", "wirelength": 7794.0}
+{"arm": "hard", "bb_final": 3716.0, "bb_initial": 3941.7, "chan_width": 60.0, "cpd_ns": 13.197, "design": "diffeq2", "flow_s": 2.97, "init_t": 3924.13, "n_temperatures": 329, "place_s": 0.47, "rc": 0, "route_s": 2.44, "scale": null, "tag": "hard-kmeans_2k", "wirelength": 7731.0}
+{"arm": "soft", "bb_final": 3689.0, "bb_initial": 4496.82, "chan_width": 52.0, "cpd_ns": 13.723, "design": "diffeq2", "displacement": 4.861670213649105, "flow_s": 2.37, "init_t": 3924.13, "n_temperatures": 347, "place_s": 0.5, "rc": 0, "retention": 0.15, "route_s": 1.8, "scale": null, "tag": "soft-kmeans_4k-full", "wirelength": 8329.0}
+{"arm": "soft", "bb_final": 3715.0, "bb_initial": 4449.16, "chan_width": 50.0, "cpd_ns": 13.9926, "design": "diffeq2", "displacement": 4.982732062241419, "flow_s": 1.93, "init_t": 3924.13, "n_temperatures": 307, "place_s": 0.51, "rc": 0, "retention": 0.25, "route_s": 1.36, "scale": null, "tag": "soft-kmeans_4k-inter", "wirelength": 7977.0}
