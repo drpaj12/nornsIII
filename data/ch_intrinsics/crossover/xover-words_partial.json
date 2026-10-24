@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 2.0,
+ "design": "ch_intrinsics",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 1448.0,
+   "cold_ret": 0.75,
+   "scale": 1.0,
+   "unseeded": 1461.0
+  },
+  {
+   "cold": 1373.0,
+   "cold_ret": 0.75,
+   "scale": 2.0,
+   "unseeded": 1584.0
+  },
+  {
+   "cold": 1656.0,
+   "cold_ret": 0.75,
+   "scale": 4.0,
+   "unseeded": 1470.0
+  },
+  {
+   "cold": 1456.0,
+   "cold_ret": 0.5833333333333334,
+   "scale": 8.0,
+   "unseeded": 1379.0
+  },
+  {
+   "cold": 1325.0,
+   "cold_ret": 0.6666666666666666,
+   "scale": 16.0,
+   "unseeded": 1289.0
+  }
+ ],
+ "wins_all": false
+}

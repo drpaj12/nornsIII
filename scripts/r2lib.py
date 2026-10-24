@@ -89,6 +89,9 @@ def compute() -> dict:
     out: dict = {"designs": designs, "n_designs": len(designs), "n_all": len(all_designs)}
     best = r2_best.best_family()
     out["best"] = best
+    out["best_now"] = r2_best.current_best()
+    out["best_n"] = (len(nl.read_json(r2_best.FROZEN)["designs"]) if r2_best.FROZEN.is_file()
+                     else len(designs))
     fams = {"urd": ("urd", "full")}
     for f in ROUND1:
         fams[f] = (f, "full")

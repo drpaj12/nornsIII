@@ -1,0 +1,19 @@
+{
+ "designs": [
+  "ch_intrinsics",
+  "stereovision3",
+  "diffeq2",
+  "diffeq1",
+  "mkPktMerge",
+  "raygentop",
+  "sha",
+  "boundtop",
+  "mkSMAdapter4B",
+  "or1200",
+  "stereovision0",
+  "stereovision1",
+  "mkDelayWorker32B"
+ ],
+ "family": "words_partial",
+ "rule": "lowest geomean soft-full wirelength ratio over the designs with every round-2 soft arm"
+}

@@ -8,6 +8,7 @@
                                                 of the best new family
   python scripts/round2.py chunk <mode> [design ...]   any mode below, one lock hold per design
   python scripts/round2.py best                 print the best new family
+  python scripts/round2.py stage2 [design ...]  shuf + hard + xover of the frozen best family
   python scripts/round2.py freeze               record the choice in data/analysis/best.json
 
 The best new family is the one of words, slices, hier, words_partial with the lowest geomean
@@ -142,6 +143,10 @@ def main(argv: list[str]) -> int:
         elif mode == "hard":
             hard_batch(design, fam)
         elif mode == "xover":
+            xover(design, fam)
+        elif mode == "stage2":
+            shuf_batch(design, fam)
+            hard_batch(design, fam)
             xover(design, fam)
     return 0
 

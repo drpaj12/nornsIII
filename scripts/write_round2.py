@@ -213,8 +213,10 @@ designs, \\code{{hier}} equals Urd on {len(R['same']['hier_urd'])} and \\code{{w
 """
     if best:
         hb, xo = R.get("hard_best"), R.get("xover")
-        out += f"""The best new family by geomean wirelength is {code(best)}, so the coarse-random, hard and
-crossover arms below use it."""
+        out += f"""The best new family by geomean wirelength is {code(best)} (chosen on the {R['best_n']} designs whose
+soft arms were complete when the hard and crossover arms were queued"""
+        out += (f"""; over all {n} designs it is {code(R['best_now'])}""" if R['best_now'] != best else "")
+        out += """), so the coarse-random, hard and crossover arms below use it."""
         if hb and hb["n"]:
             out += f""" Its hard arm (one region per cluster, scale~1) is {f3(hb['gm'])} in wirelength over
 {hb['n']} designs, better than the baseline on {hb['wins']}; round one's hard arm pooled to {R['r1']['hard_wl']}."""

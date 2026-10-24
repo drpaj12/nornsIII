@@ -1,0 +1,38 @@
+{
+ "crossover_scale": 16.0,
+ "design": "mkSMAdapter4B",
+ "family": "words_partial",
+ "scales": [
+  {
+   "cold": 18245.0,
+   "cold_ret": 0.3229166666666667,
+   "scale": 1.0,
+   "unseeded": 16617.0
+  },
+  {
+   "cold": 17627.0,
+   "cold_ret": 0.3333333333333333,
+   "scale": 2.0,
+   "unseeded": 17493.0
+  },
+  {
+   "cold": 17384.0,
+   "cold_ret": 0.34375,
+   "scale": 4.0,
+   "unseeded": 17812.0
+  },
+  {
+   "cold": 18886.0,
+   "cold_ret": 0.3541666666666667,
+   "scale": 8.0,
+   "unseeded": 18534.0
+  },
+  {
+   "cold": 18340.0,
+   "cold_ret": 0.34375,
+   "scale": 16.0,
+   "unseeded": 18877.0
+  }
+ ],
+ "wins_all": false
+}
