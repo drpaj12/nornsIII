@@ -222,7 +222,9 @@ def write(designs: list[str]) -> None:
             "still routes shorter than the unseeded run at the same S; the start temperature "
             "recorded by VPR is S x its automatic estimate.",
             "* Retention = fraction of a seed's cluster CLBs whose exit position is inside the "
-            "cluster's seed bounding box; displacement = mean CLB distance from the seed slot.",
+            "cluster's seed bounding box; displacement = mean CLB distance from the seed slot. "
+            "For the hard arm retention is 1 by construction (the constraints cannot be "
+            "violated), so the hard rows only confirm the regions were respected.",
             "* Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III "
             "BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom "
             "names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm "
