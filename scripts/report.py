@@ -183,11 +183,16 @@ def per_design_table(data: dict[str, list[dict[str, object]]], designs: list[str
 
 
 def failures(data: dict[str, list[dict[str, object]]], designs: list[str]) -> list[str]:
+    """Unresolved failures: the latest record per tag is still rc != 0."""
     rows = []
     for design in designs:
-        bad = [r for r in load_records(design) if r.get("rc") != 0]
-        for r in bad:
-            rows.append(f"| {design} | {r.get('tag')} | rc={r.get('rc')} |")
+        latest: dict[str, dict[str, object]] = {}
+        for r in load_records(design):
+            latest[str(r.get("tag"))] = r
+        for tag in sorted(latest):
+            r = latest[tag]
+            if r.get("rc") != 0:
+                rows.append(f"| {design} | {tag} | rc={r.get('rc')} |")
     return ["| design | tag | result |", "|---|---|---|"] + rows if rows else ["none."]
 
 
