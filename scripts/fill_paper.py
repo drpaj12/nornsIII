@@ -97,6 +97,10 @@ def main(argv: list[str]) -> int:
                 if hot.get("retention") is not None:
                     rets.append(float(hot["retention"]))
         if scales:
+            temps = [t for t in temps if t > 0]
+            tcol = f"{statistics.median(temps):.4g}" if temps else "--"
+            out.append(f"% T median {tcol} (cost-normalized units) "
+                       f"for {label}")
             out.append(f"{label} & {statistics.median(scales):g}$\\times$ & "
                        f"{statistics.median(rets):.3f} \\\\")
         else:

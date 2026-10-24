@@ -227,8 +227,17 @@ def write(designs: list[str]) -> None:
             "cluster) on designs whose Odin hierarchy has a single module.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
-            "sweep.",
-            ""]
+            "sweep.", ""]
+    remaining = [d for d in nl.DESIGN_ORDER if d not in designs]
+    if remaining:
+        out += ["", "## Remaining matrix (continuation lane)", "",
+                "Designs not started in this lane, smallest first: " + ", ".join(remaining) + ".",
+                "Per design, run exactly:", "",
+                "    scripts/run_design.sh <design>", "",
+                "then extend the crossover and the checkpointing control if the lane has time:", "",
+                "    . scripts/env.sh && $NR_PY scripts/matrix.py crossover <design>",
+                "    . scripts/env.sh && $NR_PY scripts/matrix.py checkpoint <design>",
+                "    . scripts/env.sh && $NR_PY scripts/backfill.py && $NR_PY scripts/report.py", ""]
     path = nl.WS / "docs" / "plan" / "EXPERIMENT.md"
     path.write_text("\n".join(out) + "\n", encoding="utf-8")
     print(f"wrote {path}")

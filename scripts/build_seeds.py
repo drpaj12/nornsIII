@@ -12,8 +12,9 @@ final.flat_place). Outputs, per seed and variant:
 
 The quotient-graph layout contracts each cluster to a node weighted by inter-cluster net cuts,
 lays it out with networkx spring_layout (seed 1), and scales it onto the die; CLB slots are then
-taken nearest-first per cluster. Pad CLBs never move (their IO sites are fixed by the arch);
-memory/mult CLBs only swap among their own site class.
+taken nearest-first per cluster. Pad CLBs never move (their IO sites are fixed by the arch),
+mult_36 macros stay anchored (their tile footprint has a placement orientation) and adder carry
+chains move as a vertical run (VPR's carries are placement macros).
 
 Usage: python scripts/build_seeds.py [design ...]
 """
@@ -63,46 +64,46 @@ def block_clusters(design: str, blocks: list[dict[str, object]]) -> dict[str, di
 
 def adder_chains(blocks: list[dict[str, object]], flat: nl.Flat,
                  id2name: dict[str, str]) -> list[dict[str, object]]:
-    """Carry-chain groups: VPR places a chain as a vertical run (direct y_offset -1).
+    """Carry-chain groups at CLB level: VPR places a chain as a vertical run (direct y -1).
 
-    A chain is an ordered list of CLBs, head first (head.cout drives the next adder's cin).
-    Seeds must move a whole chain as a run kept in the same column, or VPR's macro
-    verification rejects the placement.
+    A chain is an ordered list of CLBs, head first (an adder in the head drives the next CLB's
+    adder cin). The CLB edges come from the atom-level cout->cin nets (many adders can share a
+    CLB); seeds move each chain as one run kept in the same column, or VPR's macro verification
+    rejects the placement.
     """
     adders = [b for b in blocks if b.get("model") == "adder" and b.get("pins")]
-    cout_of: dict[str, str] = {}
-    cin_to: dict[str, str] = {}
+    cout_clbs: dict[str, set[str]] = collections.defaultdict(set)
+    cin_pairs: list[tuple[str, str]] = []
     for b in adders:
         pins = {k.split("[")[0]: v for k, v in b["pins"].items()}
+        clb = flat.clb_of(str(b["name"]))
+        if clb is None:
+            continue
         if "cout" in pins:
-            cout_of.setdefault(pins["cout"], str(b["name"]))
-        if "cin" in pins:
-            cin_to[str(b["name"])] = pins["cin"]
-    succ: dict[str, str] = {}
+            cout_clbs[pins["cout"]].add(clb)
+        if "cin" in pins and pins["cin"] != "gnd":
+            cin_pairs.append((clb, pins["cin"]))
+    edges: dict[str, str] = {}
     has_pred: set[str] = set()
-    for name, cin_net in cin_to.items():
-        pred = cout_of.get(cin_net)
-        if pred is not None and pred != name:
-            succ[pred] = name
-            has_pred.add(name)
+    for clb, cin_net in cin_pairs:
+        for pred in sorted(cout_clbs.get(cin_net, ())):
+            if pred != clb and pred not in edges and clb not in has_pred:
+                edges[pred] = clb
+                has_pred.add(clb)
     chains: list[dict[str, object]] = []
     seen: set[str] = set()
-    for head in [n for n in succ if n not in has_pred] + list(succ):
+    for head in [c for c in edges if c not in has_pred] + sorted(edges):
         if head in seen:
             continue
         run = [head]
         seen.add(head)
-        while run[-1] in succ and succ[run[-1]] not in seen:
-            nxt = succ[run[-1]]
-            if flat.clb_of(nxt) is None or flat.clb_of(nxt) == flat.clb_of(run[-1]):
-                break
-            run.append(nxt)
-            seen.add(nxt)
-        clbs = [id2name.get(str(flat.clb_of(n))) for n in run]
-        if len(clbs) > 1 and all(clbs):
-            chains.append({"blocks": run, "clbs": clbs})
+        while run[-1] in edges and edges[run[-1]] not in seen:
+            run.append(edges[run[-1]])
+            seen.add(run[-1])
+        names = [id2name.get(c) for c in run]
+        if len(names) > 1 and all(names):
+            chains.append({"blocks": names, "clbs": names})
     return chains
-
 
 
 def slot_runs(slots: list[tuple[int, int, int, int]]) -> list[list[tuple[int, tuple[int, int, int, int]]]]:
@@ -258,7 +259,6 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
             by_cluster[cl].append(name)
         order = sorted(by_cluster, key=lambda c: (target[c][0], target[c][1], c))
         used: set[int] = set()
-        chosen: dict[int, list[tuple[int, int, int, int]]] = {}
         base_xy = {r["name"]: (float(r["x"]), float(r["y"])) for r in place.rows}
         # carry chains first: a chain occupies one vertical run, head at the top (VPR direct
         # y_offset -1); its CLBs keep that run in both variants
@@ -279,7 +279,13 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
                 best = None
                 n = len(members)
                 for run in runs:
-                    for start in range(0, len(run) - n + 1):
+                    # aligned, non-overlapping windows keep a long run usable by later chains
+                    starts = list(range(0, len(run) - n + 1, n))
+                    if starts and starts[-1] + n < len(run):
+                        starts.append(len(run) - n)
+                    for start in starts:
+                        if start + n > len(run):
+                            continue
                         head = run[start:start + n]
                         if any(i in used for i, _s in head):
                             continue
@@ -305,7 +311,6 @@ def build_seed(design: str, seed: str, clusters: dict[int, list[str]],
             picked = [s for _i, s in avail[:len(names)]]
             picked_ids = {i for i, _s in avail[:len(names)]}
             used |= picked_ids
-            chosen[cl] = picked
             # full: preserve the analytic fine order inside the cluster
             fine = sorted(names, key=lambda n: base_xy.get(n, (0.0, 0.0)))
             for name, slot in zip(fine, sorted(picked)):
