@@ -152,7 +152,7 @@ wirelength ratio, for Urd and for the best new family.
 
 def arm_row(label: str, v: dict) -> str:
     return (f"{label} & {f3(v['wirelength'])} & {f3(v['cpd_ns'])} & {f3(v['chan_width'])} & "
-            f"{f3(v['place_s'])} & {v['wins']}/{v['n']} \\\\")
+            f"{f3(v['place_s'])} & {f2(v['init_t'])} & {v['wins']}/{v['n']} \\\\")
 
 
 def results(R: dict) -> str:
@@ -180,13 +180,14 @@ def results(R: dict) -> str:
 \\caption{{Round two: geomean ratios vs the unseeded baseline at scale~1 for the soft arms (Urd from
 round one for reference). The last column is the number of designs where the routed wirelength is
 below the baseline. WL is routed wirelength, Chan.\\ the minimum channel width, Time the
-placement runtime. Below 1.0 is better.}}
+placement runtime, $T_0$ the anneal's start temperature that VPR derives from the
+starting placement. Below 1.0 is better (except $T_0$, a diagnostic).}}
 \\label{{tab:r2qor}}
 \\centering
 \\small
-\\begin{{tabular}}{{lccccc}}
+\\begin{{tabular}}{{lcccccc}}
 \\toprule
-Seed & WL & Delay & Chan.\\ & Time & Better \\\\
+Seed & WL & Delay & Chan.\\ & Time & $T_0$ & Better \\\\
 \\midrule
 {chr(10).join(rows)}
 \\bottomrule
@@ -303,6 +304,16 @@ membership available from Odin~III covers the flip-flops, adders, multipliers an
 {R['coverage_all']['lut_word'] * 100 // R['coverage_all']['lut_total']}\\% of the LUTs, because ABC's cone provenance merges the spans of
 mixed logic, so the word seeds are datapath-register seeds more than whole-datapath seeds; a result
 against bitwise seeding here is a result about that coverage as much as about the idea."""
+    t0 = lambda k: f3(vb[k]["init_t"]) if k in vb and vb[k]["n"] else "n/a"
+    s += f"""
+
+One confound the scale-1 comparison cannot remove: VPR derives its start temperature from the starting
+placement, so a start that is worse than the analytic one is annealed hotter and, in these runs, longer. The
+geomean start temperature relative to the baseline is {t0('random')} for the random start,
+{t0('urd')} for Urd and {t0(best) if best else 'n/a'} for the best new family, and placement runtime moves with it
+(Table~\\ref{{tab:r2qor}}). The arms are therefore compared at VPR's own temperature, not at equal anneal effort, and
+the random start beating a connectivity-aware start would be a statement about the schedule as much as about the start;
+the effort curve (N3) is the experiment that separates them and stays open."""
     s += f"""
 
 On the coarse-versus-fine question that round one left open, the arms give the answer for these

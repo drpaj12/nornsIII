@@ -205,15 +205,16 @@ def round2_section() -> list[str]:
     R = r2lib.compute()
     out = ["Round-two arms at scale 1, geomean ratios vs the unseeded baseline (below 1.0 is "
            "better); `better` = designs with routed wirelength below the baseline.", "",
-           "| arm | wirelength | delay | chan width | place runtime | better |",
-           "|---|---|---|---|---|---|"]
+           "| arm | wirelength | delay | chan width | place runtime | start T | better |",
+           "|---|---|---|---|---|---|---|"]
     for key, v in R["vs_base"].items():
         if key in ("urd", "words", "words_inter", "slices", "hier", "words_partial", "random",
                    "urd_shuf") or key.endswith("_shuf"):
             if v["n"]:
-                out.append("| {} | {} | {} | {} | {} | {}/{} |".format(
+                out.append("| {} | {} | {} | {} | {} | {} | {}/{} |".format(
                     key, r2lib.f3(v["wirelength"]), r2lib.f3(v["cpd_ns"]),
-                    r2lib.f3(v["chan_width"]), r2lib.f3(v["place_s"]), v["wins"], v["n"]))
+                    r2lib.f3(v["chan_width"]), r2lib.f3(v["place_s"]), r2lib.f2(v["init_t"]),
+                    v["wins"], v["n"]))
     out += ["", f"Best new family: {R['best']}.", "", "| hypothesis | status | deciding number |",
             "|---|---|---|"]
     h = R["hyp"]

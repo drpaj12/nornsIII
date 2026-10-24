@@ -45,7 +45,7 @@ def sign_p(k: int, n: int) -> float:
 
 def vs_base(data, designs, fam, var="full", tag=None):
     """Geomean ratios vs the baseline for one soft arm (tag overrides the family/variant)."""
-    cols = {m: [] for m in report.METRICS}
+    cols = {m: [] for m in (*report.METRICS, "init_t")}
     n = wins = 0
     for d in designs:
         base = report.pick(data[d], "baseline")
@@ -53,7 +53,7 @@ def vs_base(data, designs, fam, var="full", tag=None):
         if run is None:
             continue
         n += 1
-        for m in report.METRICS:
+        for m in (*report.METRICS, "init_t"):
             r = report.ratio(run, base, m)
             if r is not None:
                 cols[m].append(r)
@@ -61,7 +61,7 @@ def vs_base(data, designs, fam, var="full", tag=None):
         if r is not None and r < 1:
             wins += 1
     return {"n": n, "wins": wins, **{m: nl.geomean(cols[m]) if cols[m] else float("nan")
-                                     for m in report.METRICS}}
+                                     for m in (*report.METRICS, "init_t")}}
 
 
 def coverage(designs):
