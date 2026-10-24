@@ -7,6 +7,7 @@
   python scripts/round2.py xover [design ...]   cold-start crossover sweep + the 2S hot step
                                                 of the best new family
   python scripts/round2.py best                 print the best new family
+  python scripts/round2.py freeze               record the choice in data/analysis/best.json
 
 The best new family is the one of words, slices, hier, words_partial with the lowest geomean
 soft-full wirelength ratio over the designs where all four ran (best_family()). The
@@ -96,6 +97,15 @@ def main(argv: list[str]) -> int:
     designs = argv[1:] or list(nl.DESIGN_ORDER)
     if mode == "best":
         print(best_family())
+        return 0
+    if mode == "freeze":
+        fam = r2_best.current_best()
+        data, all_designs = report.load_all()
+        done = r2_best.round2_designs(data, all_designs)
+        nl.write_json(r2_best.FROZEN, {"family": fam, "designs": done,
+                                       "rule": "lowest geomean soft-full wirelength ratio "
+                                               "over the designs with every round-2 soft arm"})
+        print(fam, len(done))
         return 0
     fam = best_family() if mode != "soft" else None
     if mode != "soft" and fam is None:

@@ -84,8 +84,9 @@ def hyp_status(gm, p, better_is_lower=True):
 
 
 def compute() -> dict:
-    data, designs = report.load_all()
-    out: dict = {"designs": designs, "n_designs": len(designs)}
+    data, all_designs = report.load_all()
+    designs = r2_best.round2_designs(data, all_designs)
+    out: dict = {"designs": designs, "n_designs": len(designs), "n_all": len(all_designs)}
     best = r2_best.best_family()
     out["best"] = best
     fams = {"urd": ("urd", "full")}
