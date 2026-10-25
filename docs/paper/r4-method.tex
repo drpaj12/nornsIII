@@ -12,7 +12,7 @@ pack-time criticality of each input pin, the molecules offered to the candidate 
 (15 designs, seed 1, byte comparison of the \code{.net}): (a) stock against the Norns binary with the option absent and beta~0, 30 of 30 identical;
 (b) census on against off, \code{--pack} and the analytical flow, stock and headline arm, 60 of 60;
 (c) \code{attempted} counting against the round-three binary on the 45 headline configs (\code{.net} and flat placement), 90 of 90.
-No experiment ran before all passed.
+No experiment ran before all passed. Fix round: (b$'$) census on against off for the round-three \code{attempted} arm (word, $\beta=4$, \code{--pack}, seed 1), 15 of 15 identical; the flat-placement compare now skips only the \code{\# Created:} header line. The gate scratch outputs had been deleted, so (b) and (c) were not repeated; the tightened compare was run on the 30 pairs of existing output (the census run and the routed arm run of one packing, seed 1): 15 identical as is, 30 when the stock \code{vpr}'s version line is also skipped, 30 with the old compare.
 
 \paragraph{Affinity join.} Round three's affinity files matched few entries for mkDelayWorker32B (38 of 1620
 word entries). The cause was not a name form: the file listed buffer LUTs that VPR absorbs, dead logic that VPR sweeps, and

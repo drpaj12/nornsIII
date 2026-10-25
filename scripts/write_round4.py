@@ -121,6 +121,9 @@ Found in this round: the round-three affinity files lacked every adder (carry-ch
 """.replace("@@n@@", str(n17["n"])))
     # ---- method
     j = nl.read_json(nl.DATA / "analysis" / "r4-join.json")
+    gqj = nl.read_json(nl.DATA / "analysis" / "r4-gate-b-attempted.json")
+    gq = (sum(1 for r in gqj.values() if r["identical"]), len(gqj))
+    fc = nl.read_json(nl.DATA / "analysis" / "r4-flatcmp.json")
     summ = n17["summary"]
     chk = arms["checks"]
     method = rf"""
@@ -137,7 +140,7 @@ pack-time criticality of each input pin, the molecules offered to the candidate 
 (15 designs, seed 1, byte comparison of the \code{{.net}}): (a) stock against the Norns binary with the option absent and beta~0, {gate['a'][0]} of {gate['a'][1]} identical;
 (b) census on against off, \code{{--pack}} and the analytical flow, stock and headline arm, {gate['b'][0]} of {gate['b'][1]};
 (c) \code{{attempted}} counting against the round-three binary on the 45 headline configs (\code{{.net}} and flat placement), {gate['c'][0]} of {gate['c'][1]}.
-No experiment ran before all passed.
+No experiment ran before all passed. Fix round: (b$'$) census on against off for the round-three \code{{attempted}} arm (word, $\beta=4$, \code{{--pack}}, seed 1), {gq[0]} of {gq[1]} identical; the flat-placement compare now skips only the \code{{\# Created:}} header line. The gate scratch outputs had been deleted, so (b) and (c) were not repeated; the tightened compare was run on the {len(fc)} pairs of existing output (the census run and the routed arm run of one packing, seed 1): {sum(r['tight'] for r in fc)} identical as is, {sum(r['tight_ignoring_version'] for r in fc)} when the stock \code{{vpr}}'s version line is also skipped, {sum(r['old'] for r in fc)} with the old compare.
 
 \paragraph{{Affinity join.}} Round three's affinity files matched few entries for mkDelayWorker32B ({j['mkDelayWorker32B']['word']['r3']['matched']} of {j['mkDelayWorker32B']['word']['r3']['entries']}
 word entries). The cause was not a name form: the file listed buffer LUTs that VPR absorbs, dead logic that VPR sweeps, and
