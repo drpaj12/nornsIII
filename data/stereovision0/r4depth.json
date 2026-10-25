@@ -1,0 +1,10 @@
+{
+ "design": "stereovision0",
+ "enough": true,
+ "rho": -0.03770265260059888,
+ "spans_total": 41,
+ "spans_unmatched_to_statement": 2,
+ "spans_used": 39,
+ "top5_expected": 0.6410256410256411,
+ "top5_overlap": 3
+}

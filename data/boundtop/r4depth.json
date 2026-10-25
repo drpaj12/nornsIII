@@ -1,0 +1,10 @@
+{
+ "design": "boundtop",
+ "enough": true,
+ "rho": 0.07797874698063428,
+ "spans_total": 31,
+ "spans_unmatched_to_statement": 1,
+ "spans_used": 30,
+ "top5_expected": 0.8333333333333334,
+ "top5_overlap": 1
+}

@@ -1,0 +1,20 @@
+{
+ "A_med": 918,
+ "D": 1,
+ "M": 13,
+ "S": 18845,
+ "design": "stereovision1",
+ "elab": {
+  "depth": 5,
+  "instances": 233,
+  "instantiations": 101,
+  "modules": 16
+ },
+ "rent": {
+  "1": {
+   "groups": 14,
+   "p": 0.6430492969424874
+  }
+ },
+ "top_level_atoms": 135
+}

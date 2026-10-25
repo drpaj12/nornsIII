@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1951,
+   "cpd_arrival_ns": 5.35,
+   "design": "raygentop",
+   "edge_crossing": {
+    "crossings": 2342,
+    "edges": 4199,
+    "rate": 0.5577518456775423
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 5,
+     "hop_crossing_rate": 0.2631578947368421,
+     "hops": 19,
+     "k": 3,
+     "reasons": {
+      "R0": 0,
+      "R1": 1,
+      "R2": 1,
+      "R3": 3
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 18,
+     "hop_crossing_rate": 0.2571428571428571,
+     "hops": 70,
+     "k": 17,
+     "reasons": {
+      "R0": 0,
+      "R1": 8,
+      "R2": 2,
+      "R3": 8
+     },
+     "split": 4
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.4964854497947184,
+    "OR": 0.3632043402282029,
+    "SC": 0.057453513778077565,
+    "SI": 0.06701548693397788,
+    "SN": 0.01584120926498501
+   },
+   "w2_total": 7456.053084112425
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 2009,
+   "cpd_arrival_ns": 5.019,
+   "design": "raygentop",
+   "edge_crossing": {
+    "crossings": 2013,
+    "edges": 4199,
+    "rate": 0.4793998571088354
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 9,
+     "hop_crossing_rate": 0.2727272727272727,
+     "hops": 33,
+     "k": 2,
+     "reasons": {
+      "R0": 0,
+      "R1": 4,
+      "R2": 1,
+      "R3": 4
+     },
+     "split": 2
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 37,
+     "hop_crossing_rate": 0.30578512396694213,
+     "hops": 121,
+     "k": 55,
+     "reasons": {
+      "R0": 0,
+      "R1": 15,
+      "R2": 9,
+      "R3": 13
+     },
+     "split": 9
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.5863152842839174,
+    "OR": 0.28693059675066257,
+    "SC": 0.06261138880007935,
+    "SI": 0.04191059591839792,
+    "SN": 0.02223213424691086
+   },
+   "w2_total": 7995.782028292852
+  }
+ },
+ "design": "raygentop"
+}

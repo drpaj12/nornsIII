@@ -1,0 +1,399 @@
+{
+ "arms": {
+  "r3": {
+   "arm": "r3",
+   "census_clusters": 527,
+   "census_destroyed": 2,
+   "clbs_single_census_cluster": 124,
+   "logic_clbs": 124,
+   "logic_clusters": 124,
+   "members": 2009,
+   "null": {
+    "mean": {
+     "FL": 0.8954242871748268,
+     "OR": 0.09814495058502784,
+     "SC": 0.0007599681926615926,
+     "SI": 0.004680222651368852,
+     "SN": 0.0009905713961149607
+    },
+    "samples": 50,
+    "sd": {
+     "FL": 0.0023986958154204366,
+     "OR": 0.0022355775445741756,
+     "SC": 0.00019507396927122622,
+     "SI": 0.0005488071034502401,
+     "SN": 0.0002336800314274205
+    }
+   },
+   "null_units": {
+    "fixed_clbs": 27,
+    "mean": {
+     "FL": 0.7110019311598319,
+     "OR": 0.20286720436214928,
+     "SC": 0.03175621947063501,
+     "SI": 0.018714074747245256,
+     "SN": 0.03566057026013859
+    },
+    "overflow_units": 0,
+    "samples": 50,
+    "sd": {
+     "FL": 0.0017662240849545656,
+     "OR": 0.001585834407153554,
+     "SC": 0.00019084741129627927,
+     "SI": 0.0005592004506746388,
+     "SN": 0.00015000050746558321
+    },
+    "shuffled_clbs": 97,
+    "units": 923
+   },
+   "pairs": {
+    "counts": {
+     "FL": 9096,
+     "OR": 5694,
+     "SC": 750,
+     "SI": 1292,
+     "SN": 774
+    },
+    "pairs": 17606,
+    "share": {
+     "FL": 0.5166420538452801,
+     "OR": 0.3234124730205612,
+     "SC": 0.04259911393843008,
+     "SI": 0.07338407361126889,
+     "SN": 0.043962285584459845
+    },
+    "share_w1": {
+     "FL": 0.5134041004281962,
+     "OR": 0.3107116856614792,
+     "SC": 0.05259568396225935,
+     "SI": 0.08543892449466033,
+     "SN": 0.03784960545338633
+    },
+    "w1_total": 8695.35774700009
+   },
+   "proposals": {
+    "attempted": 8055,
+    "calls": 930,
+    "calls_zero_queued": 542,
+    "hit_rate": 0.5027932960893855,
+    "queued": 4050,
+    "zero_share": 0.5827956989247312
+   },
+   "queued_per_cluster": 47.95967741935484,
+   "rejections": {
+    "feasible": 2556
+   },
+   "rejections_per_cluster": 20.612903225806452,
+   "sources": {
+    "affinity_group": {
+     "affinity_bonus_share": 1.0,
+     "atoms": 545,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 3.3410621418181843,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 275
+    },
+    "connectivity_timing": {
+     "affinity_bonus_share": 0.2681818181818182,
+     "atoms": 961,
+     "attraction_share": 0.0,
+     "mean_connection": 0.27706193277835506,
+     "mean_queue_gain": 1.232483383653031,
+     "mean_sharing": 1.2580645161290323,
+     "mean_timing": 0.2718074568158168,
+     "molecules": 660
+    },
+    "high_fanout": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 16,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": -0.002042966475,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 12
+    },
+    "seed": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 1234,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.0,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 124
+    },
+    "transitive": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 22,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.018494977454545456,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 22
+    }
+   }
+  },
+  "r4": {
+   "arm": "r4",
+   "census_clusters": 525,
+   "census_destroyed": 2,
+   "clbs_single_census_cluster": 122,
+   "logic_clbs": 122,
+   "logic_clusters": 122,
+   "members": 2009,
+   "null": {
+    "mean": {
+     "FL": 0.8942428922830501,
+     "OR": 0.09925175905268578,
+     "SC": 0.0008237515016303415,
+     "SI": 0.004745723928837023,
+     "SN": 0.0009358732337966935
+    },
+    "samples": 50,
+    "sd": {
+     "FL": 0.0022664087499328707,
+     "OR": 0.002234056853394903,
+     "SC": 0.00017575987066800774,
+     "SI": 0.0005175023093844193,
+     "SN": 0.00020330229420505624
+    }
+   },
+   "null_units": {
+    "fixed_clbs": 27,
+    "mean": {
+     "FL": 0.7093667410331217,
+     "OR": 0.20380641839711686,
+     "SC": 0.03202333962587953,
+     "SI": 0.01885246839425662,
+     "SN": 0.035951032549625304
+    },
+    "overflow_units": 0,
+    "samples": 50,
+    "sd": {
+     "FL": 0.0016247080307777743,
+     "OR": 0.0014476726671087971,
+     "SC": 0.00019683828767330533,
+     "SI": 0.0006415286289125694,
+     "SN": 0.00015570262654046195
+    },
+    "shuffled_clbs": 95,
+    "units": 923
+   },
+   "pairs": {
+    "counts": {
+     "FL": 8976,
+     "OR": 5726,
+     "SC": 753,
+     "SI": 1268,
+     "SN": 758
+    },
+    "pairs": 17481,
+    "share": {
+     "FL": 0.5134717693495795,
+     "OR": 0.32755563182884273,
+     "SC": 0.04307533893941994,
+     "SI": 0.07253589611578284,
+     "SN": 0.04336136376637492
+    },
+    "share_w1": {
+     "FL": 0.5114653617717733,
+     "OR": 0.31472493817312364,
+     "SC": 0.05292930971000723,
+     "SI": 0.0839977879081861,
+     "SN": 0.03688260243693037
+    },
+    "w1_total": 8673.78644299984
+   },
+   "proposals": {
+    "attempted": 8303,
+    "calls": 895,
+    "calls_zero_queued": 504,
+    "hit_rate": 0.49668794411658435,
+    "queued": 4124,
+    "zero_share": 0.5631284916201117
+   },
+   "queued_per_cluster": 48.0,
+   "rejections": {
+    "feasible": 2495
+   },
+   "rejections_per_cluster": 20.450819672131146,
+   "sources": {
+    "affinity_group": {
+     "affinity_bonus_share": 1.0,
+     "atoms": 545,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 3.3916476268115985,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 276
+    },
+    "connectivity_timing": {
+     "affinity_bonus_share": 0.2759146341463415,
+     "atoms": 961,
+     "attraction_share": 0.0,
+     "mean_connection": 0.27651660332986394,
+     "mean_queue_gain": 1.2795638381753043,
+     "mean_sharing": 1.2476586888657648,
+     "mean_timing": 0.2694479791883456,
+     "molecules": 656
+    },
+    "high_fanout": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 14,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": -0.0016715597700000002,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 10
+    },
+    "seed": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 1227,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.0,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 122
+    },
+    "transitive": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 31,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.02249896478965517,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 29
+    }
+   }
+  },
+  "stock": {
+   "arm": "stock",
+   "census_clusters": 528,
+   "census_destroyed": 2,
+   "clbs_single_census_cluster": 125,
+   "logic_clbs": 125,
+   "logic_clusters": 125,
+   "members": 2009,
+   "null": {
+    "mean": {
+     "FL": 0.8946042998256827,
+     "OR": 0.09890993608367228,
+     "SC": 0.0007484020918070888,
+     "SI": 0.004697269029633934,
+     "SN": 0.0010400929692039513
+    },
+    "samples": 50,
+    "sd": {
+     "FL": 0.002271481919020264,
+     "OR": 0.002103253593861714,
+     "SC": 0.0001861706858291764,
+     "SI": 0.0004690915939538639,
+     "SN": 0.00024411332408599658
+    }
+   },
+   "null_units": {
+    "fixed_clbs": 27,
+    "mean": {
+     "FL": 0.7082219639744335,
+     "OR": 0.2057478210342824,
+     "SC": 0.0321952353282975,
+     "SI": 0.017846600813480537,
+     "SN": 0.0359883788495061
+    },
+    "overflow_units": 0,
+    "samples": 50,
+    "sd": {
+     "FL": 0.0015099112678891588,
+     "OR": 0.001432555582534463,
+     "SC": 0.00018732775530142865,
+     "SI": 0.0004713390221914856,
+     "SN": 0.00014221553553309327
+    },
+    "shuffled_clbs": 98,
+    "units": 938
+   },
+   "pairs": {
+    "counts": {
+     "FL": 10105,
+     "OR": 4284,
+     "SC": 838,
+     "SI": 999,
+     "SN": 984
+    },
+    "pairs": 17210,
+    "share": {
+     "FL": 0.5871586287042417,
+     "OR": 0.24892504357931436,
+     "SC": 0.04869262056943637,
+     "SI": 0.05804764671702498,
+     "SN": 0.05717606042998257
+    },
+    "share_w1": {
+     "FL": 0.5891320908765739,
+     "OR": 0.22964564915042063,
+     "SC": 0.061459330684808786,
+     "SI": 0.06660249440689683,
+     "SN": 0.05316043488137015
+    },
+    "w1_total": 8303.935924999374
+   },
+   "proposals": null,
+   "queued_per_cluster": 54.472,
+   "rejections": {
+    "feasible": 2869
+   },
+   "rejections_per_cluster": 22.952,
+   "sources": {
+    "connectivity_timing": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 1228,
+     "attraction_share": 0.0,
+     "mean_connection": 0.338752743485341,
+     "mean_queue_gain": 0.34108541616564403,
+     "mean_sharing": 1.232899022801303,
+     "mean_timing": 0.3270450879478824,
+     "molecules": 815
+    },
+    "high_fanout": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 18,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": -0.0023272,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 10
+    },
+    "seed": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 1260,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.0,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 125
+    },
+    "transitive": {
+     "affinity_bonus_share": 0.0,
+     "atoms": 272,
+     "attraction_share": 0.0,
+     "mean_connection": 0.0,
+     "mean_queue_gain": 0.03711323358041958,
+     "mean_sharing": 0.0,
+     "mean_timing": 0.0,
+     "molecules": 143
+    }
+   }
+  }
+ },
+ "design": "mkSMAdapter4B"
+}

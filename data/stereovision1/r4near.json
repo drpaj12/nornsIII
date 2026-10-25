@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1158,
+   "cpd_arrival_ns": 5.933,
+   "design": "stereovision1",
+   "edge_crossing": {
+    "crossings": 8776,
+    "edges": 27107,
+    "rate": 0.3237540118788505
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 36,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 87,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.1687795095457409,
+    "OR": 0.8312204904542629,
+    "SC": 0.0,
+    "SI": 0.0,
+    "SN": 0.0
+   },
+   "w2_total": 2805.965110399453
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1342,
+   "cpd_arrival_ns": 6.433,
+   "design": "stereovision1",
+   "edge_crossing": {
+    "crossings": 6894,
+    "edges": 27107,
+    "rate": 0.25432545099051906
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 30,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 51,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.4883074351045372,
+    "OR": 0.46894843724873414,
+    "SC": 0.026067856792087275,
+    "SI": 0.009701968871770167,
+    "SN": 0.006974301982889675
+   },
+   "w2_total": 5482.564277941811
+  }
+ },
+ "design": "stereovision1"
+}

@@ -21,17 +21,49 @@ experiments." The change is a provenance-affinity term; legality is AAPack's leg
 Nothing is removed from any VTR line (all diffs are additions). `vpr_types.h` is untouched
 on purpose (it is included everywhere); the options travel through `norns::set_options`.
 
-## Known limits of the proposal step (measured in the fix round, not fixed)
+## Round 4 changes (docs/plan/round4.md, Stage 1)
 
-In `add_cluster_molecule_candidates_by_norns_group` the counter `added` (cap `feasible_block_array_size`, 30) is incremented
+* Proposal counting. `add_molecule_to_pb_stats_candidates` now returns whether the molecule entered the candidate
+  queue. The cap of the group-member proposal (`feasible_block_array_size`, 30) counts queued molecules by default
+  (`--norns_proposal_count queued`); `--norns_proposal_count attempted` is the round-3 behaviour (the cap counted
+  molecules handed to the queue, whether or not it accepted them). The scan order (atom id) is unchanged. The round-3
+  hit rate (queued / attempted) and the fixed one are in the paper (`tab:r4proposals`).
+* Census, log-only (`--norns_pack_census <file>`; `norns_affinity.h` `Census`, hooks in `greedy_candidate_selector.cpp`
+  and one line in `greedy_clusterer.cpp` that passes the legalizer status). Tab separated records: `M` a molecule added
+  to a cluster (cluster number, index, seed or candidate, source, queue-time gain, affinity bonus, attraction gain, base
+  gain, dominant affinity group, root atom), `A` its atoms with the sharing, connection, timing and combined gain VPR
+  held for them, `P` the pack-time criticality of each input pin, `Q` a molecule entering the candidate queue (source),
+  `F` a candidate the legalizer refused (status 1 = pin feasibility, 2 = intra-cluster routing), `K` a cluster closed.
+  Sources: 0 seed, 1 connectivity and timing, 2 affinity group, 3 transitive, 4 high fanout, 5 attraction group,
+  6 RAM, 7 unrelated clustering. The code reads the gain maps with `find` only and never touches the random state, so
+  the `.net` is unchanged (Stage-1 gate (b)).
+* Gates: `scripts/round4.py gate` (results `data/analysis/r4-gate.json`).
+  Gate (c) compares against the round-3 binary (`$NORNS_VPR_R3`, default `/tmp/claude-1000/nr4-w/vpr-r3`): the overlay
+  as committed at `7e26f3b` (before the round-4 packer commit `00518c8`), on the same VTR commit and with the same cmake flags.
+  `sh packer/build.sh --r3` builds exactly that in a separate tree (`$NORNS_VTR_R3`, default `work/norns-vtr-r3`); it
+  exports `packer/vpr` of `7e26f3b` with `git archive`, so no round-4 file is left over. Point `NORNS_VPR_R3` at
+  `$NORNS_VTR_R3/build/vpr/vpr`. (The script path is the documented route; the binary used for the committed gate was copied
+  from the round-3 build before the round-4 overlay, and was not rebuilt in the fix round.)
+* Fix round (docs/plan/round4.md, last entry): (i) `last_status` (`norns_affinity.h`) is a global set in
+  `GreedyClusterer::try_add_candidate_mol_to_cluster` (`greedy_clusterer.cpp`) right after `add_mol_to_cluster` returns, and
+  the only caller of `update_cluster_gain_stats_candidate_failed` (which writes the `F` record) is the `else` branch of
+  that same call in `GreedyClusterer::try_grow_cluster`, with no code between them: every `F` record follows an attempt and reads
+  that attempt's status. No code change. (ii) Cost of `queued` counting: a molecule already in the queue returns false and
+  does not consume the cap, so with `queued` counting the scan of `add_cluster_molecule_candidates_by_norns_group` can walk the
+  whole group on every call (the cost grows with the size of the group). It is a
+  run-time cost, not a correctness issue (the gates pass); it is not bounded in this round (log-only note, no behaviour change). The
+  census `Norns proposals:` line (calls, attempted, queued) gives its size.
+
+## Known limits of the proposal step (round 3; fixed above)
+
+In `add_cluster_molecule_candidates_by_norns_group` the counter `added` (cap `feasible_block_array_size`, 30) was incremented
 for every molecule handed to the candidate queue, not for every molecule the queue accepts: the queue ignores a molecule that
-is already in it or (APPack) too far from the cluster in the global placement, and a rejected molecule still spends the cap.
-The group is scanned in atom-id (netlist) order, so the members tried first are the lowest ids, a netlist-order bias. The behaviour is
-unchanged (the Stage-4 results stand); the log-only counter reports attempted and queued molecules and proposal calls that queued
-nothing (`Norns proposals:` line of `vpr.out`, per design in `data/analysis/r3fix-ident.json`, in Table `tab:r3diag` of the paper).
-The fix (count only queued molecules by returning a bool from `add_molecule_to_pb_stats_candidates`, and a scan order not tied to
-atom ids) is queued for round 4. The fraction of affinity-file entries that matched an atom is printed in the existing
-`Norns affinity:` line (per design in `data/analysis/r3fix-match.json`).
+is already in it or (APPack) too far from the cluster in the global placement, and a rejected molecule still spent the cap.
+The group is scanned in atom-id (netlist) order, so the members tried first are the lowest ids, a netlist-order bias that
+remains. The log-only counter reports attempted and queued molecules and proposal calls that queued nothing (`Norns
+proposals:` line of `vpr.out`). The fraction of affinity-file entries that matched an atom is printed in the existing
+`Norns affinity:` line. The round-3 affinity files listed atoms VPR does not have (absorbed buffer LUTs, dead logic) and
+named adders wrongly; see `scripts/affinity.py` and `data/analysis/r4-join.json`.
 
 ## The gain term and its scale
 

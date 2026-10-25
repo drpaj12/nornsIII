@@ -103,3 +103,31 @@ the tools it needs). Uses [Odin III](https://github.com/drpaj12/odin3) (manual:
 <https://drpaj12.github.io/odin3/>), [Loki III](https://github.com/drpaj12/loki) (manual:
 <https://drpaj12.github.io/loki/>) and [Wyrd III](https://github.com/drpaj12/wyrd) (manual:
 <https://drpaj12.github.io/wyrd/>) to run the matrix.
+
+Round four (packing census, knowns, hierarchy, arms with CPD; protocol docs/plan/round4.md; needs odin3 >= 0b90fff9 for the
+attribution library, imported by scripts/timing4.py). Run with `. scripts/env.sh` and `$NR_PY` (scipy, networkx):
+
+    sh packer/build.sh                       # rebuild the Norns packer (census, proposal-count option)
+    $NR_PY scripts/round4.py join            # affinity join check -> data/analysis/r4-join.json (writes runs/<d>/r4/affinity)
+    $NR_PY scripts/round4.py gate            # Stage-1 gates -> data/analysis/r4-gate.json
+    $NR_PY scripts/round4.py gateq           # fix round, Q: gate (b) for the round-3 'attempted' arm, pack-only -> r4-gate-b-attempted.json
+    $NR_PY scripts/round4.py joinrev         # fix round: reverse coverage of the affinity join (no VPR) -> adds "reverse" to r4-join.json
+    $NR_PY scripts/round4.py flatcmp         # fix round: tightened flat-placement compare on existing outputs (no VPR) -> r4-flatcmp.json
+    $NR_PY scripts/round4.py census          # 45 census runs (stock, r3, r4 packings)
+    $NR_PY scripts/round4.py arms 2b         # routed analytic arms with the timing report and attribution
+    $NR_PY scripts/round4.py arms 5          # word-seed and stage x bit (scripts/r4stage.py) arms
+    $NR_PY scripts/r4census.py; $NR_PY scripts/r4near.py; $NR_PY scripts/r4hier.py; $NR_PY scripts/r4depth.py
+    $NR_PY scripts/r4stats.py                # data/analysis/r4-results.json
+    $NR_PY scripts/write_round4.py           # docs/paper/r4-*.tex (byte-identical from committed data/analysis, data/<d>)
+
+Packer options: `--norns_pack_census FILE`, `--norns_proposal_count queued|attempted`.
+
+Which round-four steps need what. Only `scripts/write_round4.py` (and `write_round3.py`) regenerate byte-identically from a plain
+`git archive` of this repository (they read the committed `data/`, `data/analysis/r4-*.json` and `docs/plan/round4.md`). Everything
+upstream of `data/` needs `runs/` (not committed): `round4.py` (all modes; the VTR build `$NORNS_VPR`, the stock `vpr`, and for gate
+(c) the round-3 binary `$NORNS_VPR_R3`, built by `sh packer/build.sh --r3`), `r4census.py`, `r4near.py` and `r4hier.py`
+(BLIFs and run directories under `runs/<d>/`; `r4hier.py` also runs the Odin III build in `$ODIN3_ROOT` for the pre-flatten
+hierarchy), `r4depth.py` (`runs/<d>/r4/stock.analytic.s1/attr.json` and the benchmark Verilog under `$VTR_ROOT`, whose paths the
+attribution records), and `r4stats.py` (the committed `data/<d>/` records, plus `runs/` for K6 (round-3 `vpr.out`), K7
+(`paths.json.gz`, `final.flat_place`) and the CPD and coverage checks (`paths.json.gz`)). `data/analysis/r4-results.json` is
+therefore reproduced only where `runs/` exists.

@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 293,
+   "cpd_arrival_ns": 2.74,
+   "design": "stereovision3",
+   "edge_crossing": {
+    "crossings": 347,
+    "edges": 776,
+    "rate": 0.44716494845360827
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 4,
+     "hop_crossing_rate": 0.8,
+     "hops": 5,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 2,
+      "R2": 2,
+      "R3": 0
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 4,
+     "hop_crossing_rate": 0.8,
+     "hops": 5,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 2,
+      "R2": 2,
+      "R3": 0
+     },
+     "split": 1
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 201,
+   "share_w2": {
+    "FL": 0.628692644913522,
+    "OR": 0.16020817439037383,
+    "SC": 0.05766784017055584,
+    "SI": 0.12903986124009909,
+    "SN": 0.02439147928544571
+   },
+   "w2_total": 1268.1675182481483
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 293,
+   "cpd_arrival_ns": 3.271,
+   "design": "stereovision3",
+   "edge_crossing": {
+    "crossings": 335,
+    "edges": 776,
+    "rate": 0.43170103092783507
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 4,
+     "hop_crossing_rate": 0.8,
+     "hops": 5,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 2,
+      "R2": 2,
+      "R3": 0
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 4,
+     "hop_crossing_rate": 0.8,
+     "hops": 5,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 2,
+      "R2": 2,
+      "R3": 0
+     },
+     "split": 1
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 201,
+   "share_w2": {
+    "FL": 0.6437134236609489,
+    "OR": 0.1400792092689489,
+    "SC": 0.05488208130006733,
+    "SI": 0.12580090830023308,
+    "SN": 0.03552437746976637
+   },
+   "w2_total": 1176.4863955977203
+  }
+ },
+ "design": "stereovision3"
+}

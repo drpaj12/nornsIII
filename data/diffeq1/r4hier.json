@@ -1,0 +1,15 @@
+{
+ "A_med": 523,
+ "D": 1,
+ "M": 1,
+ "S": 622,
+ "design": "diffeq1",
+ "elab": {
+  "depth": 1,
+  "instances": 1,
+  "instantiations": 0,
+  "modules": 1
+ },
+ "rent": {},
+ "top_level_atoms": 99
+}

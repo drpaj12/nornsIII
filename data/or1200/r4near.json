@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1607,
+   "cpd_arrival_ns": 8.456,
+   "design": "or1200",
+   "edge_crossing": {
+    "crossings": 5713,
+    "edges": 8736,
+    "rate": 0.6539606227106227
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 141,
+     "hop_crossing_rate": 0.18311688311688312,
+     "hops": 770,
+     "k": 34,
+     "reasons": {
+      "R0": 0,
+      "R1": 44,
+      "R2": 22,
+      "R3": 75
+     },
+     "split": 34
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 1224,
+     "hop_crossing_rate": 0.5262252794496991,
+     "hops": 2326,
+     "k": 162,
+     "reasons": {
+      "R0": 0,
+      "R1": 297,
+      "R2": 27,
+      "R3": 900
+     },
+     "split": 162
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.45212710578493603,
+    "OR": 0.38864160809756826,
+    "SC": 0.07015043737756022,
+    "SI": 0.08442498749235351,
+    "SN": 0.004655861247628867
+   },
+   "w2_total": 8477.071783348572
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1425,
+   "cpd_arrival_ns": 8.599,
+   "design": "or1200",
+   "edge_crossing": {
+    "crossings": 5058,
+    "edges": 8736,
+    "rate": 0.5789835164835165
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 93,
+     "hop_crossing_rate": 0.13943028485757122,
+     "hops": 667,
+     "k": 29,
+     "reasons": {
+      "R0": 0,
+      "R1": 34,
+      "R2": 0,
+      "R3": 59
+     },
+     "split": 29
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 263,
+     "hop_crossing_rate": 0.1525522041763341,
+     "hops": 1724,
+     "k": 72,
+     "reasons": {
+      "R0": 0,
+      "R1": 92,
+      "R2": 8,
+      "R3": 163
+     },
+     "split": 72
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.6002039860512134,
+    "OR": 0.2129632820608837,
+    "SC": 0.11173419186836392,
+    "SI": 0.05682979851990986,
+    "SN": 0.018268741499644203
+   },
+   "w2_total": 5169.673217815942
+  }
+ },
+ "design": "or1200"
+}

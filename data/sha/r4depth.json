@@ -1,0 +1,10 @@
+{
+ "design": "sha",
+ "enough": true,
+ "rho": 0.69160499723358,
+ "spans_total": 13,
+ "spans_unmatched_to_statement": 0,
+ "spans_used": 13,
+ "top5_expected": 1.9230769230769231,
+ "top5_overlap": 4
+}

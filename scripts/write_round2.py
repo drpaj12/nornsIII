@@ -541,10 +541,10 @@ anchored in every arm); Seeded = CLBs in a word cluster that VPR's initial place
 position differs from VPR's analytic start, for \\code{{words\\_partial}} and for the full \\code{{words}} seed.}}
 \\label{{tab:r2partial}}
 \\centering
-\\footnotesize\\setlength{{\\tabcolsep}}{{3pt}}
+\\scriptsize\\setlength{{\\tabcolsep}}{{2pt}}
 \\begin{{tabular}}{{lccccc}}
 \\toprule
-Design & Placed blocks & Logic+mem. & Seeded & Moved (partial) & Moved (words) \\\\
+Design & Placed & Logic+mem. & Seeded & Moved (part.) & Moved (words) \\\\
 \\midrule
 {rows}
 \\bottomrule

@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1816,
+   "cpd_arrival_ns": 13.521,
+   "design": "blob_merge",
+   "edge_crossing": {
+    "crossings": 5484,
+    "edges": 16146,
+    "rate": 0.33965068747677446
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 18,
+     "hop_crossing_rate": 0.24,
+     "hops": 75,
+     "k": 2,
+     "reasons": {
+      "R0": 0,
+      "R1": 17,
+      "R2": 1,
+      "R3": 0
+     },
+     "split": 2
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 18,
+     "hop_crossing_rate": 0.24,
+     "hops": 75,
+     "k": 2,
+     "reasons": {
+      "R0": 0,
+      "R1": 17,
+      "R2": 1,
+      "R3": 0
+     },
+     "split": 2
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 636,
+   "share_w2": {
+    "FL": 0.49453505690112504,
+    "OR": 0.2756425745564218,
+    "SC": 0.03993956220038554,
+    "SI": 0.1152736304714059,
+    "SN": 0.0746091758707063
+   },
+   "w2_total": 4078.859108054021
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1888,
+   "cpd_arrival_ns": 13.45,
+   "design": "blob_merge",
+   "edge_crossing": {
+    "crossings": 5254,
+    "edges": 16146,
+    "rate": 0.3254056732317602
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 18,
+     "hop_crossing_rate": 0.18947368421052632,
+     "hops": 95,
+     "k": 2,
+     "reasons": {
+      "R0": 0,
+      "R1": 17,
+      "R2": 1,
+      "R3": 0
+     },
+     "split": 2
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 28,
+     "hop_crossing_rate": 0.21212121212121213,
+     "hops": 132,
+     "k": 3,
+     "reasons": {
+      "R0": 0,
+      "R1": 27,
+      "R2": 1,
+      "R3": 0
+     },
+     "split": 3
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 636,
+   "share_w2": {
+    "FL": 0.5581121538971386,
+    "OR": 0.23391547681018654,
+    "SC": 0.05175986501841244,
+    "SI": 0.05981679027624038,
+    "SN": 0.0963957139980277
+   },
+   "w2_total": 3380.001115241605
+  }
+ },
+ "design": "blob_merge"
+}

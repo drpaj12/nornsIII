@@ -1,0 +1,15 @@
+{
+ "A_med": 268.0,
+ "D": 1,
+ "M": 2,
+ "S": 541,
+ "design": "mkDelayWorker32B",
+ "elab": {
+  "depth": 3,
+  "instances": 19,
+  "instantiations": 18,
+  "modules": 16
+ },
+ "rent": {},
+ "top_level_atoms": 5
+}

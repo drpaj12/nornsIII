@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1138,
+   "cpd_arrival_ns": 2.625,
+   "design": "boundtop",
+   "edge_crossing": {
+    "crossings": 551,
+    "edges": 1320,
+    "rate": 0.4174242424242424
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 20,
+     "hop_crossing_rate": 0.46511627906976744,
+     "hops": 43,
+     "k": 14,
+     "reasons": {
+      "R0": 0,
+      "R1": 8,
+      "R2": 3,
+      "R3": 9
+     },
+     "split": 14
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 46,
+     "hop_crossing_rate": 0.44660194174757284,
+     "hops": 103,
+     "k": 34,
+     "reasons": {
+      "R0": 0,
+      "R1": 20,
+      "R2": 3,
+      "R3": 23
+     },
+     "split": 34
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 758,
+   "share_w2": {
+    "FL": 0.5525679387084571,
+    "OR": 0.34099342705390406,
+    "SC": 0.04876676407873328,
+    "SI": 0.04087337975122228,
+    "SN": 0.01679849040759164
+   },
+   "w2_total": 5106.241142857575
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1134,
+   "cpd_arrival_ns": 2.305,
+   "design": "boundtop",
+   "edge_crossing": {
+    "crossings": 458,
+    "edges": 1320,
+    "rate": 0.346969696969697
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 103,
+     "hop_crossing_rate": 0.3992248062015504,
+     "hops": 258,
+     "k": 84,
+     "reasons": {
+      "R0": 0,
+      "R1": 56,
+      "R2": 6,
+      "R3": 41
+     },
+     "split": 83
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 150,
+     "hop_crossing_rate": 0.3401360544217687,
+     "hops": 441,
+     "k": 122,
+     "reasons": {
+      "R0": 0,
+      "R1": 87,
+      "R2": 6,
+      "R3": 57
+     },
+     "split": 118
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 758,
+   "share_w2": {
+    "FL": 0.583254675766459,
+    "OR": 0.2984046675921986,
+    "SC": 0.05827588871535515,
+    "SI": 0.0407598767782799,
+    "SN": 0.019304891147664375
+   },
+   "w2_total": 5777.075488069606
+  }
+ },
+ "design": "boundtop"
+}

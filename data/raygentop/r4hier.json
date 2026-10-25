@@ -1,0 +1,20 @@
+{
+ "A_med": 153.0,
+ "D": 1,
+ "M": 14,
+ "S": 2439,
+ "design": "raygentop",
+ "elab": {
+  "depth": 3,
+  "instances": 16,
+  "instantiations": 15,
+  "modules": 15
+ },
+ "rent": {
+  "1": {
+   "groups": 15,
+   "p": 1.0083440425405379
+  }
+ },
+ "top_level_atoms": 184
+}

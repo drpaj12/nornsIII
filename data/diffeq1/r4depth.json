@@ -1,0 +1,10 @@
+{
+ "design": "diffeq1",
+ "enough": false,
+ "rho": null,
+ "spans_total": 5,
+ "spans_unmatched_to_statement": 1,
+ "spans_used": 4,
+ "top5_expected": 6.25,
+ "top5_overlap": 4
+}

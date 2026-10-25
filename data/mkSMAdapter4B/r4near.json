@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1694,
+   "cpd_arrival_ns": 5.933,
+   "design": "mkSMAdapter4B",
+   "edge_crossing": {
+    "crossings": 2114,
+    "edges": 4168,
+    "rate": 0.5071976967370442
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 18,
+     "hop_crossing_rate": 0.5806451612903226,
+     "hops": 31,
+     "k": 4,
+     "reasons": {
+      "R0": 0,
+      "R1": 8,
+      "R2": 5,
+      "R3": 5
+     },
+     "split": 4
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 45,
+     "hop_crossing_rate": 0.6081081081081081,
+     "hops": 74,
+     "k": 12,
+     "reasons": {
+      "R0": 0,
+      "R1": 19,
+      "R2": 14,
+      "R3": 12
+     },
+     "split": 12
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.5113965276617449,
+    "OR": 0.329455512357523,
+    "SC": 0.05146921940624798,
+    "SI": 0.08132555733667715,
+    "SN": 0.026353183237830258
+   },
+   "w2_total": 6756.95415472761
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1845,
+   "cpd_arrival_ns": 5.721,
+   "design": "mkSMAdapter4B",
+   "edge_crossing": {
+    "crossings": 1803,
+    "edges": 4168,
+    "rate": 0.43258157389635316
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 10,
+     "hop_crossing_rate": 0.47619047619047616,
+     "hops": 21,
+     "k": 2,
+     "reasons": {
+      "R0": 0,
+      "R1": 4,
+      "R2": 4,
+      "R3": 2
+     },
+     "split": 2
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 29,
+     "hop_crossing_rate": 0.6041666666666666,
+     "hops": 48,
+     "k": 7,
+     "reasons": {
+      "R0": 0,
+      "R1": 15,
+      "R2": 7,
+      "R3": 7
+     },
+     "split": 7
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.5849583951384183,
+    "OR": 0.24369350976423967,
+    "SC": 0.06185887527500075,
+    "SI": 0.06036096961543584,
+    "SN": 0.04912825020692965
+   },
+   "w2_total": 6556.027792343758
+  }
+ },
+ "design": "mkSMAdapter4B"
+}

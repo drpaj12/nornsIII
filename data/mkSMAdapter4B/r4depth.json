@@ -1,0 +1,10 @@
+{
+ "design": "mkSMAdapter4B",
+ "enough": true,
+ "rho": 0.3757834594537914,
+ "spans_total": 50,
+ "spans_unmatched_to_statement": 3,
+ "spans_used": 47,
+ "top5_expected": 0.5319148936170213,
+ "top5_overlap": 3
+}

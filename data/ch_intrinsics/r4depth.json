@@ -1,0 +1,10 @@
+{
+ "design": "ch_intrinsics",
+ "enough": false,
+ "rho": null,
+ "spans_total": 4,
+ "spans_unmatched_to_statement": 1,
+ "spans_used": 3,
+ "top5_expected": 8.333333333333334,
+ "top5_overlap": 3
+}

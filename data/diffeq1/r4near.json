@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 567,
+   "cpd_arrival_ns": 17.089,
+   "design": "diffeq1",
+   "edge_crossing": {
+    "crossings": 386,
+    "edges": 1008,
+    "rate": 0.38293650793650796
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 68,
+     "hop_crossing_rate": 0.1349206349206349,
+     "hops": 504,
+     "k": 29,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 10,
+      "R3": 58
+     },
+     "split": 29
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 74,
+     "hop_crossing_rate": 0.14258188824662812,
+     "hops": 519,
+     "k": 32,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 10,
+      "R3": 64
+     },
+     "split": 32
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 289,
+   "share_w2": {
+    "FL": 0.3927993143178033,
+    "OR": 0.5333513183982513,
+    "SC": 0.046801625596774185,
+    "SI": 0.0007485787947967733,
+    "SN": 0.02629916289237567
+   },
+   "w2_total": 1831.1563578910298
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 561,
+   "cpd_arrival_ns": 17.672,
+   "design": "diffeq1",
+   "edge_crossing": {
+    "crossings": 311,
+    "edges": 1008,
+    "rate": 0.30853174603174605
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 70,
+     "hop_crossing_rate": 0.16666666666666666,
+     "hops": 420,
+     "k": 30,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 10,
+      "R3": 60
+     },
+     "split": 30
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 74,
+     "hop_crossing_rate": 0.17249417249417248,
+     "hops": 429,
+     "k": 32,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 10,
+      "R3": 64
+     },
+     "split": 32
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 289,
+   "share_w2": {
+    "FL": 0.42681302743338256,
+    "OR": 0.46718708091665256,
+    "SC": 0.0546968101088699,
+    "SI": 0.009501101271750573,
+    "SN": 0.041801980269330095
+   },
+   "w2_total": 1445.610457220502
+  }
+ },
+ "design": "diffeq1"
+}

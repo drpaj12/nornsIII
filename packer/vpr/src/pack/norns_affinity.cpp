@@ -30,6 +30,51 @@ AffinityMap& global_map() {
     return map;
 }
 
+namespace {
+std::string g_census_file;
+bool g_count_queued = true;
+std::ofstream g_census_stream;
+unsigned long long g_cluster_seq = 0;
+} // namespace
+
+void set_census_options(const std::string& census_file, bool count_queued) {
+    g_census_file = census_file;
+    g_count_queued = count_queued;
+}
+
+bool count_queued() {
+    return g_count_queued;
+}
+
+bool Census::enabled() const {
+    return !g_census_file.empty();
+}
+
+std::ostream& Census::out() {
+    if (!g_census_stream.is_open()) {
+        g_census_stream.open(g_census_file);
+        if (!g_census_stream) {
+            VPR_FATAL_ERROR(VPR_ERROR_PACK, "Norns census: cannot open '%s'\n", g_census_file.c_str());
+        }
+    }
+    return g_census_stream;
+}
+
+unsigned long long Census::new_cluster() {
+    return ++g_cluster_seq;
+}
+
+void Census::flush() {
+    if (g_census_stream.is_open()) {
+        g_census_stream.flush();
+    }
+}
+
+Census& census() {
+    static Census c;
+    return c;
+}
+
 ProposalStats& proposal_stats() {
     static ProposalStats stats;
     return stats;

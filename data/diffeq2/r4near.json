@@ -1,0 +1,111 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 378,
+   "cpd_arrival_ns": 13.643,
+   "design": "diffeq2",
+   "edge_crossing": {
+    "crossings": 279,
+    "edges": 722,
+    "rate": 0.3864265927977839
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 66,
+     "hop_crossing_rate": 0.14537444933920704,
+     "hops": 454,
+     "k": 28,
+     "reasons": {
+      "R0": 0,
+      "R1": 25,
+      "R2": 0,
+      "R3": 41
+     },
+     "split": 28
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 74,
+     "hop_crossing_rate": 0.15546218487394958,
+     "hops": 476,
+     "k": 32,
+     "reasons": {
+      "R0": 0,
+      "R1": 27,
+      "R2": 2,
+      "R3": 45
+     },
+     "split": 32
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 192,
+   "share_w2": {
+    "FL": 0.3535408125160211,
+    "OR": 0.5680957367572113,
+    "SC": 0.06668745178483358,
+    "SI": 0.0,
+    "SN": 0.01167599894192725
+   },
+   "w2_total": 1690.5797112072291
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 396,
+   "cpd_arrival_ns": 13.673,
+   "design": "diffeq2",
+   "edge_crossing": {
+    "crossings": 257,
+    "edges": 722,
+    "rate": 0.3559556786703601
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 68,
+     "hop_crossing_rate": 0.13051823416506717,
+     "hops": 521,
+     "k": 29,
+     "reasons": {
+      "R0": 0,
+      "R1": 32,
+      "R2": 0,
+      "R3": 36
+     },
+     "split": 29
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 74,
+     "hop_crossing_rate": 0.137546468401487,
+     "hops": 538,
+     "k": 32,
+     "reasons": {
+      "R0": 0,
+      "R1": 35,
+      "R2": 0,
+      "R3": 39
+     },
+     "split": 32
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "packing_unchecked": false,
+   "paths_in_report": 192,
+   "share_w2": {
+    "FL": 0.3537341409949881,
+    "OR": 0.5625466276381414,
+    "SC": 0.07061750673849439,
+    "SI": 0.0004832407100403021,
+    "SN": 0.012618483918334106
+   },
+   "w2_total": 1695.3846266364392
+  }
+ },
+ "design": "diffeq2"
+}
