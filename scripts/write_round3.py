@@ -264,7 +264,7 @@ a status that differs between all 15 designs and the 11 without the pilot design
 \label{tab:r3status}
 \centering
 \footnotesize\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}llp{3.4cm}p{8.6cm}@{}}
+\begin{tabular}{@{}lp{5.4cm}p{3.4cm}p{6.6cm}@{}}
 \toprule
 RQ & Hypothesis & Status & Deciding number \\
 \midrule
@@ -273,7 +273,7 @@ RQ & Hypothesis & Status & Deciding number \\
 \end{tabular}
 \end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{RQ-N8 per design on the stock packing: logic CLBs, word purity (plurality share), the random-grouping null
 purity, word split factor (1.0 best), module purity, and the share of logic atoms lost to the front end (no word) and to
 packing (word atom not in its word's CLB).}
@@ -287,7 +287,7 @@ Design & CLBs & Purity & Null & Split & Module & Lost: FE & Lost: pack \\
 @@n8rows@@
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table}[t]
 \caption{RQ-N10: I/O words per design (buses of at least two bits) and the LUT word coverage without and with io-words.}
