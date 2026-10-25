@@ -14,10 +14,20 @@ remove it. The analytic-start comparison (H9b) addresses it for the packing ques
 Norns packer. N11: H11. All rules, margins and the grid-selection rule are fixed in \code{docs/plan/round3.md}, committed as
 \code{4fb8b60} before any measurement.
 
-\paragraph{2026-10-24, round three: outcomes.} H8 supported; H10a supported; H9a module inconclusive (pilot-sensitive), word supported, word+io supported; H9b module inconclusive (pilot-sensitive), word inconclusive (pilot-sensitive), word+io inconclusive (pilot-sensitive); H9c module not supported, word not supported, word+io not supported; H10b not supported; H11 inconclusive (word inconclusive, module supported). The numbers are in Table~\ref{tab:r3status}.
+\paragraph{2026-10-24, round three: outcomes.} H8 supported; H10a supported; H9a module inconclusive (pilot-sensitive), word supported, word+io supported; H9b module inconclusive (pilot-sensitive), word inconclusive (pilot-sensitive), word+io inconclusive (pilot-sensitive); H9c module not supported, word not supported, word+io not supported; H10b not supported; H11 inconclusive (word inconclusive, module inconclusive). The numbers are in Table~\ref{tab:r3status}.
+
+\paragraph{2026-10-25, round three fix round (after review).} The rule-provenance description was corrected: the entry
+\code{d805789}, called a clarification, is an amendment that changed two H11 rules (label permutations; the 95\% exclusion), and two
+designs had Stage-4 runs finished before it was committed (Method). H11 is now given under the protocol text (no exclusion,
+12 of the 15 designs, 1000 pooled permutations) as the primary status: word inconclusive, module inconclusive, overall inconclusive; the status of the first analysis (the sign rule
+scaled to $\lceil 12n/15\rceil$ designs, not registered) was word inconclusive, module supported, overall inconclusive, and the amendment's exclusion gives word inconclusive, module inconclusive. The n=11 pass was added for
+H8, H10a and H11, Holm now keeps $m=3$ (no status changed), and the positional null uses 200 permutations. The packer got a log-only proposal
+counter and an integer-parse error; the packing is unchanged (Method), and the per-design matched-entry and proposal tables
+are in Table~\ref{tab:r3diag}. Not done: the proposal-counting behaviour (round 4).
 
 \paragraph{2026-10-24, next.} The effort curve (N3), larger designs (N5), a seed-selector change and a larger gain scale in the Norns packer, and the
-packing-time cost of the affinity term.
+packing-time cost of the affinity term. Added 2026-10-25: fix the proposal counter (count queued molecules only; return a bool from the
+candidate-queue step) and the scan order of the group members, then rerun the packing experiments.
 
 \begin{table}[t]
 \caption{Round-three research questions and hypotheses with status and the deciding number (extends Table~\ref{tab:r2log}).}
@@ -40,9 +50,9 @@ N9 & H9c module+seed beats stock+seed & 3 & not supported & geomean 1.064, 2/15 
 N9 & H9c word+seed beats stock+seed & 3 & not supported & geomean 1.039, 4/15 better, $p=1.000$ \\
 N9 & H9c word+io+seed beats stock+seed & 3 & not supported & geomean 1.039, 5/15 better, $p=1.000$ \\
 N10 & H10b word+io beats word & 3 & not supported & geomean 0.998, 4/15 better, $p=1.000$ \\
-N11 & H11 same-word pairs closer than nets predict & 3 & inconclusive & median -0.176, $p=0.017$, n=12 \\
-N11 & H11 same-module pairs closer than nets predict & 3 & supported & median -0.188, $p<0.001$, n=11 \\
-N11 & H11 overall (both relations) & 3 & inconclusive & supported only if both are \\
+N11 & H11 same-word pairs closer than nets predict & 3 & inconclusive & median -0.176, $p=0.017$, n=12; 9 of 12 designs sign-consistent, 12 needed; with the unregistered scaling (10 needed): inconclusive \\
+N11 & H11 same-module pairs closer than nets predict & 3 & inconclusive & median -0.188, $p<0.001$, n=11; 10 of 11 designs sign-consistent, 12 needed; with the unregistered scaling (9 needed): supported \\
+N11 & H11 overall (both relations) & 3 & inconclusive & supported only if both are; unregistered scaling: inconclusive \\
 \bottomrule
 \end{tabular}
 \end{table}

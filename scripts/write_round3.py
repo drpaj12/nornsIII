@@ -184,7 +184,7 @@ committed as \code{@@sha@@} on @@ptime@@, before any round-three measurement or 
 exist and the earlier entries are not edited. The entry \code{d805789} (2026-10-24) is titled a clarification, but it is an
 amendment: besides definitions it changed two H11 rules (the label permutations, 1000 pooled over designs, became 200 per
 design and seed; a new exclusion of designs with 95\% or more related pairs). It was committed at 22:27:05, before any
-Stage-4 result was analysed, but the Stage-4 runs of ch_intrinsics (60 runs, finished 22:26:38) and 40 of the 60 of stereovision3 had
+Stage-4 result was analysed, but the Stage-4 runs of \code{ch\_intrinsics} (60 runs, finished 22:26:38) and 40 of the 60 of \code{stereovision3} had
 already finished. The entry of 2026-10-25 (the fix round after review) records what the analysis code did beyond the
 protocol text. Where the code deviated, the primary status in this paper is the one under the text of \code{@@sha@@} and
 the deviating variant is reported alongside, labelled.

@@ -59,10 +59,42 @@ Round three (the Norns packer, I/O words, packing experiments, proximity). The p
    10. scripts/report.py                 # docs/plan/EXPERIMENT.md (includes the round-three tables)
    11. tectonic -X compile docs/paper/norns.tex --outdir <dir>   # copy norns.pdf to docs/paper/build/
 
+Fix round (2026-10-25, after review; protocol entry in `docs/plan/round3.md`): `scripts/r3fix.py ident|stockn|timing|gate2|match`
+(pack-only style, no routing, heavy lock; results `data/analysis/r3fix-*.json`) need `runs/`; `scripts/n11.py` was rerun, then steps 8 to 11.
+
 The Loki analysis venv (numpy, scipy, scikit-learn, networkx, cffi) is built per the Loki
 CLAUDE.md and kept outside the Loki checkout; Loki is imported from its checkout through
 `PYTHONPATH`, never installed into or edited. Every VPR run takes the heavy lock
 `$NORNS_LOCK` (default `/tmp/claude-1000/odin3-heavy.lock`), one at a time, smallest design first.
+
+## Limitations of the Norns packer (measured 2026-10-25, not fixed)
+
+The proposal step (up to 30 unclustered members of a cluster's dominant group handed to the candidate queue) counts molecules
+handed over, not molecules the queue accepted, and scans the group from the lowest atom id (netlist-order bias). A log-only counter
+(packing unchanged: `.net` byte-identical to the previous binary on 45 of 45 headline configurations) gives, over the 15 designs,
+medians of the queued share of handed-over molecules 49% / 46% / 48% and of proposal calls that queued nothing 13% / 55% / 49%
+(module / word / word+io). Per design (queued share / calls with nothing queued; headline beta 4, seed 1):
+
+| design | module | word | word+io |
+|---|---|---|---|
+| blob_merge | 92% / 0% | 5% / 99% | 13% / 97% |
+| boundtop | 44% / 16% | 63% / 49% | 64% / 48% |
+| ch_intrinsics | 82% / 1% | 87% / 20% | 87% / 20% |
+| diffeq1 | 53% / 7% | 59% / 28% | 59% / 28% |
+| diffeq2 | 63% / 6% | 75% / 20% | 75% / 22% |
+| mkDelayWorker32B | 8% / 60% | 0% / 100% | 0% / 100% |
+| mkPktMerge | 22% / 58% | 24% / 57% | 24% / 57% |
+| mkSMAdapter4B | 22% / 20% | 50% / 55% | 48% / 47% |
+| or1200 | 29% / 22% | 46% / 52% | 42% / 49% |
+| raygentop | 49% / 13% | 43% / 60% | 38% / 60% |
+| sha | 88% / 4% | 46% / 62% | 48% / 57% |
+| stereovision0 | 80% / 7% | 78% / 68% | 78% / 68% |
+| stereovision1 | 34% / 41% | 78% / 44% | 76% / 44% |
+| stereovision2 | 17% / 57% | 46% / 37% | 46% / 37% |
+| stereovision3 | 66% / 5% | 12% / 84% | 12% / 84% |
+
+The fix (count queued molecules only, return a bool, scan order) is queued for round 4. Affinity-file entries that did not match
+an atom are listed per design and source in `data/analysis/r3fix-match.json` (for example mkDelayWorker32B matches 38 of 1620 word entries).
 
 Part of [Yggdrasil III](https://github.com/drpaj12/YggdrasilIII) (hub documentation:
 <https://drpaj12.github.io/YggdrasilIII/>; this repository is a submodule under `components/`, and

@@ -272,9 +272,13 @@ Crossover of the best new family: median scale 16 vs round one 16 (n=13); retent
 
 ## Round 3 (the Norns packer, I/O words, packing experiments, proximity)
 
-Protocol: `docs/plan/round3.md` (committed before any round-3 run). Statuses follow its rules; numbers from `scripts/r3stats.py`.
+Protocol: `docs/plan/round3.md` (committed before any round-3 run; the entry d805789 is an amendment to H11 and the entry of 2026-10-25 records the fix round). Statuses follow its rules (H11: the text of 4fb8b60, variants labelled in the paper); numbers from `scripts/r3stats.py`.
 
 Control gate (stock vs Norns packer `.net`, option absent and beta 0, `--pack` and the analytical flow): 60 comparisons over 15 designs, all byte-identical.
+
+Beta-0 gate extension (module and word+io affinity files, `--pack`, seed 1): 30 of 30 byte-identical.
+
+Log-counter packer vs the previous binary (headline configs, seed 1): 45 of 45 `.net` byte-identical, 45 of 45 flat placements identical to Stage 4.
 
 | RQ | hypothesis | status | deciding number |
 |---|---|---|---|
@@ -290,9 +294,9 @@ Control gate (stock vs Norns packer `.net`, option absent and beta 0, `--pack` a
 | N9 | H9c word+seed beats stock+seed | not supported | geomean 1.039, 4/15 better, p=1.000 |
 | N9 | H9c word+io+seed beats stock+seed | not supported | geomean 1.039, 5/15 better, p=1.000 |
 | N10 | H10b word+io beats word | not supported | geomean 0.998, 4/15 better, p=1.000 |
-| N11 | H11 same-word pairs closer than nets predict | inconclusive | median -0.176, p=0.017, n=12 |
-| N11 | H11 same-module pairs closer than nets predict | supported | median -0.188, p<0.001, n=11 |
-| N11 | H11 overall (both relations) | inconclusive | supported only if both are |
+| N11 | H11 same-word pairs closer than nets predict | inconclusive | median -0.176, p=0.017, n=12; 9 of 12 designs sign-consistent, 12 needed; with the unregistered scaling (10 needed): inconclusive |
+| N11 | H11 same-module pairs closer than nets predict | inconclusive | median -0.188, p<0.001, n=11; 10 of 11 designs sign-consistent, 12 needed; with the unregistered scaling (9 needed): supported |
+| N11 | H11 overall (both relations) | inconclusive | supported only if both are; unregistered scaling: inconclusive |
 
 ## Failed runs
 
@@ -315,6 +319,6 @@ Control gate (stock vs Norns packer `.net`, option absent and beta 0, `--pack` a
 * Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm constrains regions only, so it has no full/inter split. (3) Pad CLBs and mult_36 macros stay anchored; adder carry chains move as a vertical run. (4) One VPR run per configuration at `--seed 1` (deterministic). (5) Urd has one cluster only on sha and stereovision3; diffeq1 and diffeq2 (one module each) get two Urd clusters (the module and a flat group), and the other designs get one cluster per populated module (3 to 23).
 * Round 2 agent defaults: (6) word membership comes from Odin III bus names and spans joined to the BLIF by net id (the BLIF line is a statement, too coarse); (7) a CLB joins a word cluster when >= 1/3 of its atoms are word atoms, else it keeps its Urd module cluster; (8) the Rent exponent is fitted on BFS balls, the inverse Rent exponent is -p; (9) the random null of N1 permutes logic-CLB coordinates (20 samples); (10) hypothesis statuses follow the decision rules in the paper's methodology section.
 * Regenerating round two: `scripts/build_words.py`, `scripts/build_word_seeds.py`, `scripts/round2.py` (VPR; `soft`, then `freeze`, then `chunk stage2`) and `scripts/structure.py all|graph|partial` need the local `runs/` tree; then `scripts/report.py` (this file), `scripts/fill_paper.py`, `scripts/write_paper_prose.py` and `scripts/write_round2.py` regenerate every document from the committed `data/` alone.
-* Regenerating round three: `scripts/n8.py`, `scripts/io_words.py`, `sh packer/build.sh` (the Norns packer), `scripts/round3.py gate|pilot|grid|chunk arms` (VPR, heavy lock) and `scripts/n11.py` need the local `runs/` tree; then `scripts/r3stats.py`, `scripts/write_round3.py` and `scripts/report.py` regenerate the documents from the committed `data/` alone. The protocol is `docs/plan/round3.md`.
+* Regenerating round three: `scripts/n8.py`, `scripts/io_words.py`, `sh packer/build.sh` (the Norns packer), `scripts/round3.py gate|pilot|grid|chunk arms` (VPR, heavy lock) and `scripts/n11.py`, `scripts/r3fix.py ident|stockn|gate2|match` (fix round) need the local `runs/` tree; then `scripts/r3stats.py`, `scripts/write_round3.py` and `scripts/report.py` regenerate the documents from the committed `data/` alone. The protocol is `docs/plan/round3.md`.
 * VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a patch; the on arm is the main matrix, the off arm repeats the cold-start scale sweep (extended by doubling while the control still wins, to the same 256 cap).
 

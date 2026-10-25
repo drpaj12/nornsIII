@@ -4,7 +4,7 @@
 
 
 
-Packing does dilute word structure (H8 supported): a word's atoms are spread over about 4.00 times the CLBs they would need, and the purity of the stock CLBs (0.63) is well above a random grouping (0.20) but far from word-pure. Of the logic atoms, 34.2\% have no word at all (the front end) and a further 20.7\% are word atoms packed away from their word (packing), so in the median design the front end loses more than packing does.
+Packing does dilute word structure (H8 supported): a word's atoms are spread over about 4.00 times the CLBs they would need, and the purity of the stock CLBs (0.63) is well above a random grouping (0.20) but far from word-pure. Of the logic atoms, 34.2\% have no word at all (the front end) and a further 20.7\% are word atoms packed away from their word (packing); these are two separate per-design medians, and the median front-end loss is larger than the median packing loss.
 
 I/O words are a cheap way to recover part of the front-end loss (H10a supported: LUT word coverage 31.8\% to 53.9\%).
 
@@ -14,6 +14,16 @@ Purer clusters did not give shorter wires. With the analytic start the word-affi
 
 These runs do not remove the start-temperature confound of round two for the seeded arms, because a seeded start still carries its own start temperature; the analytic-start arm (H9b) does not have it, since the packing is the only difference.
 
-Related pairs sit closer than their direct nets alone predict for both relations in the median design, but H11 is inconclusive because its rule needs both to pass: the stratified distance difference is -0.176 for same-word pairs (n=12, status inconclusive; negative in two of three seeds on 9 designs, 10 needed) and -0.188 for same-module pairs (n=11, status supported). Designs with too few related or unrelated pairs in a stratum, and single-module designs for the module relation, are left out. The neighbours are only partly stable: the mean Jaccard of each CLB's four nearest neighbours between VPR seeds is 0.267, against 0.058 for a permuted placement.
+In the median design both relations sit closer than their direct nets alone predict (stratified distance difference
+-0.176 for same-word pairs, -0.188 for same-module pairs), but not on every design: the same-word difference is positive on
+3 designs (\code{boundtop}, \code{raygentop}, \code{stereovision2}) and the same-module difference on 1 designs (\code{blob\_merge}). H11 is inconclusive under the protocol text, because its rule needs both
+relations to pass: same word, n=12, status inconclusive (negative in two of three seeds on 9 designs, 12 needed);
+same module, n=11, status inconclusive (10 designs, 12 needed). Two deviations of the analysis from the protocol text are reported
+beside it, not instead of it: the unregistered scaling of the count to $\lceil 12n/15\rceil$ designs, which the first analysis used
+(\code{r3stats.py}), gives word inconclusive (n=12), module supported (n=11), overall inconclusive; the amendment \code{d805789}, which excludes a design from a relation when 95\% or more of its
+sampled pairs are related, for the word relation as well as the module relation, gives word inconclusive (n=12), module inconclusive (n=11), overall inconclusive. Both are recorded in the entry of
+2026-10-25 of \code{docs/plan/round3.md} and in the Method. The neighbours are only partly stable: the mean Jaccard of
+each CLB's four nearest neighbours between VPR seeds is 0.267, against 0.058 for a permuted placement.
 
-Round three leaves open the effort curve (N3), larger designs (N5), region looseness (N6), a seed-selector change in the Norns packer, and whether a different gain scale (the grid ended at the largest beta of the pilot list) changes the sign of H9b.
+
+Round three leaves open the effort curve (N3), larger designs (N5), region looseness (N6), a seed-selector change in the Norns packer, and whether a different gain scale (the grid ended at the largest beta of the pilot list; the pilot did not discriminate the betas, so the grid is not informed by it) changes the sign of H9b. The packing time ratios of Stage 4 compare two builds and the proposal step has the counting and ordering limits described in the Method, both to be fixed in round 4.

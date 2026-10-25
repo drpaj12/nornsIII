@@ -1,4 +1,114 @@
 {
+ "blob_merge": [
+  {
+   "arm": "stock",
+   "design": "blob_merge",
+   "load1": 4.07470703125,
+   "pack_s": 3.8,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T11:04:03"
+  },
+  {
+   "arm": "module-b4",
+   "design": "blob_merge",
+   "load1": 4.14306640625,
+   "pack_s": 4.95,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T11:04:11"
+  },
+  {
+   "arm": "word-b4",
+   "design": "blob_merge",
+   "load1": 4.201171875,
+   "pack_s": 3.81,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T11:04:22"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "blob_merge",
+   "load1": 4.169921875,
+   "pack_s": 3.9,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T11:04:31"
+  },
+  {
+   "arm": "stock",
+   "design": "blob_merge",
+   "load1": 4.29833984375,
+   "pack_s": 3.71,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T11:04:40"
+  },
+  {
+   "arm": "module-b4",
+   "design": "blob_merge",
+   "load1": 4.2744140625,
+   "pack_s": 5.04,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T11:04:49"
+  },
+  {
+   "arm": "word-b4",
+   "design": "blob_merge",
+   "load1": 4.31201171875,
+   "pack_s": 3.8,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T11:04:59"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "blob_merge",
+   "load1": 4.26318359375,
+   "pack_s": 3.9,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T11:05:08"
+  },
+  {
+   "arm": "stock",
+   "design": "blob_merge",
+   "load1": 4.22216796875,
+   "pack_s": 3.78,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:05:16"
+  },
+  {
+   "arm": "module-b4",
+   "design": "blob_merge",
+   "load1": 4.1875,
+   "pack_s": 4.92,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:05:25"
+  },
+  {
+   "arm": "word-b4",
+   "design": "blob_merge",
+   "load1": 4.23876953125,
+   "pack_s": 3.94,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:05:35"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "blob_merge",
+   "load1": 4.21923828125,
+   "pack_s": 4.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:05:44"
+  }
+ ],
  "boundtop": [
   {
    "arm": "stock",
@@ -1317,6 +1427,116 @@
    "rc": 0,
    "seed": 3,
    "start": "2026-10-25T10:49:29"
+  }
+ ],
+ "stereovision2": [
+  {
+   "arm": "stock",
+   "design": "stereovision2",
+   "load1": 2.06689453125,
+   "pack_s": 6.48,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:51:23"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision2",
+   "load1": 2.02734375,
+   "pack_s": 8.13,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:52:18"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision2",
+   "load1": 2.388671875,
+   "pack_s": 8.75,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:53:17"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision2",
+   "load1": 3.4052734375,
+   "pack_s": 9.08,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:54:19"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision2",
+   "load1": 3.9306640625,
+   "pack_s": 8.14,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:55:24"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision2",
+   "load1": 4.79443359375,
+   "pack_s": 8.73,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:56:31"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision2",
+   "load1": 3.86376953125,
+   "pack_s": 8.41,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:57:35"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision2",
+   "load1": 3.4306640625,
+   "pack_s": 8.5,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:58:37"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision2",
+   "load1": 3.9443359375,
+   "pack_s": 7.57,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:59:41"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision2",
+   "load1": 4.1962890625,
+   "pack_s": 9.01,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:00:46"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision2",
+   "load1": 4.13720703125,
+   "pack_s": 8.92,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:01:51"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision2",
+   "load1": 4.13916015625,
+   "pack_s": 8.79,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T11:02:57"
   }
  ],
  "stereovision3": [
