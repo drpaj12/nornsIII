@@ -1,0 +1,109 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 740,
+   "cpd_arrival_ns": 3.517,
+   "design": "mkPktMerge",
+   "edge_crossing": {
+    "crossings": 25,
+    "edges": 88,
+    "rate": 0.2840909090909091
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 28,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 81,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.09876735010066383,
+    "OR": 0.87265065129827,
+    "SC": 0.017310019678699513,
+    "SI": 0.009054400892138896,
+    "SN": 0.0022175780302288706
+   },
+   "w2_total": 801.6184247938567
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 771,
+   "cpd_arrival_ns": 3.483,
+   "design": "mkPktMerge",
+   "edge_crossing": {
+    "crossings": 25,
+    "edges": 88,
+    "rate": 0.2840909090909091
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 10,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 0,
+     "hop_crossing_rate": null,
+     "hops": 0,
+     "k": 39,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 0
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.10218448263545775,
+    "OR": 0.8682025585465439,
+    "SC": 0.017964666698415337,
+    "SI": 0.00937801364399414,
+    "SN": 0.0022702784755872507
+   },
+   "w2_total": 771.6841803043355
+  }
+ },
+ "design": "mkPktMerge"
+}

@@ -1,0 +1,109 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 286,
+   "cpd_arrival_ns": 2.019,
+   "design": "ch_intrinsics",
+   "edge_crossing": {
+    "crossings": 27,
+    "edges": 219,
+    "rate": 0.1232876712328767
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 3,
+     "hop_crossing_rate": 0.75,
+     "hops": 4,
+     "k": 4,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 2,
+      "R3": 1
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 4,
+     "hop_crossing_rate": 0.5714285714285714,
+     "hops": 7,
+     "k": 8,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 3,
+      "R3": 1
+     },
+     "split": 2
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "paths_in_report": 163,
+   "share_w2": {
+    "FL": 0.49610287215281856,
+    "OR": 0.4289217142469723,
+    "SC": 0.01316866444998811,
+    "SI": 0.007338524843971611,
+    "SN": 0.0544682243062512
+   },
+   "w2_total": 708.6027736503205
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 286,
+   "cpd_arrival_ns": 2.067,
+   "design": "ch_intrinsics",
+   "edge_crossing": {
+    "crossings": 24,
+    "edges": 219,
+    "rate": 0.1095890410958904
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 3,
+     "hop_crossing_rate": 0.75,
+     "hops": 4,
+     "k": 4,
+     "reasons": {
+      "R0": 0,
+      "R1": 3,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 3,
+     "hop_crossing_rate": 0.75,
+     "hops": 4,
+     "k": 5,
+     "reasons": {
+      "R0": 0,
+      "R1": 3,
+      "R2": 0,
+      "R3": 0
+     },
+     "split": 1
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "paths_in_report": 163,
+   "share_w2": {
+    "FL": 0.532009457452379,
+    "OR": 0.3879267437425745,
+    "SC": 0.015871043393366972,
+    "SI": 0.008992776034599043,
+    "SN": 0.05519997937709671
+   },
+   "w2_total": 731.9211417513177
+  }
+ },
+ "design": "ch_intrinsics"
+}

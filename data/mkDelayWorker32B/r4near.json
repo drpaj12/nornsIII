@@ -1,0 +1,109 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 1302,
+   "cpd_arrival_ns": 7.38,
+   "design": "mkDelayWorker32B",
+   "edge_crossing": {
+    "crossings": 227,
+    "edges": 595,
+    "rate": 0.3815126050420168
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 2,
+     "hop_crossing_rate": 0.5,
+     "hops": 4,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 2
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 2,
+     "hop_crossing_rate": 0.5,
+     "hops": 4,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 2
+     },
+     "split": 1
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.44854504310331367,
+    "OR": 0.32561173778174085,
+    "SC": 0.00472698461296056,
+    "SI": 0.14284812992674573,
+    "SN": 0.07826810457524781
+   },
+   "w2_total": 423.10271002709675
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 1302,
+   "cpd_arrival_ns": 7.38,
+   "design": "mkDelayWorker32B",
+   "edge_crossing": {
+    "crossings": 227,
+    "edges": 595,
+    "rate": 0.3815126050420168
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 2,
+     "hop_crossing_rate": 0.5,
+     "hops": 4,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 2
+     },
+     "split": 1
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 2,
+     "hop_crossing_rate": 0.5,
+     "hops": 4,
+     "k": 1,
+     "reasons": {
+      "R0": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 2
+     },
+     "split": 1
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "paths_in_report": 1000,
+   "share_w2": {
+    "FL": 0.44854504310331367,
+    "OR": 0.32561173778174085,
+    "SC": 0.00472698461296056,
+    "SI": 0.14284812992674573,
+    "SN": 0.07826810457524781
+   },
+   "w2_total": 423.10271002709675
+  }
+ },
+ "design": "mkDelayWorker32B"
+}

@@ -1,0 +1,109 @@
+{
+ "arms": {
+  "norns": {
+   "arm": "r4",
+   "atoms_on_reported_paths": 2185,
+   "cpd_arrival_ns": 10.544,
+   "design": "sha",
+   "edge_crossing": {
+    "crossings": 2777,
+    "edges": 5013,
+    "rate": 0.5539597047676043
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 57,
+     "hop_crossing_rate": 0.3958333333333333,
+     "hops": 144,
+     "k": 6,
+     "reasons": {
+      "R0": 0,
+      "R1": 27,
+      "R2": 6,
+      "R3": 24
+     },
+     "split": 6
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 138,
+     "hop_crossing_rate": 0.4107142857142857,
+     "hops": 336,
+     "k": 15,
+     "reasons": {
+      "R0": 0,
+      "R1": 50,
+      "R2": 21,
+      "R3": 67
+     },
+     "split": 15
+    }
+   },
+   "pack": "norns",
+   "packing_differs": false,
+   "paths_in_report": 929,
+   "share_w2": {
+    "FL": 0.446136002130129,
+    "OR": 0.3854069965524954,
+    "SC": 0.015633156874157696,
+    "SI": 0.10111373375374152,
+    "SN": 0.05171011068951739
+   },
+   "w2_total": 5797.010147951257
+  },
+  "stock": {
+   "arm": "stock",
+   "atoms_on_reported_paths": 2234,
+   "cpd_arrival_ns": 10.319,
+   "design": "sha",
+   "edge_crossing": {
+    "crossings": 1942,
+    "edges": 5013,
+    "rate": 0.3873927787751845
+   },
+   "margins": {
+    "0.05": {
+     "capped": false,
+     "crossings": 141,
+     "hop_crossing_rate": 0.28600405679513186,
+     "hops": 493,
+     "k": 16,
+     "reasons": {
+      "R0": 0,
+      "R1": 27,
+      "R2": 20,
+      "R3": 94
+     },
+     "split": 16
+    },
+    "0.1": {
+     "capped": false,
+     "crossings": 221,
+     "hop_crossing_rate": 0.325,
+     "hops": 680,
+     "k": 26,
+     "reasons": {
+      "R0": 0,
+      "R1": 37,
+      "R2": 30,
+      "R3": 154
+     },
+     "split": 26
+    }
+   },
+   "pack": "stock",
+   "packing_differs": false,
+   "paths_in_report": 929,
+   "share_w2": {
+    "FL": 0.5407790476499198,
+    "OR": 0.24511729030007823,
+    "SC": 0.02283258867880412,
+    "SI": 0.09978510376702045,
+    "SN": 0.09148596960412679
+   },
+   "w2_total": 5341.296055819676
+  }
+ },
+ "design": "sha"
+}
