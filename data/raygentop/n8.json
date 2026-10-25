@@ -1,0 +1,50 @@
+{
+ "decompose": {
+  "atoms": 2438,
+  "loss_abc": 0.3424938474159147,
+  "loss_pack": 0.32567678424938473,
+  "no_word_mixed": 0.3383921246923708,
+  "no_word_none": 0.004101722723543888,
+  "word": 0.6575061525840853,
+  "word_in_own_clb": 0.33182936833470056
+ },
+ "design": "raygentop",
+ "null": {
+  "module": {
+   "samples": 50,
+   "share": 0.25827205462078096,
+   "share_sd": 0.004494927961628067,
+   "split": 15.576666666666666,
+   "strict": 0.002918433953761488
+  },
+  "word": {
+   "samples": 50,
+   "share": 0.137525900658532,
+   "share_sd": 0.003978526028316302,
+   "split": 14.36,
+   "strict": 0.0004712492333807111
+  }
+ },
+ "stock": {
+  "logic_atoms": 2438,
+  "logic_clbs": 143,
+  "module": {
+   "labelled": 2255,
+   "n_clbs": 128,
+   "n_labels": 14,
+   "share": 0.6832518880497557,
+   "split": 5.25,
+   "strict": 0.3203125,
+   "wsplit": 5.0
+  },
+  "word": {
+   "labelled": 1603,
+   "n_clbs": 128,
+   "n_labels": 132,
+   "share": 0.5153991200502829,
+   "split": 3.0,
+   "strict": 0.1640625,
+   "wsplit": 5.0
+  }
+ }
+}

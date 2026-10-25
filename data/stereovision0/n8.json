@@ -1,0 +1,50 @@
+{
+ "decompose": {
+  "atoms": 21001,
+  "loss_abc": 0.22127517737250607,
+  "loss_pack": 0.5676396362077997,
+  "no_word_mixed": 0.22084662635112615,
+  "no_word_none": 0.0004285510213799343,
+  "word": 0.7787248226274939,
+  "word_in_own_clb": 0.2110851864196943
+ },
+ "design": "stereovision0",
+ "null": {
+  "module": {
+   "samples": 50,
+   "share": 0.21545316802386003,
+   "share_sd": 0.0009243334249957345,
+   "split": 24.438052631578948,
+   "strict": 0.0007850529772181037
+  },
+  "word": {
+   "samples": 50,
+   "share": 0.061415862777975345,
+   "share_sd": 0.0008189718806218309,
+   "split": 8.0,
+   "strict": 0.0
+  }
+ },
+ "stock": {
+  "logic_atoms": 21001,
+  "logic_clbs": 707,
+  "module": {
+   "labelled": 20836,
+   "n_clbs": 688,
+   "n_labels": 23,
+   "share": 0.7370317002881844,
+   "split": 3.09375,
+   "strict": 0.26308139534883723,
+   "wsplit": 2.8461538461538463
+  },
+  "word": {
+   "labelled": 16354,
+   "n_clbs": 685,
+   "n_labels": 1617,
+   "share": 0.2716253443526171,
+   "split": 4.0,
+   "strict": 0.010218978102189781,
+   "wsplit": 4.0
+  }
+ }
+}

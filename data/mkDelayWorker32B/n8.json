@@ -1,0 +1,50 @@
+{
+ "decompose": {
+  "atoms": 540,
+  "loss_abc": 0.8074074074074075,
+  "loss_pack": 0.04259259259259259,
+  "no_word_mixed": 0.8018518518518518,
+  "no_word_none": 0.005555555555555556,
+  "word": 0.1925925925925926,
+  "word_in_own_clb": 0.15
+ },
+ "design": "mkDelayWorker32B",
+ "null": {
+  "module": {
+   "samples": 50,
+   "share": 0.9814302950322139,
+   "share_sd": 0.000727746334095932,
+   "split": 6.769411764705882,
+   "strict": 0.8649118046132971
+  },
+  "word": {
+   "samples": 50,
+   "share": 0.4724128250692349,
+   "share_sd": 0.028234567116970467,
+   "split": 8.74,
+   "strict": 0.0708998462929661
+  }
+ },
+ "stock": {
+  "logic_atoms": 540,
+  "logic_clbs": 74,
+  "module": {
+   "labelled": 536,
+   "n_clbs": 66,
+   "n_labels": 2,
+   "share": 0.9867924528301887,
+   "split": 2.6176470588235294,
+   "strict": 0.9848484848484849,
+   "wsplit": 4.235294117647059
+  },
+  "word": {
+   "labelled": 104,
+   "n_clbs": 7,
+   "n_labels": 13,
+   "share": 0.7745098039215687,
+   "split": 1.0,
+   "strict": 0.42857142857142855,
+   "wsplit": 2.0
+  }
+ }
+}

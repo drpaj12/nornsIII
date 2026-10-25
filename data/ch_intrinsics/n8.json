@@ -1,0 +1,50 @@
+{
+ "decompose": {
+  "atoms": 179,
+  "loss_abc": 0.547486033519553,
+  "loss_pack": 0.061452513966480445,
+  "no_word_mixed": 0.5307262569832403,
+  "no_word_none": 0.01675977653631285,
+  "word": 0.45251396648044695,
+  "word_in_own_clb": 0.39106145251396646
+ },
+ "design": "ch_intrinsics",
+ "null": {
+  "module": {
+   "samples": 50,
+   "share": 1.0,
+   "share_sd": 0.0,
+   "split": 2.1066666666666665,
+   "strict": 1.0
+  },
+  "word": {
+   "samples": 50,
+   "share": 0.5136684690339476,
+   "share_sd": 0.03183756193780721,
+   "split": 5.11,
+   "strict": 0.03488888888888889
+  }
+ },
+ "stock": {
+  "logic_atoms": 179,
+  "logic_clbs": 13,
+  "module": {
+   "labelled": 144,
+   "n_clbs": 11,
+   "n_labels": 1,
+   "share": 1.0,
+   "split": 1.8333333333333333,
+   "strict": 1.0,
+   "wsplit": 1.8333333333333333
+  },
+  "word": {
+   "labelled": 81,
+   "n_clbs": 10,
+   "n_labels": 5,
+   "share": 0.8625,
+   "split": 3.0,
+   "strict": 0.6,
+   "wsplit": 3.0
+  }
+ }
+}

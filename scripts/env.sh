@@ -17,3 +17,6 @@ NR_PY=${NR_PY:-/tmp/claude-1000/nr-loki-venv/bin/python}
 NORN=${NORN:-$(pwd)}
 [ -f "$NORN/scripts/nornlib.py" ] || echo "env.sh: NORN=$NORN is not a Norns checkout; source from it or set NORN" >&2
 export PYTHONPATH="$NORN/scripts:$LOKI_HOME:$ODIN3_ROOT/plugins/python"
+# The Norns packer (packer/): a private VTR build with the provenance-affinity packer overlay.
+export NORNS_VTR=${NORNS_VTR:-$WS_ROOT/work/norns-vtr}
+export NORNS_VPR=${NORNS_VPR:-$NORNS_VTR/build/vpr/vpr}
