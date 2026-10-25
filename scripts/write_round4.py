@@ -97,6 +97,7 @@ def main() -> int:
 affinity join) and a post-route critical-path attribution from Odin~III answer what gets clustered: over @@n@@ designs the stock
 packer's CLB pairs are, by median, {pct(a['median_SC'])} series-critical, {pct(a['median_SI_OR'])} shared-input or orthogonal and
 {pct(a['median_SN_FL'])} remainder (Peter's illustration was 10/75/15; shape {a['shape']}, literal numbers {a['numbers']}).
+Near-critical edges are split across CLBs less often than edges in general (H17c {n17['H17c']['status']} by the literal rule: median rate ratio {f3(n17['H17c']['median_ratio'])}, $p={pf(n17['H17c'].get('p'))}$, {n17['H17c']['n']} designs with at least 20 hops; with an n$<$12 clause, a reading outside the registered rule, {n17['H17c']['status_n12_variant']}).
 Hierarchy versus chip size: H13a {n13['status']['H13a']}, H13b {n13['status']['H13b']}. The norns packer against stock on critical-path delay: {arms['all']['H14']['cpd_ns'].get('status')}; the stage-by-bit seed: see Table~\ref{{tab:r4status}}.
 """.replace("@@n@@", str(n17["n"])))
     # ---- method
@@ -185,7 +186,7 @@ fixed counting & {pct(summ['r4']['median_hit_rate'])} & {pct(summ['r4']['median_
         ("N17", "H17a shape (10/75/15)", a["shape"], f"medians SC {pct(a['median_SC'])}, SI+OR {pct(a['median_SI_OR'])}, SN+FL {pct(a['median_SN_FL'])}, n={a['n']}"),
         ("N17", "H17a literal numbers", a["numbers"], "same medians against 10/75/15 $\\pm0.10$"),
         ("N17", "H17b packer changes SC share", h17b["status"], f"median $\\Delta$SC {f3(h17b.get('median_dSC'))}, Holm $p={pf(h17b.get('p_holm_SC'))}$, n={h17b['n']}"),
-        ("N17", "H17c critical edges kept together", h17c["status"], f"median ratio {f3(h17c.get('median_ratio'))}, n={h17c['n']}"),
+        ("N17", "H17c critical edges kept together", h17c["status"], f"median ratio {f3(h17c.get('median_ratio'))}, Wilcoxon $p={pf(h17c.get('p'))}$, n={h17c['n']} (literal rule; reading with an n$<$12 clause: {h17c['status_n12_variant']})"),
         ("N17", "H17d packer beats chance (series share)", h17d["status"], f"median excess {f3(h17d.get('median_excess'))}, {h17d.get('positive')}/{h17d['n']} positive"),
         ("N13", "H13a hierarchy vs grid area", n13["status"]["H13a"], f"n={n13['n']}"),
         ("N13", "H13b beyond design size", n13["status"]["H13b"], f"n={n13['n']}"),
@@ -280,7 +281,7 @@ design & $S$ & $M$ & $D$ & area stock & area norns \\
 \end{{table}}
 
 \paragraph{{Packing and placement start with critical-path delay (N14, N16).}} Table~\ref{{tab:r4arms}} gives the geometric mean of per-design ratios (3 seeds); below 1 is better.
-Checks: the attribution's CPD equals VPR's in {chk['cpd_agree']} of {chk['cpd_total']} runs; the stock arm reproduces round three's WL, W and CPD in {chk['stock_repro']} of {chk['stock_repro_n']} runs.
+Checks: VPR's log CPD equals path~1 of the timing report (arrival minus required time, i.e.\ minus its slack) within {chk['cpd_max_diff']:.4f}~ns (report precision) in {chk['cpd_agree']} of {chk['cpd_total']} runs (the data arrival time alone is {chk['cpd_minus_arrival_median']:.3f}~ns below the CPD by median, at most {chk['cpd_minus_arrival_max']:.3f}~ns: the setup time); the attribution's own CPD is read from the same log line and is not an independent check; the stock arm reproduces round three's WL, W and CPD in {chk['stock_repro']} of {chk['stock_repro_n']} runs.
 \begin{{table}}[t]
 \caption{{Arm ratios (geomean over designs).}}
 \label{{tab:r4arms}}
@@ -302,7 +303,7 @@ metric & comparison & geomean & better \\
 The census answers Peter's question with data: in the stock packing most CLB pairs share no net with each other (filler {pct(a['median_SN_FL'])} by median), series-critical pairs are
 {pct(a['median_SC'])} and shared-input plus orthogonal pairs {pct(a['median_SI_OR'])}; the illustration of 10/75/15 is {a['shape']} in shape and {a['numbers']} in numbers.
 The orthogonal class counts same-word pairs, and words cover about half the LUTs, so it is a lower bound. The headline packer changes the series-critical share by {f3(h17b.get('median_dSC'))} (median).
-Near-critical paths are counted per benchmark in Table~\ref{{tab:r4census}}; most designs have few reported paths within 10\%, so H17c ({h17c['status']}) rests on {h17c['n']} designs.
+Near-critical paths are counted per benchmark in Table~\ref{{tab:r4census}}; most designs have few reported paths within 10\%, so H17c rests on {h17c['n']} designs that pass the registered 20-hop filter: by the literal rule it is {h17c['status']} (median ratio {f3(h17c['median_ratio'])}, one-sided Wilcoxon $p={pf(h17c.get('p'))}$); under the labelled reading with an n$<$12 clause (not in the registered rule) it is {h17c['status_n12_variant']}.
 The hierarchy test (N13) has {n13['n']} nearly flat designs and cannot say more than its status. The round-three affinity files lacked every adder atom; the round-four headline
 packing is therefore not the round-three packing, and round three's purity and wirelength results describe a packer that did not see carry chains.
 Limits: the depth estimate is a text heuristic; the attribution workaround uses the tool's functions on BLIFs that carry provenance names; the packing is APPack inside the analytical flow.

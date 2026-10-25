@@ -4,7 +4,7 @@
 The census answers Peter's question with data: in the stock packing most CLB pairs share no net with each other (filler 64.4\% by median), series-critical pairs are
 4.0\% and shared-input plus orthogonal pairs 32.0\%; the illustration of 10/75/15 is not supported in shape and not supported in numbers.
 The orthogonal class counts same-word pairs, and words cover about half the LUTs, so it is a lower bound. The headline packer changes the series-critical share by -0.003 (median).
-Near-critical paths are counted per benchmark in Table~\ref{tab:r4census}; most designs have few reported paths within 10\%, so H17c (inconclusive (n < 12)) rests on 9 designs.
+Near-critical paths are counted per benchmark in Table~\ref{tab:r4census}; most designs have few reported paths within 10\%, so H17c rests on 9 designs that pass the registered 20-hop filter: by the literal rule it is supported (median ratio 0.652, one-sided Wilcoxon $p=0.027$); under the labelled reading with an n$<$12 clause (not in the registered rule) it is inconclusive (n < 12).
 The hierarchy test (N13) has 15 nearly flat designs and cannot say more than its status. The round-three affinity files lacked every adder atom; the round-four headline
 packing is therefore not the round-three packing, and round three's purity and wirelength results describe a packer that did not see carry chains.
 Limits: the depth estimate is a text heuristic; the attribution workaround uses the tool's functions on BLIFs that carry provenance names; the packing is APPack inside the analytical flow.

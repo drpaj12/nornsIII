@@ -7,6 +7,7 @@ data/analysis/r4-results.json (everything the round-4 text and tables print). Us
 
 from __future__ import annotations
 
+import gzip
 import json
 import math
 import re
@@ -158,17 +159,22 @@ def n17() -> dict:
             ratios.append(m["hop_crossing_rate"] / er)
             rows.append(d)
     h17c: dict = {"n": len(ratios), "designs": rows, "ratios": ratios, "median_ratio": med(ratios)}
-    if len(ratios) >= 12:
+    # Primary status: the literal rule of docs/plan/round4.md (the >= 20 hops filter is registered, so the n
+    # that passes it is the registered n; the rule has no n < 12 clause). A Wilcoxon needs >= 6 non-zero
+    # differences, else p is NaN (counts as 1.0).
+    if ratios:
         p = wilcoxon([r - 1 for r in ratios], "less")
         h17c["p"] = p
-        if med(ratios) <= 0.80 and p < 0.05:
+        if med(ratios) <= 0.80 and not nan(p) and p < 0.05:
             h17c["status"] = "supported"
         elif med(ratios) >= 1.0:
             h17c["status"] = "not supported"
         else:
             h17c["status"] = "inconclusive"
     else:
-        h17c["status"] = "inconclusive (n < 12)"
+        h17c["status"] = "inconclusive"
+    # Labelled variant (the reading of round 4 before the fix round): fewer than 12 designs -> inconclusive.
+    h17c["status_n12_variant"] = "inconclusive (n < 12)" if len(ratios) < 12 else h17c["status"]
     out["H17c"] = h17c
     # H17d
     dd = [cen[d]["arms"]["stock"]["pairs"]["share"]["SC"] + cen[d]["arms"]["stock"]["pairs"]["share"]["SN"]
@@ -303,7 +309,6 @@ def n12() -> dict:
         pj = nl.runs_dir(d, "r4", "stock.analytic.s1", "paths.json.gz")
         if not r.is_file() or not pj.is_file():
             continue
-        import gzip
         paths = json.load(gzip.open(pj, "rt"))
         crit = paths[0]["nodes"]
         tot_d = sum(n[5] or 0 for n in crit) or 1
@@ -472,21 +477,30 @@ def arms() -> dict:
                 ref[f"{pack}.stagebit_vs_wordseed.{m}"] = ratio_block(ratios(designs, (pack, "stagebit"), (pack, "wordseed"), m))
         res["ref"] = ref
         out[variant] = res
-    # CPD agreement and the stock-arm reproduction check against round 3
+    # CPD check, independent quantities: the log's `Final critical path delay` (rec cpd_ns) against path 1 of the
+    # timing report (arrival minus required time = minus its slack, report precision 1e-3 ns; paths.json.gz keeps
+    # the report's arrival and slack). rec attr_cpd_ns is the same log line read again, so it is not used here.
     agree, tot, repro, repro_n = 0, 0, 0, 0
+    worst, arr_gap = 0.0, []
     for d in DESIGNS:
         r = r4runs(d)
         for key, rec in r.items():
-            if rec.get("attr_cpd_ns") is not None and rec.get("cpd_ns") is not None:
+            pj = nl.runs_dir(d, "r4", f"{key[0]}.{key[1]}.s{key[2]}", "paths.json.gz")
+            if rec.get("cpd_ns") is not None and pj.is_file():
+                p1 = json.load(gzip.open(pj, "rt"))[0]
                 tot += 1
-                agree += 1 if abs(rec["attr_cpd_ns"] - rec["cpd_ns"]) < 1e-3 else 0
+                diff = abs(-p1["slack"] - rec["cpd_ns"])
+                worst = max(worst, diff)
+                agree += 1 if diff <= 5.5e-4 else 0
+                arr_gap.append(rec["cpd_ns"] - p1["arrival"])
         r3 = {x["tag"]: x for x in recs(d, "r3runs.jsonl") if x.get("rc") == 0}
         for s in SEEDS:
             a, b = r.get(("stock", "analytic", s)), r3.get(f"stock.analytic.s{s}")
             if a and b:
                 repro_n += 1
                 repro += 1 if (a["wirelength"] == b["wirelength"] and a["chan_width"] == b["chan_width"] and abs(a["cpd_ns"] - b["cpd_ns"]) < 1e-4) else 0
-    out["checks"] = {"cpd_agree": agree, "cpd_total": tot, "stock_repro": repro, "stock_repro_n": repro_n}
+    out["checks"] = {"cpd_agree": agree, "cpd_total": tot, "cpd_max_diff": worst,
+                     "cpd_minus_arrival_median": med(arr_gap), "cpd_minus_arrival_max": max(arr_gap) if arr_gap else None, "stock_repro": repro, "stock_repro_n": repro_n}
     return out
 
 

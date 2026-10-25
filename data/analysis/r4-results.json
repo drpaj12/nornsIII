@@ -541,6 +541,9 @@
   },
   "checks": {
    "cpd_agree": 264,
+   "cpd_max_diff": 0.0005000000000006111,
+   "cpd_minus_arrival_max": 0.46704999999999997,
+   "cpd_minus_arrival_median": 0.023475000000000135,
    "cpd_total": 264,
    "stock_repro": 45,
    "stock_repro_n": 45
@@ -1668,6 +1671,7 @@
    ],
    "median_ratio": 0.6518669758106378,
    "n": 9,
+   "p": 0.02734375,
    "ratios": [
     0.38641459216293234,
     0.5590807905920445,
@@ -1679,7 +1683,8 @@
     0.8350701504154311,
     0.6518669758106378
    ],
-   "status": "inconclusive (n < 12)"
+   "status": "supported",
+   "status_n12_variant": "inconclusive (n < 12)"
   },
   "H17d": {
    "median_excess": 0.07205242610150588,

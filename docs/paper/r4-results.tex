@@ -62,7 +62,7 @@ RQ & hypothesis & status & deciding number \\
 N17 & H17a shape (10/75/15) & not supported & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
 N17 & H17a literal numbers & not supported & same medians against 10/75/15 $\pm0.10$ \\
 N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p=<0.001$, n=15 \\
-N17 & H17c critical edges kept together & inconclusive (n < 12) & median ratio 0.652, n=9 \\
+N17 & H17c critical edges kept together & supported & median ratio 0.652, Wilcoxon $p=0.027$, n=9 (literal rule; reading with an n$<$12 clause: inconclusive (n < 12)) \\
 N17 & H17d packer beats chance (series share) & supported & median excess 0.072, 15/15 positive \\
 N13 & H13a hierarchy vs grid area & supported & n=15 \\
 N13 & H13b beyond design size & inconclusive & n=15 \\
@@ -133,7 +133,7 @@ blob\_merge & 10075 & 2 & 1 & 784.00 & 784.00 \\
 \end{table}
 
 \paragraph{Packing and placement start with critical-path delay (N14, N16).} Table~\ref{tab:r4arms} gives the geometric mean of per-design ratios (3 seeds); below 1 is better.
-Checks: the attribution's CPD equals VPR's in 264 of 264 runs; the stock arm reproduces round three's WL, W and CPD in 45 of 45 runs.
+Checks: VPR's log CPD equals path~1 of the timing report (arrival minus required time, i.e.\ minus its slack) within 0.0005~ns (report precision) in 264 of 264 runs (the data arrival time alone is 0.023~ns below the CPD by median, at most 0.467~ns: the setup time); the attribution's own CPD is read from the same log line and is not an independent check; the stock arm reproduces round three's WL, W and CPD in 45 of 45 runs.
 \begin{table}[t]
 \caption{Arm ratios (geomean over designs).}
 \label{tab:r4arms}
