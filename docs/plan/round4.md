@@ -302,3 +302,59 @@ matched fractions only. No gate result, no census and no arm run existed when th
   stock values at the same seed, which is checked and reported). The stock arm of Stage 5 runs the stock `vpr`.
 * Stage 5 starts `wordseed` and `stagebit` are built from the analytic run of the same packing and seed, so Stage 2b (the
   analytic runs) comes first. All run records are `data/<d>/r4runs.jsonl`.
+
+### Entry 2026-10-25 (fix round after review of dcebfe8; written after all round-4 data exist): corrections of the entry above, disclosures, labelled variants
+
+This entry changes no registered rule. The registered rules (Stage 0, `fbddfa0`) and the entry above stay as they are; where
+the entry above or the first write-up said something that the record does not support, this entry corrects the statement. The
+primary status of every hypothesis is the literal registered rule; every other reading below is a labelled variant, and every
+analysis added here is labelled exploratory.
+
+1. Amendment named. The entry above says "No rule above is changed". It does amend N16, items 5 and 6 (the old text stays above,
+   visible): X and Y are the sorted distinct coordinates of the pool of moved CLBs' own slots, not of the whole grid
+   (item 5); carry-chain CLBs never move (items 5 and 6); the unmoved CLBs are not re-seated, because the moved CLBs permute
+   among their own slots only (item 6, "the unmoved CLBs ... take the nearest free logic slot" no longer applies). The amendment
+   was written before any N16 data: the first `stagebit` run record is dated 14:10 EDT 2026-10-25, the entry above was last
+   edited about 13:01 and committed in `00518c8` at 13:13. The sentence "changes no rule" in the first write-up is replaced by
+   "amends N16 items 5 and 6 before any N16 data".
+2. Affinity files. The entry above says the round-4 affinity files list "the same atoms as round 3's minus buffer LUTs". That was
+   true of the files when it was written (about 13:01) and is not true of the final files. At 13:08 the builder
+   (`scripts/affinity.py`) was fixed: round 3 called the BLIF parser without the architecture's output ports, so it named every
+   adder after its first pin, and no adder atom was ever in a round-3 affinity file (the file listed the driver of the adder's
+   `a` net twice, and a dict collapsed it). The round-4 files name adders after their `cout` net as VPR does, and so list adders
+   that round 3's files never had. The files of the headline arm (`runs/<d>/r4/affinity/`, written 13:08, join check 13:12) therefore
+   changed after the entry above, and the headline packing is not "round 3's packing minus buffers": 33 of the 45
+   (design, source) packings differ from round 3's with the same binary and flags (gate information rows). Consequence stated for
+   the paper: round-3 affinity results (purity, wirelength) describe a packer that did not see carry chains.
+   Four join passes ran, each a pack-only run that reads the `Norns affinity:` matched count (mkDelayWorker32B, word source, round-4 file:
+   12:59 38 of 556 entries; 13:03 38 of 38, dead logic dropped and adders still absent; 13:08 104 of 859, adders now named by `cout` but the list
+   still held adders VPR does not have; 13:12 final, 104 of 104).
+   The claim "the join check ran before this entry" in the entry above is true of the first pass only. No pass measured anything
+   but matched fractions.
+3. Test runs before the gates. Before the gates passed, small test runs on `ch_intrinsics` (to check that the options parse and the census
+   writes) were made and deleted; one gate pass was restarted because
+   the flat-placement comparison included the creation timestamp line (the compare now skips the `#` header). The entry above says no census or arm run existed:
+   no experiment (census or arm) run existed, test runs did. No result uses these runs: every census and arm record has a
+   modification time at or after 13:41, and the rule scripts (`r4stats.py`, `r4census.py`, `r4near.py`, `r4hier.py`,
+   `r4depth.py`) were last edited at or before 13:13 and are unchanged in content from `00518c8` to `dcebfe8`.
+4. H17c. The registered rule has no "n < 12" clause: the Common-definitions clause applies to a design that "drops out of a
+   comparison (a run failed)", and the 20-hop filter is a registered inclusion rule, not a failed run. The literal status is
+   therefore computed on the n that passes the filter (9 designs): median ratio at most 0.80 and one-sided Wilcoxon p below 0.05 gives
+   "supported". The first write-up forced "inconclusive (n < 12)"; that reading is kept as the labelled variant `status_n12_variant`.
+5. CPD check. The first write-up compared VPR's log CPD with the attribution's CPD, which is the same log line read twice. The check
+   is replaced by the log CPD against path 1 of the timing report (arrival minus required time).
+6. Added labelled analyses (exploratory unless a registered rule is named): (a) H17d null that keeps prepacked molecules as units
+   and carry-chain CLBs fixed, reported beside the registered atom-shuffle null (the registered one stays primary; the
+   confound is that LUT+FF molecules and adder chains are forced into one CLB by the architecture); (b) the SN and FL shares printed
+   separately (the 64.4 percent of the first write-up is SN+FL); (c) the criticality-weighted shares (w1, w2), the 5 percent margin
+   and the split reasons R0 to R3 as a table (promised above); (d) K1 and K2 are defined on 11 and 12 designs, so the literal
+   "at least 12 of 15" cannot be met by K1 (n = 11) by construction; (e) K3 reported as its two registered conditions separately;
+   (f) K8 per packing (registered: across seeds within a design; the first write-up pooled the two packings, now a variant);
+   (g) N13 depth: provenance names carry one `module/leaf@file:line` level, so D = 1 by construction; H13 tests the module count M
+   (D is measured from the pre-flatten hierarchy as an exploratory addition only if the Odin III build exposes it);
+   (h) reverse coverage of the affinity join (VPR LUT, FF and adder atoms that have a file entry); (i) the gate (b) comparison
+   for the round-3 `attempted` arm, census on against off, pack-only (the question of the review; the registered gate (b) covers
+   the stock and `queued` arms).
+7. Method details not in the registered text (committed before any data, so not post-hoc): H15's span-to-statement rule in
+   `r4depth.py` (the nearest statement start within 12 lines above the span's line); the flat-placement gate compare skips only
+   the header block of `#` lines (fix round: tightened from every line starting with `#`).

@@ -99,6 +99,7 @@ packer's CLB pairs are, by median, {pct(a['median_SC'])} series-critical, {pct(a
 {pct(a['median_SN_FL'])} remainder (Peter's illustration was 10/75/15; shape {a['shape']}, literal numbers {a['numbers']}).
 Near-critical edges are split across CLBs less often than edges in general (H17c {n17['H17c']['status']} by the literal rule: median rate ratio {f3(n17['H17c']['median_ratio'])}, $p={pf(n17['H17c'].get('p'))}$, {n17['H17c']['n']} designs with at least 20 hops; with an n$<$12 clause, a reading outside the registered rule, {n17['H17c']['status_n12_variant']}).
 Hierarchy versus chip size: H13a {n13['status']['H13a']}, H13b {n13['status']['H13b']}. The norns packer against stock on critical-path delay: {arms['all']['H14']['cpd_ns'].get('status')}; the stage-by-bit seed: see Table~\ref{{tab:r4status}}.
+Found in this round: the round-three affinity files lacked every adder (carry-chain) atom, so round three's affinity results describe a packer that did not see carry chains (Section~\ref{{sec:r4-method}}).
 """.replace("@@n@@", str(n17["n"])))
     # ---- method
     j = nl.read_json(nl.DATA / "analysis" / "r4-join.json")
@@ -108,7 +109,7 @@ Hierarchy versus chip size: H13a {n13['status']['H13a']}, H13b {n13['status']['H
 \label{{sec:r4-method}}
 Protocol \code{{docs/plan/round4.md}}, committed as \code{{{PROTOCOL_SHA}}} on {PROTOCOL_TIME}, before any round-four
 measurement or VPR run (the packer fixes and the Stage-1 gate runs followed it; a later dated entry fixes construction details
-and changes no rule). Designs, flow and the Norns headline (source \code{{word}}, $\beta=4$) are those of round three.
+and amends N16 items 5 and 6, before any N16 data, keeping the old text; a fix-round entry records corrections and disclosures; no hypothesis rule changed). Small test runs on \code{{ch\_intrinsics}} (options parse, census writes) preceded the gates; they were deleted and no result uses them. Designs, flow and the Norns headline (source \code{{word}}, $\beta=4$) are those of round three.
 
 \paragraph{{Packer fixes and gates.}} The proposal step now counts molecules that entered the candidate queue
 (\code{{--norns\_proposal\_count queued}}); \code{{attempted}} is the round-three behaviour. A log-only census
@@ -123,7 +124,7 @@ No experiment ran before all passed.
 word entries). The cause was not a name form: the file listed buffer LUTs that VPR absorbs, dead logic that VPR sweeps, and
 (a bug found in this round) it named every adder after its first pin instead of its \code{{cout}} net, so adder atoms were never in a round-three file.
 The round-four builder drops absorbed buffers and swept blocks and names adders as VPR does; every entry of every file now matches an atom
-(Table~\ref{{tab:r4join}}). Because the adders are now labelled, the round-four files change the packing of {gate['info'] - gate['info_same']} of {gate['info']} (design, source) pairs against round three's (information rows of the gate).
+(Table~\ref{{tab:r4join}}). The round-four files were final at 13:08 (join check 13:12), after the first dated entry described them as ``the same atoms as round three's minus buffers''; the entry of the fix round records the correction. Because the adders are now labelled, the round-four files change the packing of {gate['info'] - gate['info_same']} of {gate['info']} (design, source) pairs against round three's (information rows of the gate).
 
 \paragraph{{Census classes.}} Every pair of LUT, FF and adder atoms in one logic CLB falls in the first class that applies:
 series-critical (a local net, fanout $\le32$, from one to the other, with pack-time sink criticality $\ge0.5$), series-noncritical (the same below 0.5),
@@ -314,6 +315,7 @@ Limits: the depth estimate is a text heuristic; the attribution workaround uses 
 \paragraph{{2026-10-25, round four.}} Peter (2026-10-24): ``{tex(q1)}'' Peter (2026-10-25): ``{tex(q2)}''
 What round three suggested: the Norns packer raised purity but not wirelength, and the proposal counter and the affinity join were suspect.
 Questions: N17 what gets clustered and why; N12 knowns; N13 hierarchy against chip size; N14 to N16 the packer, a timing-from-provenance estimate and a stage-by-bit seed with critical-path delay everywhere.
+Disclosures (entry of the fix round in the protocol): small test runs on \code{{ch\_intrinsics}} preceded the gates and were deleted (no result uses them: every census and arm record is dated after the gates passed, and the rule scripts were last edited before); four affinity-join passes and one restarted gate ran for builder and compare bugs; the first dated entry amended N16 items 5 and 6 before any N16 data and the final round-four affinity files (adders added) postdate it.
 Outcomes: Table~\ref{{tab:r4status}}. Protocol \code{{{PROTOCOL_SHA}}}. Next: fix the seed selector and scan order, rerun round three's purity claims with the adder-complete files, and larger designs.
 
 \begin{{table}}[t]

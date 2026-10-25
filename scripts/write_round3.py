@@ -137,7 +137,7 @@ read from a file (\code{--norns\_affinity}); a cluster's dominant group is the p
 far; a candidate molecule gets $+\beta$ (\code{--norns\_affinity\_weight}) for every atom in that group, and up
 to 30 unclustered members of the group are proposed as candidates, because the bits of a word are parallel and
 no net links them. The stock per-atom gain lies in $[0,1]$, so $\beta$ is in the units of one connected atom's
-gain. Legality stays with AAPack's legalizer. The change is @@files@@ files, @@lines@@ added lines and @@dele@@ removed.
+gain. Legality stays with AAPack's legalizer. \emph{Erratum found in round four (Section~\ref{sec:r4-method}):} the affinity files of this round omitted every adder (carry-chain) atom, because the builder named adders by their first pin; the purity and wirelength results below describe a packer that did not see carry chains. The change is @@files@@ files, @@lines@@ added lines and @@dele@@ removed.
 \emph{Control gate:} with the option absent and with $\beta=0$, the packer must write a \code{.net}
 byte-identical to the stock \code{vpr}'s in \code{--pack} and in the analytical flow on all 15 designs, before
 any experiment run: @@gate@@.

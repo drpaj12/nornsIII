@@ -3,7 +3,7 @@
 \label{sec:r4-method}
 Protocol \code{docs/plan/round4.md}, committed as \code{fbddfa0} on 2026-10-25 12:51 (UTC-4), before any round-four
 measurement or VPR run (the packer fixes and the Stage-1 gate runs followed it; a later dated entry fixes construction details
-and changes no rule). Designs, flow and the Norns headline (source \code{word}, $\beta=4$) are those of round three.
+and amends N16 items 5 and 6, before any N16 data, keeping the old text; a fix-round entry records corrections and disclosures; no hypothesis rule changed). Small test runs on \code{ch\_intrinsics} (options parse, census writes) preceded the gates; they were deleted and no result uses them. Designs, flow and the Norns headline (source \code{word}, $\beta=4$) are those of round three.
 
 \paragraph{Packer fixes and gates.} The proposal step now counts molecules that entered the candidate queue
 (\code{--norns\_proposal\_count queued}); \code{attempted} is the round-three behaviour. A log-only census
@@ -18,7 +18,7 @@ No experiment ran before all passed.
 word entries). The cause was not a name form: the file listed buffer LUTs that VPR absorbs, dead logic that VPR sweeps, and
 (a bug found in this round) it named every adder after its first pin instead of its \code{cout} net, so adder atoms were never in a round-three file.
 The round-four builder drops absorbed buffers and swept blocks and names adders as VPR does; every entry of every file now matches an atom
-(Table~\ref{tab:r4join}). Because the adders are now labelled, the round-four files change the packing of 33 of 45 (design, source) pairs against round three's (information rows of the gate).
+(Table~\ref{tab:r4join}). The round-four files were final at 13:08 (join check 13:12), after the first dated entry described them as ``the same atoms as round three's minus buffers''; the entry of the fix round records the correction. Because the adders are now labelled, the round-four files change the packing of 33 of 45 (design, source) pairs against round three's (information rows of the gate).
 
 \paragraph{Census classes.} Every pair of LUT, FF and adder atoms in one logic CLB falls in the first class that applies:
 series-critical (a local net, fanout $\le32$, from one to the other, with pack-time sink criticality $\ge0.5$), series-noncritical (the same below 0.5),
