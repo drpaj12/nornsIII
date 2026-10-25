@@ -42,6 +42,23 @@ read only the committed `data/` and regenerate every document byte-identically f
     8. scripts/write_paper_prose.py      # fills docs/paper/norns.tex from the numbers
     9. scripts/write_round2.py           # docs/paper/r2-*.tex (the round-two sections and appendix)
 
+Round three (the Norns packer, I/O words, packing experiments, proximity). The protocol with every numeric rule is
+`docs/plan/round3.md` (committed before any round-three run). Steps 1 to 7 need the local `runs/` tree; steps
+8 to 11 read only the committed `data/` and regenerate byte-identically:
+
+    1. scripts/n8.py                     # RQ-N8: purity, split factor, null, coverage-loss split (no VPR)
+    2. scripts/io_words.py               # RQ-N10: io-words and their LUT coverage (no VPR)
+    3. sh packer/build.sh                # the Norns packer: private VTR tree at packer/VTR_COMMIT + overlay -> $NORNS_VPR
+                                         # (heavy lock; sh packer/diffstat.sh refreshes packer/DIFFSTAT.txt)
+    4. scripts/round3.py gate            # control gate: stock vs Norns .net, 15 designs (data/analysis/r3-gate.json)
+    5. scripts/round3.py pilot; grid     # beta pilot on the 4 smallest designs, then freeze the grid
+    6. scripts/round3.py chunk arms      # Stage-4 runs (heavy lock per design; 3 VPR seeds); `status` shows progress
+    7. scripts/n11.py                    # RQ-N11 on the stock analytic runs -> data/<d>/n11.json, data/analysis/n11*
+    8. scripts/r3stats.py                # every round-three statistic and status -> data/analysis/r3-results.json
+    9. scripts/write_round3.py           # docs/paper/r3-*.tex (sections and appendix)
+   10. scripts/report.py                 # docs/plan/EXPERIMENT.md (includes the round-three tables)
+   11. tectonic docs/paper/norns.tex     # docs/paper/build/norns.pdf
+
 The Loki analysis venv (numpy, scipy, scikit-learn, networkx, cffi) is built per the Loki
 CLAUDE.md and kept outside the Loki checkout; Loki is imported from its checkout through
 `PYTHONPATH`, never installed into or edited. Every VPR run takes the heavy lock

@@ -270,6 +270,17 @@ N2 Spearman rho (p, n) between structure and gain (1 - wirelength ratio).
 
 Crossover of the best new family: median scale 16 vs round one 16 (n=13); retention at 2S median 0.20; wins vs unseeded at 2S 5/13.
 
+## Round 3 (the Norns packer, I/O words, packing experiments, proximity)
+
+Protocol: `docs/plan/round3.md` (committed before any round-3 run). Statuses follow its rules; numbers from `scripts/r3stats.py`.
+
+| RQ | hypothesis | status | deciding number |
+|---|---|---|---|
+| N8 | H8 packing dilutes structure | supported | median word purity 0.63, split 4.00 (n=15) |
+| N10 | H10a io-words add coverage | supported | median gain 24.1%, 15/15 designs |
+| N11 | H11 same-word pairs closer than nets predict | inconclusive | no data |
+| N11 | H11 same-module pairs closer than nets predict | inconclusive | no data |
+
 ## Failed runs
 
 | design | tag | result | cause |
@@ -291,5 +302,6 @@ Crossover of the best new family: median scale 16 vs round one 16 (n=13); retent
 * Agent defaults: (1) the Loki L0 graph.json is built by Norns from the same Odin III BLIF because Loki's own key.json uses Odin API names that do not join to VPR atom names; the clusterings are Loki's `loki.analysis.cluster` code. (2) The hard arm constrains regions only, so it has no full/inter split. (3) Pad CLBs and mult_36 macros stay anchored; adder carry chains move as a vertical run. (4) One VPR run per configuration at `--seed 1` (deterministic). (5) Urd has one cluster only on sha and stereovision3; diffeq1 and diffeq2 (one module each) get two Urd clusters (the module and a flat group), and the other designs get one cluster per populated module (3 to 23).
 * Round 2 agent defaults: (6) word membership comes from Odin III bus names and spans joined to the BLIF by net id (the BLIF line is a statement, too coarse); (7) a CLB joins a word cluster when >= 1/3 of its atoms are word atoms, else it keeps its Urd module cluster; (8) the Rent exponent is fitted on BFS balls, the inverse Rent exponent is -p; (9) the random null of N1 permutes logic-CLB coordinates (20 samples); (10) hypothesis statuses follow the decision rules in the paper's methodology section.
 * Regenerating round two: `scripts/build_words.py`, `scripts/build_word_seeds.py`, `scripts/round2.py` (VPR; `soft`, then `freeze`, then `chunk stage2`) and `scripts/structure.py all|graph|partial` need the local `runs/` tree; then `scripts/report.py` (this file), `scripts/fill_paper.py`, `scripts/write_paper_prose.py` and `scripts/write_round2.py` regenerate every document from the committed `data/` alone.
+* Regenerating round three: `scripts/n8.py`, `scripts/io_words.py`, `sh packer/build.sh` (the Norns packer), `scripts/round3.py gate|pilot|grid|chunk arms` (VPR, heavy lock) and `scripts/n11.py` need the local `runs/` tree; then `scripts/r3stats.py`, `scripts/write_round3.py` and `scripts/report.py` regenerate the documents from the committed `data/` alone. The protocol is `docs/plan/round3.md`.
 * VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a patch; the on arm is the main matrix, the off arm repeats the cold-start scale sweep (extended by doubling while the control still wins, to the same 256 cap).
 

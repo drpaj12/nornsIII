@@ -1,0 +1,7 @@
+modified src/base/read_options.cpp +17 -0
+modified src/base/read_options.h +2 -0
+modified src/base/setup_vpr.cpp +2 -0
+modified src/pack/greedy_candidate_selector.cpp +67 -0
+modified src/pack/greedy_candidate_selector.h +17 -0
+new src/pack/norns_affinity.cpp +102 -0
+new src/pack/norns_affinity.h +55 -0
