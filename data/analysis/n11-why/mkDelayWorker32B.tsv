@@ -1,0 +1,13 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#43	#115	c:2580:$add	1	0	0	0	not available
+word	#87	#112	b:dlyWordsStored_value	2	3	0	1	not available
+module	#43	#44	mkDelayWorker32B	1	0	0	0	not available
+module	#43	#115	mkDelayWorker32B	1	0	0	0	not available
+module	#44	#87	mkDelayWorker32B	1	0	0	0	not available
+module	#44	#112	mkDelayWorker32B	1	0	0	0	not available
+module	#45	#46	mkDelayWorker32B	1	0	0	0	not available
+module	#50	#99	mkDelayWorker32B	1	1	0	0	not available
+module	#65	#72	mkDelayWorker32B	1	1	0	0	not available
+module	#81	#83	mkDelayWorker32B	1	1	0	0	not available
+module	#82	#106	mkDelayWorker32B	1	1	0	0	not available
+module	#49	#66	mkDelayWorker32B	2	1	0	0	not available

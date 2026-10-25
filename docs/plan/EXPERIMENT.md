@@ -274,12 +274,25 @@ Crossover of the best new family: median scale 16 vs round one 16 (n=13); retent
 
 Protocol: `docs/plan/round3.md` (committed before any round-3 run). Statuses follow its rules; numbers from `scripts/r3stats.py`.
 
+Control gate (stock vs Norns packer `.net`, option absent and beta 0, `--pack` and the analytical flow): 60 comparisons over 15 designs, all byte-identical.
+
 | RQ | hypothesis | status | deciding number |
 |---|---|---|---|
 | N8 | H8 packing dilutes structure | supported | median word purity 0.63, split 4.00 (n=15) |
 | N10 | H10a io-words add coverage | supported | median gain 24.1%, 15/15 designs |
-| N11 | H11 same-word pairs closer than nets predict | inconclusive | no data |
-| N11 | H11 same-module pairs closer than nets predict | inconclusive | no data |
+| N9 | H9a module purity up, CLBs within +5% | inconclusive (pilot-sensitive) | purity +0.000 (without pilot +0.035), CLB -1.6%, p<0.001 |
+| N9 | H9a word purity up, CLBs within +5% | supported | purity +0.111 (without pilot +0.120), CLB 0.0%, p<0.001 |
+| N9 | H9a word+io purity up, CLBs within +5% | supported | purity +0.104 (without pilot +0.124), CLB 0.0%, p<0.001 |
+| N9 | H9b module changes WL (analytic) | inconclusive (pilot-sensitive) | geomean 1.051, 3/15 better, p=0.090; without pilot 1.069, p=0.006 |
+| N9 | H9b word changes WL (analytic) | inconclusive (pilot-sensitive) | geomean 1.032, 4/15 better, p=0.188; without pilot 1.053, p=0.016 |
+| N9 | H9b word+io changes WL (analytic) | inconclusive (pilot-sensitive) | geomean 1.030, 4/15 better, p=0.188; without pilot 1.050, p=0.016 |
+| N9 | H9c module+seed beats stock+seed | not supported | geomean 1.064, 2/15 better, p=1.000 |
+| N9 | H9c word+seed beats stock+seed | not supported | geomean 1.039, 4/15 better, p=1.000 |
+| N9 | H9c word+io+seed beats stock+seed | not supported | geomean 1.039, 5/15 better, p=1.000 |
+| N10 | H10b word+io beats word | not supported | geomean 0.998, 4/15 better, p=1.000 |
+| N11 | H11 same-word pairs closer than nets predict | inconclusive | median -0.176, p=0.017, n=12 |
+| N11 | H11 same-module pairs closer than nets predict | supported | median -0.188, p<0.001, n=11 |
+| N11 | H11 overall (both relations) | inconclusive | supported only if both are |
 
 ## Failed runs
 

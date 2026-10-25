@@ -1,0 +1,136 @@
+\subsection{Round three results}
+\label{sec:r3-results}
+
+\textbf{RQ-N8, does packing dilute structure?} H8 is supported: over the 15 stock packings the median word purity
+(plurality share) is 0.63 against 0.20 for a random grouping of the same atoms (higher on 15 of 15), and the median
+split factor is 4.00 (above 1 on 12 of 15). The median module purity is 0.99, so module affinity has little to gain on most designs. Of the logic atoms, 65.8\% carry a word (median); 34.2\% lack one (front end: ABC's cone provenance, mixed
+spans 33.8\% and no match 0.4\%) and a further 20.7\% carry a word but sit in a CLB where their word is not the
+plurality word or fails the 1/3 rule (packing).
+
+\textbf{RQ-N10, I/O words.} H10a is supported: the median LUT word coverage rises from 31.8\% to 53.9\% with io-words
+(median gain 24.1\%, positive on 15 of 15 designs).
+
+\begin{table}[t]
+\caption{Round three, headline configurations (the $\beta_m$ of each source): geomean ratio over the
+15 completed designs against the stock packer with the same start, same VPR seeds. Below 1.0 is better;
+CLBs is the number of logic CLBs; Pack and Flow are the packing and total VPR runtimes. The seed arm's stock reference is the stock
+packing with the same \code{words\_partial} seed rebuilt on it.}
+\label{tab:r3qor}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+Arm & WL & Chan.\ & Delay & CLBs & Pack & Flow \\
+\midrule
+module, analytic & 1.051 & 1.061 & 1.017 & 0.965 & 1.318 & 1.084 \\
+word, analytic & 1.032 & 1.034 & 1.002 & 0.985 & 1.125 & 1.014 \\
+word+io, analytic & 1.030 & 1.036 & 0.996 & 0.984 & 1.130 & 1.005 \\
+module, word seed & 1.064 & 1.063 & 1.031 & 0.965 & 1.315 & 1.100 \\
+word, word seed & 1.039 & 1.042 & 1.009 & 0.985 & 1.116 & 1.039 \\
+word+io, word seed & 1.039 & 1.042 & 1.007 & 0.984 & 1.127 & 1.052 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Seed noise.} The stock packer's routed wirelength varies across the three VPR seeds with a median coefficient of variation
+2.4\% (maximum 9.7\%, n=15 designs), which is the floor under any wirelength difference below a few percent.
+
+\textbf{module affinity.} H9a is inconclusive (pilot-sensitive): the module-level purity moves by 0.000 (median, n=15; 0.035 without the pilot designs) with a median change of -1.6\% in logic CLBs (largest 13.3\%). H9b is inconclusive (pilot-sensitive): with the analytic start the routed wirelength is 1.051 of the stock packer's (better on 3 of 15; 90\% interval 1.020 to 1.082; 1.069 without the pilot designs, status there supported (higher WL)). H9c is not supported: with the word seed it is 1.064 (better on 2 of 15).
+
+\textbf{word affinity.} H9a is supported: the word-level purity moves by 0.111 (median, n=15; 0.120 without the pilot designs) with a median change of 0.0\% in logic CLBs (largest 13.3\%). H9b is inconclusive (pilot-sensitive): with the analytic start the routed wirelength is 1.032 of the stock packer's (better on 4 of 15; 90\% interval 1.006 to 1.062; 1.053 without the pilot designs, status there supported (higher WL)). H9c is not supported: with the word seed it is 1.039 (better on 4 of 15).
+
+\textbf{word+io affinity.} H9a is supported: the word+io-level purity moves by 0.104 (median, n=15; 0.124 without the pilot designs) with a median change of 0.0\% in logic CLBs (largest 13.3\%). H9b is inconclusive (pilot-sensitive): with the analytic start the routed wirelength is 1.030 of the stock packer's (better on 4 of 15; 90\% interval 1.005 to 1.057; 1.050 without the pilot designs, status there supported (higher WL)). H9c is not supported: with the word seed it is 1.039 (better on 5 of 15).
+
+\textbf{I/O words in the affinity (H10b).} not supported: word+io over word is 0.998 (better on 4 of 15, $p=1.000$).
+
+
+\begin{table*}[t]
+\caption{Round three: hypotheses, status and deciding number (all designs run; statuses use the rules in
+\code{docs/plan/round3.md}). H9 numbers are for the headline $\beta_m$ of each source, Holm-adjusted over the three sources;
+a status that differs between all 15 designs and the 11 without the pilot designs is shown as pilot-sensitive.}
+\label{tab:r3status}
+\centering
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llp{3.4cm}p{8.6cm}@{}}
+\toprule
+RQ & Hypothesis & Status & Deciding number \\
+\midrule
+N8 & H8 packing dilutes structure & supported & median word purity 0.63, split 4.00 (n=15) \\
+N10 & H10a io-words add coverage & supported & median gain 24.1\%, 15/15 designs \\
+N9 & H9a module purity up, CLBs within +5\% & inconclusive (pilot-sensitive) & purity +0.000 (without pilot +0.035), CLB -1.6\%, $p<0.001$ \\
+N9 & H9a word purity up, CLBs within +5\% & supported & purity +0.111 (without pilot +0.120), CLB 0.0\%, $p<0.001$ \\
+N9 & H9a word+io purity up, CLBs within +5\% & supported & purity +0.104 (without pilot +0.124), CLB 0.0\%, $p<0.001$ \\
+N9 & H9b module changes WL (analytic) & inconclusive (pilot-sensitive) & geomean 1.051, 3/15 better, $p=0.090$; without pilot 1.069, $p=0.006$ \\
+N9 & H9b word changes WL (analytic) & inconclusive (pilot-sensitive) & geomean 1.032, 4/15 better, $p=0.188$; without pilot 1.053, $p=0.016$ \\
+N9 & H9b word+io changes WL (analytic) & inconclusive (pilot-sensitive) & geomean 1.030, 4/15 better, $p=0.188$; without pilot 1.050, $p=0.016$ \\
+N9 & H9c module+seed beats stock+seed & not supported & geomean 1.064, 2/15 better, $p=1.000$ \\
+N9 & H9c word+seed beats stock+seed & not supported & geomean 1.039, 4/15 better, $p=1.000$ \\
+N9 & H9c word+io+seed beats stock+seed & not supported & geomean 1.039, 5/15 better, $p=1.000$ \\
+N10 & H10b word+io beats word & not supported & geomean 0.998, 4/15 better, $p=1.000$ \\
+N11 & H11 same-word pairs closer than nets predict & inconclusive & median -0.176, $p=0.017$, n=12 \\
+N11 & H11 same-module pairs closer than nets predict & supported & median -0.188, $p<0.001$, n=11 \\
+N11 & H11 overall (both relations) & inconclusive & supported only if both are \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[t]
+\caption{RQ-N8 per design on the stock packing: logic CLBs, word purity (plurality share), the random-grouping null
+purity, word split factor (1.0 best), module purity, and the share of logic atoms lost to the front end (no word) and to
+packing (word atom not in its word's CLB).}
+\label{tab:r3n8}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Design & CLBs & Purity & Null & Split & Module & Lost: FE & Lost: pack \\
+\midrule
+ch\_intrinsics & 13 & 0.86 & 0.51 & 3.00 & 1.00 & 54.7\% & 6.1\% \\
+stereovision3 & 15 & 0.48 & 0.25 & 2.00 & 1.00 & 40.4\% & 31.3\% \\
+diffeq2 & 22 & 0.96 & 0.31 & 2.00 & 1.00 & 31.8\% & 7.0\% \\
+diffeq1 & 37 & 0.80 & 0.27 & 7.50 & 1.00 & 37.4\% & 14.2\% \\
+mkPktMerge & 21 & 0.86 & 0.75 & 1.00 & 0.92 & 7.3\% & 13.2\% \\
+raygentop & 143 & 0.52 & 0.14 & 3.00 & 0.68 & 34.2\% & 32.6\% \\
+sha & 142 & 0.47 & 0.19 & 11.50 & 1.00 & 50.5\% & 27.2\% \\
+boundtop & 54 & 0.48 & 0.18 & 4.00 & 0.68 & 33.7\% & 34.2\% \\
+mkSMAdapter4B & 125 & 0.63 & 0.20 & 5.00 & 1.00 & 51.3\% & 20.0\% \\
+or1200 & 252 & 0.64 & 0.20 & 5.50 & 0.76 & 51.1\% & 20.7\% \\
+stereovision0 & 707 & 0.27 & 0.06 & 4.00 & 0.74 & 22.1\% & 56.8\% \\
+stereovision1 & 788 & 0.36 & 0.08 & 4.00 & 0.71 & 17.1\% & 53.0\% \\
+mkDelayWorker32B & 74 & 0.77 & 0.47 & 1.00 & 0.99 & 80.7\% & 4.3\% \\
+stereovision2 & 1956 & 0.59 & 0.09 & 6.00 & 0.88 & 4.9\% & 39.0\% \\
+blob\_merge & 494 & 0.91 & 0.09 & 1.00 & 1.00 & 30.5\% & 8.0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{RQ-N10: I/O words per design (buses of at least two bits) and the LUT word coverage without and with io-words.}
+\label{tab:r3n10}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrr}
+\toprule
+Design & io-words & Word cov. & + io-words \\
+\midrule
+ch\_intrinsics & 8 & 16.4\% & 49.2\% \\
+stereovision3 & 3 & 26.0\% & 41.6\% \\
+diffeq2 & 8 & 31.8\% & 81.6\% \\
+diffeq1 & 11 & 21.5\% & 53.9\% \\
+mkPktMerge & 5 & 49.7\% & 95.8\% \\
+raygentop & 23 & 24.4\% & 57.8\% \\
+sha & 4 & 2.5\% & 47.5\% \\
+boundtop & 22 & 42.1\% & 64.3\% \\
+mkSMAdapter4B & 29 & 12.6\% & 38.0\% \\
+or1200 & 36 & 27.6\% & 51.7\% \\
+stereovision0 & 27 & 32.1\% & 40.5\% \\
+stereovision1 & 20 & 50.3\% & 57.3\% \\
+mkDelayWorker32B & 27 & 77.0\% & 78.1\% \\
+stereovision2 & 24 & 78.8\% & 85.2\% \\
+blob\_merge & 4 & 48.8\% & 52.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{RQ-N11, what the annealed placement says.} H11 is inconclusive. same-word pairs: median stratified distance difference -0.176 (one-sided Wilcoxon $p=0.017$, n=12 designs; negative in at least two of three seeds on 9, needed 10; status inconclusive); same-module pairs: median stratified distance difference -0.188 (one-sided Wilcoxon $p<0.001$, n=11 designs; negative in at least two of three seeds on 10, needed 9; status supported). Neighbour stability across VPR seeds (mean Jaccard of each CLB's four nearest neighbours): 0.267 against 0.058 for a permuted placement. The per-design ``why are these neighbours'' tables (direct nets, shared high-fanout net, carry chain) are in \code{data/analysis/n11-why/}.
+

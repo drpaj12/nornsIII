@@ -1,0 +1,49 @@
+\subsection{Round three: packing, I/O words and placement proximity}
+\label{sec:r3-method}
+
+Round two found every soft seed within a few percent of the baseline. Round three asks whether the
+packing step, which runs before placement and decides which atoms share a CLB, is where the HDL
+structure is lost, builds a packer that keeps it, and then asks what the annealed placement itself
+says about provenance. The two questions that started it are quoted in the research log
+(Section~\ref{sec:r3-appendix}).
+
+\paragraph{The Norns packer.} VPR's packer is AAPack, the greedy clusterer in \code{vpr/src/pack} (not
+T-VPack); in VTR's default analytical flow the same clusterer runs as APPack, with candidate gains
+attenuated by distance in the global placement. The Norns packer is a copy of the changed files of that
+clusterer (VTR commit \code{3c9a4d23b2}, MIT licence kept) with one added term: an atom carries a group id
+read from a file (\code{--norns\_affinity}); a cluster's dominant group is the plurality group of its atoms so
+far; a candidate molecule gets $+\beta$ (\code{--norns\_affinity\_weight}) for every atom in that group, and up
+to 30 unclustered members of the group are proposed as candidates, because the bits of a word are parallel and
+no net links them. The stock per-atom gain lies in $[0,1]$, so $\beta$ is in the units of one connected atom's
+gain. Legality stays with AAPack's legalizer. The change is 7 files, 262 added lines and 0 removed.
+\emph{Control gate:} with the option absent and with $\beta=0$, the packer must write a \code{.net}
+byte-identical to the stock \code{vpr}'s in \code{--pack} and in the analytical flow on all 15 designs, before
+any experiment run: 60 comparisons over 15 designs, all byte-identical.
+
+\paragraph{RQ-N8, dilution (no VPR).} On the stock packings of round one, per design: purity (plurality share of the
+labelled atoms of a logic CLB, atom-weighted), and the split factor (CLBs a word spans over the fewest CLBs that
+could hold it, 1.0 being best), at word and module level, against a null that assigns the same atoms at random to
+CLBs of the same sizes (50 samples). Round two's word coverage loss is split into the front end (atoms with no
+word) and packing (word atoms not in a CLB where their word is the plurality word under the 1/3 rule).
+
+\paragraph{RQ-N10, I/O words.} A top-level bus \code{name[i]} is an io-word; its identity is propagated inward
+over LUT and flip-flop atoms, two hops past the atom next to the pad, through nets of fanout at most 16, giving
+an atom that has no round-two word the io-word it reaches from exactly one bit of exactly one io-word.
+
+\paragraph{RQ-N9, packing experiments.} Arms: the stock packer, and the Norns packer with affinity source module,
+word or word+io (word, else io-word) at three values of $\beta$ each, with the analytic start or with the round-two
+\code{words\_partial} seed rebuilt on that run's own packing, three VPR seeds (1 to 3) per configuration. The grid was
+chosen on a pilot of the four smallest designs that reads only purity and CLB count (never wirelength): $\beta_m$ is
+the largest value in $\{0.05,0.1,0.2,0.5,1,2,4\}$ whose median CLB-count growth is at most 5\%, and the grid is its
+neighbours (module: $\beta_m=4$, grid {1, 2, 4}; word: $\beta_m=4$, grid {1, 2, 4}; word+io: $\beta_m=4$, grid {1, 2, 4}). Each claim is reported on all 15 designs and without the four pilot designs; a status
+that differs between the two is called inconclusive (pilot-sensitive).
+
+\paragraph{RQ-N11, proximity.} On the stock-packing, analytic-start runs, logic CLB pairs by relation (same word,
+same module, same statement, net-connected, same io-word) against the direct net count, which is stratified
+out: the stratified mean distance difference of related over unrelated pairs, as a fraction of the unrelated
+distance (negative is closer).
+
+\paragraph{Decision rules and their provenance.} Every hypothesis, metric, arm and numeric rule (including the margins
+$\pm$2\% and 1\% for wirelength, 5 percentage points of purity, 5\% CLB growth) is in \code{docs/plan/round3.md},
+committed as \code{4fb8b60} on 2026-10-24 21:26 (UTC-4), before any round-three measurement or VPR run; the paper reports only those
+rules. Later changes are new dated entries in that file that keep the old rule, and the results are given under both.

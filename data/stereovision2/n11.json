@@ -1,0 +1,104 @@
+{
+ "d_module": -0.14092456985048687,
+ "d_module_negative_seeds": 3,
+ "d_word": 0.054315219291358206,
+ "d_word_negative_seeds": 0,
+ "design": "stereovision2",
+ "seeds": [
+  {
+   "clbs": 1956,
+   "d_module": -0.1272382833499873,
+   "d_word": 0.06545651951083142,
+   "io": {
+    "mean_dist": 9.135135135135135,
+    "n_pairs": 111
+   },
+   "mean_dist": 44.488898337939744,
+   "module": {
+    "mean_dist": 38.978387709304336,
+    "n_pairs": 28965
+   },
+   "net": {
+    "mean_dist": 17.296662546353524,
+    "n_pairs": 809
+   },
+   "null_mean_dist": 44.535284326108986,
+   "p_module": 0.004975124378109453,
+   "p_word": 1.0,
+   "pairs": 399805,
+   "stmt": {
+    "mean_dist": 40.76603287141476,
+    "n_pairs": 12412
+   },
+   "stmt_rel_unrelated": 44.60817825825454,
+   "word": {
+    "mean_dist": 46.2684331797235,
+    "n_pairs": 2604
+   }
+  },
+  {
+   "clbs": 1956,
+   "d_module": -0.14874064681056554,
+   "d_word": 0.056008792991635185,
+   "io": {
+    "mean_dist": 7.172413793103448,
+    "n_pairs": 116
+   },
+   "mean_dist": 44.209542914601016,
+   "module": {
+    "mean_dist": 37.82517409470752,
+    "n_pairs": 28720
+   },
+   "net": {
+    "mean_dist": 16.677792041078305,
+    "n_pairs": 779
+   },
+   "null_mean_dist": 44.18015490477596,
+   "p_module": 0.004975124378109453,
+   "p_word": 1.0,
+   "pairs": 399794,
+   "stmt": {
+    "mean_dist": 39.902461033634125,
+    "n_pairs": 12190
+   },
+   "stmt_rel_unrelated": 44.34499901961796,
+   "word": {
+    "mean_dist": 45.57014458772958,
+    "n_pairs": 2559
+   }
+  },
+  {
+   "clbs": 1956,
+   "d_module": -0.14679477939090776,
+   "d_word": 0.04148034537160799,
+   "io": {
+    "mean_dist": 7.880341880341881,
+    "n_pairs": 117
+   },
+   "mean_dist": 44.366332745532084,
+   "module": {
+    "mean_dist": 38.013907722262786,
+    "n_pairs": 28761
+   },
+   "net": {
+    "mean_dist": 15.993438320209973,
+    "n_pairs": 762
+   },
+   "null_mean_dist": 44.26715929413824,
+   "p_module": 0.004975124378109453,
+   "p_word": 1.0,
+   "pairs": 399795,
+   "stmt": {
+    "mean_dist": 39.84171245796769,
+    "n_pairs": 12193
+   },
+   "stmt_rel_unrelated": 44.50866610595405,
+   "word": {
+    "mean_dist": 45.066265060240966,
+    "n_pairs": 2490
+   }
+  }
+ ],
+ "stability": 0.16830915051773945,
+ "stability_null": 0.000998149771155906
+}

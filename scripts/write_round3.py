@@ -52,6 +52,12 @@ def pf(p) -> str:
     return r3stats.pfmt(p)
 
 
+def peq(p) -> str:
+    """'p<0.001' or 'p=0.090'."""
+    t = r3stats.pfmt(p)
+    return f"$p{t}$" if t.startswith("<") else f"$p={t}$"
+
+
 def esc(s: str) -> str:
     return s.replace("_", "\\_")
 
@@ -170,23 +176,26 @@ def h_rows(R: dict) -> list[tuple[str, str, str, str]]:
         for s in af.SOURCES:
             a = R["H9a"][s]["all"]
             rows.append(("N9", f"H9a {SRC[s]} purity up, CLBs within +5\\%", R["H9a"][s]["status"],
-                         f"purity +{f3(a.get('median_gain'))}, CLB {pct(a.get('median_growth'))}, p={pf(a.get('p_holm'))}"))
+                         f"purity +{f3(a.get('median_gain'))} (without pilot +{f3(R['H9a'][s]['no_pilot'].get('median_gain'))}), "
+                         f"CLB {pct(a.get('median_growth'))}, {peq(a.get('p_holm'))}"))
         for s in af.SOURCES:
             b = R["H9b"][s]["all"]
             rows.append(("N9", f"H9b {SRC[s]} changes WL (analytic)", R["H9b"][s]["status"],
-                         f"geomean {f3(b.get('gm'))}, {b.get('better')}/{b.get('n')} better, p={pf(b.get('p_holm'))}"))
+                         f"geomean {f3(b.get('gm'))}, {b.get('better')}/{b.get('n')} better, {peq(b.get('p_holm'))}; "
+                         f"without pilot {f3(R['H9b'][s]['no_pilot'].get('gm'))}, {peq(R['H9b'][s]['no_pilot'].get('p_holm'))}"))
         for s in af.SOURCES:
             c = R["H9c"][s]["all"]
             rows.append(("N9", f"H9c {SRC[s]}+seed beats stock+seed", R["H9c"][s]["status"],
-                         f"geomean {f3(c.get('gm'))}, {c.get('better')}/{c.get('n')} better, p={pf(c.get('p_holm'))}"))
+                         f"geomean {f3(c.get('gm'))}, {c.get('better')}/{c.get('n')} better, {peq(c.get('p_holm'))}"))
         b = R["H10b"]["all"]
         rows.append(("N10", "H10b word+io beats word", R["H10b"]["status"],
-                     f"geomean {f3(b.get('gm'))}, {b.get('better')}/{b.get('n')} better, p={pf(b.get('p'))}"))
+                     f"geomean {f3(b.get('gm'))}, {b.get('better')}/{b.get('n')} better, {peq(b.get('p'))}"))
     for rel in ("word", "module"):
         x = h11[rel]
         rows.append(("N11", f"H11 same-{rel} pairs closer than nets predict", x["status"],
-                     f"median {f3(x.get('median_d'))}, p={pf(x.get('p'))}, n={x['n']}"
+                     f"median {f3(x.get('median_d'))}, {peq(x.get('p'))}, n={x['n']}"
                      if x["n"] else "no data"))
+    rows.append(("N11", "H11 overall (both relations)", h11["status"], "supported only if both are"))
     return rows
 
 
@@ -215,7 +224,7 @@ def results(R: dict) -> str:
         n9 = fill(r"""\begin{table}[t]
 \caption{Round three, headline configurations (the $\beta_m$ of each source): geomean ratio over the
 @@nd@@ completed designs against the stock packer with the same start, same VPR seeds. Below 1.0 is better;
-CLBs is the cluster count; Pack and Flow are the packing and total VPR runtimes. The seed arm's stock reference is the stock
+CLBs is the number of logic CLBs; Pack and Flow are the packing and total VPR runtimes. The seed arm's stock reference is the stock
 packing with the same \code{words\_partial} seed rebuilt on it.}
 \label{tab:r3qor}
 \centering
@@ -238,8 +247,7 @@ Arm & WL & Chan.\ & Delay & CLBs & Pack & Flow \\
 
 \textbf{RQ-N8, does packing dilute structure?} H8 is @@h8s@@: over the 15 stock packings the median word purity
 (plurality share) is @@msh@@ against @@mnull@@ for a random grouping of the same atoms (higher on @@above@@ of 15), and the median
-split factor is @@msp@@ (above 1 on @@gt1@@ of 15). The module purity is @@mmod@@ because most designs have a single dominant
-module. Of the logic atoms, @@dword@@ carry a word (median); @@dabc@@ lack one (front end: ABC's cone provenance, mixed
+split factor is @@msp@@ (above 1 on @@gt1@@ of 15). The median module purity is @@mmod@@, so module affinity has little to gain on most designs. Of the logic atoms, @@dword@@ carry a word (median); @@dabc@@ lack one (front end: ABC's cone provenance, mixed
 spans @@dmix@@ and no match @@dnone@@) and a further @@dpack@@ carry a word but sit in a CLB where their word is not the
 plurality word or fails the 1/3 rule (packing).
 
@@ -247,21 +255,23 @@ plurality word or fails the 1/3 rule (packing).
 (median gain @@gain@@, positive on @@pos@@ of 15 designs).
 
 @@n9@@
+@@n9p@@
 @@cptxt@@
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round three: hypotheses, status and deciding number (all designs run; statuses use the rules in
-\code{docs/plan/round3.md}). H9 numbers are for the headline $\beta_m$ of each source, Holm-adjusted over the three sources.}
+\code{docs/plan/round3.md}). H9 numbers are for the headline $\beta_m$ of each source, Holm-adjusted over the three sources;
+a status that differs between all 15 designs and the 11 without the pilot designs is shown as pilot-sensitive.}
 \label{tab:r3status}
 \centering
-\footnotesize\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}llp{2.2cm}p{3.2cm}@{}}
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llp{3.4cm}p{8.6cm}@{}}
 \toprule
 RQ & Hypothesis & Status & Deciding number \\
 \midrule
 @@status@@
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table}[t]
 \caption{RQ-N8 per design on the stock packing: logic CLBs, word purity (plurality share), the random-grouping null
@@ -300,9 +310,29 @@ Design & io-words & Word cov. & + io-words \\
                 dnone=pct(dec["no_word_none"]), dpack=pct(dec["loss_pack"]), h10as=stat(h10a["status"]),
                 cw=pct(h10a["median_cov_word"]), cu=pct(h10a["median_cov_union"]), gain=pct(h10a["median_gain"]),
                 pos=h10a["positive"], n9=n9,
+                n9p=n9_prose(R) if "H9a" in R else "",
                 cptxt=("\\textbf{Checkpoint.} The packing experiments (RQ-N9) are not complete, so no H9 or H10b status "
                        "is given.\n" if cp else ""),
                 status=status_table(R), n8rows=n8_table(), n10rows=n10_table(), n11=n11_text(R))
+
+
+def n9_prose(R: dict) -> str:
+    out = []
+    for s in af.SOURCES:
+        a, b, c = R["H9a"][s], R["H9b"][s], R["H9c"][s]
+        out.append(f"\\textbf{{{SRC[s]} affinity.}} H9a is {stat(a['status'])}: the {SRC[s]}-level purity moves by "
+                   f"{f3(a['all'].get('median_gain'))} (median, n={a['all']['n']}; {f3(a['no_pilot'].get('median_gain'))} without the pilot designs) "
+                   f"with a median change of {pct(a['all'].get('median_growth'))} in logic CLBs "
+                   f"(largest {pct(a['all'].get('max_growth'))}). H9b is {stat(b['status'])}: with the analytic start the routed "
+                   f"wirelength is {f3(b['all'].get('gm'))} of the stock packer's (better on {b['all'].get('better')} of "
+                   f"{b['all'].get('n')}; 90\\% interval {f3(b['all'].get('lo90'))} to {f3(b['all'].get('hi90'))}; "
+                   f"{f3(b['no_pilot'].get('gm'))} without the pilot designs, status there {stat(b['no_pilot']['status'])}). "
+                   f"H9c is {stat(c['status'])}: with the word seed it is {f3(c['all'].get('gm'))} "
+                   f"(better on {c['all'].get('better')} of {c['all'].get('n')}).")
+    h = R["H10b"]
+    out.append(f"\\textbf{{I/O words in the affinity (H10b).}} {stat(h['status'])}: word+io over word is {f3(h['all'].get('gm'))} "
+               f"(better on {h['all'].get('better')} of {h['all'].get('n')}, {peq(h['all'].get('p'))}).")
+    return "\n\n".join(out) + "\n"
 
 
 def n11_text(R: dict) -> str:
@@ -315,7 +345,7 @@ def n11_text(R: dict) -> str:
         if not x["n"]:
             continue
         parts.append(f"same-{rel} pairs: median stratified distance difference {f3(x['median_d'])} "
-                     f"(one-sided Wilcoxon $p={pf(x['p'])}$, n={x['n']} designs; negative in at least two of three seeds on "
+                     f"(one-sided Wilcoxon {peq(x['p'])}, n={x['n']} designs; negative in at least two of three seeds on "
                      f"{x['consistent']}, needed {x['need']}; status {stat(x['status'])})")
     stab = ""
     if h.get("stability") is not None:
@@ -328,22 +358,62 @@ def n11_text(R: dict) -> str:
 
 def discussion(R: dict) -> str:
     out = ["\\subsection{Round three discussion}", "\\label{sec:r3-discussion}", ""]
-    h8 = R["H8"]
+    h8, h10a, h11 = R["H8"], R["H10a"], R["H11"]
     out.append(f"Packing does dilute word structure (H8 {stat(h8['status'])}): a word's atoms are spread over about "
                f"{f2(h8['median_split'])} times the CLBs they would need, and the purity of the stock CLBs "
-               f"({f2(h8['median_share'])}) is well above a random grouping but far from word-pure.")
+               f"({f2(h8['median_share'])}) is well above a random grouping ({f2(h8['median_null_share'])}) but far from word-pure. "
+               f"Of the logic atoms, {pct(h8['decompose_median']['loss_abc'])} have no word at all (the front end) and a further "
+               f"{pct(h8['decompose_median']['loss_pack'])} are word atoms packed away from their word (packing), so in the "
+               f"median design the front end loses more than packing does.")
+    out.append(f"I/O words are a cheap way to recover part of the front-end loss (H10a {stat(h10a['status'])}: LUT word coverage "
+               f"{pct(h10a['median_cov_word'])} to {pct(h10a['median_cov_union'])}).")
     if "H9a" in R and not R.get("checkpoint_only"):
-        a = ", ".join(f"{SRC[s]} {stat(R['H9a'][s]['status'])}" for s in af.SOURCES)
-        b = ", ".join(f"{SRC[s]} {stat(R['H9b'][s]['status'])}" for s in af.SOURCES)
-        c = ", ".join(f"{SRC[s]} {stat(R['H9c'][s]['status'])}" for s in af.SOURCES)
-        out.append(f"The Norns packer's effect on purity is {a} (H9a). Whether purer clusters change routed wirelength "
-                   f"with the analytic start is {b} (H9b), and with the word seed {c} (H9c).")
+        sec = R["secondary"]
+        w = R["H9a"]["word"]["all"]
+        wb = R["H9b"]["word"]["all"]
+        wc = R["H9c"]["word"]["all"]
+        out.append(f"The Norns packer does what it was built to do: with the word affinity the word purity rises by "
+                   f"{f3(w.get('median_gain'))} at a median CLB change of {pct(w.get('median_growth'))} (H9a {stat(R['H9a']['word']['status'])}; "
+                   f"module {stat(R['H9a']['module']['status'])}, word+io {stat(R['H9a']['wordio']['status'])}). "
+                   f"The module source has almost nothing to act on, because the designs are close to one module each "
+                   f"(median module purity {f2(h8['median_module_share'])}).")
+        out.append(f"Purer clusters did not give shorter wires. With the analytic start the word-affinity packing routes at "
+                   f"{f3(wb.get('gm'))} of the stock packer's wirelength (better on {wb.get('better')} of {wb.get('n')} designs, "
+                   f"90\\% interval {f3(wb.get('lo90'))} to {f3(wb.get('hi90'))}), so H9b is {stat(R['H9b']['word']['status'])}: the sign is "
+                   f"positive (worse) on every source, the two-sided test reaches the 5\\% level only without the four pilot designs, "
+                   f"and the status is therefore not stated as a change. With the round-two word seed rebuilt on the new packing the ratio is "
+                   f"{f3(wc.get('gm'))} (H9c {stat(R['H9c']['word']['status'])}): giving the round-two seed word-pure CLBs does not "
+                   f"rescue it. The packing time grows by a factor {f3(sec['word.analytic']['pack_s'])} (word) and "
+                   f"{f3(sec['module.analytic']['pack_s'])} (module). The seed noise (median coefficient of variation "
+                   f"{pct(R['seed_noise']['cv_median'])}, up to {pct(R['seed_noise']['cv_max'])}) is of the same order as the "
+                   f"effect, which is why the statistics use the design as the unit with three seeds each.")
         out.append("These runs do not remove the start-temperature confound of round two for the seeded arms, "
                    "because a seeded start still carries its own start temperature; the analytic-start arm (H9b) "
                    "does not have it, since the packing is the only difference.")
+    if h11["n_designs"]:
+        w, m = h11["word"], h11["module"]
+        out.append(f"Related pairs sit closer than their direct nets alone predict for both relations in the median design, "
+                   f"but H11 is {stat(h11['status'])} because its rule needs both to pass: the stratified distance difference is {f3(w.get('median_d'))} for same-word pairs "
+                   f"(n={w['n']}, status {stat(w['status'])}; negative in two of three seeds on {w.get('consistent')} designs, "
+                   f"{w.get('need')} needed) and {f3(m.get('median_d'))} for same-module pairs (n={m['n']}, "
+                   f"status {stat(m['status'])}). Designs with too few related or unrelated pairs in a stratum, and single-module "
+                   f"designs for the module relation, are left out. The neighbours are only partly stable: the mean Jaccard of "
+                   f"each CLB's four nearest neighbours between VPR seeds is {f3(h11['stability'])}, against {f3(h11['stability_null'])} "
+                   f"for a permuted placement.")
     out.append("Round three leaves open the effort curve (N3), larger designs (N5), region looseness (N6), "
-               "the cluster-level constraint of the hard arm, and a seed-selector change in the Norns packer.")
+               "a seed-selector change in the Norns packer, and whether a different gain scale (the grid ended at the largest beta "
+               "of the pilot list) changes the sign of H9b.")
     return "\n\n".join(out) + "\n"
+
+
+def outcomes_text(R: dict) -> str:
+    parts = [f"H8 {stat(R['H8']['status'])}", f"H10a {stat(R['H10a']['status'])}"]
+    if "H9a" in R:
+        for h in ("H9a", "H9b", "H9c"):
+            parts.append(h + " " + ", ".join(f"{SRC[s]} {stat(R[h][s]['status'])}" for s in af.SOURCES))
+        parts.append(f"H10b {stat(R['H10b']['status'])}")
+    parts.append(f"H11 {stat(R['H11']['status'])} (word {stat(R['H11']['word']['status'])}, module {stat(R['H11']['module']['status'])})")
+    return "; ".join(parts) + "."
 
 
 def appendix(R: dict) -> str:
@@ -358,8 +428,8 @@ answer which constructs end up near each other and why.
 \paragraph{2026-10-24, what round two suggested.} Every soft seed stayed within 0.980 to 1.029 of the baseline:
 the seeds were applied after packing, to whole CLBs, and ABC had already merged cones (only about half of the LUTs get a
 word), so packing dilution was untested (N8) and word structure at the pad level was unused (N10). The T0 confound of
-round two (a seeded start also changes VPR's start temperature) is not removed by round three for the seeded arms;
-the analytic-start comparison (H9b) is free of it.
+round two (a seeded start also changes VPR's start temperature) is still open for the seeded arms: round three does not
+remove it. The analytic-start comparison (H9b) addresses it for the packing question, because there the packing is the only difference.
 
 \paragraph{2026-10-24, round three: questions and hypotheses.} N8: H8. N10: H10a, H10b. N9: H9a, H9b, H9c with the
 Norns packer. N11: H11. All rules, margins and the grid-selection rule are fixed in \code{docs/plan/round3.md}, committed as
@@ -367,8 +437,8 @@ Norns packer. N11: H11. All rules, margins and the grid-selection rule are fixed
 
 \paragraph{2026-10-24, round three: outcomes.} @@outcomes@@ The numbers are in Table~\ref{tab:r3status}.
 
-\paragraph{2026-10-24, next.} The effort curve (N3), larger designs (N5), seed-selection changes in the Norns packer, and a
-two-sided look at the packing time cost.
+\paragraph{2026-10-24, next.} The effort curve (N3), larger designs (N5), a seed-selector change and a larger gain scale in the Norns packer, and the
+packing-time cost of the affinity term.
 
 \begin{table}[t]
 \caption{Round-three research questions and hypotheses with status and the deciding number (extends Table~\ref{tab:r2log}).}
@@ -384,7 +454,7 @@ RQ & Hypothesis & Round & Status & Deciding number \\
 \end{tabular}
 \end{table}
 """, q1=QUOTE1, q2=QUOTE2, sha=PROTOCOL_SHA, tab=tab,
-                outcomes="; ".join(f"{h} {stat(st)}" for _rq, h, st, _num in rows) + ".")
+                outcomes=outcomes_text(R))
 
 
 def main(argv: list[str]) -> int:

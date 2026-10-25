@@ -1,0 +1,19 @@
+\subsection{Round three discussion}
+
+\label{sec:r3-discussion}
+
+
+
+Packing does dilute word structure (H8 supported): a word's atoms are spread over about 4.00 times the CLBs they would need, and the purity of the stock CLBs (0.63) is well above a random grouping (0.20) but far from word-pure. Of the logic atoms, 34.2\% have no word at all (the front end) and a further 20.7\% are word atoms packed away from their word (packing), so in the median design the front end loses more than packing does.
+
+I/O words are a cheap way to recover part of the front-end loss (H10a supported: LUT word coverage 31.8\% to 53.9\%).
+
+The Norns packer does what it was built to do: with the word affinity the word purity rises by 0.111 at a median CLB change of 0.0\% (H9a supported; module inconclusive (pilot-sensitive), word+io supported). The module source has almost nothing to act on, because the designs are close to one module each (median module purity 0.99).
+
+Purer clusters did not give shorter wires. With the analytic start the word-affinity packing routes at 1.032 of the stock packer's wirelength (better on 4 of 15 designs, 90\% interval 1.006 to 1.062), so H9b is inconclusive (pilot-sensitive): the sign is positive (worse) on every source, the two-sided test reaches the 5\% level only without the four pilot designs, and the status is therefore not stated as a change. With the round-two word seed rebuilt on the new packing the ratio is 1.039 (H9c not supported): giving the round-two seed word-pure CLBs does not rescue it. The packing time grows by a factor 1.125 (word) and 1.318 (module). The seed noise (median coefficient of variation 2.4\%, up to 9.7\%) is of the same order as the effect, which is why the statistics use the design as the unit with three seeds each.
+
+These runs do not remove the start-temperature confound of round two for the seeded arms, because a seeded start still carries its own start temperature; the analytic-start arm (H9b) does not have it, since the packing is the only difference.
+
+Related pairs sit closer than their direct nets alone predict for both relations in the median design, but H11 is inconclusive because its rule needs both to pass: the stratified distance difference is -0.176 for same-word pairs (n=12, status inconclusive; negative in two of three seeds on 9 designs, 10 needed) and -0.188 for same-module pairs (n=11, status supported). Designs with too few related or unrelated pairs in a stratum, and single-module designs for the module relation, are left out. The neighbours are only partly stable: the mean Jaccard of each CLB's four nearest neighbours between VPR seeds is 0.267, against 0.058 for a permuted placement.
+
+Round three leaves open the effort curve (N3), larger designs (N5), region looseness (N6), a seed-selector change in the Norns packer, and whether a different gain scale (the grid ended at the largest beta of the pilot list) changes the sign of H9b.

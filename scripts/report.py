@@ -287,7 +287,7 @@ def round3_section() -> list[str]:
                 f"{'all byte-identical' if g['all_identical'] else 'NOT all identical'}.", ""]
     out += ["| RQ | hypothesis | status | deciding number |", "|---|---|---|---|"]
     for rq, hyp, status, num in w3.h_rows(R):
-        out.append(f"| {rq} | {hyp.replace(chr(92), '')} | {status} | {num.replace(chr(92), '')} |")
+        out.append(f"| {rq} | {hyp.replace(chr(92), '')} | {status} | {num.replace(chr(92), '').replace('$', '')} |")
     return out
 
 

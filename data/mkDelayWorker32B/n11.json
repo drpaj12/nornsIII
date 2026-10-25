@@ -1,0 +1,104 @@
+{
+ "d_module": -0.10164744758153883,
+ "d_module_negative_seeds": 3,
+ "d_word": NaN,
+ "d_word_negative_seeds": 0,
+ "design": "mkDelayWorker32B",
+ "seeds": [
+  {
+   "clbs": 74,
+   "d_module": -0.0973153566339473,
+   "d_word": NaN,
+   "io": {
+    "mean_dist": null,
+    "n_pairs": 0
+   },
+   "mean_dist": 26.37800814513143,
+   "module": {
+    "mean_dist": 26.07404426559356,
+    "n_pairs": 2485
+   },
+   "net": {
+    "mean_dist": 17.018691588785046,
+    "n_pairs": 107
+   },
+   "null_mean_dist": 26.378008145131435,
+   "p_module": 0.004975124378109453,
+   "p_word": 0.004975124378109453,
+   "pairs": 2701,
+   "stmt": {
+    "mean_dist": 23.13935681470138,
+    "n_pairs": 1959
+   },
+   "stmt_rel_unrelated": 34.92857142857143,
+   "word": {
+    "mean_dist": 1.5,
+    "n_pairs": 2
+   }
+  },
+  {
+   "clbs": 74,
+   "d_module": -0.10034520262921459,
+   "d_word": NaN,
+   "io": {
+    "mean_dist": null,
+    "n_pairs": 0
+   },
+   "mean_dist": 26.52795261014439,
+   "module": {
+    "mean_dist": 26.218913480885313,
+    "n_pairs": 2485
+   },
+   "net": {
+    "mean_dist": 16.747663551401867,
+    "n_pairs": 107
+   },
+   "null_mean_dist": 26.52795261014439,
+   "p_module": 0.009950248756218905,
+   "p_word": 0.004975124378109453,
+   "pairs": 2701,
+   "stmt": {
+    "mean_dist": 23.396630934150078,
+    "n_pairs": 1959
+   },
+   "stmt_rel_unrelated": 34.79514824797844,
+   "word": {
+    "mean_dist": 2.0,
+    "n_pairs": 2
+   }
+  },
+  {
+   "clbs": 74,
+   "d_module": -0.10728178348145462,
+   "d_word": NaN,
+   "io": {
+    "mean_dist": null,
+    "n_pairs": 0
+   },
+   "mean_dist": 26.860422065901517,
+   "module": {
+    "mean_dist": 26.523138832997986,
+    "n_pairs": 2485
+   },
+   "net": {
+    "mean_dist": 17.186915887850468,
+    "n_pairs": 107
+   },
+   "null_mean_dist": 26.860422065901513,
+   "p_module": 0.014925373134328358,
+   "p_word": 0.004975124378109453,
+   "pairs": 2701,
+   "stmt": {
+    "mean_dist": 23.56508422664625,
+    "n_pairs": 1959
+   },
+   "stmt_rel_unrelated": 35.56064690026954,
+   "word": {
+    "mean_dist": 1.5,
+    "n_pairs": 2
+   }
+  }
+ ],
+ "stability": 0.3966966966966967,
+ "stability_null": 0.03861003861003861
+}

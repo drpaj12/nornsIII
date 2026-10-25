@@ -1,0 +1,104 @@
+{
+ "d_module": NaN,
+ "d_module_negative_seeds": 0,
+ "d_word": -0.10360460788086738,
+ "d_word_negative_seeds": 3,
+ "design": "sha",
+ "seeds": [
+  {
+   "clbs": 142,
+   "d_module": NaN,
+   "d_word": -0.12135577235894097,
+   "io": {
+    "mean_dist": 6.625402669121031,
+    "n_pairs": 2173
+   },
+   "mean_dist": 9.166816501847967,
+   "module": {
+    "mean_dist": 9.166816501847967,
+    "n_pairs": 10011
+   },
+   "net": {
+    "mean_dist": 6.333333333333333,
+    "n_pairs": 2220
+   },
+   "null_mean_dist": 9.166816501847965,
+   "p_module": NaN,
+   "p_word": 0.004975124378109453,
+   "pairs": 10011,
+   "stmt": {
+    "mean_dist": 9.367967091295117,
+    "n_pairs": 7536
+   },
+   "stmt_rel_unrelated": 8.554343434343433,
+   "word": {
+    "mean_dist": 6.2948328267477205,
+    "n_pairs": 329
+   }
+  },
+  {
+   "clbs": 142,
+   "d_module": NaN,
+   "d_word": -0.11862685911769882,
+   "io": {
+    "mean_dist": 6.740911182696733,
+    "n_pairs": 2173
+   },
+   "mean_dist": 9.189791229647389,
+   "module": {
+    "mean_dist": 9.189791229647389,
+    "n_pairs": 10011
+   },
+   "net": {
+    "mean_dist": 6.343693693693694,
+    "n_pairs": 2220
+   },
+   "null_mean_dist": 9.18979122964739,
+   "p_module": NaN,
+   "p_word": 0.004975124378109453,
+   "pairs": 10011,
+   "stmt": {
+    "mean_dist": 9.509156050955413,
+    "n_pairs": 7536
+   },
+   "stmt_rel_unrelated": 8.217373737373737,
+   "word": {
+    "mean_dist": 6.319148936170213,
+    "n_pairs": 329
+   }
+  },
+  {
+   "clbs": 142,
+   "d_module": NaN,
+   "d_word": -0.07083119216596231,
+   "io": {
+    "mean_dist": 6.641049240681086,
+    "n_pairs": 2173
+   },
+   "mean_dist": 9.149335730696235,
+   "module": {
+    "mean_dist": 9.149335730696235,
+    "n_pairs": 10011
+   },
+   "net": {
+    "mean_dist": 6.131981981981982,
+    "n_pairs": 2220
+   },
+   "null_mean_dist": 9.149335730696235,
+   "p_module": NaN,
+   "p_word": 0.004975124378109453,
+   "pairs": 10011,
+   "stmt": {
+    "mean_dist": 9.414145435244162,
+    "n_pairs": 7536
+   },
+   "stmt_rel_unrelated": 8.343030303030304,
+   "word": {
+    "mean_dist": 6.4832826747720365,
+    "n_pairs": 329
+   }
+  }
+ ],
+ "stability": 0.13769282360831656,
+ "stability_null": 0.018891124524927336
+}

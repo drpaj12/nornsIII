@@ -1,0 +1,13 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#20	#21	b:fo__D_IN	1	1	0	0	not available
+word	#26	#31	b:fo__D_IN	1	1	0	0	not available
+word	#28	#29	b:fo__D_IN	1	1	0	0	not available
+word	#32	#33	b:fo__D_IN	1	1	0	0	not available
+word	#33	#34	b:fo__D_IN	1	1	0	0	not available
+module	#15	#18	generic_fifo_sc_b	1	0	0	0	not available
+module	#17	#19	generic_fifo_sc_a	1	0	0	0	not available
+module	#20	#21	mkPktMerge	1	1	0	0	not available
+module	#26	#31	mkPktMerge	1	1	0	0	not available
+module	#28	#29	mkPktMerge	1	1	0	0	not available
+module	#32	#33	mkPktMerge	1	1	0	0	not available
+module	#33	#34	mkPktMerge	1	1	0	0	not available
