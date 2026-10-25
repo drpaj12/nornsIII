@@ -1,0 +1,572 @@
+{
+ "blob_merge": [
+  {
+   "design": "blob_merge",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 25169812,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 25169812,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 25154167,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 25154167,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "boundtop": [
+  {
+   "design": "boundtop",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 2064095,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "boundtop",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 2064095,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 2088310,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 2088310,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "ch_intrinsics": [
+  {
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 493827,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 493827,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "diffeq1": [
+  {
+   "design": "diffeq1",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1528825,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1528825,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1535881,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1535881,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "diffeq2": [
+  {
+   "design": "diffeq2",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1155804,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1155804,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1154756,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1154756,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "mkDelayWorker32B": [
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 4825266,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 4825266,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 4838752,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 4838752,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "mkPktMerge": [
+  {
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1563077,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 1563077,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1566102,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 1566102,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "mkSMAdapter4B": [
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 5341162,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 5341162,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 5355929,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 5355929,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "or1200": [
+  {
+   "design": "or1200",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 9738469,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "or1200",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 9738469,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 9699919,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 9699919,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "raygentop": [
+  {
+   "design": "raygentop",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 6115236,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "raygentop",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 6115236,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 6144751,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 6144751,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "sha": [
+  {
+   "design": "sha",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 5450784,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "sha",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 5450784,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 5454483,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 5454483,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "stereovision0": [
+  {
+   "design": "stereovision0",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 42602292,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 42602292,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 42608877,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 42608877,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "stereovision1": [
+  {
+   "design": "stereovision1",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 40592360,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 40592360,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 40648523,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 40648523,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "stereovision2": [
+  {
+   "design": "stereovision2",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 93325287,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 93325287,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 93946239,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 93946239,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ],
+ "stereovision3": [
+  {
+   "design": "stereovision3",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 754459,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "pack",
+   "identical": true,
+   "net_bytes": 754459,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 754848,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-absent"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "identical": true,
+   "net_bytes": 754848,
+   "rc": 0,
+   "rc_stock": 0,
+   "variant": "norns-b0"
+  }
+ ]
+}
