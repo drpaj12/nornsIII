@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 582,
+ "atom_word": 925,
+ "atoms": 2186,
+ "design": "sha",
+ "io_groups_used": 4,
+ "io_word_bits": 71,
+ "io_words": 4,
+ "k_hops": 2,
+ "lut_cov_union": 0.4748646558391338,
+ "lut_cov_word": 0.02474864655839134,
+ "lut_io_only": 582,
+ "lut_union": 614,
+ "lut_word": 32,
+ "luts": 1293,
+ "max_fanout": 16
+}

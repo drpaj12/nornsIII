@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 400,
+ "atom_word": 1234,
+ "atoms": 2144,
+ "design": "raygentop",
+ "io_groups_used": 12,
+ "io_word_bits": 699,
+ "io_words": 23,
+ "k_hops": 2,
+ "lut_cov_union": 0.5776293823038398,
+ "lut_cov_word": 0.24373956594323873,
+ "lut_io_only": 400,
+ "lut_union": 692,
+ "lut_word": 292,
+ "luts": 1198,
+ "max_fanout": 16
+}

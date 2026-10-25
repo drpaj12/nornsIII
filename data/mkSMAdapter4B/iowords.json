@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 307,
+ "atom_word": 787,
+ "atoms": 1842,
+ "design": "mkSMAdapter4B",
+ "io_groups_used": 14,
+ "io_word_bits": 408,
+ "io_words": 29,
+ "k_hops": 2,
+ "lut_cov_union": 0.3798836242726517,
+ "lut_cov_word": 0.1255195344970906,
+ "lut_io_only": 306,
+ "lut_union": 457,
+ "lut_word": 151,
+ "luts": 1203,
+ "max_fanout": 16
+}

@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 597,
+ "atom_word": 1350,
+ "atoms": 3148,
+ "design": "or1200",
+ "io_groups_used": 22,
+ "io_word_bits": 932,
+ "io_words": 36,
+ "k_hops": 2,
+ "lut_cov_union": 0.5173667205169629,
+ "lut_cov_word": 0.2762520193861066,
+ "lut_io_only": 597,
+ "lut_union": 1281,
+ "lut_word": 684,
+ "luts": 2476,
+ "max_fanout": 16
+}

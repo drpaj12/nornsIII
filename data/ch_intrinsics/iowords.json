@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 64,
+ "atom_word": 113,
+ "atoms": 277,
+ "design": "ch_intrinsics",
+ "io_groups_used": 2,
+ "io_word_bits": 239,
+ "io_words": 8,
+ "k_hops": 2,
+ "lut_cov_union": 0.49230769230769234,
+ "lut_cov_word": 0.1641025641025641,
+ "lut_io_only": 64,
+ "lut_union": 96,
+ "lut_word": 32,
+ "luts": 195,
+ "max_fanout": 16
+}

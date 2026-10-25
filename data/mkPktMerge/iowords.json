@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 153,
+ "atom_word": 180,
+ "atoms": 350,
+ "design": "mkPktMerge",
+ "io_groups_used": 1,
+ "io_word_bits": 489,
+ "io_words": 5,
+ "k_hops": 2,
+ "lut_cov_union": 0.9578313253012049,
+ "lut_cov_word": 0.49698795180722893,
+ "lut_io_only": 153,
+ "lut_union": 318,
+ "lut_word": 165,
+ "luts": 332,
+ "max_fanout": 16
+}

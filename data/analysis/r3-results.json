@@ -1,0 +1,42 @@
+{
+ "H10a": {
+  "median_cov_union": 0.5387205387205387,
+  "median_cov_word": 0.31840796019900497,
+  "median_gain": 0.24111470113085626,
+  "n": 15,
+  "positive": 15,
+  "status": "supported"
+ },
+ "H11": {
+  "module": {
+   "n": 0,
+   "status": "inconclusive"
+  },
+  "n_designs": 0,
+  "stability": null,
+  "stability_null": null,
+  "status": "inconclusive",
+  "word": {
+   "n": 0,
+   "status": "inconclusive"
+  }
+ },
+ "H8": {
+  "above_null": 15,
+  "decompose_median": {
+   "loss_abc": 0.3424938474159147,
+   "loss_pack": 0.20675223214285715,
+   "no_word_mixed": 0.3383921246923708,
+   "no_word_none": 0.004101722723543888,
+   "word": 0.6575061525840853,
+   "word_in_own_clb": 0.3207750269106566
+  },
+  "median_module_share": 0.9867924528301887,
+  "median_null_share": 0.19606004314136305,
+  "median_share": 0.6255144032921811,
+  "median_split": 4.0,
+  "n": 15,
+  "split_gt1": 12,
+  "status": "supported"
+ }
+}
