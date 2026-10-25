@@ -58,7 +58,11 @@ initial placement should be used with. A second round adds bitwise seeds
 (Odin~III word membership laid out as bit-sliced runs), a random start and a
 coarse-random arm, and two structure analyses that need no placement run; each
 hypothesis is reported with its deciding number, and an appendix keeps the
-research log. All results are over 15 designs with one VPR seed per configuration.
+research log. Rounds one and two are over 15 designs with one VPR seed per configuration. A third round asks whether VPR's packing step dilutes the HDL structure, builds a packer (a copy of VPR's
+AAPack clusterer with a provenance-affinity gain term) and tests it against the stock packer on 15 designs with three VPR seeds per
+configuration, adds the top-level I/O buses as words, and reads the annealed placement against provenance; its decision rules were
+committed before any measurement (one later amendment, to the proximity analysis, is recorded). Affinity packing raises word purity without
+growing the CLB count, but routed wirelength is slightly worse than the stock packer's and that comparison is inconclusive.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -348,6 +352,8 @@ on vs off) tests whether save-best/restore extends the range.}
 
 \input{r2-method}
 
+\input{r3-method}
+
 \section{Results}
 \label{sec:results}
 
@@ -414,6 +420,8 @@ scale~1 is 0.68 of a seed's cluster CLBs (full) and 0.70 (inter).
 
 \input{r2-results}
 
+\input{r3-results}
+
 \section{Discussion}
 \label{sec:discussion}
 
@@ -435,6 +443,8 @@ survives the anneal, the advantage does not.
 
 \input{r2-discussion}
 
+\input{r3-discussion}
+
 \section{Conclusion}
 \label{sec:conclusion}
 
@@ -449,6 +459,8 @@ placement while the anneal supplies the fine one.
 \input{r2-conclusion}
 
 \input{r2-appendix}
+
+\input{r3-appendix}
 
 \bibliographystyle{IEEEtran}
 \bibliography{joined}

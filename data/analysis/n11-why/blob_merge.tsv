@@ -1,0 +1,16 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#356	#357	b:oWriteBlobData	1	10	0	0	not available
+word	#299	#343	b:state	2	14	1	0	not available
+word	#306	#319	b:blob6maxX	2	55	3	1	not available
+word	#345	#348	b:blob5maxY	3	68	2	1	not available
+word	#357	#362	b:oWriteBlobData	13	8	0	0	not available
+module	#0	#484	RLE_BlobMerging	1	0	0	0	not available
+module	#1	#49	RLE_BlobMerging	1	0	0	0	not available
+module	#1	#334	RLE_BlobMerging	1	0	0	0	not available
+module	#1	#485	RLE_BlobMerging	1	0	0	0	not available
+module	#2	#435	RLE_BlobMerging	1	0	0	0	not available
+module	#0	#3	RLE_BlobMerging	1	5	0	0	not available
+module	#0	#317	RLE_BlobMerging	1	10	0	0	not available
+module	#1	#406	RLE_BlobMerging	1	10	0	0	not available
+module	#2	#407	RLE_BlobMerging	1	10	0	0	not available
+module	#3	#359	RLE_BlobMerging	1	12	0	0	not available

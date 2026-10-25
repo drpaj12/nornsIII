@@ -1,0 +1,50 @@
+{
+ "decompose": {
+  "atoms": 219,
+  "loss_abc": 0.0730593607305936,
+  "loss_pack": 0.1324200913242009,
+  "no_word_mixed": 0.0502283105022831,
+  "no_word_none": 0.0228310502283105,
+  "word": 0.9269406392694064,
+  "word_in_own_clb": 0.7945205479452054
+ },
+ "design": "mkPktMerge",
+ "null": {
+  "module": {
+   "samples": 50,
+   "share": 0.7617658782885995,
+   "share_sd": 0.002979705656377554,
+   "split": 10.43,
+   "strict": 0.08
+  },
+  "word": {
+   "samples": 50,
+   "share": 0.7534062361460027,
+   "share_sd": 0.0027234157830293205,
+   "split": 3.966666666666667,
+   "strict": 0.08421052631578947
+  }
+ },
+ "stock": {
+  "logic_atoms": 219,
+  "logic_clbs": 21,
+  "module": {
+   "labelled": 214,
+   "n_clbs": 19,
+   "n_labels": 4,
+   "share": 0.9248826291079812,
+   "split": 2.5,
+   "strict": 0.8421052631578947,
+   "wsplit": 3.0
+  },
+  "word": {
+   "labelled": 203,
+   "n_clbs": 19,
+   "n_labels": 17,
+   "share": 0.8564356435643564,
+   "split": 1.0,
+   "strict": 0.7368421052631579,
+   "wsplit": 2.5
+  }
+ }
+}

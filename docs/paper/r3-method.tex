@@ -1,0 +1,77 @@
+\subsection{Round three: packing, I/O words and placement proximity}
+\label{sec:r3-method}
+
+Round two found every soft seed within a few percent of the baseline. Round three asks whether the
+packing step, which runs before placement and decides which atoms share a CLB, is where the HDL
+structure is lost, builds a packer that keeps it, and then asks what the annealed placement itself
+says about provenance. The two questions that started it are quoted in the research log
+(Section~\ref{sec:r3-appendix}).
+
+\paragraph{The Norns packer.} VPR's packer is AAPack, the greedy clusterer in \code{vpr/src/pack} (not
+T-VPack); in VTR's default analytical flow the same clusterer runs as APPack, with candidate gains
+attenuated by distance in the global placement. The Norns packer is a copy of the changed files of that
+clusterer (VTR commit \code{3c9a4d23b2}, MIT licence kept) with one added term: an atom carries a group id
+read from a file (\code{--norns\_affinity}); a cluster's dominant group is the plurality group of its atoms so
+far; a candidate molecule gets $+\beta$ (\code{--norns\_affinity\_weight}) for every atom in that group, and up
+to 30 unclustered members of the group are proposed as candidates, because the bits of a word are parallel and
+no net links them. The stock per-atom gain lies in $[0,1]$, so $\beta$ is in the units of one connected atom's
+gain. Legality stays with AAPack's legalizer. The change is 7 files, 308 added lines and 0 removed.
+\emph{Control gate:} with the option absent and with $\beta=0$, the packer must write a \code{.net}
+byte-identical to the stock \code{vpr}'s in \code{--pack} and in the analytical flow on all 15 designs, before
+any experiment run: 60 comparisons over 15 designs, all byte-identical; the same $\beta=0$ check for the module and word+io affinity files (\code{--pack}, seed 1): 30 of 30 byte-identical.
+
+\paragraph{Limits of the proposal step.} The step hands up to 30 unclustered members of a cluster's dominant
+group to the candidate queue, scanning the group in netlist (atom id) order. Its counter counts the molecules handed over, not
+the molecules the queue accepted, so the cap of 30 can be spent on molecules the queue ignores (already queued, or beyond
+APPack's distance threshold), and the scan always starts at the lowest atom ids of the group: which members are tried first is
+biased by netlist order. The behaviour is unchanged in this paper (Stage-4 results stand); it was measured with a log-only counter
+added to the packer, which leaves the packing unchanged (45 of 45 \code{.net} files byte-identical to the previous binary's, 45 of 45 flat placements identical to the Stage-4 run; pack-only style runs of the headline configurations, seed 1,
+no routing). Share of handed-over molecules that entered the queue, median over designs (module / word / word+io): 48.8\% / 46.4\% / 47.6\%
+(pooled over all calls: 47.4\% / 53.1\% / 52.6\%); proposal calls (one per cluster) that queued nothing: 13.1\% / 54.6\% / 49.2\% (Table~\ref{tab:r3diag}).
+The fix (count only queued molecules, return a bool from the queue step, a scan order not tied to atom ids) is queued for round 4.
+
+
+\paragraph{RQ-N8, dilution (no VPR).} On the stock packings of round one, per design: purity (plurality share of the
+labelled atoms of a logic CLB, atom-weighted), and the split factor (CLBs a word spans over the fewest CLBs that
+could hold it, 1.0 being best), at word and module level, against a null that assigns the same atoms at random to
+CLBs of the same sizes (50 samples). Round two's word coverage loss is split into the front end (atoms with no
+word) and packing (word atoms not in a CLB where their word is the plurality word under the 1/3 rule).
+
+\paragraph{RQ-N10, I/O words.} A top-level bus \code{name[i]} is an io-word; its identity is propagated inward
+over LUT and flip-flop atoms, two hops past the atom next to the pad, through nets of fanout at most 16, giving
+an atom that has no round-two word the io-word it reaches from exactly one bit of exactly one io-word.
+
+\paragraph{RQ-N9, packing experiments.} Arms: the stock packer, and the Norns packer with affinity source module,
+word or word+io (word, else io-word) at three values of $\beta$ each, with the analytic start or with the round-two
+\code{words\_partial} seed rebuilt on that run's own packing, three VPR seeds (1 to 3) per configuration. The grid was
+chosen on a pilot of the four smallest designs that reads only purity and CLB count (never wirelength): $\beta_m$ is
+the largest value in $\{0.05,0.1,0.2,0.5,1,2,4\}$ whose median CLB-count growth is at most 5\%, and the grid is its
+neighbours (module: $\beta_m=4$, grid {1, 2, 4}; word: $\beta_m=4$, grid {1, 2, 4}; word+io: $\beta_m=4$, grid {1, 2, 4}). \emph{The pilot did not discriminate between the betas.} The median logic-CLB growth over the
+four pilot designs was negative at every $\beta$ of the list (largest value -3.8\%), so the 5\% growth rule passed
+all of them and took the end of the list, and the purity gain of the word sources was the same at $\beta=2$ and $\beta=4$
+(module: zero throughout). The grid $\{1,2,4\}$ is therefore not informed by the pilot, and a larger gain scale is untested. Each claim is reported on all 15 designs and without the four pilot designs; a status
+that differs between the two is called inconclusive (pilot-sensitive).
+
+\paragraph{RQ-N11, proximity.} On the stock-packing, analytic-start runs, logic CLB pairs by relation (same word,
+same module, same statement, net-connected, same io-word) against the direct net count, which is stratified
+out: the stratified mean distance difference of related over unrelated pairs, as a fraction of the unrelated
+distance (negative is closer). A stratum counts only with at least 5 related and 30 unrelated pairs. The status
+is computed under the protocol text (\code{4fb8b60}: no design excluded, the sign rule needs at least 12 of the 15
+designs, so a relation defined for fewer designs cannot be supported), which is the primary status, and the
+following variants are reported beside it, labelled. (i) The sign rule scaled to $\lceil 12n/15\rceil$ designs, which the
+first analysis code used; the protocol does not register it. (ii) The amendment \code{d805789}: a design is
+left out of a relation when 95\% or more of the sampled pairs are related (applied to the module relation and to
+the word relation, per design on the mean over the three seeds, with the scaled and the literal count), and the
+label permutations are 200 per design and seed. The primary permutation test is the protocol's 1000 label permutations pooled
+over designs; it is reported, not used in a status. The entry of 2026-10-25 in \code{docs/plan/round3.md} records these deviations.
+
+\paragraph{Decision rules and their provenance.} Every hypothesis, metric, arm and numeric rule (including the margins
+$\pm$2\% and 1\% for wirelength, 5 percentage points of purity, 5\% CLB growth) is in \code{docs/plan/round3.md},
+committed as \code{4fb8b60} on 2026-10-24 21:26 (UTC-4), before any round-three measurement or VPR run. Two later dated entries
+exist and the earlier entries are not edited. The entry \code{d805789} (2026-10-24) is titled a clarification, but it is an
+amendment: besides definitions it changed two H11 rules (the label permutations, 1000 pooled over designs, became 200 per
+design and seed; a new exclusion of designs with 95\% or more related pairs). It was committed at 22:27:05, before any
+Stage-4 result was analysed, but the Stage-4 runs of \code{ch\_intrinsics} (60 runs, finished 22:26:38) and 40 of the 60 of \code{stereovision3} had
+already finished. The entry of 2026-10-25 (the fix round after review) records what the analysis code did beyond the
+protocol text. Where the code deviated, the primary status in this paper is the one under the text of \code{4fb8b60} and
+the deviating variant is reported alongside, labelled.

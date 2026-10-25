@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 128,
+ "atom_word": 620,
+ "atoms": 958,
+ "design": "boundtop",
+ "io_groups_used": 10,
+ "io_word_bits": 460,
+ "io_words": 22,
+ "k_hops": 2,
+ "lut_cov_union": 0.6434782608695652,
+ "lut_cov_word": 0.42086956521739133,
+ "lut_io_only": 128,
+ "lut_union": 370,
+ "lut_word": 242,
+ "luts": 575,
+ "max_fanout": 16
+}

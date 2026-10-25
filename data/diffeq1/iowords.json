@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 96,
+ "atom_word": 257,
+ "atoms": 490,
+ "design": "diffeq1",
+ "io_groups_used": 3,
+ "io_word_bits": 400,
+ "io_words": 11,
+ "k_hops": 2,
+ "lut_cov_union": 0.5387205387205387,
+ "lut_cov_word": 0.21548821548821548,
+ "lut_io_only": 96,
+ "lut_union": 160,
+ "lut_word": 64,
+ "luts": 297,
+ "max_fanout": 16
+}

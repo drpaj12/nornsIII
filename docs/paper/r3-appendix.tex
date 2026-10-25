@@ -1,0 +1,58 @@
+\paragraph{2026-10-24, round three: Peter's two questions.} ``For Norns, one question is does the clustering step of FPGA mapping become the problem - how is the initial seeding for an hdl construct get clustered? We might have to make our version of clustering for this information (how is it done - just with TVpack?). Second, if we map designs and have provenance (including the clustering) what do we learn from the placed (just by aneealing results) can we make some questions like (what is close to one another and using the provenance info (why are things close to one another?)''
+and ``Also, the outputs (words) and the inputs as words also provide hints of where the words are in norns. Let's build our own Norns based packer from scratch (include it in Norns as a copy/modification to Apack to allow us to our controlled experiements).''
+Reading: the clustering step (VPR's AAPack, not T-VPack) may be where the HDL structure is lost before placement
+starts; the I/O buses are words too, and say where words sit; and the annealed placement, read with provenance, may
+answer which constructs end up near each other and why.
+
+\paragraph{2026-10-24, what round two suggested.} Every soft seed stayed within 0.980 to 1.029 of the baseline:
+the seeds were applied after packing, to whole CLBs, and ABC had already merged cones (only about half of the LUTs get a
+word), so packing dilution was untested (N8) and word structure at the pad level was unused (N10). The T0 confound of
+round two (a seeded start also changes VPR's start temperature) is still open for the seeded arms: round three does not
+remove it. The analytic-start comparison (H9b) addresses it for the packing question, because there the packing is the only difference.
+
+\paragraph{2026-10-24, round three: questions and hypotheses.} N8: H8. N10: H10a, H10b. N9: H9a, H9b, H9c with the
+Norns packer. N11: H11. All rules, margins and the grid-selection rule are fixed in \code{docs/plan/round3.md}, committed as
+\code{4fb8b60} before any measurement.
+
+\paragraph{2026-10-24, round three: outcomes.} H8 supported; H10a supported; H9a module inconclusive (pilot-sensitive), word supported, word+io supported; H9b module inconclusive (pilot-sensitive), word inconclusive (pilot-sensitive), word+io inconclusive (pilot-sensitive); H9c module not supported, word not supported, word+io not supported; H10b not supported; H11 inconclusive (word inconclusive, module inconclusive). The numbers are in Table~\ref{tab:r3status}.
+
+\paragraph{2026-10-25, round three fix round (after review).} The rule-provenance description was corrected: the entry
+\code{d805789}, called a clarification, is an amendment that changed two H11 rules (label permutations; the 95\% exclusion), and two
+designs had Stage-4 runs finished before it was committed (Method). H11 is now given under the protocol text (no exclusion,
+12 of the 15 designs, 1000 pooled permutations) as the primary status: word inconclusive, module inconclusive, overall inconclusive; the status of the first analysis (the sign rule
+scaled to $\lceil 12n/15\rceil$ designs, not registered) was word inconclusive, module supported, overall inconclusive, and the amendment's exclusion gives word inconclusive, module inconclusive. The n=11 pass was added for
+H8, H10a and H11, Holm now keeps $m=3$ (no status changed), and the positional null uses 200 permutations. The packer got a log-only proposal
+counter and an integer-parse error; the packing is unchanged (Method), and the per-design matched-entry and proposal tables
+are in Table~\ref{tab:r3diag}. Not done: the proposal-counting behaviour (round 4).
+
+\paragraph{2026-10-24, next.} The effort curve (N3), larger designs (N5), a seed-selector change and a larger gain scale in the Norns packer, and the
+packing-time cost of the affinity term. Added 2026-10-25: fix the proposal counter (count queued molecules only; return a bool from the
+candidate-queue step) and the scan order of the group members, then rerun the packing experiments.
+
+\begin{table}[t]
+\caption{Round-three research questions and hypotheses with status and the deciding number (extends Table~\ref{tab:r2log}).}
+\label{tab:r3log}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lp{2.5cm}lp{1.5cm}p{2.2cm}@{}}
+\toprule
+RQ & Hypothesis & Round & Status & Deciding number \\
+\midrule
+N8 & H8 packing dilutes structure & 3 & supported & median word purity 0.63, split 4.00 (n=15) \\
+N10 & H10a io-words add coverage & 3 & supported & median gain 24.1\%, 15/15 designs \\
+N9 & H9a module purity up, CLBs within +5\% & 3 & inconclusive (pilot-sensitive) & purity +0.000 (without pilot +0.035), CLB -1.6\%, $p<0.001$ \\
+N9 & H9a word purity up, CLBs within +5\% & 3 & supported & purity +0.111 (without pilot +0.120), CLB 0.0\%, $p<0.001$ \\
+N9 & H9a word+io purity up, CLBs within +5\% & 3 & supported & purity +0.104 (without pilot +0.124), CLB 0.0\%, $p<0.001$ \\
+N9 & H9b module changes WL (analytic) & 3 & inconclusive (pilot-sensitive) & geomean 1.051, 3/15 better, $p=0.090$; without pilot 1.069, $p=0.006$ \\
+N9 & H9b word changes WL (analytic) & 3 & inconclusive (pilot-sensitive) & geomean 1.032, 4/15 better, $p=0.188$; without pilot 1.053, $p=0.016$ \\
+N9 & H9b word+io changes WL (analytic) & 3 & inconclusive (pilot-sensitive) & geomean 1.030, 4/15 better, $p=0.188$; without pilot 1.050, $p=0.016$ \\
+N9 & H9c module+seed beats stock+seed & 3 & not supported & geomean 1.064, 2/15 better, $p=1.000$ \\
+N9 & H9c word+seed beats stock+seed & 3 & not supported & geomean 1.039, 4/15 better, $p=1.000$ \\
+N9 & H9c word+io+seed beats stock+seed & 3 & not supported & geomean 1.039, 5/15 better, $p=1.000$ \\
+N10 & H10b word+io beats word & 3 & not supported & geomean 0.998, 4/15 better, $p=1.000$ \\
+N11 & H11 same-word pairs closer than nets predict & 3 & inconclusive & median -0.176, $p=0.017$, n=12; 9 of 12 designs sign-consistent, 12 needed; with the unregistered scaling (10 needed): inconclusive \\
+N11 & H11 same-module pairs closer than nets predict & 3 & inconclusive & median -0.188, $p<0.001$, n=11; 10 of 11 designs sign-consistent, 12 needed; with the unregistered scaling (9 needed): supported \\
+N11 & H11 overall (both relations) & 3 & inconclusive & supported only if both are; unregistered scaling: inconclusive \\
+\bottomrule
+\end{tabular}
+\end{table}

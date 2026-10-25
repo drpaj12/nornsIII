@@ -1,0 +1,21 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#333	#336	b:inst_fir_2_3.sum_tmp_2	1	0	6	0	not available
+word	#340	#435	b:inst_fir_1_20.sum_tmp_1	1	0	5	0	not available
+word	#344	#371	c:2654:$dffe	1	0	1	0	not available
+word	#351	#359	c:2657:$dffe	1	0	1	0	not available
+word	#376	#377	c:3900:$dffe	1	0	1	0	not available
+word	#257	#258	b:vidout_buf	1	3	4	0	not available
+word	#261	#288	b:vidout_buf	1	3	4	0	not available
+word	#264	#337	b:vidout_buf	1	4	4	0	not available
+word	#295	#434	b:vidin_data_buf_2_sc_2	1	4	2	0	not available
+word	#297	#404	b:vidin_data_buf_2_sc_2	1	3	2	0	not available
+module	#0	#379	sv_chip0_hierarchy_no_mem	1	0	0	0	not available
+module	#3	#85	combine_res	1	0	0	0	not available
+module	#9	#87	combine_res	1	0	0	0	not available
+module	#12	#20	combine_res	1	0	0	0	not available
+module	#21	#118	combine_res	1	0	0	0	not available
+module	#0	#298	sv_chip0_hierarchy_no_mem	1	8	0	0	not available
+module	#1	#293	sv_chip0_hierarchy_no_mem	1	9	0	0	not available
+module	#1	#299	sv_chip0_hierarchy_no_mem	1	3	0	1	not available
+module	#2	#865	combine_res	1	1	0	0	not available
+module	#3	#8	combine_res	1	2	0	0	not available

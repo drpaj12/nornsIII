@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 577,
+ "atom_word": 13667,
+ "atoms": 18348,
+ "design": "stereovision0",
+ "io_groups_used": 23,
+ "io_word_bits": 354,
+ "io_words": 27,
+ "k_hops": 2,
+ "lut_cov_union": 0.40522496371552974,
+ "lut_cov_word": 0.3214804063860668,
+ "lut_io_only": 577,
+ "lut_union": 2792,
+ "lut_word": 2215,
+ "luts": 6890,
+ "max_fanout": 16
+}

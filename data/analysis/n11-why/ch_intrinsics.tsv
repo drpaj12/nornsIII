@@ -1,0 +1,11 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#2	#3	b:tmp	1	8	0	0	not available
+word	#2	#6	b:tmp	1	3	0	0	not available
+word	#3	#10	b:tmp	1	5	0	0	not available
+word	#3	#11	b:tmp	1	3	0	0	not available
+word	#4	#10	b:tmp	1	4	0	0	not available
+module	#1	#3	memset	1	11	0	0	not available
+module	#1	#4	memset	1	8	0	0	not available
+module	#2	#3	memset	1	8	0	0	not available
+module	#2	#6	memset	1	3	0	0	not available
+module	#3	#10	memset	1	5	0	0	not available

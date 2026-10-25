@@ -1,0 +1,17 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#30	#54	b:t1i	2	0	1	0	not available
+word	#8	#11	b:boundcont01.state	1	15	1	0	not available
+word	#9	#16	b:rgResultData	1	10	1	0	not available
+word	#13	#25	b:raydata	1	3	1	0	not available
+word	#14	#24	b:raydata	1	3	1	0	not available
+word	#16	#19	b:rgResultData	1	7	1	0	not available
+module	#1	#29	sramcontroller	1	0	0	0	not available
+module	#1	#26	sramcontroller	2	0	0	0	not available
+module	#30	#54	resultinterface	2	0	1	0	not available
+module	#6	#7	boundcontroller	3	0	1	0	not available
+module	#6	#11	boundcontroller	3	0	1	0	not available
+module	#2	#3	boundcontroller	1	1	1	0	not available
+module	#2	#37	boundcontroller	1	12	1	1	not available
+module	#3	#38	boundcontroller	1	12	1	1	not available
+module	#4	#35	vblockramcontroller	1	9	1	1	not available
+module	#5	#35	vblockramcontroller	1	6	1	0	not available

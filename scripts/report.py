@@ -271,6 +271,35 @@ def round2_section() -> list[str]:
     return out
 
 
+def round3_section() -> list[str]:
+    """Round 3 (the Norns packer): hypothesis table from data/analysis/r3-results.json."""
+    import r3stats
+    import write_round3 as w3
+    if not r3stats.RESULT.is_file():
+        return ["Not run yet."]
+    R = nl.read_json(r3stats.RESULT)
+    out = ["Protocol: `docs/plan/round3.md` (committed before any round-3 run; the entry d805789 is an amendment "
+           "to H11 and the entry of 2026-10-25 records the fix round). Statuses follow its rules (H11: the text of "
+           "4fb8b60, variants labelled in the paper); numbers from `scripts/r3stats.py`.", ""]
+    if "gate" in R:
+        g = R["gate"]
+        out += [f"Control gate (stock vs Norns packer `.net`, option absent and beta 0, `--pack` and the analytical flow): "
+                f"{g['n_checks']} comparisons over {g['designs']} designs, "
+                f"{'all byte-identical' if g['all_identical'] else 'NOT all identical'}.", ""]
+    fx = R.get("fix", {})
+    if fx.get("gate2"):
+        out += [f"Beta-0 gate extension (module and word+io affinity files, `--pack`, seed 1): "
+                f"{fx['gate2']['identical']} of {fx['gate2']['n_checks']} byte-identical.", ""]
+    if fx.get("ident"):
+        i = fx["ident"]
+        out += [f"Log-counter packer vs the previous binary (headline configs, seed 1): {i['net_identical']} of {i['n']} "
+                f"`.net` byte-identical, {i['flat_identical']} of {i['n']} flat placements identical to Stage 4.", ""]
+    out += ["| RQ | hypothesis | status | deciding number |", "|---|---|---|---|"]
+    for rq, hyp, status, num in w3.h_rows(R):
+        out.append(f"| {rq} | {hyp.replace(chr(92), '')} | {status} | {num.replace(chr(92), '').replace('$', '')} |")
+    return out
+
+
 def write(designs: list[str]) -> None:
     data, order = load_all()
     designs = [d for d in order if d in designs or not designs]
@@ -287,6 +316,8 @@ def write(designs: list[str]) -> None:
             ""] + checkpoint_table(designs)
     out += ["", "## Round 2 (bitwise seeds, random and permuted starts, N1, N2)", ""] \
         + round2_section()
+    out += ["", "## Round 3 (the Norns packer, I/O words, packing experiments, proximity)", ""] \
+        + round3_section()
     out += ["", "## Failed runs", ""] + failures(data, designs)
     out += ["", "## Method notes", "",
             "* Soft seeds are `--read_initial_place_file` with the cluster layout; `full` keeps "
@@ -336,6 +367,11 @@ def write(designs: list[str]) -> None:
             "`scripts/report.py` (this file), `scripts/fill_paper.py`, "
             "`scripts/write_paper_prose.py` and `scripts/write_round2.py` regenerate every "
             "document from the committed `data/` alone.",
+            "* Regenerating round three: `scripts/n8.py`, `scripts/io_words.py`, `sh packer/build.sh` "
+            "(the Norns packer), `scripts/round3.py gate|pilot|grid|chunk arms` (VPR, heavy lock) and "
+            "`scripts/n11.py`, `scripts/r3fix.py ident|stockn|gate2|match` (fix round) need the local `runs/` tree; then `scripts/r3stats.py`, "
+            "`scripts/write_round3.py` and `scripts/report.py` regenerate the documents from the "
+            "committed `data/` alone. The protocol is `docs/plan/round3.md`.",
             "* VPR checkpointing is a stock flag (`--place_checkpointing`, default on), not a "
             "patch; the on arm is the main matrix, the off arm repeats the cold-start scale "
             "sweep (extended by doubling while the control still wins, to the same 256 cap).", ""]

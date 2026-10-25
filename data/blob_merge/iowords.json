@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 209,
+ "atom_word": 3507,
+ "atoms": 6593,
+ "design": "blob_merge",
+ "io_groups_used": 4,
+ "io_word_bits": 226,
+ "io_words": 4,
+ "k_hops": 2,
+ "lut_cov_union": 0.5222665337321369,
+ "lut_cov_word": 0.48753738783649053,
+ "lut_io_only": 209,
+ "lut_union": 3143,
+ "lut_word": 2934,
+ "luts": 6018,
+ "max_fanout": 16
+}

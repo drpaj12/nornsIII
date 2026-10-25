@@ -1,0 +1,272 @@
+{
+ "blob_merge": [
+  {
+   "design": "blob_merge",
+   "identical": true,
+   "net_bytes": 25169812,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "blob_merge",
+   "identical": true,
+   "net_bytes": 25169812,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "boundtop": [
+  {
+   "design": "boundtop",
+   "identical": true,
+   "net_bytes": 2064095,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "boundtop",
+   "identical": true,
+   "net_bytes": 2064095,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "ch_intrinsics": [
+  {
+   "design": "ch_intrinsics",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "ch_intrinsics",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "diffeq1": [
+  {
+   "design": "diffeq1",
+   "identical": true,
+   "net_bytes": 1528825,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "diffeq1",
+   "identical": true,
+   "net_bytes": 1528825,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "diffeq2": [
+  {
+   "design": "diffeq2",
+   "identical": true,
+   "net_bytes": 1155804,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "diffeq2",
+   "identical": true,
+   "net_bytes": 1155804,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "mkDelayWorker32B": [
+  {
+   "design": "mkDelayWorker32B",
+   "identical": true,
+   "net_bytes": 4825266,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "identical": true,
+   "net_bytes": 4825266,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "mkPktMerge": [
+  {
+   "design": "mkPktMerge",
+   "identical": true,
+   "net_bytes": 1563077,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "mkPktMerge",
+   "identical": true,
+   "net_bytes": 1563077,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "mkSMAdapter4B": [
+  {
+   "design": "mkSMAdapter4B",
+   "identical": true,
+   "net_bytes": 5341162,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "identical": true,
+   "net_bytes": 5341162,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "or1200": [
+  {
+   "design": "or1200",
+   "identical": true,
+   "net_bytes": 9738469,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "or1200",
+   "identical": true,
+   "net_bytes": 9738469,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "raygentop": [
+  {
+   "design": "raygentop",
+   "identical": true,
+   "net_bytes": 6115236,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "raygentop",
+   "identical": true,
+   "net_bytes": 6115236,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "sha": [
+  {
+   "design": "sha",
+   "identical": true,
+   "net_bytes": 5450784,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "sha",
+   "identical": true,
+   "net_bytes": 5450784,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "stereovision0": [
+  {
+   "design": "stereovision0",
+   "identical": true,
+   "net_bytes": 42602292,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "stereovision0",
+   "identical": true,
+   "net_bytes": 42602292,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "stereovision1": [
+  {
+   "design": "stereovision1",
+   "identical": true,
+   "net_bytes": 40592360,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "stereovision1",
+   "identical": true,
+   "net_bytes": 40592360,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "stereovision2": [
+  {
+   "design": "stereovision2",
+   "identical": true,
+   "net_bytes": 93325287,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "stereovision2",
+   "identical": true,
+   "net_bytes": 93325287,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ],
+ "stereovision3": [
+  {
+   "design": "stereovision3",
+   "identical": true,
+   "net_bytes": 754459,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "stereovision3",
+   "identical": true,
+   "net_bytes": 754459,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ]
+}

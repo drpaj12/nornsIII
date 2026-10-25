@@ -1,0 +1,21 @@
+relation	clb_a	clb_b	label	manhattan	direct_nets	high_fanout_shared	carry_chain	critical_path
+word	#79	#445	c:4413:$add	1	0	0	0	not available
+word	#91	#865	c:3425:$add	1	0	0	0	not available
+word	#93	#811	c:3429:$add	1	0	0	0	not available
+word	#94	#864	c:3430:$add	1	0	0	0	not available
+word	#103	#936	c:3391:$add	1	0	0	0	not available
+word	#1022	#1604	c:1177:$dffe	1	1	1	0	not available
+word	#1064	#1052	b:h_fltr_1_left.my_steer_fltr_inst.h4_reg	1	11	1	1	not available
+word	#1272	#1230	c:1258:$dffe	1	1	1	0	not available
+word	#1362	#1398	b:vidin_data_buf_sc_1	1	4	4	0	not available
+word	#1511	#1571	c:1258:$dffe	1	1	1	0	not available
+module	#4	#14	steer_fltr	1	0	0	0	not available
+module	#14	#4	steer_fltr	1	0	0	0	not available
+module	#18	#717	steer_fltr	1	0	0	0	not available
+module	#18	#717	steer_fltr	1	0	0	0	not available
+module	#21	#6	steer_fltr	1	0	0	0	not available
+module	#7	#744	steer_fltr	1	2	0	1	not available
+module	#7	#744	steer_fltr	1	2	0	1	not available
+module	#11	#748	steer_fltr	1	2	0	1	not available
+module	#13	#1576	steer_fltr	1	2	0	0	not available
+module	#20	#718	steer_fltr	1	1	0	0	not available

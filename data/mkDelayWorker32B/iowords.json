@@ -1,0 +1,17 @@
+{
+ "atom_io_only": 23,
+ "atom_word": 1620,
+ "atoms": 2094,
+ "design": "mkDelayWorker32B",
+ "io_groups_used": 4,
+ "io_word_bits": 1074,
+ "io_words": 27,
+ "k_hops": 2,
+ "lut_cov_union": 0.7810679611650485,
+ "lut_cov_word": 0.7699029126213592,
+ "lut_io_only": 23,
+ "lut_union": 1609,
+ "lut_word": 1586,
+ "luts": 2060,
+ "max_fanout": 16
+}
