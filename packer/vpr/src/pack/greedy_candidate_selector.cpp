@@ -63,7 +63,7 @@ static void remove_molecule_from_pb_stats_candidates(
 /*
  * @brief Add blk to list of feasible blocks sorted according to gain.
  */
-static void add_molecule_to_pb_stats_candidates(
+static bool add_molecule_to_pb_stats_candidates(
     PackMoleculeId molecule_id,
     ClusterGainStats& cluster_gain_stats,
     t_logical_block_type_ptr cluster_type,
@@ -240,6 +240,9 @@ ClusterGainStats GreedyCandidateSelector::create_cluster_gain_stats(
     cluster_gain_stats.tie_break_high_fanout_net = AtomNetId::INVALID();
     cluster_gain_stats.explore_transitive_fanout = true;
 
+    // Norns III census (log-only): number the cluster (0: census off).
+    cluster_gain_stats.norns_cseq = norns::census().enabled() ? norns::census().new_cluster() : 0;
+
     // Update the cluster gain stats based on the addition of the seed mol to
     // the cluster.
     // TODO: We may want to update the cluster gain stats different, knowing
@@ -285,6 +288,65 @@ ClusterGainStats GreedyCandidateSelector::create_cluster_gain_stats(
     return cluster_gain_stats;
 }
 
+void GreedyCandidateSelector::norns_census_add(const ClusterGainStats& cluster_gain_stats,
+                                               PackMoleculeId mol_id,
+                                               AttractionInfo& attraction_groups) {
+    // Log-only: reads the gain maps with find (never operator[]) and the timing info; no state is changed.
+    std::ostream& out = norns::census().out();
+    const t_pack_molecule& mol = prepacker_.get_molecule(mol_id);
+    const bool is_seed = (cluster_gain_stats.norns_add_idx == 0);
+    int source = norns::SRC_SEED;
+    if (!is_seed) {
+        auto it = cluster_gain_stats.norns_src.find(mol_id);
+        source = (it == cluster_gain_stats.norns_src.end()) ? -1 : it->second;
+    }
+    int norns_hits = 0;
+    float attr_gain = 0.f;
+    for (AtomBlockId blk_id : mol.atom_block_ids) {
+        if (!blk_id.is_valid()) {
+            continue;
+        }
+        if (cluster_gain_stats.norns_dominant_group >= 0 && norns::global_map().group_of(blk_id) == cluster_gain_stats.norns_dominant_group) {
+            norns_hits++;
+        }
+        AttractGroupId atom_grp_id = attraction_groups.get_atom_attraction_group(blk_id);
+        if (atom_grp_id.is_valid() && atom_grp_id == cluster_gain_stats.attraction_grp_id) {
+            attr_gain += attraction_groups.get_attraction_group_gain(atom_grp_id);
+        }
+    }
+    const float norns_bonus = norns::global_map().active() ? norns::global_map().weight() * (float)norns_hits : 0.f;
+    // M: cluster, index, kind, source, atoms, queue-time gain, norns bonus, attraction gain, molecule base gain,
+    //    dominant affinity group of the cluster before this molecule, root atom of the molecule
+    out << "M\t" << cluster_gain_stats.norns_cseq << '\t' << cluster_gain_stats.norns_add_idx << '\t'
+        << (is_seed ? "seed" : "cand") << '\t' << source << '\t' << mol.atom_block_ids.size() << '\t'
+        << (is_seed ? 0.f : cluster_gain_stats.norns_last_gain) << '\t' << norns_bonus << '\t' << attr_gain << '\t'
+        << mol.base_gain << '\t' << cluster_gain_stats.norns_dominant_group << '\t'
+        << atom_netlist_.block_name(mol.atom_block_ids[mol.root]) << '\n';
+    const SetupTimingInfo& timing_info = pre_cluster_timing_manager_.get_timing_info();
+    for (AtomBlockId blk_id : mol.atom_block_ids) {
+        if (!blk_id.is_valid()) {
+            continue;
+        }
+        auto find_or0 = [&](const std::unordered_map<AtomBlockId, float>& m) {
+            auto f = m.find(blk_id);
+            return f == m.end() ? 0.f : f->second;
+        };
+        // A: cluster, index, atom, sharing gain, connection gain, timing gain, combined atom gain (as VPR held
+        //    them when the molecule was chosen; 0 when the atom had no connection to the cluster)
+        out << "A\t" << cluster_gain_stats.norns_cseq << '\t' << cluster_gain_stats.norns_add_idx << '\t'
+            << atom_netlist_.block_name(blk_id) << '\t' << find_or0(cluster_gain_stats.sharing_gain) << '\t'
+            << find_or0(cluster_gain_stats.connection_gain) << '\t' << find_or0(cluster_gain_stats.timing_gain) << '\t'
+            << find_or0(cluster_gain_stats.gain) << '\n';
+        // P: cluster, atom, input net, pack-time criticality of that sink pin
+        for (AtomPinId pin_id : atom_netlist_.block_input_pins(blk_id)) {
+            AtomNetId net_id = atom_netlist_.pin_net(pin_id);
+            double crit = packer_opts_.timing_driven ? timing_info.setup_pin_criticality(pin_id) : 0.0;
+            out << "P\t" << cluster_gain_stats.norns_cseq << '\t' << atom_netlist_.block_name(blk_id) << '\t'
+                << atom_netlist_.net_name(net_id) << '\t' << crit << '\n';
+        }
+    }
+}
+
 void GreedyCandidateSelector::update_cluster_gain_stats_candidate_success(
     ClusterGainStats& cluster_gain_stats,
     PackMoleculeId successful_mol_id,
@@ -292,6 +354,11 @@ void GreedyCandidateSelector::update_cluster_gain_stats_candidate_success(
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
     VTR_ASSERT(successful_mol_id.is_valid());
+    // Norns III census (log-only): record the molecule with the gain state it was chosen under.
+    if (norns::census().enabled() && cluster_gain_stats.norns_cseq != 0) {
+        norns_census_add(cluster_gain_stats, successful_mol_id, attraction_groups);
+        cluster_gain_stats.norns_add_idx++;
+    }
     // TODO: If this threshold lookup gets expensive, move outside.
     int high_fanout_net_threshold = high_fanout_thresholds_.get_threshold(cluster_legalizer.get_cluster_type(cluster_id)->name);
 
@@ -674,6 +741,14 @@ void GreedyCandidateSelector::update_cluster_gain_stats_candidate_failed(
     ClusterGainStats& cluster_gain_stats,
     PackMoleculeId failed_mol_id) {
     VTR_ASSERT(failed_mol_id.is_valid());
+    if (norns::census().enabled() && cluster_gain_stats.norns_cseq != 0) { // census (log-only)
+        const t_pack_molecule& norns_mol = prepacker_.get_molecule(failed_mol_id);
+        AtomBlockId norns_root = norns_mol.atom_block_ids[norns_mol.root];
+        auto norns_it = cluster_gain_stats.norns_src.find(failed_mol_id);
+        norns::census().out() << "F\t" << cluster_gain_stats.norns_cseq << '\t' << atom_netlist_.block_name(norns_root) << '\t'
+                              << (norns_it == cluster_gain_stats.norns_src.end() ? -1 : norns_it->second) << '\t'
+                              << norns::census().last_status << '\n';
+    }
     auto got = cluster_gain_stats.mol_failures.find(failed_mol_id);
     if (got == cluster_gain_stats.mol_failures.end()) {
         cluster_gain_stats.mol_failures.insert({failed_mol_id, 1});
@@ -718,7 +793,9 @@ PackMoleculeId GreedyCandidateSelector::get_next_candidate_for_cluster(
     // If there are feasible blocks being proposed and the number of suggestions did not reach the limit.
     // Get the block with highest gain from the top of the priority queue.
     if (!cluster_gain_stats.feasible_blocks.empty() && !cluster_gain_stats.current_stage_candidates_proposed_limit_reached()) {
-        best_molecule = cluster_gain_stats.feasible_blocks.pop().first;
+        std::pair<PackMoleculeId, float> norns_popped = cluster_gain_stats.feasible_blocks.pop();
+        best_molecule = norns_popped.first;
+        cluster_gain_stats.norns_last_gain = norns_popped.second; // Norns III census (log-only)
         VTR_ASSERT(best_molecule != PackMoleculeId::INVALID());
         cluster_gain_stats.num_candidates_proposed++;
         VTR_ASSERT(!cluster_legalizer.is_mol_clustered(best_molecule));
@@ -752,6 +829,10 @@ PackMoleculeId GreedyCandidateSelector::get_next_candidate_for_cluster(
                                                                     cluster_legalizer);
                 num_unrelated_clustering_attempts_++;
             }
+        }
+        if (best_molecule && norns::census().enabled()) { // census (log-only): unrelated clustering
+            cluster_gain_stats.norns_src[best_molecule] = norns::SRC_UNRELATED;
+            cluster_gain_stats.norns_last_gain = 0.f;
         }
         VTR_LOGV(best_molecule && log_verbosity_ > 2,
                  "\tFound unrelated molecule to cluster\n");
@@ -850,6 +931,7 @@ void GreedyCandidateSelector::add_ram_cluster_molecule_candidates(
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_RAM; // Norns III census (log-only)
     if (!cluster_gain_stats.initial_search_for_feasible_blocks)
         return;
     cluster_gain_stats.initial_search_for_feasible_blocks = false;
@@ -877,6 +959,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_connectivity_an
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_CONN_TIMING; // Norns III census (log-only)
 
     cluster_gain_stats.explore_transitive_fanout = true;                                  /* If no legal molecules found, enable exploration of molecules two hops away */
     cluster_gain_stats.candidates_propose_limit = packer_opts_.feasible_block_array_size; // set the limit of candidates to propose
@@ -903,11 +986,14 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_norns_group(
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_NORNS_GROUP; // Norns III census (log-only)
     t_logical_block_type_ptr cluster_type = cluster_legalizer.get_cluster_type(legalization_cluster_id);
     unsigned added = 0;
-    // log-only counters: attempted (added) vs actually queued (queue size grew); no effect on packing
+    // log-only counters: attempted (handed to the queue) vs actually queued; the cap counts queued
+    // molecules unless --norns_proposal_count attempted (round-3 behaviour) is given
     unsigned long long norns_attempted = 0;
     unsigned long long norns_queued = 0;
+    const bool cap_queued = norns::count_queued();
     for (AtomBlockId atom_id : norns::global_map().members(cluster_gain_stats.norns_dominant_group)) {
         if (added >= (unsigned)packer_opts_.feasible_block_array_size) {
             break;
@@ -922,19 +1008,20 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_norns_group(
         }
         PackMoleculeId molecule_id = prepacker_.get_atom_molecule(atom_id);
         if (!cluster_legalizer.is_mol_clustered(molecule_id) && cluster_legalizer.is_molecule_compatible(molecule_id, legalization_cluster_id)) {
-            size_t norns_size_before = cluster_gain_stats.feasible_blocks.heap.size();
-            add_molecule_to_pb_stats_candidates(molecule_id,
-                                                cluster_gain_stats,
-                                                cluster_type,
-                                                attraction_groups,
-                                                prepacker_,
-                                                atom_netlist_,
-                                                appack_ctx_);
+            bool norns_was_queued = add_molecule_to_pb_stats_candidates(molecule_id,
+                                                                        cluster_gain_stats,
+                                                                        cluster_type,
+                                                                        attraction_groups,
+                                                                        prepacker_,
+                                                                        atom_netlist_,
+                                                                        appack_ctx_);
             norns_attempted++;
-            if (cluster_gain_stats.feasible_blocks.heap.size() > norns_size_before) {
+            if (norns_was_queued) {
                 norns_queued++;
             }
-            added++;
+            if (!cap_queued || norns_was_queued) {
+                added++;
+            }
         }
     }
     norns::ProposalStats& norns_ps = norns::proposal_stats();
@@ -951,6 +1038,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_transitive_conn
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_TRANSITIVE; // Norns III census (log-only)
     //TODO: For now, only done by fan-out; should also consider fan-in
     cluster_gain_stats.explore_transitive_fanout = false;
     cluster_gain_stats.candidates_propose_limit = std::min(packer_opts_.feasible_block_array_size, AAPACK_MAX_TRANSITIVE_EXPLORE); // set the limit of candidates to propose
@@ -980,6 +1068,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_highfanout_conn
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_HIGH_FANOUT; // Norns III census (log-only)
     /* Because the packer ignores high fanout nets when marking what blocks
      * to consider, use one of the ignored high fanout net to fill up lightly
      * related blocks */
@@ -1014,6 +1103,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_attraction_grou
     LegalizationClusterId legalization_cluster_id,
     const ClusterLegalizer& cluster_legalizer,
     AttractionInfo& attraction_groups) {
+    cluster_gain_stats.norns_cur_source = norns::SRC_ATTRACTION; // Norns III census (log-only)
     t_logical_block_type_ptr cluster_type = cluster_legalizer.get_cluster_type(legalization_cluster_id);
 
     /*
@@ -1091,7 +1181,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_attraction_grou
 /*
  * @brief Add blk to list of feasible blocks sorted according to gain.
  */
-static void add_molecule_to_pb_stats_candidates(PackMoleculeId molecule_id,
+static bool add_molecule_to_pb_stats_candidates(PackMoleculeId molecule_id,
                                                 ClusterGainStats& cluster_gain_stats,
                                                 t_logical_block_type_ptr cluster_type,
                                                 AttractionInfo& attraction_groups,
@@ -1115,7 +1205,7 @@ static void add_molecule_to_pb_stats_candidates(PackMoleculeId molecule_id,
                                                                                                       cluster_gain_stats.flat_cluster_position,
                                                                                                       cluster_type);
         if (dist > max_dist)
-            return;
+            return false;
     }
 
     int num_molecule_failures = 0;
@@ -1137,13 +1227,13 @@ static void add_molecule_to_pb_stats_candidates(PackMoleculeId molecule_id,
 
         if (num_molecule_failures > 0) {
             remove_molecule_from_pb_stats_candidates(molecule_id, cluster_gain_stats);
-            return;
+            return false;
         }
     }
 
     // if already in queue, do nothing
     if (cluster_gain_stats.feasible_blocks.contains(molecule_id)) {
-        return;
+        return false;
     }
 
     for (std::pair<PackMoleculeId, float>& feasible_block : cluster_gain_stats.feasible_blocks.heap) {
@@ -1153,6 +1243,15 @@ static void add_molecule_to_pb_stats_candidates(PackMoleculeId molecule_id,
     // Insert the molecule into the queue sorted by gain, and maintain the heap property
     float molecule_gain = get_molecule_gain(molecule_id, cluster_gain_stats, cluster_att_grp, attraction_groups, num_molecule_failures, prepacker, atom_netlist, appack_ctx);
     cluster_gain_stats.feasible_blocks.push(molecule_id, molecule_gain);
+    // Norns III census (log-only): the molecule entered the queue under the current source.
+    if (norns::census().enabled() && cluster_gain_stats.norns_cseq != 0) {
+        cluster_gain_stats.norns_src[molecule_id] = cluster_gain_stats.norns_cur_source;
+        const t_pack_molecule& norns_mol = prepacker.get_molecule(molecule_id);
+        AtomBlockId norns_root = norns_mol.atom_block_ids[norns_mol.root];
+        norns::census().out() << "Q\t" << cluster_gain_stats.norns_cseq << '\t' << atom_netlist.block_name(norns_root)
+                              << '\t' << cluster_gain_stats.norns_cur_source << '\t' << molecule_gain << '\n';
+    }
+    return true;
 }
 
 /*
@@ -1553,6 +1652,10 @@ PackMoleculeId GreedyCandidateSelector::get_unrelated_candidate_for_cluster_appa
 void GreedyCandidateSelector::update_candidate_selector_finalize_cluster(
     ClusterGainStats& cluster_gain_stats,
     LegalizationClusterId cluster_id) {
+    if (norns::census().enabled() && cluster_gain_stats.norns_cseq != 0) { // census (log-only): cluster closed
+        norns::census().out() << "K\t" << cluster_gain_stats.norns_cseq << '\t' << cluster_gain_stats.norns_add_idx << '\t'
+                              << cluster_gain_stats.num_candidates_proposed << '\t' << cluster_gain_stats.feasible_blocks.heap.size() << '\n';
+    }
     // store info that will be used later in packing.
     for (const AtomNetId mnet_id : cluster_gain_stats.marked_nets) {
         int external_terminals = atom_netlist_.net_pins(mnet_id).size() - cluster_gain_stats.num_pins_of_net_in_pb[mnet_id];

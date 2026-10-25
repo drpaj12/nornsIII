@@ -9,6 +9,7 @@
  *        packer's.
  */
 
+#include <ostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -62,5 +63,38 @@ struct ProposalStats {
     unsigned long long queued = 0;
 };
 ProposalStats& proposal_stats();
+
+/// @brief Census options (round 4): the log file (empty: off) and the proposal-count mode. With
+///        count_queued (the default) the cap of the group-member proposal counts molecules that entered
+///        the candidate queue; with "attempted" it counts the molecules handed to the queue (round 3).
+void set_census_options(const std::string& census_file, bool count_queued);
+bool count_queued();
+
+/// @brief Candidate source codes of the census (where a molecule entered the candidate queue).
+enum CensusSource {
+    SRC_SEED = 0,
+    SRC_CONN_TIMING = 1,
+    SRC_NORNS_GROUP = 2,
+    SRC_TRANSITIVE = 3,
+    SRC_HIGH_FANOUT = 4,
+    SRC_ATTRACTION = 5,
+    SRC_RAM = 6,
+    SRC_UNRELATED = 7
+};
+
+/// @brief The census log (round 4): log-only, tab separated, one record per line. Off without
+///        --norns_pack_census; never changes packing.
+class Census {
+  public:
+    bool enabled() const;
+    /// @brief The log stream (opened on first use; fatal error when the file cannot be opened).
+    std::ostream& out();
+    /// @brief A new cluster sequence number (clusters are numbered in creation order from 1).
+    unsigned long long new_cluster();
+    /// @brief The legalizer status of the last add_mol_to_cluster call (set by the clusterer hook).
+    int last_status = 0;
+    void flush();
+};
+Census& census();
 
 } // namespace norns

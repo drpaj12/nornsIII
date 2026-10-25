@@ -660,6 +660,7 @@ void setup_packer_opts(const t_options& Options,
     PackerOpts->transitive_fanout_threshold = Options.pack_transitive_fanout_threshold;
     PackerOpts->feasible_block_array_size = Options.pack_feasible_block_array_size;
     norns::set_options(Options.norns_affinity, Options.norns_affinity_weight); // Norns III
+    norns::set_census_options(Options.norns_pack_census, Options.norns_proposal_count.value() != "attempted");
 
     PackerOpts->device_layout = Options.device_layout;
 

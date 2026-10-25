@@ -122,6 +122,15 @@ struct ClusterGainStats {
     /// @brief Norns III: the cluster's dominant affinity group (-1: none yet).
     int norns_dominant_group = -1;
 
+    /// @brief Norns III census (log-only, never read by the packing): cluster sequence number (0: census
+    ///        off), molecules added so far, the source being proposed, the gain of the last popped
+    ///        candidate, and the source under which each queued molecule entered the queue.
+    unsigned long long norns_cseq = 0;
+    unsigned norns_add_idx = 0;
+    int norns_cur_source = 0;
+    float norns_last_gain = 0.f;
+    std::unordered_map<PackMoleculeId, int> norns_src;
+
     /// @brief Flag to indicate if this cluster is a memory or not. This is
     ///        set when the stats are created based on the primitive pb type
     ///        of the seed.
@@ -526,6 +535,14 @@ class GreedyCandidateSelector {
         ClusterGainStats& cluster_gain_stats,
         LegalizationClusterId legalization_cluster_id,
         const ClusterLegalizer& cluster_legalizer);
+
+    /**
+     * @brief Norns III census (log-only): write the record of a molecule added to a cluster (kind
+     *        "seed" or "cand"): atoms, pack-time criticality per input pin, the gain terms.
+     */
+    void norns_census_add(const ClusterGainStats& cluster_gain_stats,
+                          PackMoleculeId mol_id,
+                          AttractionInfo& attraction_groups);
 
     /**
      * @brief Norns III: add unclustered molecules of the cluster's dominant

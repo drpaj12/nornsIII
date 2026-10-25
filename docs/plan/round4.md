@@ -281,4 +281,24 @@ never edited. What the tool cannot do is listed in the Result.
 
 ## Entries after this point
 
-(none yet)
+### Entry 2026-10-25 (after the affinity-join check, before any gate, census or arm result): construction details
+
+No rule above is changed; these fix what the text above leaves open, found while writing the code. Timing: the join check
+(`round4.py join`, pack-only runs that read the `Norns affinity:` matched count) ran before this entry; it measured
+matched fractions only. No gate result, no census and no arm run existed when this entry was written.
+
+* N16, items 5 and 6 (the old text stays; this is what the code does): the moved CLBs are the logic CLBs that are not in
+  a carry chain and that have a stage and a bit (or are control). They permute among the slots they occupy in the analytic
+  placement (their own slot pool), so the placement stays legal without touching any other CLB; X and Y are the sorted
+  distinct x and y of that pool (not of the whole grid). Carry-chain CLBs never move (VPR places chains as macros).
+  Each moved CLB, in the order (stage, bit, name), takes the free pool slot nearest (Manhattan) to its target; ties go to
+  the lower (x, y, sub-block, layer). A CLB with a stage but no bit and not control is not moved (as written).
+* The affinity files of round 4 (`runs/<d>/r4/affinity/`) list the same atoms as round 3's minus buffer LUTs that VPR
+  absorbs (one input, table `1 1`, including the ones in front of a primary output); group ids come from the full round-3
+  label set, so they are unchanged. Stage-1 gate (c) also compares the packing with the round-3 file against the one with
+  the round-4 file. The join result (before and after, 15 designs, 3 sources) is `data/analysis/r4-join.json`.
+* Runs: census runs are `--analytical_place --seed 1` (no route) with `--write_flat_place`; arm runs are the default
+  routed flow with `--timing_report_npaths 1000` (a report option; the stock arm's WL, W and CPD must equal round 3's
+  stock values at the same seed, which is checked and reported). The stock arm of Stage 5 runs the stock `vpr`.
+* Stage 5 starts `wordseed` and `stagebit` are built from the analytic run of the same packing and seed, so Stage 2b (the
+  analytic runs) comes first. All run records are `data/<d>/r4runs.jsonl`.

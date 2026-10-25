@@ -2591,6 +2591,23 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .default_value("0")
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_pack_census, "--norns_pack_census")
+        .help(
+            "Norns III: write a log-only census of the clustering to this file (one tab\n"
+            "separated record per molecule added, per rejection, per candidate queued and\n"
+            "per cluster closed). Never changes the packing. Empty: off\n")
+        .default_value("")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
+    pack_grp.add_argument(args.norns_proposal_count, "--norns_proposal_count")
+        .help(
+            "Norns III: what the cap of the group-member proposal counts. 'queued' (default):\n"
+            "molecules that entered the candidate queue; 'attempted': molecules handed to the\n"
+            "queue (round-3 behaviour)\n")
+        .default_value("queued")
+        .choices({"queued", "attempted"})
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument<bool, ParseOnOff>(args.memoize_cluster_packings, "--memoize_cluster_packings")
         .help("Enables memoization of previously seen clusters during packing.\n"
               "\n"
