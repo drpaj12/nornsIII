@@ -177,3 +177,30 @@ Round 2's seeds also changed the annealer's start temperature (3.1 to 9.2x). Rou
 that confound (the annealing schedule is VPR's default for every arm, and a seeded start still carries
 its own start temperature), but H9b uses the analytic start, where start temperature differs only through the
 packing itself; the paper states this.
+
+## Entry 2026-10-24 (after the control gate and the pilot, before any Stage-4 or Stage-5 result): clarifications
+
+No rule above is changed. These fix what the rules leave open; they were written before any routed wirelength of
+round 3 was read.
+
+* "CLB count" and "CLB growth" mean the number of logic CLBs (pad blocks and fixed multiplier blocks are the same in
+  every arm); the grid size is recorded separately. The pilot used this definition.
+* The pilot and the grid: pilot runs are `--analytical_place` (pack and place, no route), seed 1, so no routed wirelength
+  was available to the grid choice. The rule gave beta_m = 4 for all three sources (the largest value of the list had a
+  median CLB growth below 5%), so the grid is the last three values {1, 2, 4} for every source (clipped at the end of the
+  list as the rule says). With one beta_m for all sources, H10b compares word+io and word at the same beta.
+* The module source is vacuous where a design has a single module (diffeq1, diffeq2, sha, stereovision3 and others at
+  module purity 1.0); H9a for module is therefore expected to be not supported by the 0.02 purity-gain bound. The
+  rule is not changed.
+* H9a purity for the word+io source is measured with the word+io labels; for module with module labels; for word with
+  word labels (the labels are fixed by the design, not by the packing).
+* H11: the module relation is not defined (design excluded) when 95% or more of the sampled logic CLB pairs share a
+  plurality module. Sampling: all pairs if there are at most 400000, else 400000 uniform pairs; the within-stratum
+  label permutation uses 200 permutations per design and seed (not 1000 pooled); it is reported, the status
+  uses the Wilcoxon, median and sign rules above. Distance is the Manhattan distance of the CLB coordinates.
+* Seeds: the `seed` start rebuilds the round-two `words_partial` seed from the analytic run of the same configuration
+  and VPR seed (initial placement CLB list and flat placement), then runs the same configuration with that seed file.
+  VPR's packing does not depend on the VPR seed in the designs checked, so a configuration's packing is the same
+  across its three runs; the three seeds measure placement noise.
+* Pilot sensitivity: statuses are computed on n=15 and on the 11 designs outside the pilot; a difference makes the
+  paper's status "inconclusive (pilot-sensitive)", as stated above.
