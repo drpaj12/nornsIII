@@ -1,0 +1,1432 @@
+{
+ "boundtop": [
+  {
+   "arm": "stock",
+   "design": "boundtop",
+   "load1": 1.40869140625,
+   "pack_s": 0.19,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:20"
+  },
+  {
+   "arm": "module-b4",
+   "design": "boundtop",
+   "load1": 1.40869140625,
+   "pack_s": 0.29,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:21"
+  },
+  {
+   "arm": "word-b4",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:21"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:22"
+  },
+  {
+   "arm": "stock",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.2,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:23"
+  },
+  {
+   "arm": "module-b4",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.28,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:24"
+  },
+  {
+   "arm": "word-b4",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:24"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:25"
+  },
+  {
+   "arm": "stock",
+   "design": "boundtop",
+   "load1": 1.37548828125,
+   "pack_s": 0.19,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:26"
+  },
+  {
+   "arm": "module-b4",
+   "design": "boundtop",
+   "load1": 1.34521484375,
+   "pack_s": 0.28,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:27"
+  },
+  {
+   "arm": "word-b4",
+   "design": "boundtop",
+   "load1": 1.34521484375,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:27"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "boundtop",
+   "load1": 1.34521484375,
+   "pack_s": 0.26,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:28"
+  }
+ ],
+ "ch_intrinsics": [
+  {
+   "arm": "stock",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.05,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:54"
+  },
+  {
+   "arm": "module-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.07,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:55"
+  },
+  {
+   "arm": "word-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.06,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:55"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.06,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:55"
+  },
+  {
+   "arm": "stock",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.05,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:42:56"
+  },
+  {
+   "arm": "module-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.07,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:42:56"
+  },
+  {
+   "arm": "word-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.05,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:42:56"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.05,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:42:57"
+  },
+  {
+   "arm": "stock",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.05,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:42:57"
+  },
+  {
+   "arm": "module-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.07,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:42:57"
+  },
+  {
+   "arm": "word-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.06,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:42:58"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "ch_intrinsics",
+   "load1": 1.20849609375,
+   "pack_s": 0.06,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:42:58"
+  }
+ ],
+ "diffeq1": [
+  {
+   "arm": "stock",
+   "design": "diffeq1",
+   "load1": 1.17578125,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:10"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.15,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:10"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.12,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:11"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:11"
+  },
+  {
+   "arm": "stock",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:12"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.15,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:13"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.12,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:13"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:14"
+  },
+  {
+   "arm": "stock",
+   "design": "diffeq1",
+   "load1": 1.2421875,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:15"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq1",
+   "load1": 1.22265625,
+   "pack_s": 0.15,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:15"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq1",
+   "load1": 1.22265625,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:16"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq1",
+   "load1": 1.22265625,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:17"
+  }
+ ],
+ "diffeq2": [
+  {
+   "arm": "stock",
+   "design": "diffeq2",
+   "load1": 1.19140625,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:02"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq2",
+   "load1": 1.19140625,
+   "pack_s": 0.19,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:03"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq2",
+   "load1": 1.19140625,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:03"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq2",
+   "load1": 1.19140625,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:04"
+  },
+  {
+   "arm": "stock",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:04"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.19,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:05"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:06"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:07"
+  },
+  {
+   "arm": "stock",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:07"
+  },
+  {
+   "arm": "module-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.19,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:08"
+  },
+  {
+   "arm": "word-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:08"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "diffeq2",
+   "load1": 1.17578125,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:09"
+  }
+ ],
+ "mkDelayWorker32B": [
+  {
+   "arm": "stock",
+   "design": "mkDelayWorker32B",
+   "load1": 1.46533203125,
+   "pack_s": 1.11,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:49:39"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.5478515625,
+   "pack_s": 1.14,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:49:48"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.6982421875,
+   "pack_s": 1.1,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:49:56"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.72265625,
+   "pack_s": 1.11,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:50:05"
+  },
+  {
+   "arm": "stock",
+   "design": "mkDelayWorker32B",
+   "load1": 1.765625,
+   "pack_s": 1.11,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:50:14"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.80224609375,
+   "pack_s": 1.14,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:50:23"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.818359375,
+   "pack_s": 1.11,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:50:31"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 1.9267578125,
+   "pack_s": 1.13,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:50:40"
+  },
+  {
+   "arm": "stock",
+   "design": "mkDelayWorker32B",
+   "load1": 2.0185546875,
+   "pack_s": 1.1,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:50:49"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 2.01513671875,
+   "pack_s": 1.14,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:50:57"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 2.09423828125,
+   "pack_s": 1.11,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:51:06"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkDelayWorker32B",
+   "load1": 2.0791015625,
+   "pack_s": 1.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:51:14"
+  }
+ ],
+ "mkPktMerge": [
+  {
+   "arm": "stock",
+   "design": "mkPktMerge",
+   "load1": 1.22265625,
+   "pack_s": 0.24,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:17"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkPktMerge",
+   "load1": 1.22265625,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:18"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkPktMerge",
+   "load1": 1.22265625,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:20"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkPktMerge",
+   "load1": 1.20458984375,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:21"
+  },
+  {
+   "arm": "stock",
+   "design": "mkPktMerge",
+   "load1": 1.20458984375,
+   "pack_s": 0.24,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:22"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkPktMerge",
+   "load1": 1.20458984375,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:23"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkPktMerge",
+   "load1": 1.20458984375,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:25"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkPktMerge",
+   "load1": 1.18798828125,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:26"
+  },
+  {
+   "arm": "stock",
+   "design": "mkPktMerge",
+   "load1": 1.18798828125,
+   "pack_s": 0.24,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:27"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkPktMerge",
+   "load1": 1.18798828125,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:28"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkPktMerge",
+   "load1": 1.18798828125,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:29"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkPktMerge",
+   "load1": 1.1728515625,
+   "pack_s": 0.25,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:31"
+  }
+ ],
+ "mkSMAdapter4B": [
+  {
+   "arm": "stock",
+   "design": "mkSMAdapter4B",
+   "load1": 1.34521484375,
+   "pack_s": 0.82,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:29"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.34521484375,
+   "pack_s": 0.97,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:31"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.3173828125,
+   "pack_s": 0.91,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:33"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.3173828125,
+   "pack_s": 0.93,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:35"
+  },
+  {
+   "arm": "stock",
+   "design": "mkSMAdapter4B",
+   "load1": 1.29150390625,
+   "pack_s": 0.84,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:37"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.29150390625,
+   "pack_s": 0.98,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:39"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.29150390625,
+   "pack_s": 0.92,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:41"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.3486328125,
+   "pack_s": 0.92,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:43"
+  },
+  {
+   "arm": "stock",
+   "design": "mkSMAdapter4B",
+   "load1": 1.3486328125,
+   "pack_s": 0.83,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:45"
+  },
+  {
+   "arm": "module-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.40087890625,
+   "pack_s": 0.99,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:47"
+  },
+  {
+   "arm": "word-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.40087890625,
+   "pack_s": 0.93,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:49"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "mkSMAdapter4B",
+   "load1": 1.40087890625,
+   "pack_s": 0.91,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:51"
+  }
+ ],
+ "or1200": [
+  {
+   "arm": "stock",
+   "design": "or1200",
+   "load1": 1.36865234375,
+   "pack_s": 1.65,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:53"
+  },
+  {
+   "arm": "module-b4",
+   "design": "or1200",
+   "load1": 1.3388671875,
+   "pack_s": 1.91,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:57"
+  },
+  {
+   "arm": "word-b4",
+   "design": "or1200",
+   "load1": 1.3115234375,
+   "pack_s": 1.74,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:45:02"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "or1200",
+   "load1": 1.3115234375,
+   "pack_s": 1.81,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:45:06"
+  },
+  {
+   "arm": "stock",
+   "design": "or1200",
+   "load1": 1.2861328125,
+   "pack_s": 1.67,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:45:10"
+  },
+  {
+   "arm": "module-b4",
+   "design": "or1200",
+   "load1": 1.26318359375,
+   "pack_s": 1.87,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:45:14"
+  },
+  {
+   "arm": "word-b4",
+   "design": "or1200",
+   "load1": 1.24169921875,
+   "pack_s": 1.77,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:45:19"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "or1200",
+   "load1": 1.22216796875,
+   "pack_s": 1.8,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:45:24"
+  },
+  {
+   "arm": "stock",
+   "design": "or1200",
+   "load1": 1.2041015625,
+   "pack_s": 1.67,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:45:28"
+  },
+  {
+   "arm": "module-b4",
+   "design": "or1200",
+   "load1": 1.2041015625,
+   "pack_s": 1.91,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:45:32"
+  },
+  {
+   "arm": "word-b4",
+   "design": "or1200",
+   "load1": 1.1875,
+   "pack_s": 1.75,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:45:36"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "or1200",
+   "load1": 1.17236328125,
+   "pack_s": 1.76,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:45:41"
+  }
+ ],
+ "raygentop": [
+  {
+   "arm": "stock",
+   "design": "raygentop",
+   "load1": 1.1728515625,
+   "pack_s": 0.66,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:32"
+  },
+  {
+   "arm": "module-b4",
+   "design": "raygentop",
+   "load1": 1.1728515625,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:34"
+  },
+  {
+   "arm": "word-b4",
+   "design": "raygentop",
+   "load1": 1.7998046875,
+   "pack_s": 0.77,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:36"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "raygentop",
+   "load1": 1.7998046875,
+   "pack_s": 0.76,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:38"
+  },
+  {
+   "arm": "stock",
+   "design": "raygentop",
+   "load1": 1.7998046875,
+   "pack_s": 0.67,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:40"
+  },
+  {
+   "arm": "module-b4",
+   "design": "raygentop",
+   "load1": 1.7353515625,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:42"
+  },
+  {
+   "arm": "word-b4",
+   "design": "raygentop",
+   "load1": 1.7353515625,
+   "pack_s": 0.77,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:44"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "raygentop",
+   "load1": 1.67626953125,
+   "pack_s": 0.75,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:46"
+  },
+  {
+   "arm": "stock",
+   "design": "raygentop",
+   "load1": 1.67626953125,
+   "pack_s": 0.68,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:48"
+  },
+  {
+   "arm": "module-b4",
+   "design": "raygentop",
+   "load1": 1.67626953125,
+   "pack_s": 0.79,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:50"
+  },
+  {
+   "arm": "word-b4",
+   "design": "raygentop",
+   "load1": 1.6220703125,
+   "pack_s": 0.76,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:52"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "raygentop",
+   "load1": 1.6220703125,
+   "pack_s": 0.75,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:54"
+  }
+ ],
+ "sha": [
+  {
+   "arm": "stock",
+   "design": "sha",
+   "load1": 1.57177734375,
+   "pack_s": 0.73,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:56"
+  },
+  {
+   "arm": "module-b4",
+   "design": "sha",
+   "load1": 1.57177734375,
+   "pack_s": 0.93,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:43:58"
+  },
+  {
+   "arm": "word-b4",
+   "design": "sha",
+   "load1": 1.57177734375,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:00"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "sha",
+   "load1": 1.52587890625,
+   "pack_s": 0.79,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:44:02"
+  },
+  {
+   "arm": "stock",
+   "design": "sha",
+   "load1": 1.52587890625,
+   "pack_s": 0.73,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:04"
+  },
+  {
+   "arm": "module-b4",
+   "design": "sha",
+   "load1": 1.4833984375,
+   "pack_s": 0.94,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:06"
+  },
+  {
+   "arm": "word-b4",
+   "design": "sha",
+   "load1": 1.4833984375,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:08"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "sha",
+   "load1": 1.4833984375,
+   "pack_s": 0.8,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:44:10"
+  },
+  {
+   "arm": "stock",
+   "design": "sha",
+   "load1": 1.4443359375,
+   "pack_s": 0.72,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:12"
+  },
+  {
+   "arm": "module-b4",
+   "design": "sha",
+   "load1": 1.4443359375,
+   "pack_s": 0.95,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:14"
+  },
+  {
+   "arm": "word-b4",
+   "design": "sha",
+   "load1": 1.40869140625,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:16"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "sha",
+   "load1": 1.40869140625,
+   "pack_s": 0.78,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:44:18"
+  }
+ ],
+ "stereovision0": [
+  {
+   "arm": "stock",
+   "design": "stereovision0",
+   "load1": 1.158203125,
+   "pack_s": 3.03,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:45:45"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision0",
+   "load1": 1.21435546875,
+   "pack_s": 4.67,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:45:53"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision0",
+   "load1": 1.1806640625,
+   "pack_s": 3.34,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:46:04"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision0",
+   "load1": 1.15234375,
+   "pack_s": 3.37,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:46:14"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision0",
+   "load1": 1.12890625,
+   "pack_s": 3.01,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:46:23"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision0",
+   "load1": 1.1181640625,
+   "pack_s": 4.73,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:46:31"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision0",
+   "load1": 1.099609375,
+   "pack_s": 3.41,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:46:42"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision0",
+   "load1": 1.083984375,
+   "pack_s": 3.41,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:46:52"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision0",
+   "load1": 1.07080078125,
+   "pack_s": 2.96,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:47:02"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision0",
+   "load1": 1.0595703125,
+   "pack_s": 4.74,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:47:10"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision0",
+   "load1": 1.05029296875,
+   "pack_s": 3.35,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:47:21"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision0",
+   "load1": 1.0419921875,
+   "pack_s": 3.4,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:47:31"
+  }
+ ],
+ "stereovision1": [
+  {
+   "arm": "stock",
+   "design": "stereovision1",
+   "load1": 1.03515625,
+   "pack_s": 3.17,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:47:40"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision1",
+   "load1": 1.0322265625,
+   "pack_s": 5.23,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:47:49"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision1",
+   "load1": 1.0244140625,
+   "pack_s": 4.13,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:48:00"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision1",
+   "load1": 1.09423828125,
+   "pack_s": 4.05,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:48:10"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision1",
+   "load1": 1.0791015625,
+   "pack_s": 3.2,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:48:20"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision1",
+   "load1": 1.07275390625,
+   "pack_s": 5.2,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:48:29"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision1",
+   "load1": 1.0615234375,
+   "pack_s": 4.08,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:48:40"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision1",
+   "load1": 1.05126953125,
+   "pack_s": 4.15,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:48:50"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision1",
+   "load1": 1.04296875,
+   "pack_s": 3.15,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:48:59"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision1",
+   "load1": 1.1162109375,
+   "pack_s": 5.23,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:49:08"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision1",
+   "load1": 1.25244140625,
+   "pack_s": 4.06,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:49:19"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision1",
+   "load1": 1.36767578125,
+   "pack_s": 3.99,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:49:29"
+  }
+ ],
+ "stereovision3": [
+  {
+   "arm": "stock",
+   "design": "stereovision3",
+   "load1": 1.20849609375,
+   "pack_s": 0.09,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:58"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision3",
+   "load1": 1.20849609375,
+   "pack_s": 0.14,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:59"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision3",
+   "load1": 1.20849609375,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:59"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision3",
+   "load1": 1.20849609375,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 1,
+   "start": "2026-10-25T10:42:59"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:00"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:00"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:00"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 2,
+   "start": "2026-10-25T10:43:01"
+  },
+  {
+   "arm": "stock",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:01"
+  },
+  {
+   "arm": "module-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.13,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:01"
+  },
+  {
+   "arm": "word-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:01"
+  },
+  {
+   "arm": "wordio-b4",
+   "design": "stereovision3",
+   "load1": 1.19140625,
+   "pack_s": 0.1,
+   "rc": 0,
+   "seed": 3,
+   "start": "2026-10-25T10:43:02"
+  }
+ ]
+}
