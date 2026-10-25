@@ -1,0 +1,14 @@
+{
+ "A_med": 18.0,
+ "D": 1,
+ "M": 4,
+ "S": 220,
+ "design": "mkPktMerge",
+ "rent": {
+  "1": {
+   "groups": 5,
+   "p": 1.3131063069092574
+  }
+ },
+ "top_level_atoms": 6
+}

@@ -1,0 +1,2132 @@
+{
+ "blob_merge": [
+  {
+   "design": "blob_merge",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 31591179,
+   "design": "blob_merge",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 31286340,
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "blob_merge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "boundtop": [
+  {
+   "design": "boundtop",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "boundtop",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "boundtop",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 2035887,
+   "design": "boundtop",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 1803027,
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "boundtop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "ch_intrinsics": [
+  {
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 384005,
+   "design": "ch_intrinsics",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 377344,
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "ch_intrinsics",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "diffeq1": [
+  {
+   "design": "diffeq1",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 1478515,
+   "design": "diffeq1",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 1302695,
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "diffeq1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "diffeq2": [
+  {
+   "design": "diffeq2",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 1018173,
+   "design": "diffeq2",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 1008334,
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "diffeq2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "mkDelayWorker32B": [
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 8917179,
+   "design": "mkDelayWorker32B",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 8641309,
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "mkDelayWorker32B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "mkPktMerge": [
+  {
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 3061663,
+   "design": "mkPktMerge",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 2828440,
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "mkPktMerge",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "mkSMAdapter4B": [
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 9080688,
+   "design": "mkSMAdapter4B",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 7505955,
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "mkSMAdapter4B",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "or1200": [
+  {
+   "design": "or1200",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "or1200",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "or1200",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 19313875,
+   "design": "or1200",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 14417256,
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "or1200",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "raygentop": [
+  {
+   "design": "raygentop",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "raygentop",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "raygentop",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 8332106,
+   "design": "raygentop",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 6956394,
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "raygentop",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "sha": [
+  {
+   "design": "sha",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "sha",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "sha",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 8390430,
+   "design": "sha",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 8421293,
+   "design": "sha",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "sha",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "stereovision0": [
+  {
+   "design": "stereovision0",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 43895034,
+   "design": "stereovision0",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 43807152,
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "stereovision0",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "stereovision1": [
+  {
+   "design": "stereovision1",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 46523209,
+   "design": "stereovision1",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 43781664,
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "stereovision1",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "stereovision2": [
+  {
+   "design": "stereovision2",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 77669606,
+   "design": "stereovision2",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 60445274,
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "stereovision2",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ],
+ "stereovision3": [
+  {
+   "design": "stereovision3",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "absent"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "pack",
+   "gate": "a",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "b0"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 893045,
+   "design": "stereovision3",
+   "flow": "pack",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "stock-census"
+  },
+  {
+   "census_bytes": 921472,
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "b",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "head-census"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-net"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "module-flat"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": false,
+   "variant": "module-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-net"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "word-flat"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "word-r4file-vs-r3file"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-net"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "c",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "variant": "wordio-flat"
+  },
+  {
+   "design": "stereovision3",
+   "flow": "ap",
+   "gate": "info",
+   "identical": true,
+   "rc": 0,
+   "rc_ref": 0,
+   "same_packing": true,
+   "variant": "wordio-r4file-vs-r3file"
+  }
+ ]
+}

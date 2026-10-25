@@ -1,0 +1,482 @@
+{
+ "blob_merge": {
+  "module": {
+   "r3": {
+    "entries": 6500,
+    "matched": 6490
+   },
+   "r4": {
+    "entries": 10011,
+    "matched": 10011
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 3507,
+    "matched": 3507
+   },
+   "r4": {
+    "entries": 7004,
+    "matched": 7004
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 3716,
+    "matched": 3677
+   },
+   "r4": {
+    "entries": 7174,
+    "matched": 7174
+   }
+  }
+ },
+ "boundtop": {
+  "module": {
+   "r3": {
+    "entries": 762,
+    "matched": 687
+   },
+   "r4": {
+    "entries": 748,
+    "matched": 748
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 620,
+    "matched": 555
+   },
+   "r4": {
+    "entries": 616,
+    "matched": 616
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 748,
+    "matched": 674
+   },
+   "r4": {
+    "entries": 735,
+    "matched": 735
+   }
+  }
+ },
+ "ch_intrinsics": {
+  "module": {
+   "r3": {
+    "entries": 144,
+    "matched": 144
+   },
+   "r4": {
+    "entries": 144,
+    "matched": 144
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 113,
+    "matched": 81
+   },
+   "r4": {
+    "entries": 81,
+    "matched": 81
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 177,
+    "matched": 113
+   },
+   "r4": {
+    "entries": 113,
+    "matched": 113
+   }
+  }
+ },
+ "diffeq1": {
+  "module": {
+   "r3": {
+    "entries": 423,
+    "matched": 391
+   },
+   "r4": {
+    "entries": 523,
+    "matched": 523
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 257,
+    "matched": 257
+   },
+   "r4": {
+    "entries": 389,
+    "matched": 389
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 353,
+    "matched": 353
+   },
+   "r4": {
+    "entries": 485,
+    "matched": 485
+   }
+  }
+ },
+ "diffeq2": {
+  "module": {
+   "r3": {
+    "entries": 230,
+    "matched": 198
+   },
+   "r4": {
+    "entries": 330,
+    "matched": 330
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 160,
+    "matched": 160
+   },
+   "r4": {
+    "entries": 292,
+    "matched": 292
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 260,
+    "matched": 260
+   },
+   "r4": {
+    "entries": 392,
+    "matched": 392
+   }
+  }
+ },
+ "mkDelayWorker32B": {
+  "module": {
+   "r3": {
+    "entries": 1566,
+    "matched": 469
+   },
+   "r4": {
+    "entries": 536,
+    "matched": 536
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 1620,
+    "matched": 38
+   },
+   "r4": {
+    "entries": 104,
+    "matched": 104
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 1643,
+    "matched": 38
+   },
+   "r4": {
+    "entries": 104,
+    "matched": 104
+   }
+  }
+ },
+ "mkPktMerge": {
+  "module": {
+   "r3": {
+    "entries": 191,
+    "matched": 191
+   },
+   "r4": {
+    "entries": 214,
+    "matched": 214
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 180,
+    "matched": 180
+   },
+   "r4": {
+    "entries": 203,
+    "matched": 203
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 333,
+    "matched": 180
+   },
+   "r4": {
+    "entries": 203,
+    "matched": 203
+   }
+  }
+ },
+ "mkSMAdapter4B": {
+  "module": {
+   "r3": {
+    "entries": 1638,
+    "matched": 1581
+   },
+   "r4": {
+    "entries": 1892,
+    "matched": 1892
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 787,
+    "matched": 673
+   },
+   "r4": {
+    "entries": 978,
+    "matched": 978
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 1094,
+    "matched": 970
+   },
+   "r4": {
+    "entries": 1275,
+    "matched": 1275
+   }
+  }
+ },
+ "or1200": {
+  "module": {
+   "r3": {
+    "entries": 2783,
+    "matched": 2719
+   },
+   "r4": {
+    "entries": 3233,
+    "matched": 3233
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 1350,
+    "matched": 1317
+   },
+   "r4": {
+    "entries": 1751,
+    "matched": 1751
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 1947,
+    "matched": 1870
+   },
+   "r4": {
+    "entries": 2304,
+    "matched": 2304
+   }
+  }
+ },
+ "raygentop": {
+  "module": {
+   "r3": {
+    "entries": 1931,
+    "matched": 1836
+   },
+   "r4": {
+    "entries": 2255,
+    "matched": 2255
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 1234,
+    "matched": 1186
+   },
+   "r4": {
+    "entries": 1603,
+    "matched": 1603
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 1634,
+    "matched": 1575
+   },
+   "r4": {
+    "entries": 1992,
+    "matched": 1992
+   }
+  }
+ },
+ "sha": {
+  "module": {
+   "r3": {
+    "entries": 2275,
+    "matched": 2147
+   },
+   "r4": {
+    "entries": 2456,
+    "matched": 2456
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 925,
+    "matched": 925
+   },
+   "r4": {
+    "entries": 1234,
+    "matched": 1234
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 1507,
+    "matched": 1507
+   },
+   "r4": {
+    "entries": 1816,
+    "matched": 1816
+   }
+  }
+ },
+ "stereovision0": {
+  "module": {
+   "r3": {
+    "entries": 18148,
+    "matched": 18148
+   },
+   "r4": {
+    "entries": 20836,
+    "matched": 20836
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 13667,
+    "matched": 13666
+   },
+   "r4": {
+    "entries": 16354,
+    "matched": 16354
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 14244,
+    "matched": 14213
+   },
+   "r4": {
+    "entries": 16901,
+    "matched": 16901
+   }
+  }
+ },
+ "stereovision1": {
+  "module": {
+   "r3": {
+    "entries": 16632,
+    "matched": 16536
+   },
+   "r4": {
+    "entries": 18710,
+    "matched": 18710
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 13568,
+    "matched": 13472
+   },
+   "r4": {
+    "entries": 15622,
+    "matched": 15622
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 14017,
+    "matched": 13908
+   },
+   "r4": {
+    "entries": 16058,
+    "matched": 16058
+   }
+  }
+ },
+ "stereovision2": {
+  "module": {
+   "r3": {
+    "entries": 32721,
+    "matched": 23877
+   },
+   "r4": {
+    "entries": 35886,
+    "matched": 35886
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 22274,
+    "matched": 22273
+   },
+   "r4": {
+    "entries": 34282,
+    "matched": 34282
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 22811,
+    "matched": 22797
+   },
+   "r4": {
+    "entries": 34806,
+    "matched": 34806
+   }
+  }
+ },
+ "stereovision3": {
+  "module": {
+   "r3": {
+    "entries": 261,
+    "matched": 261
+   },
+   "r4": {
+    "entries": 289,
+    "matched": 289
+   }
+  },
+  "word": {
+   "r3": {
+    "entries": 162,
+    "matched": 162
+   },
+   "r4": {
+    "entries": 190,
+    "matched": 190
+   }
+  },
+  "wordio": {
+   "r3": {
+    "entries": 189,
+    "matched": 187
+   },
+   "r4": {
+    "entries": 215,
+    "matched": 215
+   }
+  }
+ }
+}
