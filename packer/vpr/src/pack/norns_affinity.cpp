@@ -6,6 +6,7 @@
 #include "norns_affinity.h"
 
 #include <algorithm>
+#include <exception>
 #include <fstream>
 
 #include "vpr_error.h"
@@ -29,6 +30,11 @@ AffinityMap& global_map() {
     return map;
 }
 
+ProposalStats& proposal_stats() {
+    static ProposalStats stats;
+    return stats;
+}
+
 void AffinityMap::load(const AtomNetlist& atom_netlist) {
     if (g_file.empty()) {
         return;
@@ -46,7 +52,9 @@ void AffinityMap::load(const AtomNetlist& atom_netlist) {
     size_t entries = 0;
     size_t matched = 0;
     std::string line;
+    size_t line_no = 0;
     while (std::getline(in, line)) {
+        line_no++;
         if (line.empty() || line[0] == '#') {
             continue;
         }
@@ -56,7 +64,13 @@ void AffinityMap::load(const AtomNetlist& atom_netlist) {
             continue;
         }
         std::string name = line.substr(0, cut);
-        int group = std::stoi(line.substr(cut + 1));
+        int group = 0;
+        try {
+            group = std::stoi(line.substr(cut + 1));
+        } catch (const std::exception&) {
+            VPR_FATAL_ERROR(VPR_ERROR_PACK, "Norns affinity: '%s' line %zu: group id '%s' is not an integer (%s:%d)\n",
+                            g_file.c_str(), line_no, line.substr(cut + 1).c_str(), __FILE__, __LINE__);
+        }
         entries++;
         AtomBlockId blk = atom_netlist.find_block(name);
         if (blk && group >= 0) {

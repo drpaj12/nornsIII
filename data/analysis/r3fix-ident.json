@@ -1,0 +1,797 @@
+{
+ "blob_merge": [
+  {
+   "cfg": "module-b4",
+   "design": "blob_merge",
+   "flat_identical_stage4": true,
+   "net_bytes": 25086552,
+   "net_identical_old_new": true,
+   "pack_s_new": 4.25,
+   "pack_s_old": 4.24,
+   "proposals": {
+    "attempted": 180443,
+    "calls": 6064,
+    "calls_zero_queued": 21,
+    "queued": 166796
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "blob_merge",
+   "flat_identical_stage4": true,
+   "net_bytes": 25136495,
+   "net_identical_old_new": true,
+   "pack_s_new": 4.54,
+   "pack_s_old": 3.3,
+   "proposals": {
+    "attempted": 15536,
+    "calls": 4393,
+    "calls_zero_queued": 4328,
+    "queued": 834
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "blob_merge",
+   "flat_identical_stage4": true,
+   "net_bytes": 25175600,
+   "net_identical_old_new": true,
+   "pack_s_new": 4.65,
+   "pack_s_old": 4.61,
+   "proposals": {
+    "attempted": 16790,
+    "calls": 4424,
+    "calls_zero_queued": 4297,
+    "queued": 2172
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "boundtop": [
+  {
+   "cfg": "module-b4",
+   "design": "boundtop",
+   "flat_identical_stage4": true,
+   "net_bytes": 2084960,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.28,
+   "pack_s_old": 0.29,
+   "proposals": {
+    "attempted": 9366,
+    "calls": 441,
+    "calls_zero_queued": 70,
+    "queued": 4136
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "boundtop",
+   "flat_identical_stage4": true,
+   "net_bytes": 2078240,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.26,
+   "pack_s_old": 0.27,
+   "proposals": {
+    "attempted": 3858,
+    "calls": 508,
+    "calls_zero_queued": 249,
+    "queued": 2432
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "boundtop",
+   "flat_identical_stage4": true,
+   "net_bytes": 2079011,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.26,
+   "pack_s_old": 0.27,
+   "proposals": {
+    "attempted": 3970,
+    "calls": 508,
+    "calls_zero_queued": 242,
+    "queued": 2543
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "ch_intrinsics": [
+  {
+   "cfg": "module-b4",
+   "design": "ch_intrinsics",
+   "flat_identical_stage4": true,
+   "net_bytes": 492106,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.07,
+   "pack_s_old": 0.07,
+   "proposals": {
+    "attempted": 2532,
+    "calls": 97,
+    "calls_zero_queued": 1,
+    "queued": 2068
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "ch_intrinsics",
+   "flat_identical_stage4": true,
+   "net_bytes": 495798,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.06,
+   "pack_s_old": 0.06,
+   "proposals": {
+    "attempted": 1042,
+    "calls": 91,
+    "calls_zero_queued": 18,
+    "queued": 906
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "ch_intrinsics",
+   "flat_identical_stage4": true,
+   "net_bytes": 495798,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.06,
+   "pack_s_old": 0.06,
+   "proposals": {
+    "attempted": 1042,
+    "calls": 91,
+    "calls_zero_queued": 18,
+    "queued": 906
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "diffeq1": [
+  {
+   "cfg": "module-b4",
+   "design": "diffeq1",
+   "flat_identical_stage4": true,
+   "net_bytes": 1530388,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.15,
+   "pack_s_old": 0.15,
+   "proposals": {
+    "attempted": 8429,
+    "calls": 295,
+    "calls_zero_queued": 21,
+    "queued": 4486
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "diffeq1",
+   "flat_identical_stage4": true,
+   "net_bytes": 1537042,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.13,
+   "pack_s_old": 0.12,
+   "proposals": {
+    "attempted": 3719,
+    "calls": 270,
+    "calls_zero_queued": 75,
+    "queued": 2198
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "diffeq1",
+   "flat_identical_stage4": true,
+   "net_bytes": 1537042,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.12,
+   "pack_s_old": 0.13,
+   "proposals": {
+    "attempted": 3719,
+    "calls": 270,
+    "calls_zero_queued": 75,
+    "queued": 2198
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "diffeq2": [
+  {
+   "cfg": "module-b4",
+   "design": "diffeq2",
+   "flat_identical_stage4": true,
+   "net_bytes": 1154458,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.19,
+   "pack_s_old": 0.2,
+   "proposals": {
+    "attempted": 5465,
+    "calls": 198,
+    "calls_zero_queued": 12,
+    "queued": 3466
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "diffeq2",
+   "flat_identical_stage4": true,
+   "net_bytes": 1153675,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.14,
+   "pack_s_old": 0.14,
+   "proposals": {
+    "attempted": 2516,
+    "calls": 168,
+    "calls_zero_queued": 33,
+    "queued": 1880
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "diffeq2",
+   "flat_identical_stage4": true,
+   "net_bytes": 1153675,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.14,
+   "pack_s_old": 0.14,
+   "proposals": {
+    "attempted": 2517,
+    "calls": 173,
+    "calls_zero_queued": 38,
+    "queued": 1880
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "mkDelayWorker32B": [
+  {
+   "cfg": "module-b4",
+   "design": "mkDelayWorker32B",
+   "flat_identical_stage4": true,
+   "net_bytes": 4835904,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.14,
+   "pack_s_old": 1.16,
+   "proposals": {
+    "attempted": 12520,
+    "calls": 437,
+    "calls_zero_queued": 264,
+    "queued": 992
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "mkDelayWorker32B",
+   "flat_identical_stage4": true,
+   "net_bytes": 4838752,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.11,
+   "pack_s_old": 1.12,
+   "proposals": {
+    "attempted": 152,
+    "calls": 42,
+    "calls_zero_queued": 42,
+    "queued": 0
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "mkDelayWorker32B",
+   "flat_identical_stage4": true,
+   "net_bytes": 4838752,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.1,
+   "pack_s_old": 1.12,
+   "proposals": {
+    "attempted": 152,
+    "calls": 42,
+    "calls_zero_queued": 42,
+    "queued": 0
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "mkPktMerge": [
+  {
+   "cfg": "module-b4",
+   "design": "mkPktMerge",
+   "flat_identical_stage4": true,
+   "net_bytes": 1567219,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.25,
+   "pack_s_old": 0.26,
+   "proposals": {
+    "attempted": 4492,
+    "calls": 177,
+    "calls_zero_queued": 103,
+    "queued": 985
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "mkPktMerge",
+   "flat_identical_stage4": true,
+   "net_bytes": 1566102,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.25,
+   "pack_s_old": 0.25,
+   "proposals": {
+    "attempted": 4138,
+    "calls": 174,
+    "calls_zero_queued": 100,
+    "queued": 985
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "mkPktMerge",
+   "flat_identical_stage4": true,
+   "net_bytes": 1566102,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.25,
+   "pack_s_old": 0.26,
+   "proposals": {
+    "attempted": 4138,
+    "calls": 174,
+    "calls_zero_queued": 100,
+    "queued": 985
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "mkSMAdapter4B": [
+  {
+   "cfg": "module-b4",
+   "design": "mkSMAdapter4B",
+   "flat_identical_stage4": true,
+   "net_bytes": 5347111,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.99,
+   "pack_s_old": 1.0,
+   "proposals": {
+    "attempted": 31480,
+    "calls": 1070,
+    "calls_zero_queued": 219,
+    "queued": 6898
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "mkSMAdapter4B",
+   "flat_identical_stage4": true,
+   "net_bytes": 5347731,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.91,
+   "pack_s_old": 0.93,
+   "proposals": {
+    "attempted": 8755,
+    "calls": 893,
+    "calls_zero_queued": 488,
+    "queued": 4345
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "mkSMAdapter4B",
+   "flat_identical_stage4": true,
+   "net_bytes": 5349259,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.93,
+   "pack_s_old": 0.94,
+   "proposals": {
+    "attempted": 10445,
+    "calls": 950,
+    "calls_zero_queued": 450,
+    "queued": 4974
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "or1200": [
+  {
+   "cfg": "module-b4",
+   "design": "or1200",
+   "flat_identical_stage4": true,
+   "net_bytes": 9709775,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.89,
+   "pack_s_old": 1.91,
+   "proposals": {
+    "attempted": 61592,
+    "calls": 2220,
+    "calls_zero_queued": 488,
+    "queued": 17946
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "or1200",
+   "flat_identical_stage4": true,
+   "net_bytes": 9705930,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.78,
+   "pack_s_old": 1.79,
+   "proposals": {
+    "attempted": 17970,
+    "calls": 1546,
+    "calls_zero_queued": 810,
+    "queued": 8342
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "or1200",
+   "flat_identical_stage4": true,
+   "net_bytes": 9723359,
+   "net_identical_old_new": true,
+   "pack_s_new": 1.79,
+   "pack_s_old": 1.82,
+   "proposals": {
+    "attempted": 25060,
+    "calls": 1856,
+    "calls_zero_queued": 914,
+    "queued": 10551
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "raygentop": [
+  {
+   "cfg": "module-b4",
+   "design": "raygentop",
+   "flat_identical_stage4": true,
+   "net_bytes": 6182888,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.78,
+   "pack_s_old": 0.79,
+   "proposals": {
+    "attempted": 31430,
+    "calls": 1233,
+    "calls_zero_queued": 162,
+    "queued": 15335
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "raygentop",
+   "flat_identical_stage4": true,
+   "net_bytes": 6166083,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.78,
+   "pack_s_old": 0.75,
+   "proposals": {
+    "attempted": 8924,
+    "calls": 1139,
+    "calls_zero_queued": 678,
+    "queued": 3829
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "raygentop",
+   "flat_identical_stage4": true,
+   "net_bytes": 6167551,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.75,
+   "pack_s_old": 0.74,
+   "proposals": {
+    "attempted": 10528,
+    "calls": 1218,
+    "calls_zero_queued": 728,
+    "queued": 4009
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "sha": [
+  {
+   "cfg": "module-b4",
+   "design": "sha",
+   "flat_identical_stage4": true,
+   "net_bytes": 5469469,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.93,
+   "pack_s_old": 0.93,
+   "proposals": {
+    "attempted": 37345,
+    "calls": 1296,
+    "calls_zero_queued": 53,
+    "queued": 32877
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "sha",
+   "flat_identical_stage4": true,
+   "net_bytes": 5475959,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.78,
+   "pack_s_old": 0.79,
+   "proposals": {
+    "attempted": 12686,
+    "calls": 1017,
+    "calls_zero_queued": 626,
+    "queued": 5784
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "sha",
+   "flat_identical_stage4": true,
+   "net_bytes": 5484393,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.79,
+   "pack_s_old": 0.78,
+   "proposals": {
+    "attempted": 13856,
+    "calls": 1043,
+    "calls_zero_queued": 595,
+    "queued": 6619
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "stereovision0": [
+  {
+   "cfg": "module-b4",
+   "design": "stereovision0",
+   "flat_identical_stage4": true,
+   "net_bytes": 42887850,
+   "net_identical_old_new": true,
+   "pack_s_new": 4.61,
+   "pack_s_old": 4.75,
+   "proposals": {
+    "attempted": 282816,
+    "calls": 9934,
+    "calls_zero_queued": 676,
+    "queued": 225397
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "stereovision0",
+   "flat_identical_stage4": true,
+   "net_bytes": 42870745,
+   "net_identical_old_new": true,
+   "pack_s_new": 3.33,
+   "pack_s_old": 3.36,
+   "proposals": {
+    "attempted": 41903,
+    "calls": 9810,
+    "calls_zero_queued": 6668,
+    "queued": 32502
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "stereovision0",
+   "flat_identical_stage4": true,
+   "net_bytes": 42862724,
+   "net_identical_old_new": true,
+   "pack_s_new": 3.41,
+   "pack_s_old": 3.37,
+   "proposals": {
+    "attempted": 42538,
+    "calls": 9834,
+    "calls_zero_queued": 6671,
+    "queued": 33088
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "stereovision1": [
+  {
+   "cfg": "module-b4",
+   "design": "stereovision1",
+   "flat_identical_stage4": true,
+   "net_bytes": 40794737,
+   "net_identical_old_new": true,
+   "pack_s_new": 5.17,
+   "pack_s_old": 5.29,
+   "proposals": {
+    "attempted": 275982,
+    "calls": 9468,
+    "calls_zero_queued": 3912,
+    "queued": 94144
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "stereovision1",
+   "flat_identical_stage4": true,
+   "net_bytes": 40865427,
+   "net_identical_old_new": true,
+   "pack_s_new": 3.99,
+   "pack_s_old": 4.1,
+   "proposals": {
+    "attempted": 42068,
+    "calls": 9378,
+    "calls_zero_queued": 4161,
+    "queued": 32721
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "stereovision1",
+   "flat_identical_stage4": true,
+   "net_bytes": 40862698,
+   "net_identical_old_new": true,
+   "pack_s_new": 4.05,
+   "pack_s_old": 4.11,
+   "proposals": {
+    "attempted": 43776,
+    "calls": 9422,
+    "calls_zero_queued": 4130,
+    "queued": 33252
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "stereovision2": [
+  {
+   "cfg": "module-b4",
+   "design": "stereovision2",
+   "flat_identical_stage4": true,
+   "net_bytes": 94009631,
+   "net_identical_old_new": true,
+   "pack_s_new": 7.86,
+   "pack_s_old": 7.89,
+   "proposals": {
+    "attempted": 429917,
+    "calls": 14820,
+    "calls_zero_queued": 8512,
+    "queued": 75120
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "stereovision2",
+   "flat_identical_stage4": true,
+   "net_bytes": 94261667,
+   "net_identical_old_new": true,
+   "pack_s_new": 7.75,
+   "pack_s_old": 7.59,
+   "proposals": {
+    "attempted": 142030,
+    "calls": 14833,
+    "calls_zero_queued": 5513,
+    "queued": 65514
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "stereovision2",
+   "flat_identical_stage4": true,
+   "net_bytes": 94259806,
+   "net_identical_old_new": true,
+   "pack_s_new": 7.51,
+   "pack_s_old": 7.82,
+   "proposals": {
+    "attempted": 142826,
+    "calls": 14825,
+    "calls_zero_queued": 5489,
+    "queued": 65953
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ],
+ "stereovision3": [
+  {
+   "cfg": "module-b4",
+   "design": "stereovision3",
+   "flat_identical_stage4": true,
+   "net_bytes": 758322,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.13,
+   "pack_s_old": 0.14,
+   "proposals": {
+    "attempted": 4709,
+    "calls": 175,
+    "calls_zero_queued": 9,
+    "queued": 3120
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "word-b4",
+   "design": "stereovision3",
+   "flat_identical_stage4": true,
+   "net_bytes": 756198,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.1,
+   "pack_s_old": 0.1,
+   "proposals": {
+    "attempted": 620,
+    "calls": 139,
+    "calls_zero_queued": 117,
+    "queued": 73
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  },
+  {
+   "cfg": "wordio-b4",
+   "design": "stereovision3",
+   "flat_identical_stage4": true,
+   "net_bytes": 756198,
+   "net_identical_old_new": true,
+   "pack_s_new": 0.1,
+   "pack_s_old": 0.1,
+   "proposals": {
+    "attempted": 620,
+    "calls": 139,
+    "calls_zero_queued": 117,
+    "queued": 73
+   },
+   "rc_new": 0,
+   "rc_old": 0
+  }
+ ]
+}

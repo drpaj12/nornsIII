@@ -1,0 +1,257 @@
+{
+ "blob_merge": {
+  "module": {
+   "entries": 6500,
+   "groups": 2,
+   "matched": 6490
+  },
+  "word": {
+   "entries": 3507,
+   "groups": 338,
+   "matched": 3507
+  },
+  "wordio": {
+   "entries": 3716,
+   "groups": 342,
+   "matched": 3677
+  }
+ },
+ "boundtop": {
+  "module": {
+   "entries": 762,
+   "groups": 8,
+   "matched": 687
+  },
+  "word": {
+   "entries": 620,
+   "groups": 54,
+   "matched": 555
+  },
+  "wordio": {
+   "entries": 748,
+   "groups": 62,
+   "matched": 674
+  }
+ },
+ "ch_intrinsics": {
+  "module": {
+   "entries": 144,
+   "groups": 1,
+   "matched": 144
+  },
+  "word": {
+   "entries": 113,
+   "groups": 5,
+   "matched": 81
+  },
+  "wordio": {
+   "entries": 177,
+   "groups": 6,
+   "matched": 113
+  }
+ },
+ "diffeq1": {
+  "module": {
+   "entries": 423,
+   "groups": 1,
+   "matched": 391
+  },
+  "word": {
+   "entries": 257,
+   "groups": 9,
+   "matched": 257
+  },
+  "wordio": {
+   "entries": 353,
+   "groups": 12,
+   "matched": 353
+  }
+ },
+ "diffeq2": {
+  "module": {
+   "entries": 230,
+   "groups": 1,
+   "matched": 198
+  },
+  "word": {
+   "entries": 160,
+   "groups": 5,
+   "matched": 160
+  },
+  "wordio": {
+   "entries": 260,
+   "groups": 9,
+   "matched": 260
+  }
+ },
+ "mkDelayWorker32B": {
+  "module": {
+   "entries": 1566,
+   "groups": 2,
+   "matched": 469
+  },
+  "word": {
+   "entries": 1620,
+   "groups": 7,
+   "matched": 38
+  },
+  "wordio": {
+   "entries": 1643,
+   "groups": 7,
+   "matched": 38
+  }
+ },
+ "mkPktMerge": {
+  "module": {
+   "entries": 191,
+   "groups": 4,
+   "matched": 191
+  },
+  "word": {
+   "entries": 180,
+   "groups": 10,
+   "matched": 180
+  },
+  "wordio": {
+   "entries": 333,
+   "groups": 10,
+   "matched": 180
+  }
+ },
+ "mkSMAdapter4B": {
+  "module": {
+   "entries": 1638,
+   "groups": 2,
+   "matched": 1581
+  },
+  "word": {
+   "entries": 787,
+   "groups": 66,
+   "matched": 673
+  },
+  "wordio": {
+   "entries": 1094,
+   "groups": 78,
+   "matched": 970
+  }
+ },
+ "or1200": {
+  "module": {
+   "entries": 2783,
+   "groups": 13,
+   "matched": 2719
+  },
+  "word": {
+   "entries": 1350,
+   "groups": 84,
+   "matched": 1317
+  },
+  "wordio": {
+   "entries": 1947,
+   "groups": 103,
+   "matched": 1870
+  }
+ },
+ "raygentop": {
+  "module": {
+   "entries": 1931,
+   "groups": 14,
+   "matched": 1836
+  },
+  "word": {
+   "entries": 1234,
+   "groups": 98,
+   "matched": 1186
+  },
+  "wordio": {
+   "entries": 1634,
+   "groups": 108,
+   "matched": 1575
+  }
+ },
+ "sha": {
+  "module": {
+   "entries": 2275,
+   "groups": 1,
+   "matched": 2147
+  },
+  "word": {
+   "entries": 925,
+   "groups": 33,
+   "matched": 925
+  },
+  "wordio": {
+   "entries": 1507,
+   "groups": 37,
+   "matched": 1507
+  }
+ },
+ "stereovision0": {
+  "module": {
+   "entries": 18148,
+   "groups": 23,
+   "matched": 18148
+  },
+  "word": {
+   "entries": 13667,
+   "groups": 1388,
+   "matched": 13666
+  },
+  "wordio": {
+   "entries": 14244,
+   "groups": 1409,
+   "matched": 14213
+  }
+ },
+ "stereovision1": {
+  "module": {
+   "entries": 16632,
+   "groups": 13,
+   "matched": 16536
+  },
+  "word": {
+   "entries": 13568,
+   "groups": 986,
+   "matched": 13472
+  },
+  "wordio": {
+   "entries": 14017,
+   "groups": 992,
+   "matched": 13908
+  }
+ },
+ "stereovision2": {
+  "module": {
+   "entries": 32721,
+   "groups": 20,
+   "matched": 23877
+  },
+  "word": {
+   "entries": 22274,
+   "groups": 1001,
+   "matched": 22273
+  },
+  "wordio": {
+   "entries": 22811,
+   "groups": 1013,
+   "matched": 22797
+  }
+ },
+ "stereovision3": {
+  "module": {
+   "entries": 261,
+   "groups": 1,
+   "matched": 261
+  },
+  "word": {
+   "entries": 162,
+   "groups": 17,
+   "matched": 162
+  },
+  "wordio": {
+   "entries": 189,
+   "groups": 19,
+   "matched": 187
+  }
+ }
+}

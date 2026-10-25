@@ -204,3 +204,53 @@ round 3 was read.
   across its three runs; the three seeds measure placement noise.
 * Pilot sensitivity: statuses are computed on n=15 and on the 11 designs outside the pilot; a difference makes the
   paper's status "inconclusive (pilot-sensitive)", as stated above.
+
+## Entry 2026-10-25 (fix round after review, after all round-3 results were read): amendment status, primary rules, additions
+
+The earlier entries are not edited. This entry corrects how they are described and fixes what the analysis code did
+differently from the protocol text. Results were read before it was written, so nothing here is pre-registered; the
+rule is that the primary status is the one under the protocol text (4fb8b60) and any deviating variant is reported
+alongside, labelled.
+
+* The entry of 2026-10-24 (d805789), titled "no rule changed", is an amendment. From its diff (one file, this one, 27
+  lines added) it changed two rules, both for H11: (a) the label permutations go from 1000 pooled over designs to 200
+  per design and seed; (b) a new exclusion: a relation is not defined for a design when 95% or more of the sampled
+  CLB pairs are related (see below for how the code applied it). Its other bullets are clarifications of definitions
+  (logic CLBs, pilot flow and grid values, labels per source, seed handling, pilot sensitivity as already stated at
+  4fb8b60). Neither change touches H8, H9, H10.
+* Timing. The d805789 heading says "before any Stage-4 result". The `metrics.json` files of the 60 Stage-4 runs of
+  ch_intrinsics were written 22:26:05 to 22:26:38, and 40 of the 60 of stereovision3 from 22:26:44; d805789 was
+  committed 22:27:05. So two designs (both pilot designs) had Stage-4 runs finished, and none had been analysed (the
+  statistics and the H11 code ran later). The paper says so.
+* Primary and alternative H11 results. Primary (the protocol text 4fb8b60): no exclusion; d_r is undefined only when
+  no stratum has at least 5 related and 30 unrelated pairs; 1000 label permutations pooled over designs (reported,
+  not used in the status); status needs the sign negative on at least 2 of 3 seeds in at least 12 of the 15 designs
+  (a literal count, so a relation defined for fewer than 12 designs cannot be supported). Reported alongside, labelled:
+  (i) the same with the unregistered scaling `ceil(12/15 n)` that the code used (the previous primary status);
+  (ii) the d805789 amendment: designs with a related-pair share of 0.95 or more (inclusive, per design: mean over the
+  three seeds) are excluded, 200 permutations per design and seed, with the literal and the scaled count.
+* What the amendment's code did beyond its text: the exclusion was applied to the word relation as well as the module
+  relation (it dropped ch_intrinsics, mkPktMerge and mkDelayWorker32B for the word relation); it compared `> 0.95`
+  per seed, not `>= 0.95` per design; per-stratum minimums (>= 5 related and >= 30 unrelated pairs, as in the
+  primary variant) and the scaling above were never written down; the positional null used 20 permutations, not 200
+  (now 200).
+* Holm adjustment keeps m = 3 (a NaN p counts as 1.0). Checked: no status changes.
+* The pilot-exclusion pass (n=11) is also computed for H8, H10a and H11. They use stock packings and no beta, so the
+  pilot (which only chose beta) cannot affect them; the primary status stays the n=15 one and the n=11 value is
+  reported beside it. The count rules (12 of 15 designs) have no meaning on 11 designs; there the scaled count is shown,
+  labelled as not registered.
+* Proposal counting (known, not fixed this round). In `add_cluster_molecule_candidates_by_norns_group`, `added` counts
+  molecules handed to the candidate queue, not molecules that entered it (the queue ignores a molecule already in it,
+  too far in APPack's distance test, etc.), the scan starts at the lowest atom id of the group, and the cap of 30
+  (`feasible_block_array_size`) is spent on attempts. The behaviour is unchanged this round (the Stage-4 results
+  stand); a log-only counter (attempted, queued, calls with none queued) was added and the pack is re-run to show the
+  `.net` is unchanged. The fix (return a bool and count only queued molecules; scan order) is queued for round 4.
+* The beta grid was not informed by the pilot. Over the pilot designs the median logic-CLB growth was at or below -3.8%
+  (word, word+io) and -7.7% (module, from beta 0.1) for every beta from 0.05 to 4, so the 5% growth rule passed for the
+  whole list and picked its end (4); the median purity gain rose from 0.012 (word, beta 0.1) to 0.057 at beta 2 and
+  was the same at 4 (word+io 0.0445 at 2 and 4; module 0 throughout). The grid {1, 2, 4} is therefore not
+  pilot-informed, and a larger gain scale is untested.
+* New measurements, all pack-only style (no routing, no Stage-4 rerun): identity of the packer after the counter and
+  the `stoi` fix (3 sources, beta 4, seed 1, 15 designs, `.net` against the previous binary and the flat placement
+  against the Stage-4 run); the stock arm on the Norns binary (option absent, 3 seeds) for the packing-time ratio on one
+  binary; the beta-0 gate on the module and word+io affinity files (`--pack`, seed 1, 30 comparisons).

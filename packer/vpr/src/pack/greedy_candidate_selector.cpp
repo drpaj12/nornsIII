@@ -216,6 +216,12 @@ void GreedyCandidateSelector::initialize_unrelated_clustering_data(const t_molec
 }
 
 GreedyCandidateSelector::~GreedyCandidateSelector() {
+    // Norns III: log-only summary of the group-member proposals (a no-op without the option).
+    if (norns::global_map().active()) {
+        const norns::ProposalStats& ps = norns::proposal_stats();
+        VTR_LOG("Norns proposals: %llu calls, %llu with 0 queued, %llu molecules attempted, %llu queued\n",
+                ps.calls, ps.calls_zero_queued, ps.attempted, ps.queued);
+    }
 }
 
 ClusterGainStats GreedyCandidateSelector::create_cluster_gain_stats(
@@ -899,6 +905,9 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_norns_group(
     AttractionInfo& attraction_groups) {
     t_logical_block_type_ptr cluster_type = cluster_legalizer.get_cluster_type(legalization_cluster_id);
     unsigned added = 0;
+    // log-only counters: attempted (added) vs actually queued (queue size grew); no effect on packing
+    unsigned long long norns_attempted = 0;
+    unsigned long long norns_queued = 0;
     for (AtomBlockId atom_id : norns::global_map().members(cluster_gain_stats.norns_dominant_group)) {
         if (added >= (unsigned)packer_opts_.feasible_block_array_size) {
             break;
@@ -913,6 +922,7 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_norns_group(
         }
         PackMoleculeId molecule_id = prepacker_.get_atom_molecule(atom_id);
         if (!cluster_legalizer.is_mol_clustered(molecule_id) && cluster_legalizer.is_molecule_compatible(molecule_id, legalization_cluster_id)) {
+            size_t norns_size_before = cluster_gain_stats.feasible_blocks.heap.size();
             add_molecule_to_pb_stats_candidates(molecule_id,
                                                 cluster_gain_stats,
                                                 cluster_type,
@@ -920,8 +930,19 @@ void GreedyCandidateSelector::add_cluster_molecule_candidates_by_norns_group(
                                                 prepacker_,
                                                 atom_netlist_,
                                                 appack_ctx_);
+            norns_attempted++;
+            if (cluster_gain_stats.feasible_blocks.heap.size() > norns_size_before) {
+                norns_queued++;
+            }
             added++;
         }
+    }
+    norns::ProposalStats& norns_ps = norns::proposal_stats();
+    norns_ps.calls++;
+    norns_ps.attempted += norns_attempted;
+    norns_ps.queued += norns_queued;
+    if (norns_queued == 0) {
+        norns_ps.calls_zero_queued++;
     }
 }
 

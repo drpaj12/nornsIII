@@ -12,14 +12,26 @@ experiments." The change is a provenance-affinity term; legality is AAPack's leg
 
 | file | change | lines |
 |---|---|---|
-| `vpr/src/pack/norns_affinity.h/.cpp` | new: reads the affinity file (`atom name`, TAB, `integer group id`), group lookup, member lists, dominant group | +157 |
-| `vpr/src/pack/greedy_candidate_selector.cpp` | loads the file in the constructor; counts the groups of a cluster's atoms and keeps its dominant group; adds `+ beta` per candidate atom in that group to the molecule gain (`get_molecule_gain`); proposes up to `feasible_block_array_size` unclustered group members after the connectivity step (new `add_cluster_molecule_candidates_by_norns_group`) | +67 |
+| `vpr/src/pack/norns_affinity.h/.cpp` | new: reads the affinity file (`atom name`, TAB, `integer group id`), group lookup, member lists, dominant group; parse errors of the group id stop with `VPR_FATAL_ERROR` (affinity file and line); log-only proposal counters | +182 |
+| `vpr/src/pack/greedy_candidate_selector.cpp` | loads the file in the constructor; counts the groups of a cluster's atoms and keeps its dominant group; adds `+ beta` per candidate atom in that group to the molecule gain (`get_molecule_gain`); proposes up to `feasible_block_array_size` unclustered group members after the connectivity step (new `add_cluster_molecule_candidates_by_norns_group`); log-only counter of the proposal step (attempted, queued, calls with none queued; one `Norns proposals:` log line when packing ends, active only with weight > 0) | +88 |
 | `vpr/src/pack/greedy_candidate_selector.h` | the new method; two fields in `ClusterGainStats` (group counts, dominant group) | +17 |
 | `vpr/src/base/read_options.cpp/.h` | options `--norns_affinity <file>` (default empty) and `--norns_affinity_weight <beta>` (default 0) | +19 |
 | `vpr/src/base/setup_vpr.cpp` | hands the two options to the packer (`norns::set_options`) | +2 |
 
 Nothing is removed from any VTR line (all diffs are additions). `vpr_types.h` is untouched
 on purpose (it is included everywhere); the options travel through `norns::set_options`.
+
+## Known limits of the proposal step (measured in the fix round, not fixed)
+
+In `add_cluster_molecule_candidates_by_norns_group` the counter `added` (cap `feasible_block_array_size`, 30) is incremented
+for every molecule handed to the candidate queue, not for every molecule the queue accepts: the queue ignores a molecule that
+is already in it or (APPack) too far from the cluster in the global placement, and a rejected molecule still spends the cap.
+The group is scanned in atom-id (netlist) order, so the members tried first are the lowest ids, a netlist-order bias. The behaviour is
+unchanged (the Stage-4 results stand); the log-only counter reports attempted and queued molecules and proposal calls that queued
+nothing (`Norns proposals:` line of `vpr.out`, per design in `data/analysis/r3fix-ident.json`, in Table `tab:r3diag` of the paper).
+The fix (count only queued molecules by returning a bool from `add_molecule_to_pb_stats_candidates`, and a scan order not tied to
+atom ids) is queued for round 4. The fraction of affinity-file entries that matched an atom is printed in the existing
+`Norns affinity:` line (per design in `data/analysis/r3fix-match.json`).
 
 ## The gain term and its scale
 

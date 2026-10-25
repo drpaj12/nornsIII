@@ -1,0 +1,20 @@
+{
+ "ch_intrinsics": [
+  {
+   "design": "ch_intrinsics",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "module"
+  },
+  {
+   "design": "ch_intrinsics",
+   "identical": true,
+   "net_bytes": 493272,
+   "rc": 0,
+   "rc_stock": 0,
+   "source": "wordio"
+  }
+ ]
+}

@@ -44,8 +44,9 @@ def wilcoxon(x: list[float], alternative: str) -> float:
 
 
 def holm(ps: dict[str, float]) -> dict[str, float]:
-    items = sorted(((p, k) for k, p in ps.items() if not math.isnan(p)))
-    out: dict[str, float] = {k: float("nan") for k in ps}
+    """Holm adjustment with m = len(ps) always (3 sources); a NaN p counts as 1.0 (fix entry 2026-10-25)."""
+    items = sorted(((1.0 if math.isnan(p) else p), k) for k, p in ps.items())
+    out: dict[str, float] = {}
     running = 0.0
     m = len(items)
     for i, (p, k) in enumerate(items):
@@ -282,56 +283,107 @@ def h8(designs: list[str]) -> dict:
             "split_gt1": sum(1 for v in split if v > 1.0)}
 
 
-def h10a(designs: list[str]) -> dict:
+def h10a(designs: list[str], need: int = 12) -> dict:
     rows = {d: nl.read_json(nl.DATA / d / "iowords.json") for d in designs}
     gain = [rows[d]["lut_cov_union"] - rows[d]["lut_cov_word"] for d in designs]
     med = statistics.median(gain)
     pos = sum(1 for g in gain if g > 0)
-    if med >= 0.05 and pos >= 12:
+    if med >= 0.05 and pos >= need:
         status = "supported"
     elif med < 0.01:
         status = "not supported"
     else:
         status = "inconclusive"
-    return {"status": status, "median_gain": med, "positive": pos, "n": len(designs),
+    return {"status": status, "median_gain": med, "positive": pos, "n": len(designs), "need": need,
             "median_cov_word": statistics.median([rows[d]["lut_cov_word"] for d in designs]),
             "median_cov_union": statistics.median([rows[d]["lut_cov_union"] for d in designs])}
 
 
-def h11(designs: list[str]) -> dict:
+def h11_rule(vals: list[float], neg: list[int], need: int) -> dict:
+    """The registered H11 rule for one relation: median <= -0.05, one-sided Wilcoxon p < 0.05, and
+    negative on >= 2 of 3 seeds in `need` designs (registered: 12 of the 15 designs)."""
+    n = len(vals)
+    if n < 5:
+        return {"status": "inconclusive", "n": n}
+    med = statistics.median(vals)
+    p = wilcoxon(vals, "less")
+    consistent = sum(1 for x in neg if x >= 2)
+    if med <= -0.05 and p < 0.05 and consistent >= need:
+        status = "supported"
+    elif med > -0.01:
+        status = "not supported"
+    else:
+        status = "inconclusive"
+    return {"status": status, "n": n, "median_d": med, "p": p, "consistent": consistent, "need": need}
+
+
+def pooled_perm_p(rows: dict, rel: str, designs: list[str], draws: int | None) -> float:
+    """Permutation p of the median over designs of d (label permutations within strata, pooled over designs)."""
+    cols = []
+    obs = []
+    for d in designs:
+        seeds = rows[d]["seeds"]
+        arr = np.array([s[f"perm_d_{rel}"][:draws] for s in seeds], dtype=float)
+        with np.errstate(all="ignore"):
+            cols.append(np.nanmean(arr, axis=0))
+        obs.append(rows[d][f"d_{rel}"])
+    if not cols:
+        return float("nan")
+    with np.errstate(all="ignore"):
+        pooled = np.nanmedian(np.vstack(cols), axis=0)
+    o = statistics.median(obs)
+    return float((int(np.sum(pooled <= o)) + 1) / (len(pooled) + 1))
+
+
+def h11_variants(rows: dict, designs: list[str]) -> dict:
+    """The H11 statuses of a set of designs under the registered rule (no exclusion) and the d805789
+    amendment (>= 95% related pairs excluded per design), each with the literal need (12) and the
+    unregistered scaling ceil(12/15 n)."""
     out: dict = {}
+    for vname, amend in (("registered", False), ("amended", True)):
+        for scaled in (False, True):
+            key = vname + ("_scaled" if scaled else "")
+            res: dict = {}
+            for rel in ("word", "module"):
+                keep = [d for d in designs if d in rows and not math.isnan(rows[d][f"d_{rel}"])
+                        and not (amend and rows[d][f"excluded_amend_{rel}"])]
+                vals = [rows[d][f"d_{rel}"] for d in keep]
+                neg = [rows[d][f"d_{rel}_negative_seeds"] for d in keep]
+                need = math.ceil(12 / 15 * len(keep)) if scaled else 12
+                res[rel] = h11_rule(vals, neg, need)
+                res[rel]["excluded"] = sorted(set(designs) - set(keep))
+                res[rel]["p_perm"] = pooled_perm_p(rows, rel, keep, 200 if amend else None) if len(keep) >= 5 else float("nan")
+                res[rel]["perm_draws"] = 200 if amend else PERMS_POOLED
+            st = [res[r]["status"] for r in ("word", "module")]
+            res["status"] = "supported" if all(x == "supported" for x in st) else (
+                "not supported" if all(x == "not supported" for x in st) else "inconclusive")
+            out[key] = res
+    return out
+
+
+PERMS_POOLED = 1000
+
+
+def h11(designs: list[str]) -> dict:
     rows = {}
     for d in designs:
         p = nl.DATA / d / "n11.json"
         if p.is_file():
             rows[d] = nl.read_json(p)
-    for rel in ("word", "module"):
-        vals = [(d, r[f"d_{rel}"], r[f"d_{rel}_negative_seeds"]) for d, r in rows.items()
-                if not math.isnan(r[f"d_{rel}"])]
-        v = [x[1] for x in vals]
-        if len(v) < 5:
-            out[rel] = {"status": "inconclusive", "n": len(v)}
-            continue
-        med = statistics.median(v)
-        p = wilcoxon(v, "less")
-        consistent = sum(1 for x in vals if x[2] >= 2)
-        need = math.ceil(12 / 15 * len(v))
-        if med <= -0.05 and p < 0.05 and consistent >= need:
-            status = "supported"
-        elif med > -0.01:
-            status = "not supported"
-        else:
-            status = "inconclusive"
-        out[rel] = {"status": status, "n": len(v), "median_d": med, "p": p, "consistent": consistent,
-                    "need": need, "excluded": sorted(set(rows) - {x[0] for x in vals})}
-    st = [out[r]["status"] for r in ("word", "module")]
-    out["status"] = "supported" if all(s == "supported" for s in st) else (
-        "not supported" if all(s == "not supported" for s in st) else "inconclusive")
+    pilot_free = [d for d in designs if d not in PILOT]
+    var = h11_variants(rows, designs)
+    out: dict = {rel: var["registered"][rel] for rel in ("word", "module")}
+    out["status"] = var["registered"]["status"]
+    out["variants"] = var
+    out["no_pilot"] = h11_variants(rows, pilot_free)
     stab = [r["stability"] for r in rows.values() if r.get("stability") is not None]
     nul = [r["stability_null"] for r in rows.values() if r.get("stability_null") is not None]
     out["stability"] = statistics.mean(stab) if stab else None
     out["stability_null"] = statistics.mean(nul) if nul else None
     out["n_designs"] = len(rows)
+    out["d_positive"] = {rel: sorted(d for d in rows if not math.isnan(rows[d][f"d_{rel}"]) and rows[d][f"d_{rel}"] > 0)
+                         for rel in ("word", "module")}
+    out["share"] = {d: {"word": rows[d]["share_word"], "module": rows[d]["share_module"]} for d in rows}
     return out
 
 
@@ -361,15 +413,116 @@ def seed_noise(designs: list[str]) -> dict:
             "cv_max": max(cv.values()) if cv else None, "n": len(cv)}
 
 
+def fixes(designs: list[str]) -> dict:
+    """Fix-round measurements (scripts/r3fix.py, data/analysis/r3fix-*.json): packer identity after the log counter,
+    proposal hit-rate, matched affinity entries, the stock arm on the Norns binary, the beta-0 gate extension."""
+    out: dict = {}
+    ident = nl.DATA / "analysis" / "r3fix-ident.json"
+    if ident.is_file():
+        res = nl.read_json(ident)
+        rows = [r for d in designs for r in res.get(d, [])]
+        prop = {d: {} for d in designs}
+        for d in designs:
+            for r in res.get(d, []):
+                src = r["cfg"].split("-b")[0]
+                p = r["proposals"] or {}
+                if p:
+                    prop[d][src] = {**p, "hit_rate": p["queued"] / p["attempted"] if p["attempted"] else None,
+                                    "zero_share": p["calls_zero_queued"] / p["calls"] if p["calls"] else None}
+        tot = {src: {k: sum(prop[d][src][k] for d in designs if src in prop[d])
+                     for k in ("calls", "calls_zero_queued", "attempted", "queued")} for src in af.SOURCES}
+        out["ident"] = {"n": len(rows), "net_identical": sum(1 for r in rows if r["net_identical_old_new"]),
+                        "flat_identical": sum(1 for r in rows if r["flat_identical_stage4"]),
+                        "designs": len(res), "proposals": prop, "totals": tot,
+                        "hit_rate_median": {src: statistics.median([prop[d][src]["hit_rate"] for d in designs
+                                                                     if src in prop[d] and prop[d][src]["hit_rate"] is not None])
+                                            for src in af.SOURCES},
+                        "zero_share_median": {src: statistics.median([prop[d][src]["zero_share"] for d in designs
+                                                                       if src in prop[d] and prop[d][src]["zero_share"] is not None])
+                                              for src in af.SOURCES}}
+    match = nl.DATA / "analysis" / "r3fix-match.json"
+    if match.is_file():
+        m = nl.read_json(match)
+        frac = {src: [m[d][src]["matched"] / m[d][src]["entries"] for d in designs] for src in af.SOURCES}
+        worst = {src: min(((m[d][src]["matched"] / m[d][src]["entries"], d) for d in designs)) for src in af.SOURCES}
+        out["match"] = {"rows": m, "median": {s_: statistics.median(v) for s_, v in frac.items()},
+                        "worst": {s_: {"fraction": w[0], "design": w[1]} for s_, w in worst.items()}}
+    stockn = nl.DATA / "analysis" / "r3fix-stockn.json"
+    if stockn.is_file():
+        sn = nl.read_json(stockn)
+        ratios: dict[str, list[float]] = {src: [] for src in af.SOURCES}
+        ratios_old: dict[str, list[float]] = {src: [] for src in af.SOURCES}
+        for d in designs:
+            runs = runs_by(d)
+            base = {r["seed"]: r["pack_s"] for r in sn.get(d, []) if r["rc"] == 0 and r["pack_s"]}
+            if len(base) != len(SEEDS):
+                continue
+            for src in af.SOURCES:
+                cfg = f"{src}-b{r3_beta(src)}"
+                vals = [runs[(cfg, "analytic", s_)]["pack_s"] / base[s_] for s_ in SEEDS
+                        if (cfg, "analytic", s_) in runs and runs[(cfg, "analytic", s_)].get("pack_s")]
+                old = [runs[(cfg, "analytic", s_)]["pack_s"] / runs[("stock", "analytic", s_)]["pack_s"] for s_ in SEEDS
+                       if (cfg, "analytic", s_) in runs and runs[(cfg, "analytic", s_)].get("pack_s")
+                       and runs.get(("stock", "analytic", s_), {}).get("pack_s")]
+                if len(vals) == len(SEEDS):
+                    ratios[src].append(nl.geomean(vals))
+                if len(old) == len(SEEDS):
+                    ratios_old[src].append(nl.geomean(old))
+        out["stockn"] = {"n_runs": sum(len(v) for v in sn.values()),
+                         "flat_identical": sum(1 for v in sn.values() for r in v if r["flat_identical_stage4_stock"]),
+                         "pack_ratio_same_binary": {src: nl.geomean(v) if v else None for src, v in ratios.items()},
+                         "pack_ratio_other_build": {src: nl.geomean(v) if v else None for src, v in ratios_old.items()},
+                         "n_designs": {src: len(v) for src, v in ratios.items()}}
+    tm = nl.DATA / "analysis" / "r3fix-timing.json"
+    if tm.is_file():
+        t = nl.read_json(tm)
+        per: dict[str, list[float]] = {src: [] for src in af.SOURCES}
+        starts, loads = [], []
+        for d in designs:
+            rows = t.get(d, [])
+            starts += [r["start"] for r in rows]
+            loads += [r["load1"] for r in rows]
+            for src in af.SOURCES:
+                vals = []
+                for s_ in SEEDS:
+                    a = [r["pack_s"] for r in rows if r["seed"] == s_ and r["arm"] == f"{src}-b4" and r["pack_s"]]
+                    b = [r["pack_s"] for r in rows if r["seed"] == s_ and r["arm"] == "stock" and r["pack_s"]]
+                    if a and b:
+                        vals.append(a[0] / b[0])
+                if len(vals) == len(SEEDS):
+                    per[src].append(nl.geomean(vals))
+        out["timing"] = {"ratio": {src: nl.geomean(v) if v else None for src, v in per.items()},
+                         "n_designs": {src: len(v) for src, v in per.items()},
+                         "window": [min(starts), max(starts)] if starts else None,
+                         "load1_median": statistics.median(loads) if loads else None,
+                         "load1_max": max(loads) if loads else None, "n_runs": sum(len(v) for v in t.values())}
+    g2 = nl.DATA / "analysis" / "r3fix-gate2.json"
+    if g2.is_file():
+        gg = nl.read_json(g2)
+        out["gate2"] = {"designs": len(gg), "n_checks": sum(len(v) for v in gg.values()),
+                        "identical": sum(1 for v in gg.values() for r in v if r["identical"])}
+    return out
+
+
+def r3_beta(source: str) -> str:
+    return "%g" % nl.read_json(r3.GRID)["sources"][source]["beta_m"]
+
+
 def compute() -> dict:
     designs = list(nl.DESIGN_ORDER)
+    pilot_free = [d for d in designs if d not in PILOT]
     res: dict = {"H8": h8(designs), "H10a": h10a(designs), "H11": h11(designs)}
+    # fix entry 2026-10-25: the n=11 pass for H8 and H10a too (they use stock packings only, so the pilot,
+    # which only chose beta, cannot move them; reported, the primary status stays the n=15 one)
+    res["H8"]["no_pilot"] = h8(pilot_free)
+    res["H10a"]["no_pilot"] = h10a(pilot_free, math.ceil(12 / 15 * len(pilot_free)))  # 12 of 15 scaled: not registered
     gate_path = nl.DATA / "analysis" / "r3-gate.json"
     if gate_path.is_file():
         gate = nl.read_json(gate_path)
         res["gate"] = {"designs": len(gate),
                        "all_identical": all(r["identical"] for rows in gate.values() for r in rows),
                        "n_checks": sum(len(rows) for rows in gate.values())}
+    res["fix"] = fixes(designs)
     grid_path = r3.GRID
     if grid_path.is_file():
         grid = nl.read_json(grid_path)

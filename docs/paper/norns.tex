@@ -59,8 +59,10 @@ initial placement should be used with. A second round adds bitwise seeds
 coarse-random arm, and two structure analyses that need no placement run; each
 hypothesis is reported with its deciding number, and an appendix keeps the
 research log. Rounds one and two are over 15 designs with one VPR seed per configuration. A third round asks whether VPR's packing step dilutes the HDL structure, builds a packer (a copy of VPR's
-AAPack clusterer with a provenance-affinity gain term) and tests it against the stock packer with three VPR seeds per
-configuration, adds the top-level I/O buses as words, and reads the annealed placement against provenance; its decision rules were committed before any run.
+AAPack clusterer with a provenance-affinity gain term) and tests it against the stock packer on 15 designs with three VPR seeds per
+configuration, adds the top-level I/O buses as words, and reads the annealed placement against provenance; its decision rules were
+committed before any measurement (one later amendment, to the proximity analysis, is recorded). Affinity packing raises word purity without
+growing the CLB count, but routed wirelength is slightly worse than the stock packer's and that comparison is inconclusive.
 \end{abstract}
 
 \begin{IEEEkeywords}

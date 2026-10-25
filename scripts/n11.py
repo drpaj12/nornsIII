@@ -26,7 +26,10 @@ import r3lib
 
 MAX_NET_FANOUT = 32
 MAX_PAIRS = 400_000
-PERMS = 200
+PERMS = 1000       # label permutations per design and seed; the first AMEND_PERMS give the amendment's p
+AMEND_PERMS = 200  # protocol entry 2026-10-24 (d805789): 200 permutations per design and seed
+NULL_PERMS = 200   # position permutations of the null (protocol: 200; the first version used 20)
+EXCLUDE_SHARE = 0.95
 STRATA = (0, 1, 2, 4)  # lower bounds of the n_ij strata 0, 1, 2-3, >=4
 RELATIONS = ("word", "module", "stmt", "net", "io")
 N_SEEDS = (1, 2, 3)
@@ -165,27 +168,27 @@ def analyse_run(run: dict, seed: int) -> tuple[dict, tuple]:
     for name, mask in rel.items():
         res[name] = {"n_pairs": int(mask.sum()),
                      "mean_dist": float(dist[mask].mean()) if mask.any() else None}
+    strata_idx = [np.flatnonzero(strat == s) for s in range(4)]
     for name in ("word", "module"):
-        if rel[name].mean() > 0.95:  # one module (or nearly): no unrelated pairs to compare with
-            res[f"d_{name}"] = float("nan")
-            res[f"p_{name}"] = float("nan")
-            continue
-        res[f"d_{name}"] = strat_diff(dist, rel[name], strat)
-        # permutation of the relation labels within strata
-        obs = res[f"d_{name}"]
-        exceed = 0
         base = rel[name]
+        # Original rule (docs/plan/round3.md, 4fb8b60): no exclusion; d is undefined (NaN) only when
+        # no stratum has >= 5 related and >= 30 unrelated pairs. The share is kept for the amendment.
+        res[f"share_{name}"] = float(base.mean())
+        obs = strat_diff(dist, base, strat)
+        res[f"d_{name}"] = obs
+        # permutation of the relation labels within strata (PERMS draws; pooled over designs in r3stats)
+        perm_d = []
         for _ in range(PERMS):
             perm = base.copy()
-            for s in range(4):
-                m = np.flatnonzero(strat == s)
+            for m in strata_idx:
                 perm[m] = rng.permutation(base[m])
-            if strat_diff(dist, perm, strat) <= obs:
-                exceed += 1
-        res[f"p_{name}"] = (exceed + 1) / (PERMS + 1)
+            perm_d.append(round(strat_diff(dist, perm, strat), 6))
+        res[f"perm_d_{name}"] = perm_d
+        first = [v for v in perm_d[:AMEND_PERMS]]
+        res[f"p_{name}"] = (sum(1 for v in first if v <= obs) + 1) / (AMEND_PERMS + 1) if not np.isnan(obs) else float("nan")
     # null: positions permuted among logic CLBs, mean distance of all pairs
     nulls = []
-    for _ in range(PERMS // 10):
+    for _ in range(NULL_PERMS):
         p = rng.permutation(c)
         nulls.append(float(np.abs(xy[p][i] - xy[p][j]).sum(axis=1).mean()))
     res["null_mean_dist"] = float(np.mean(nulls))
@@ -245,6 +248,9 @@ def run_design(design: str) -> dict | None:
         vals = [s[f"d_{name}"] for s in per_seed if not np.isnan(s[f"d_{name}"])]
         out[f"d_{name}"] = float(np.mean(vals)) if vals else float("nan")
         out[f"d_{name}_negative_seeds"] = int(sum(1 for s in per_seed if s[f"d_{name}"] < 0))
+        # design-level share of related pairs (mean over the seeds) for the amendment's exclusion (>= 0.95)
+        out[f"share_{name}"] = float(np.mean([s[f"share_{name}"] for s in per_seed]))
+        out[f"excluded_amend_{name}"] = bool(out[f"share_{name}"] >= EXCLUDE_SHARE)
     # neighbour stability across seeds (placements share the CLB list when the packing is the same)
     stab, stab_null = [], []
     for a, b in itertools.combinations(range(len(loaded)), 2):
@@ -264,7 +270,8 @@ def run_design(design: str) -> dict | None:
     path.write_text(head + "".join("\t".join(str(x) for x in row) + "\n" for row in why),
                     encoding="utf-8")
     print(f"{design}: d_word {out['d_word']:.3f} d_module {out['d_module']:.3f} "
-          f"stability {out['stability']}")
+          f"share_word {out['share_word']:.3f} share_module {out['share_module']:.3f} "
+          f"stability {out['stability']}", flush=True)
     return out
 
 

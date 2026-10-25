@@ -114,6 +114,12 @@ def method(R: dict) -> str:
         for s in af.SOURCES) if grid else "not yet frozen"
     gate_txt = (f"{g['n_checks']} comparisons over {g['designs']} designs, "
                 f"{'all byte-identical' if g['all_identical'] else 'NOT all identical'}") if g else "not yet run"
+    fx = R.get("fix", {})
+    if fx.get("gate2"):
+        gate_txt += (f"; the same $\\beta=0$ check for the module and word+io affinity files (\\code{{--pack}}, seed 1): "
+                     f"{fx['gate2']['identical']} of {fx['gate2']['n_checks']} byte-identical")
+    growth = max(max(grid["sources"][x]["median_clb_growth"].values()) for x in af.SOURCES) if grid else 0.0
+    limits = proposal_limits(R)
     return fill(r"""\subsection{Round three: packing, I/O words and placement proximity}
 \label{sec:r3-method}
 
@@ -136,6 +142,8 @@ gain. Legality stays with AAPack's legalizer. The change is @@files@@ files, @@l
 byte-identical to the stock \code{vpr}'s in \code{--pack} and in the analytical flow on all 15 designs, before
 any experiment run: @@gate@@.
 
+@@limits@@
+
 \paragraph{RQ-N8, dilution (no VPR).} On the stock packings of round one, per design: purity (plurality share of the
 labelled atoms of a logic CLB, atom-weighted), and the split factor (CLBs a word spans over the fewest CLBs that
 could hold it, 1.0 being best), at word and module level, against a null that assigns the same atoms at random to
@@ -151,19 +159,37 @@ word or word+io (word, else io-word) at three values of $\beta$ each, with the a
 \code{words\_partial} seed rebuilt on that run's own packing, three VPR seeds (1 to 3) per configuration. The grid was
 chosen on a pilot of the four smallest designs that reads only purity and CLB count (never wirelength): $\beta_m$ is
 the largest value in $\{0.05,0.1,0.2,0.5,1,2,4\}$ whose median CLB-count growth is at most 5\%, and the grid is its
-neighbours (@@grid@@). Each claim is reported on all 15 designs and without the four pilot designs; a status
+neighbours (@@grid@@). \emph{The pilot did not discriminate between the betas.} The median logic-CLB growth over the
+four pilot designs was negative at every $\beta$ of the list (largest value @@growth@@), so the 5\% growth rule passed
+all of them and took the end of the list, and the purity gain of the word sources was the same at $\beta=2$ and $\beta=4$
+(module: zero throughout). The grid $\{1,2,4\}$ is therefore not informed by the pilot, and a larger gain scale is untested. Each claim is reported on all 15 designs and without the four pilot designs; a status
 that differs between the two is called inconclusive (pilot-sensitive).
 
 \paragraph{RQ-N11, proximity.} On the stock-packing, analytic-start runs, logic CLB pairs by relation (same word,
 same module, same statement, net-connected, same io-word) against the direct net count, which is stratified
 out: the stratified mean distance difference of related over unrelated pairs, as a fraction of the unrelated
-distance (negative is closer).
+distance (negative is closer). A stratum counts only with at least 5 related and 30 unrelated pairs. The status
+is computed under the protocol text (\code{@@sha@@}: no design excluded, the sign rule needs at least 12 of the 15
+designs, so a relation defined for fewer designs cannot be supported), which is the primary status, and the
+following variants are reported beside it, labelled. (i) The sign rule scaled to $\lceil 12n/15\rceil$ designs, which the
+first analysis code used; the protocol does not register it. (ii) The amendment \code{d805789}: a design is
+left out of a relation when 95\% or more of the sampled pairs are related (applied to the module relation and to
+the word relation, per design on the mean over the three seeds, with the scaled and the literal count), and the
+label permutations are 200 per design and seed. The primary permutation test is the protocol's 1000 label permutations pooled
+over designs; it is reported, not used in a status. The entry of 2026-10-25 in \code{docs/plan/round3.md} records these deviations.
 
 \paragraph{Decision rules and their provenance.} Every hypothesis, metric, arm and numeric rule (including the margins
 $\pm$2\% and 1\% for wirelength, 5 percentage points of purity, 5\% CLB growth) is in \code{docs/plan/round3.md},
-committed as @@sha@@ on @@ptime@@, before any round-three measurement or VPR run; the paper reports only those
-rules. Later changes are new dated entries in that file that keep the old rule, and the results are given under both.
-""", files=nfiles, lines=nadd, dele=ndel, gate=gate_txt, grid=gridtxt, sha=f"\\code{{{PROTOCOL_SHA}}}", ptime=PROTOCOL_TIME)
+committed as \code{@@sha@@} on @@ptime@@, before any round-three measurement or VPR run. Two later dated entries
+exist and the earlier entries are not edited. The entry \code{d805789} (2026-10-24) is titled a clarification, but it is an
+amendment: besides definitions it changed two H11 rules (the label permutations, 1000 pooled over designs, became 200 per
+design and seed; a new exclusion of designs with 95\% or more related pairs). It was committed at 22:27:05, before any
+Stage-4 result was analysed, but the Stage-4 runs of ch_intrinsics (60 runs, finished 22:26:38) and 40 of the 60 of stereovision3 had
+already finished. The entry of 2026-10-25 (the fix round after review) records what the analysis code did beyond the
+protocol text. Where the code deviated, the primary status in this paper is the one under the text of \code{@@sha@@} and
+the deviating variant is reported alongside, labelled.
+""", files=nfiles, lines=nadd, dele=ndel, gate=gate_txt, grid=gridtxt, sha=PROTOCOL_SHA, ptime=PROTOCOL_TIME,
+                growth=pct(growth), limits=limits)
 
 
 def h_rows(R: dict) -> list[tuple[str, str, str, str]]:
@@ -192,10 +218,14 @@ def h_rows(R: dict) -> list[tuple[str, str, str, str]]:
                      f"geomean {f3(b.get('gm'))}, {b.get('better')}/{b.get('n')} better, {peq(b.get('p'))}"))
     for rel in ("word", "module"):
         x = h11[rel]
+        sc = h11["variants"]["registered_scaled"][rel]
         rows.append(("N11", f"H11 same-{rel} pairs closer than nets predict", x["status"],
-                     f"median {f3(x.get('median_d'))}, {peq(x.get('p'))}, n={x['n']}"
+                     f"median {f3(x.get('median_d'))}, {peq(x.get('p'))}, n={x['n']}; {x['consistent']} of {x['n']} "
+                     f"designs sign-consistent, {x['need']} needed; with the unregistered scaling ({sc['need']} needed): "
+                     f"{stat(sc['status'])}"
                      if x["n"] else "no data"))
-    rows.append(("N11", "H11 overall (both relations)", h11["status"], "supported only if both are"))
+    rows.append(("N11", "H11 overall (both relations)", h11["status"],
+                 f"supported only if both are; unregistered scaling: {stat(h11['variants']['registered_scaled']['status'])}"))
     return rows
 
 
@@ -204,6 +234,138 @@ def status_table(R: dict) -> str:
     for rq, hyp, status, num in h_rows(R):
         out.append(f"{rq} & {hyp} & {stat(status)} & {num} \\\\")
     return "\n".join(out)
+
+
+def proposal_limits(R: dict) -> str:
+    fx = R.get("fix", {})
+    idn = fx.get("ident")
+    if not idn:
+        return ""
+    hq, zq = idn["hit_rate_median"], idn["zero_share_median"]
+    tot = idn["totals"]
+    same = (f"{idn['net_identical']} of {idn['n']} \\code{{.net}} files byte-identical to the previous binary's, "
+            f"{idn['flat_identical']} of {idn['n']} flat placements identical to the Stage-4 run")
+    qs = " / ".join(pct(hq[x]) for x in af.SOURCES)
+    zs = " / ".join(pct(zq[x]) for x in af.SOURCES)
+    ts = " / ".join(pct(tot[x]["queued"] / tot[x]["attempted"]) for x in af.SOURCES)
+    return fill(r"""\paragraph{Limits of the proposal step.} The step hands up to 30 unclustered members of a cluster's dominant
+group to the candidate queue, scanning the group in netlist (atom id) order. Its counter counts the molecules handed over, not
+the molecules the queue accepted, so the cap of 30 can be spent on molecules the queue ignores (already queued, or beyond
+APPack's distance threshold), and the scan always starts at the lowest atom ids of the group: which members are tried first is
+biased by netlist order. The behaviour is unchanged in this paper (Stage-4 results stand); it was measured with a log-only counter
+added to the packer, which leaves the packing unchanged (@@same@@; pack-only style runs of the headline configurations, seed 1,
+no routing). Share of handed-over molecules that entered the queue, median over designs (module / word / word+io): @@qs@@
+(pooled over all calls: @@ts@@); proposal calls (one per cluster) that queued nothing: @@zs@@ (Table~\ref{tab:r3diag}).
+The fix (count only queued molecules, return a bool from the queue step, a scan order not tied to atom ids) is queued for round 4.
+""", same=same, qs=qs, zs=zs, ts=ts)
+
+
+def diag_table(R: dict) -> str:
+    fx = R.get("fix", {})
+    if not fx.get("ident") or not fx.get("match"):
+        return ""
+    rows = []
+    for d in nl.DESIGN_ORDER:
+        m = fx["match"]["rows"][d]
+        pr = fx["ident"]["proposals"][d]
+        cells = [esc(d)]
+        cells += [pct(m[x]["matched"] / m[x]["entries"]) for x in af.SOURCES]
+        cells += [pct(pr[x]["hit_rate"]) if x in pr else "n/a" for x in af.SOURCES]
+        cells += [pct(pr[x]["zero_share"]) if x in pr else "n/a" for x in af.SOURCES]
+        rows.append(" & ".join(cells) + " \\\\")
+    worst = fx["match"]["worst"]
+    wtxt = "; ".join(f"{SRC[x]} {pct(worst[x]['fraction'])} on {esc(worst[x]['design'])}" for x in af.SOURCES)
+    return fill(r"""\begin{table*}[t]
+\caption{Packer diagnostics per design at the headline $\beta$ (seed 1). Matched: share of affinity-file entries that
+named an atom of the netlist (from the VPR log; the lowest per source: @@wtxt@@). Queued: share of molecules handed to the
+candidate queue by the proposal step that entered it. 0-queued: share of proposal calls (one per cluster) that queued
+nothing. Columns in each group: module, word, word+io.}
+\label{tab:r3diag}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{Matched} & \multicolumn{3}{c}{Queued} & \multicolumn{3}{c}{0-queued} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Design & Mod. & Word & W+io & Mod. & Word & W+io & Mod. & Word & W+io \\
+\midrule
+@@rows@@
+\bottomrule
+\end{tabular}
+\end{table*}
+""", wtxt=wtxt, rows="\n".join(rows))
+
+
+H11_LABEL = {"registered": "Protocol text, 12 of 15 designs (primary)",
+             "registered_scaled": "Scaled count (not registered)",
+             "amended": "Amendment d805789, 12 of 15",
+             "amended_scaled": "Amendment d805789, scaled count"}
+
+
+def h11_table(R: dict) -> str:
+    h = R["H11"]
+    if not h.get("variants"):
+        return ""
+    rows = []
+    for title, src in (("All 15 designs", h["variants"]), ("Without the four pilot designs", h["no_pilot"])):
+        rows.append(f"\\multicolumn{{11}}{{l}}{{\\emph{{{title}}}}} \\\\")
+        for key, label in H11_LABEL.items():
+            v = src[key]
+            cells = [label]
+            for rel in ("word", "module"):
+                x = v[rel]
+                cells += [str(x["n"]), f3(x.get("median_d")), f"{x.get('consistent', 'n/a')}/{x.get('need', 'n/a')}",
+                          pf(x.get("p_perm")), stat(x["status"])]
+            rows.append(" & ".join(cells) + " \\\\")
+    return fill(r"""\begin{table*}[t]
+\caption{RQ-N11, H11 under the protocol text and the labelled variants. n is the number of designs in which the relation is
+defined (and not excluded); median is the median over those designs of the stratified distance difference; k/need is the
+number of designs negative in two of three seeds over the number the rule needs; perm p is the permutation p of the median
+over designs (1000 label permutations pooled over designs for the protocol text and the scaled count, 200 for the amendment),
+reported and not used in the status. The status uses the median, the one-sided Wilcoxon test and k/need. The count of
+the pilot-free rows is shown scaled in the scaled rows only; with 11 designs the literal 12 cannot be met.}
+\label{tab:r3h11}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrlrrrrl@{}}
+\toprule
+ & \multicolumn{5}{c}{Same word} & \multicolumn{5}{c}{Same module} \\
+\cmidrule(lr){2-6}\cmidrule(lr){7-11}
+Variant & n & median & k/need & perm p & status & n & median & k/need & perm p & status \\
+\midrule
+@@rows@@
+\bottomrule
+\end{tabular}
+\end{table*}
+""", rows="\n".join(rows))
+
+
+def pack_ratio_text(R: dict) -> str:
+    fx = R.get("fix", {})
+    sn, tm = fx.get("stockn"), fx.get("timing")
+    if not sn and not tm:
+        return ""
+    out = [r"""\textbf{Packing time on one binary.} The stock arm of Stage 4 ran on the stock \code{vpr} and the Norns arms on the
+Norns \code{vpr}, two builds, so the ratios of Table~\ref{tab:r3qor} compare different binaries (and the Flow column includes
+routing)."""]
+    if tm:
+        a = tm["ratio"]
+        w = tm["window"]
+        out.append(fill(r"""Primary same-binary measurement (pack-only style, no routing, seed 1 to 3, @@nr@@ runs): on the Norns
+\code{vpr}, for each design and seed the stock arm (option absent) and the three Norns arms ran back to back, so any load affects the arms alike.
+The geomean over designs of the Norns to stock packing time ratio is @@a@@ (module / word / word+io). These runs took place
+@@w0@@ to @@w1@@ (UTC-4) \emph{with a concurrent load}: another lane ran CPU work outside the heavy lock (the one-minute load
+average at the start of a run had median @@lm@@, maximum @@lx@@). Packing times of the small designs are a few tenths of a second,
+so the ratio is coarse and approximate.""", nr=tm["n_runs"], a=" / ".join(f3(a[x]) for x in af.SOURCES),
+                       w0=w[0].replace("T", " "), w1=w[1].replace("T", " "), lm=f"{tm['load1_median']:.1f}",
+                       lx=f"{tm['load1_max']:.1f}"))
+    if sn:
+        a, b = sn["pack_ratio_same_binary"], sn["pack_ratio_other_build"]
+        out.append(fill(r"""Not interleaved, hence approximate: the Stage-4 Norns packing times over a separate rerun of the stock arm
+on the Norns \code{vpr} (@@nr@@ runs, @@fi@@ flat placements identical to the Stage-4 stock run, taken at another time and load) give @@same@@,
+against @@other@@ with the stock arm on the other build, as first reported.""", nr=sn["n_runs"], fi=sn["flat_identical"],
+                        same=" / ".join(f3(a[x]) for x in af.SOURCES), other=" / ".join(f3(b[x]) for x in af.SOURCES)))
+    return "\n\n".join(out) + "\n"
 
 
 def results(R: dict) -> str:
@@ -224,7 +386,9 @@ def results(R: dict) -> str:
         n9 = fill(r"""\begin{table}[t]
 \caption{Round three, headline configurations (the $\beta_m$ of each source): geomean ratio over the
 @@nd@@ completed designs against the stock packer with the same start, same VPR seeds. Below 1.0 is better;
-CLBs is the number of logic CLBs; Pack and Flow are the packing and total VPR runtimes. The seed arm's stock reference is the stock
+CLBs is the number of logic CLBs; Pack and Flow are the packing and total VPR runtimes. The stock arm ran on the stock \code{vpr} and
+the Norns arms on the Norns \code{vpr}, two builds, so Pack and Flow are not a same-binary comparison (the same-binary packing time
+ratio is in the text). The seed arm's stock reference is the stock
 packing with the same \code{words\_partial} seed rebuilt on it.}
 \label{tab:r3qor}
 \centering
@@ -254,8 +418,13 @@ plurality word or fails the 1/3 rule (packing).
 \textbf{RQ-N10, I/O words.} H10a is @@h10as@@: the median LUT word coverage rises from @@cw@@ to @@cu@@ with io-words
 (median gain @@gain@@, positive on @@pos@@ of 15 designs).
 
+\textbf{Without the four pilot designs.} H8, H10a and H11 use the stock packings and no beta, so the pilot, which only chose
+beta, cannot affect them; the n=11 pass is reported beside the n=15 status, which stays the primary one. H8 on the 11 designs: @@h8np@@.
+H10a on the 11 designs: @@h10np@@.
+
 @@n9@@
 @@n9p@@
+@@packratio@@
 @@cptxt@@
 \begin{table*}[t]
 \caption{Round three: hypotheses, status and deciding number (all designs run; statuses use the rules in
@@ -304,16 +473,25 @@ Design & io-words & Word cov. & + io-words \\
 \end{table}
 
 @@n11@@
+
+@@h11tab@@
+@@diag@@
 """, h8s=stat(h8["status"]), msh=f2(h8["median_share"]), mnull=f2(h8["median_null_share"]), above=h8["above_null"],
                 msp=f2(h8["median_split"]), gt1=h8["split_gt1"], mmod=f2(h8["median_module_share"]),
                 dword=pct(dec["word"]), dabc=pct(dec["loss_abc"]), dmix=pct(dec["no_word_mixed"]),
                 dnone=pct(dec["no_word_none"]), dpack=pct(dec["loss_pack"]), h10as=stat(h10a["status"]),
                 cw=pct(h10a["median_cov_word"]), cu=pct(h10a["median_cov_union"]), gain=pct(h10a["median_gain"]),
                 pos=h10a["positive"], n9=n9,
+                h8np=(f"{stat(h8['no_pilot']['status'])} (median purity {f2(h8['no_pilot']['median_share'])}, split "
+                      f"{f2(h8['no_pilot']['median_split'])})"),
+                h10np=(f"{stat(h10a['no_pilot']['status'])} (median gain {pct(h10a['no_pilot']['median_gain'])}, positive on "
+                       f"{h10a['no_pilot']['positive']} of {h10a['no_pilot']['n']}; the rule's 12 of 15 scaled to "
+                       f"{h10a['no_pilot']['need']}, not registered)"),
                 n9p=n9_prose(R) if "H9a" in R else "",
                 cptxt=("\\textbf{Checkpoint.} The packing experiments (RQ-N9) are not complete, so no H9 or H10b status "
                        "is given.\n" if cp else ""),
-                status=status_table(R), n8rows=n8_table(), n10rows=n10_table(), n11=n11_text(R))
+                status=status_table(R), n8rows=n8_table(), n10rows=n10_table(), n11=n11_text(R),
+                packratio=pack_ratio_text(R), h11tab=h11_table(R), diag=diag_table(R))
 
 
 def n9_prose(R: dict) -> str:
@@ -339,6 +517,7 @@ def n11_text(R: dict) -> str:
     h = R["H11"]
     if not h["n_designs"]:
         return ""
+    var = h["variants"]
     parts = []
     for rel in ("word", "module"):
         x = h[rel]
@@ -346,14 +525,35 @@ def n11_text(R: dict) -> str:
             continue
         parts.append(f"same-{rel} pairs: median stratified distance difference {f3(x['median_d'])} "
                      f"(one-sided Wilcoxon {peq(x['p'])}, n={x['n']} designs; negative in at least two of three seeds on "
-                     f"{x['consistent']}, needed {x['need']}; status {stat(x['status'])})")
+                     f"{x['consistent']} designs, {x['need']} needed; status {stat(x['status'])})")
+    sc = var["registered_scaled"]
+    am = var["amended"]
+    ams = var["amended_scaled"]
+
+    def one(v: dict) -> str:
+        return (f"word {stat(v['word']['status'])} (n={v['word']['n']}), module {stat(v['module']['status'])} "
+                f"(n={v['module']['n']}), overall {stat(v['status'])}")
+
     stab = ""
     if h.get("stability") is not None:
         stab = (f" Neighbour stability across VPR seeds (mean Jaccard of each CLB's four nearest neighbours): "
                 f"{f3(h['stability'])} against {f3(h['stability_null'])} for a permuted placement.")
-    return ("\\textbf{RQ-N11, what the annealed placement says.} H11 is " + stat(h["status"]) + ". "
-            + "; ".join(parts) + "." + stab + " The per-design ``why are these neighbours'' tables "
-            "(direct nets, shared high-fanout net, carry chain) are in \\code{data/analysis/n11-why/}.\n")
+    npl = h["no_pilot"]
+    return fill(r"""\textbf{RQ-N11, what the annealed placement says.} H11 is @@st@@ under the protocol text (no design excluded; the sign
+rule needs 12 of the 15 designs, so a relation defined for fewer than 12 designs cannot be supported): @@parts@@.
+The variants of Table~\ref{tab:r3h11}, labelled: with the sign rule scaled to $\lceil 12n/15\rceil$ designs, which the
+first analysis code used and the protocol does not register (the previous primary status): @@sc@@; with the 95\%
+exclusion of the amendment \code{d805789}: @@am@@ (scaled count: @@ams@@). Without the four pilot designs the protocol-text
+statuses are @@np@@; the literal 12 is unreachable there.@@stab@@ The per-design ``why are these neighbours'' tables
+(direct nets, shared high-fanout net, carry chain) are in \code{data/analysis/n11-why/}.
+""", st=stat(h["status"]), parts="; ".join(parts), sc=one(sc), am=one(am), ams=one(ams),
+                np=one(npl["registered"]), stab=stab)
+
+
+def pos_txt(names: list[str]) -> str:
+    if not names:
+        return "none of the designs"
+    return f"{len(names)} designs ({', '.join(code(x) for x in names)})"
 
 
 def discussion(R: dict) -> str:
@@ -363,8 +563,8 @@ def discussion(R: dict) -> str:
                f"{f2(h8['median_split'])} times the CLBs they would need, and the purity of the stock CLBs "
                f"({f2(h8['median_share'])}) is well above a random grouping ({f2(h8['median_null_share'])}) but far from word-pure. "
                f"Of the logic atoms, {pct(h8['decompose_median']['loss_abc'])} have no word at all (the front end) and a further "
-               f"{pct(h8['decompose_median']['loss_pack'])} are word atoms packed away from their word (packing), so in the "
-               f"median design the front end loses more than packing does.")
+               f"{pct(h8['decompose_median']['loss_pack'])} are word atoms packed away from their word (packing); these are two "
+               f"separate per-design medians, and the median front-end loss is larger than the median packing loss.")
     out.append(f"I/O words are a cheap way to recover part of the front-end loss (H10a {stat(h10a['status'])}: LUT word coverage "
                f"{pct(h10a['median_cov_word'])} to {pct(h10a['median_cov_union'])}).")
     if "H9a" in R and not R.get("checkpoint_only"):
@@ -392,17 +592,33 @@ def discussion(R: dict) -> str:
                    "does not have it, since the packing is the only difference.")
     if h11["n_designs"]:
         w, m = h11["word"], h11["module"]
-        out.append(f"Related pairs sit closer than their direct nets alone predict for both relations in the median design, "
-                   f"but H11 is {stat(h11['status'])} because its rule needs both to pass: the stratified distance difference is {f3(w.get('median_d'))} for same-word pairs "
-                   f"(n={w['n']}, status {stat(w['status'])}; negative in two of three seeds on {w.get('consistent')} designs, "
-                   f"{w.get('need')} needed) and {f3(m.get('median_d'))} for same-module pairs (n={m['n']}, "
-                   f"status {stat(m['status'])}). Designs with too few related or unrelated pairs in a stratum, and single-module "
-                   f"designs for the module relation, are left out. The neighbours are only partly stable: the mean Jaccard of "
-                   f"each CLB's four nearest neighbours between VPR seeds is {f3(h11['stability'])}, against {f3(h11['stability_null'])} "
-                   f"for a permuted placement.")
+        var = h11["variants"]
+        pos = h11["d_positive"]
+
+        def v_txt(v: dict) -> str:
+            return (f"word {stat(v['word']['status'])} (n={v['word']['n']}), module {stat(v['module']['status'])} "
+                    f"(n={v['module']['n']}), overall {stat(v['status'])}")
+
+        out.append(fill(r"""In the median design both relations sit closer than their direct nets alone predict (stratified distance difference
+@@wd@@ for same-word pairs, @@md@@ for same-module pairs), but not on every design: the same-word difference is positive on
+@@posw@@ and the same-module difference on @@posm@@. H11 is @@st@@ under the protocol text, because its rule needs both
+relations to pass: same word, n=@@wn@@, status @@ws@@ (negative in two of three seeds on @@wc@@ designs, @@wneed@@ needed);
+same module, n=@@mn@@, status @@ms@@ (@@mc@@ designs, @@mneed@@ needed). Two deviations of the analysis from the protocol text are reported
+beside it, not instead of it: the unregistered scaling of the count to $\lceil 12n/15\rceil$ designs, which the first analysis used
+(\code{r3stats.py}), gives @@sc@@; the amendment \code{d805789}, which excludes a design from a relation when 95\% or more of its
+sampled pairs are related, for the word relation as well as the module relation, gives @@am@@. Both are recorded in the entry of
+2026-10-25 of \code{docs/plan/round3.md} and in the Method. The neighbours are only partly stable: the mean Jaccard of
+each CLB's four nearest neighbours between VPR seeds is @@stab@@, against @@stabn@@ for a permuted placement.
+""", wd=f3(w.get("median_d")), md=f3(m.get("median_d")), posw=pos_txt(pos["word"]), posm=pos_txt(pos["module"]),
+                        st=stat(h11["status"]), wn=w["n"], ws=stat(w["status"]), wc=w.get("consistent"), wneed=w.get("need"),
+                        mn=m["n"], ms=stat(m["status"]), mc=m.get("consistent"), mneed=m.get("need"),
+                        sc=v_txt(var["registered_scaled"]), am=v_txt(var["amended"]),
+                        stab=f3(h11["stability"]), stabn=f3(h11["stability_null"])))
     out.append("Round three leaves open the effort curve (N3), larger designs (N5), region looseness (N6), "
                "a seed-selector change in the Norns packer, and whether a different gain scale (the grid ended at the largest beta "
-               "of the pilot list) changes the sign of H9b.")
+               "of the pilot list; the pilot did not discriminate the betas, so the grid is not informed by it) changes the sign of H9b. "
+               "The packing time ratios of Stage 4 compare two builds and the proposal step has the counting and ordering "
+               "limits described in the Method, both to be fixed in round 4.")
     return "\n\n".join(out) + "\n"
 
 
@@ -437,8 +653,18 @@ Norns packer. N11: H11. All rules, margins and the grid-selection rule are fixed
 
 \paragraph{2026-10-24, round three: outcomes.} @@outcomes@@ The numbers are in Table~\ref{tab:r3status}.
 
+\paragraph{2026-10-25, round three fix round (after review).} The rule-provenance description was corrected: the entry
+\code{d805789}, called a clarification, is an amendment that changed two H11 rules (label permutations; the 95\% exclusion), and two
+designs had Stage-4 runs finished before it was committed (Method). H11 is now given under the protocol text (no exclusion,
+12 of the 15 designs, 1000 pooled permutations) as the primary status: @@h11now@@; the status of the first analysis (the sign rule
+scaled to $\lceil 12n/15\rceil$ designs, not registered) was @@h11old@@, and the amendment's exclusion gives @@h11am@@. The n=11 pass was added for
+H8, H10a and H11, Holm now keeps $m=3$ (no status changed), and the positional null uses 200 permutations. The packer got a log-only proposal
+counter and an integer-parse error; the packing is unchanged (Method), and the per-design matched-entry and proposal tables
+are in Table~\ref{tab:r3diag}. Not done: the proposal-counting behaviour (round 4).
+
 \paragraph{2026-10-24, next.} The effort curve (N3), larger designs (N5), a seed-selector change and a larger gain scale in the Norns packer, and the
-packing-time cost of the affinity term.
+packing-time cost of the affinity term. Added 2026-10-25: fix the proposal counter (count queued molecules only; return a bool from the
+candidate-queue step) and the scan order of the group members, then rerun the packing experiments.
 
 \begin{table}[t]
 \caption{Round-three research questions and hypotheses with status and the deciding number (extends Table~\ref{tab:r2log}).}
@@ -454,7 +680,13 @@ RQ & Hypothesis & Round & Status & Deciding number \\
 \end{tabular}
 \end{table}
 """, q1=QUOTE1, q2=QUOTE2, sha=PROTOCOL_SHA, tab=tab,
-                outcomes=outcomes_text(R))
+                outcomes=outcomes_text(R),
+                h11now=f"word {stat(R['H11']['word']['status'])}, module {stat(R['H11']['module']['status'])}, overall {stat(R['H11']['status'])}",
+                h11old=(f"word {stat(R['H11']['variants']['registered_scaled']['word']['status'])}, module "
+                        f"{stat(R['H11']['variants']['registered_scaled']['module']['status'])}, overall "
+                        f"{stat(R['H11']['variants']['registered_scaled']['status'])}"),
+                h11am=(f"word {stat(R['H11']['variants']['amended']['word']['status'])}, module "
+                       f"{stat(R['H11']['variants']['amended']['module']['status'])}"))
 
 
 def main(argv: list[str]) -> int:

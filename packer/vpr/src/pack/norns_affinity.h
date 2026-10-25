@@ -52,4 +52,15 @@ class AffinityMap {
 /// @brief The packer's affinity map (loaded by the candidate selector's constructor).
 AffinityMap& global_map();
 
+/// @brief Log-only counters of the group-member proposals (no effect on packing). One call = one
+///        invocation of the proposal step for a cluster; "attempted" = molecules passed to the
+///        candidate queue; "queued" = molecules that actually entered the queue (the queue size grew).
+struct ProposalStats {
+    unsigned long long calls = 0;
+    unsigned long long calls_zero_queued = 0;
+    unsigned long long attempted = 0;
+    unsigned long long queued = 0;
+};
+ProposalStats& proposal_stats();
+
 } // namespace norns
