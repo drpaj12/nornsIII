@@ -242,7 +242,8 @@ def run_design(design: str) -> dict | None:
         last = (run, pairs) if k == 1 else last
     out: dict[str, object] = {"design": design, "seeds": per_seed}
     for name in ("word", "module"):
-        out[f"d_{name}"] = float(np.nanmean([s[f"d_{name}"] for s in per_seed]))
+        vals = [s[f"d_{name}"] for s in per_seed if not np.isnan(s[f"d_{name}"])]
+        out[f"d_{name}"] = float(np.mean(vals)) if vals else float("nan")
         out[f"d_{name}_negative_seeds"] = int(sum(1 for s in per_seed if s[f"d_{name}"] < 0))
     # neighbour stability across seeds (placements share the CLB list when the packing is the same)
     stab, stab_null = [], []

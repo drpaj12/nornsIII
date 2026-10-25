@@ -1,0 +1,104 @@
+{
+ "d_module": NaN,
+ "d_module_negative_seeds": 0,
+ "d_word": -0.32643397053891593,
+ "d_word_negative_seeds": 3,
+ "design": "stereovision3",
+ "seeds": [
+  {
+   "clbs": 15,
+   "d_module": NaN,
+   "d_word": -0.3424657534246575,
+   "io": {
+    "mean_dist": 2.0,
+    "n_pairs": 3
+   },
+   "mean_dist": 3.142857142857143,
+   "module": {
+    "mean_dist": 3.142857142857143,
+    "n_pairs": 105
+   },
+   "net": {
+    "mean_dist": 2.6964285714285716,
+    "n_pairs": 56
+   },
+   "null_mean_dist": 3.1428571428571432,
+   "p_module": NaN,
+   "p_word": 0.08955223880597014,
+   "pairs": 105,
+   "stmt": {
+    "mean_dist": 1.8333333333333333,
+    "n_pairs": 18
+   },
+   "stmt_rel_unrelated": 3.413793103448276,
+   "word": {
+    "mean_dist": 1.7142857142857142,
+    "n_pairs": 7
+   }
+  },
+  {
+   "clbs": 15,
+   "d_module": NaN,
+   "d_word": -0.36,
+   "io": {
+    "mean_dist": 2.6666666666666665,
+    "n_pairs": 3
+   },
+   "mean_dist": 3.0095238095238095,
+   "module": {
+    "mean_dist": 3.0095238095238095,
+    "n_pairs": 105
+   },
+   "net": {
+    "mean_dist": 2.517857142857143,
+    "n_pairs": 56
+   },
+   "null_mean_dist": 3.0095238095238104,
+   "p_module": NaN,
+   "p_word": 0.08955223880597014,
+   "pairs": 105,
+   "stmt": {
+    "mean_dist": 1.9444444444444444,
+    "n_pairs": 18
+   },
+   "stmt_rel_unrelated": 3.2298850574712645,
+   "word": {
+    "mean_dist": 1.7142857142857142,
+    "n_pairs": 7
+   }
+  },
+  {
+   "clbs": 15,
+   "d_module": NaN,
+   "d_word": -0.27683615819209045,
+   "io": {
+    "mean_dist": 2.0,
+    "n_pairs": 3
+   },
+   "mean_dist": 2.6666666666666665,
+   "module": {
+    "mean_dist": 2.6666666666666665,
+    "n_pairs": 105
+   },
+   "net": {
+    "mean_dist": 1.9821428571428572,
+    "n_pairs": 56
+   },
+   "null_mean_dist": 2.666666666666666,
+   "p_module": NaN,
+   "p_word": 0.21890547263681592,
+   "pairs": 105,
+   "stmt": {
+    "mean_dist": 1.7222222222222223,
+    "n_pairs": 18
+   },
+   "stmt_rel_unrelated": 2.8620689655172415,
+   "word": {
+    "mean_dist": 1.5714285714285714,
+    "n_pairs": 7
+   }
+  }
+ ],
+ "stability": 0.44084656084656076,
+ "stability_null": 0.19873015873015873
+}
