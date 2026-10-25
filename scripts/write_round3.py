@@ -210,7 +210,7 @@ def results(R: dict) -> str:
             for s in af.SOURCES:
                 r = sec[f"{s}.{st}"]
                 lines.append(f"{SRC[s]}, {'analytic' if st == 'analytic' else 'word seed'} & {f3(r['wirelength'])} & "
-                             f"{f3(r['chan_width'])} & {f3(r['cpd_ns'])} & {f3(r['clbs'])} & {f3(r['pack_s'])} & "
+                             f"{f3(r['chan_width'])} & {f3(r['cpd_ns'])} & {f3(r['logic_clbs'])} & {f3(r['pack_s'])} & "
                              f"{f3(r['flow_s'])} \\\\")
         n9 = fill(r"""\begin{table}[t]
 \caption{Round three, headline configurations (the $\beta_m$ of each source): geomean ratio over the

@@ -104,7 +104,7 @@ def clb_growth(design, cfg) -> float | None:
     for s in SEEDS:
         a, b = runs.get((cfg, "analytic", s)), runs.get(("stock", "analytic", s))
         if a and b:
-            vals.append(a["clbs"] / b["clbs"] - 1)
+            vals.append(a["logic_clbs"] / b["logic_clbs"] - 1)
     return statistics.mean(vals) if len(vals) == len(SEEDS) else None
 
 
@@ -342,7 +342,7 @@ def secondary(grid: dict, designs: list[str]) -> dict:
         for source in af.SOURCES:
             cfg = f"{source}-b{grid['sources'][source]['beta_m']:g}"
             row = {}
-            for metric in ("wirelength", "chan_width", "cpd_ns", "pack_s", "flow_s", "clbs"):
+            for metric in ("wirelength", "chan_width", "cpd_ns", "pack_s", "flow_s", "logic_clbs"):
                 vals = [metric_ratio(d, cfg, "stock", start, metric) for d in designs]
                 vals = [v for v in vals if v is not None]
                 row[metric] = nl.geomean(vals) if vals else None

@@ -207,7 +207,7 @@ def freeze_grid() -> int:
                 st, ar = rs.get("pilot-stock"), rs.get(f"pilot-{source}-b{beta:g}")
                 if not st or not ar:
                     continue
-                g.append(ar["clbs"] / st["clbs"] - 1)
+                g.append(ar["logic_clbs"] / st["logic_clbs"] - 1)
                 lev = "module" if source == "module" else ("word" if source == "word" else "wordio")
                 p.append(ar["purity"][lev]["share"] - st["purity"][lev]["share"])
             growth[beta] = statistics.median(g) if len(g) == len(PILOT) else None
