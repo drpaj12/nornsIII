@@ -1,0 +1,10 @@
+{
+ "design": "or1200",
+ "enough": true,
+ "rho": 0.13348498057821967,
+ "spans_total": 51,
+ "spans_unmatched_to_statement": 3,
+ "spans_used": 48,
+ "top5_expected": 0.5208333333333334,
+ "top5_overlap": 0
+}

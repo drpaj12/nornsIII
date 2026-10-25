@@ -103,3 +103,18 @@ the tools it needs). Uses [Odin III](https://github.com/drpaj12/odin3) (manual:
 <https://drpaj12.github.io/odin3/>), [Loki III](https://github.com/drpaj12/loki) (manual:
 <https://drpaj12.github.io/loki/>) and [Wyrd III](https://github.com/drpaj12/wyrd) (manual:
 <https://drpaj12.github.io/wyrd/>) to run the matrix.
+
+Round four (packing census, knowns, hierarchy, arms with CPD; protocol docs/plan/round4.md; needs odin3 >= 0b90fff9 for the
+attribution library, imported by scripts/timing4.py). Run with `. scripts/env.sh` and `$NR_PY` (scipy, networkx):
+
+    sh packer/build.sh                       # rebuild the Norns packer (census, proposal-count option)
+    $NR_PY scripts/round4.py join            # affinity join check -> data/analysis/r4-join.json (writes runs/<d>/r4/affinity)
+    $NR_PY scripts/round4.py gate            # Stage-1 gates -> data/analysis/r4-gate.json
+    $NR_PY scripts/round4.py census          # 45 census runs (stock, r3, r4 packings)
+    $NR_PY scripts/round4.py arms 2b         # routed analytic arms with the timing report and attribution
+    $NR_PY scripts/round4.py arms 5          # word-seed and stage x bit (scripts/r4stage.py) arms
+    $NR_PY scripts/r4census.py; $NR_PY scripts/r4near.py; $NR_PY scripts/r4hier.py; $NR_PY scripts/r4depth.py
+    $NR_PY scripts/r4stats.py                # data/analysis/r4-results.json
+    $NR_PY scripts/write_round4.py           # docs/paper/r4-*.tex (byte-identical from committed data/analysis, data/<d>)
+
+Packer options: `--norns_pack_census FILE`, `--norns_proposal_count queued|attempted`.

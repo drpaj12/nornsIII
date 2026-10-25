@@ -1,0 +1,10 @@
+{
+ "design": "raygentop",
+ "enough": true,
+ "rho": -0.24420074618716361,
+ "spans_total": 56,
+ "spans_unmatched_to_statement": 1,
+ "spans_used": 55,
+ "top5_expected": 0.45454545454545453,
+ "top5_overlap": 0
+}

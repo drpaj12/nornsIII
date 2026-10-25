@@ -1,0 +1,35 @@
+
+\paragraph{2026-10-25, round four.} Peter (2026-10-24): ``Queue those as round 4 after round 3 finishes - we're trying to make these better - I like the Loki ideas so yes (especially the idea of patterns from our data (what about the bigger designs, do they provide other insights of patterns). Norns I like, but I'm not sure this machine can handle the big designs. Also, I feel as the design gets bigger it's inevitable that the size of the chip is related to hierarchy in the hdl. So, I would like to see how the new clustering methods impact results. AND getting some knowns from the dataset we have.'' Peter (2026-10-25): ``So for Norns in the clustering packing phase is there a statement of what gets clustered that could be stated from what the packer does (the provinance) and what the starting design was (this is an answer to the heuristic approach that currently exists in the VTR packer (my hypothesis is that due to the pin width there is some sharing especially of certain paths, but there is also two orthoganal paths (or more) that should be packed together)) - note there might be a group of these statements where 10\% are of this type, 75\% are of this type and 15\% are the leftovers that are non-critical - again the criticalness of the choices is a big factor, and the multi-near critical paths impacts the algorithm. What can we say about that? In both cases is there data on a perbenchmark setting using the provenance information? For loki, I'm wondering if we could have sentences such as why I can't recover this since we know we map it, there has to be some step that fools the unmapping - what are those steps and back it up with data.''
+What round three suggested: the Norns packer raised purity but not wirelength, and the proposal counter and the affinity join were suspect.
+Questions: N17 what gets clustered and why; N12 knowns; N13 hierarchy against chip size; N14 to N16 the packer, a timing-from-provenance estimate and a stage-by-bit seed with critical-path delay everywhere.
+Outcomes: Table~\ref{tab:r4status}. Protocol \code{fbddfa0}. Next: fix the seed selector and scan order, rerun round three's purity claims with the adder-complete files, and larger designs.
+
+\begin{table}[t]
+\caption{Round-four research questions with status and deciding number (extends Table~\ref{tab:r3log}).}
+\label{tab:r4log}
+\centering\scriptsize
+\begin{tabular}{@{}llp{2.3cm}p{3.6cm}@{}}
+\toprule
+RQ & hypothesis & status & deciding number \\
+\midrule
+N17 & H17a shape (10/75/15) & not supported & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
+N17 & H17a literal numbers & not supported & same medians against 10/75/15 $\pm0.10$ \\
+N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p=<0.001$, n=15 \\
+N17 & H17c critical edges kept together & inconclusive (n < 12) & median ratio 0.652, n=9 \\
+N17 & H17d packer beats chance (series share) & supported & median excess 0.072, 15/15 positive \\
+N13 & H13a hierarchy vs grid area & supported & n=15 \\
+N13 & H13b beyond design size & inconclusive & n=15 \\
+N13 & H13c packer effect vs hierarchy & inconclusive & n=15 \\
+N15 & H15 depth estimate predicts critical statements & inconclusive & median $\rho$ 0.137, n=12 \\
+N14 & H14 norns vs stock: wirelength & not supported & geomean 1.033, 4/15 better, Holm $p=1.000$ \\
+N14 & H14 norns vs stock: chan\_width & not supported & geomean 1.015, 4/15 better, Holm $p=1.000$ \\
+N14 & H14 norns vs stock: cpd\_ns & not supported & geomean 0.996, 6/15 better, Holm $p=1.000$ \\
+N16 & H16 stage$\times$bit seed: norns.chan\_width & inconclusive & geomean 0.974, 8/14 better, Holm $p=0.684$ \\
+N16 & H16 stage$\times$bit seed: norns.cpd\_ns & not supported & geomean 1.013, 6/14 better, Holm $p=1.000$ \\
+N16 & H16 stage$\times$bit seed: norns.wirelength & not supported & geomean 1.015, 6/14 better, Holm $p=1.000$ \\
+N16 & H16 stage$\times$bit seed: stock.chan\_width & inconclusive & geomean 0.977, 10/14 better, Holm $p=0.581$ \\
+N16 & H16 stage$\times$bit seed: stock.cpd\_ns & inconclusive & geomean 0.996, 7/14 better, Holm $p=1.000$ \\
+N16 & H16 stage$\times$bit seed: stock.wirelength & not supported & geomean 1.005, 6/14 better, Holm $p=1.000$ \\
+\bottomrule
+\end{tabular}
+\end{table}

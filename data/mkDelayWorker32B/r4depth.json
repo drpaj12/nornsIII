@@ -1,0 +1,10 @@
+{
+ "design": "mkDelayWorker32B",
+ "enough": true,
+ "rho": 0.29280348705262765,
+ "spans_total": 16,
+ "spans_unmatched_to_statement": 6,
+ "spans_used": 10,
+ "top5_expected": 2.5,
+ "top5_overlap": 3
+}

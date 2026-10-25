@@ -1,0 +1,10 @@
+{
+ "design": "blob_merge",
+ "enough": true,
+ "rho": 0.6009321726859579,
+ "spans_total": 105,
+ "spans_unmatched_to_statement": 2,
+ "spans_used": 103,
+ "top5_expected": 0.24271844660194175,
+ "top5_overlap": 2
+}

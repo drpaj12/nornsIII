@@ -1,0 +1,10 @@
+{
+ "design": "mkPktMerge",
+ "enough": true,
+ "rho": 0.1411862416005035,
+ "spans_total": 18,
+ "spans_unmatched_to_statement": 3,
+ "spans_used": 15,
+ "top5_expected": 1.6666666666666667,
+ "top5_overlap": 1
+}
