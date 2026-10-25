@@ -540,6 +540,9 @@
    }
   },
   "checks": {
+   "coverage_excl_port_min": 1.0,
+   "coverage_min": 0.580097,
+   "coverage_runs": 264,
    "cpd_agree": 264,
    "cpd_max_diff": 0.0005000000000006111,
    "cpd_minus_arrival_max": 0.46704999999999997,
@@ -1166,6 +1169,8 @@
   "status": "inconclusive"
  },
  "n12": {
+  "k8_known": false,
+  "k8_known_scaled": false,
   "n_known": 2,
   "n_known_scaled": 3,
   "rows": [
@@ -1175,7 +1180,7 @@
     "known": false,
     "known_scaled": true,
     "n": 11,
-    "note": "data: round-3 n11; null: label permutation within connectivity strata; test: Wilcoxon one-sided over designs",
+    "note": "data: round-3 n11; null: label permutation within connectivity strata; test: Wilcoxon one-sided over designs. The relation is defined on 11 designs only: the literal count of 12 is unreachable by construction",
     "p": 0.0009765625,
     "relation": "same-module CLBs closer than net connectivity predicts (all 3 seeds)"
    },
@@ -1190,14 +1195,15 @@
     "relation": "same-word CLBs closer than net connectivity predicts (all 3 seeds)"
    },
    {
+    "cond_b": 15,
     "holds": 11,
     "id": "K3",
     "known": false,
     "known_scaled": false,
     "n": 15,
-    "note": "data: round-3 n8; descriptive count (no test beyond the stated null comparison)",
+    "note": "data: round-3 n8; condition A holds in 11/15, condition B in 15/15; Wilcoxon p for B is descriptive",
     "p": 3.0517578125e-05,
-    "relation": "stock packing dilutes words: word plurality share <= 0.80 and above the null's"
+    "relation": "stock packing dilutes words: word plurality share <= 0.80 (A, in >= 12 designs) and above the null's (B, in all 15)"
    },
    {
     "holds": 15,
@@ -1240,14 +1246,34 @@
     "relation": "adder, multiplier and memory atoms hold more of the critical-path delay than of the design's atoms"
    },
    {
-    "holds": 11,
-    "id": "K8",
+    "holds": 10,
+    "id": "K8 stock",
     "known": false,
     "known_scaled": false,
     "n": 15,
-    "note": "data: round-4 analytic runs (both packings, 3 seeds); descriptive",
+    "note": "data: round-4 analytic runs; descriptive",
     "p": null,
-    "relation": "routed wirelength and CPD move together across runs of one design (Spearman > 0)"
+    "relation": "routed wirelength and CPD move together across the seeds of one design (Spearman > 0) [stock packing]"
+   },
+   {
+    "holds": 10,
+    "id": "K8 norns",
+    "known": false,
+    "known_scaled": false,
+    "n": 15,
+    "note": "data: round-4 analytic runs; descriptive",
+    "p": null,
+    "relation": "routed wirelength and CPD move together across the seeds of one design (Spearman > 0) [norns packing]"
+   },
+   {
+    "holds": 11,
+    "id": "K8 pooled",
+    "known": false,
+    "known_scaled": false,
+    "n": 15,
+    "note": "data: round-4 analytic runs; descriptive (variant, not counted)",
+    "p": null,
+    "relation": "routed wirelength and CPD move together across the seeds of one design (Spearman > 0) [labelled variant: both packings pooled, 6 points]"
    }
   ]
  },
@@ -1320,6 +1346,58 @@
    "p": 0.09816062801282464,
    "rho": 0.4430143138127601
   },
+  "exploratory_elab": {
+   "depth_values": {
+    "blob_merge": 2,
+    "boundtop": 3,
+    "ch_intrinsics": 2,
+    "diffeq1": 1,
+    "diffeq2": 1,
+    "mkDelayWorker32B": 3,
+    "mkPktMerge": 3,
+    "mkSMAdapter4B": 3,
+    "or1200": 3,
+    "raygentop": 3,
+    "sha": 1,
+    "stereovision0": 4,
+    "stereovision1": 5,
+    "stereovision2": 3,
+    "stereovision3": 1
+   },
+   "n": 15,
+   "tests": {
+    "norns.De": {
+     "p": 0.00586545131895635,
+     "p_holm": 0.0234618052758254,
+     "rho": 0.6739828706387347
+    },
+    "norns.logE": {
+     "p": 0.001450593676929685,
+     "p_holm": 0.00870356206157811,
+     "rho": 0.7446092055293151
+    },
+    "norns.logE|S": {
+     "p": 0.028239413327880776,
+     "p_holm": 0.05647882665576155,
+     "rho": 0.5842361079822319
+    },
+    "stock.De": {
+     "p": 0.00586545131895635,
+     "p_holm": 0.0234618052758254,
+     "rho": 0.6739828706387347
+    },
+    "stock.logE": {
+     "p": 0.001450593676929685,
+     "p_holm": 0.00870356206157811,
+     "rho": 0.7446092055293151
+    },
+    "stock.logE|S": {
+     "p": 0.028239413327880776,
+     "p_holm": 0.05647882665576155,
+     "rho": 0.5842361079822319
+    }
+   }
+  },
   "n": 15,
   "rows": [
    {
@@ -1328,6 +1406,12 @@
     "M": 1,
     "S": 180,
     "design": "ch_intrinsics",
+    "elab": {
+     "depth": 2,
+     "instances": 2,
+     "instantiations": 1,
+     "modules": 2
+    },
     "norns": {
      "W": 38.0,
      "area": 100.0,
@@ -1346,6 +1430,12 @@
     "M": 1,
     "S": 319,
     "design": "stereovision3",
+    "elab": {
+     "depth": 1,
+     "instances": 1,
+     "instantiations": 0,
+     "modules": 1
+    },
     "norns": {
      "W": 33.333333333333336,
      "area": 49.0,
@@ -1364,6 +1454,12 @@
     "M": 1,
     "S": 429,
     "design": "diffeq2",
+    "elab": {
+     "depth": 1,
+     "instances": 1,
+     "instantiations": 0,
+     "modules": 1
+    },
     "norns": {
      "W": 58.666666666666664,
      "area": 256.0,
@@ -1382,6 +1478,12 @@
     "M": 1,
     "S": 622,
     "design": "diffeq1",
+    "elab": {
+     "depth": 1,
+     "instances": 1,
+     "instantiations": 0,
+     "modules": 1
+    },
     "norns": {
      "W": 53.333333333333336,
      "area": 256.0,
@@ -1400,6 +1502,12 @@
     "M": 4,
     "S": 220,
     "design": "mkPktMerge",
+    "elab": {
+     "depth": 3,
+     "instances": 7,
+     "instantiations": 6,
+     "modules": 7
+    },
     "norns": {
      "W": 32.0,
      "area": 784.0,
@@ -1423,6 +1531,12 @@
     "M": 14,
     "S": 2439,
     "design": "raygentop",
+    "elab": {
+     "depth": 3,
+     "instances": 16,
+     "instantiations": 15,
+     "modules": 15
+    },
     "norns": {
      "W": 67.33333333333333,
      "area": 361.0,
@@ -1446,6 +1560,12 @@
     "M": 1,
     "S": 2495,
     "design": "sha",
+    "elab": {
+     "depth": 1,
+     "instances": 1,
+     "instantiations": 0,
+     "modules": 1
+    },
     "norns": {
      "W": 63.333333333333336,
      "area": 289.0,
@@ -1464,6 +1584,12 @@
     "M": 8,
     "S": 930,
     "design": "boundtop",
+    "elab": {
+     "depth": 3,
+     "instances": 16,
+     "instantiations": 14,
+     "modules": 13
+    },
     "norns": {
      "W": 44.0,
      "area": 225.0,
@@ -1487,6 +1613,12 @@
     "M": 2,
     "S": 2010,
     "design": "mkSMAdapter4B",
+    "elab": {
+     "depth": 3,
+     "instances": 11,
+     "instantiations": 10,
+     "modules": 8
+    },
     "norns": {
      "W": 56.0,
      "area": 400.0,
@@ -1505,6 +1637,12 @@
     "M": 13,
     "S": 3585,
     "design": "or1200",
+    "elab": {
+     "depth": 3,
+     "instances": 16,
+     "instantiations": 15,
+     "modules": 16
+    },
     "norns": {
      "W": 86.66666666666667,
      "area": 729.0,
@@ -1528,6 +1666,12 @@
     "M": 23,
     "S": 21002,
     "design": "stereovision0",
+    "elab": {
+     "depth": 4,
+     "instances": 302,
+     "instantiations": 194,
+     "modules": 25
+    },
     "norns": {
      "W": 52.666666666666664,
      "area": 1156.0,
@@ -1551,6 +1695,12 @@
     "M": 13,
     "S": 18845,
     "design": "stereovision1",
+    "elab": {
+     "depth": 5,
+     "instances": 233,
+     "instantiations": 101,
+     "modules": 16
+    },
     "norns": {
      "W": 72.66666666666667,
      "area": 1600.0,
@@ -1574,6 +1724,12 @@
     "M": 2,
     "S": 541,
     "design": "mkDelayWorker32B",
+    "elab": {
+     "depth": 3,
+     "instances": 19,
+     "instantiations": 18,
+     "modules": 16
+    },
     "norns": {
      "W": 38.0,
      "area": 2500.0,
@@ -1592,6 +1748,12 @@
     "M": 20,
     "S": 36057,
     "design": "stereovision2",
+    "elab": {
+     "depth": 3,
+     "instances": 146,
+     "instantiations": 63,
+     "modules": 24
+    },
     "norns": {
      "W": 82.66666666666667,
      "area": 6724.0,
@@ -1615,6 +1777,12 @@
     "M": 2,
     "S": 10075,
     "design": "blob_merge",
+    "elab": {
+     "depth": 2,
+     "instances": 3,
+     "instantiations": 2,
+     "modules": 2
+    },
     "norns": {
      "W": 59.333333333333336,
      "area": 784.0,
@@ -1636,8 +1804,12 @@
  },
  "n17": {
   "H17a": {
+   "median_FL": 0.5758048503758332,
+   "median_OR": 0.26594162483733036,
    "median_SC": 0.040348901788635205,
+   "median_SI": 0.0349507343372374,
    "median_SI_OR": 0.3199546163664728,
+   "median_SN": 0.03177189409368635,
    "median_SN_FL": 0.6443346891342243,
    "n": 15,
    "numbers": "not supported",
@@ -1687,6 +1859,18 @@
    "status_n12_variant": "inconclusive (n < 12)"
   },
   "H17d": {
+   "exploratory_units": {
+    "median_excess": 0.023229594832648262,
+    "median_fixed_clb_share": 0.21621621621621623,
+    "median_null_atoms": 0.0017884950610110402,
+    "median_null_units": 0.05349582856208081,
+    "median_observed": 0.07657316148597422,
+    "n": 15,
+    "overflow_units": 0,
+    "p": 3.0517578125e-05,
+    "positive": 15,
+    "status_same_rule": "inconclusive"
+   },
    "median_excess": 0.07205242610150588,
    "n": 15,
    "p": 3.0517578125e-05,
@@ -4076,6 +4260,72 @@
     }
    }
   },
+  "split_reasons": {
+   "norns": {
+    "0.05": {
+     "capped": 0,
+     "crossings": 1003,
+     "designs": 15,
+     "designs_with_split": 13,
+     "hops": 4176,
+     "median_k": 14,
+     "reasons": {
+      "R0": 0,
+      "R1": 226,
+      "R2": 68,
+      "R3": 709
+     },
+     "split": 217
+    },
+    "0.1": {
+     "capped": 0,
+     "crossings": 4260,
+     "designs": 15,
+     "designs_with_split": 13,
+     "hops": 13262,
+     "median_k": 19,
+     "reasons": {
+      "R0": 0,
+      "R1": 719,
+      "R2": 111,
+      "R3": 3430
+     },
+     "split": 718
+    }
+   },
+   "stock": {
+    "0.05": {
+     "capped": 0,
+     "crossings": 1761,
+     "designs": 15,
+     "designs_with_split": 13,
+     "hops": 7102,
+     "median_k": 10,
+     "reasons": {
+      "R0": 0,
+      "R1": 317,
+      "R2": 47,
+      "R3": 1397
+     },
+     "split": 385
+    },
+    "0.1": {
+     "capped": 0,
+     "crossings": 3608,
+     "designs": 15,
+     "designs_with_split": 13,
+     "hops": 13548,
+     "median_k": 32,
+     "reasons": {
+      "R0": 0,
+      "R1": 606,
+      "R2": 78,
+      "R3": 2924
+     },
+     "split": 734
+    }
+   }
+  },
   "summary": {
    "r3": {
     "median_hit_rate": 0.46550620760271344,
@@ -4130,6 +4380,60 @@
      "high_fanout": 0.014358808421137783,
      "seed": 0.09794325237122575,
      "transitive": 0.21760673043865147
+    }
+   }
+  },
+  "weighted": {
+   "norns": {
+    "unweighted": {
+     "FL": 0.5134717693495795,
+     "OR": 0.3874292550499241,
+     "SC": 0.03765531632362705,
+     "SI": 0.03654665820259363,
+     "SN": 0.0291787959703561,
+     "n": 15
+    },
+    "w1": {
+     "FL": 0.4905483680323304,
+     "OR": 0.3850167205917009,
+     "SC": 0.04814044040854519,
+     "SI": 0.036447722358339076,
+     "SN": 0.021284263874437867,
+     "n": 15
+    },
+    "w2": {
+     "FL": 0.45212710578493603,
+     "OR": 0.3854069965524954,
+     "SC": 0.04876676407873328,
+     "SI": 0.06701548693397788,
+     "SN": 0.01679849040759164,
+     "n": 15
+    }
+   },
+   "stock": {
+    "unweighted": {
+     "FL": 0.5758048503758332,
+     "OR": 0.26594162483733036,
+     "SC": 0.040348901788635205,
+     "SI": 0.0349507343372374,
+     "SN": 0.03177189409368635,
+     "n": 15
+    },
+    "w1": {
+     "FL": 0.5642945632398947,
+     "OR": 0.2858152817099901,
+     "SC": 0.05033672988382508,
+     "SI": 0.036447722358339076,
+     "SN": 0.025979921770911536,
+     "n": 15
+    },
+    "w2": {
+     "FL": 0.5407790476499198,
+     "OR": 0.2984046675921986,
+     "SC": 0.05488208130006733,
+     "SI": 0.0407598767782799,
+     "SN": 0.027056971436411125,
+     "n": 15
     }
    }
   }

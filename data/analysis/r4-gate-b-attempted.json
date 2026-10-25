@@ -1,0 +1,92 @@
+{
+ "blob_merge": {
+  "census_bytes": 31591179,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "boundtop": {
+  "census_bytes": 2035887,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "ch_intrinsics": {
+  "census_bytes": 384005,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "diffeq1": {
+  "census_bytes": 1477699,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "diffeq2": {
+  "census_bytes": 1017375,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "mkDelayWorker32B": {
+  "census_bytes": 8917179,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "mkPktMerge": {
+  "census_bytes": 3061663,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "mkSMAdapter4B": {
+  "census_bytes": 9050796,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "or1200": {
+  "census_bytes": 19247932,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "raygentop": {
+  "census_bytes": 8331974,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "sha": {
+  "census_bytes": 8390430,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "stereovision0": {
+  "census_bytes": 43679575,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "stereovision1": {
+  "census_bytes": 46006724,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "stereovision2": {
+  "census_bytes": 76450423,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ },
+ "stereovision3": {
+  "census_bytes": 893045,
+  "identical": true,
+  "rc_off": 0,
+  "rc_on": 0
+ }
+}

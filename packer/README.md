@@ -38,6 +38,21 @@ on purpose (it is included everywhere); the options travel through `norns::set_o
   6 RAM, 7 unrelated clustering. The code reads the gain maps with `find` only and never touches the random state, so
   the `.net` is unchanged (Stage-1 gate (b)).
 * Gates: `scripts/round4.py gate` (results `data/analysis/r4-gate.json`).
+  Gate (c) compares against the round-3 binary (`$NORNS_VPR_R3`, default `/tmp/claude-1000/nr4-w/vpr-r3`): the overlay
+  as committed at `7e26f3b` (before the round-4 packer commit `00518c8`), on the same VTR commit and with the same cmake flags.
+  `sh packer/build.sh --r3` builds exactly that in a separate tree (`$NORNS_VTR_R3`, default `work/norns-vtr-r3`); it
+  exports `packer/vpr` of `7e26f3b` with `git archive`, so no round-4 file is left over. Point `NORNS_VPR_R3` at
+  `$NORNS_VTR_R3/build/vpr/vpr`. (The script path is the documented route; the binary used for the committed gate was copied
+  from the round-3 build before the round-4 overlay, and was not rebuilt in the fix round.)
+* Fix round (docs/plan/round4.md, last entry): (i) `last_status` (`norns_affinity.h`) is a global set in
+  `GreedyClusterer::try_add_candidate_mol_to_cluster` (`greedy_clusterer.cpp`) right after `add_mol_to_cluster` returns, and
+  the only caller of `update_cluster_gain_stats_candidate_failed` (which writes the `F` record) is the `else` branch of
+  that same call in `GreedyClusterer::try_grow_cluster`, with no code between them: every `F` record follows an attempt and reads
+  that attempt's status. No code change. (ii) Cost of `queued` counting: a molecule already in the queue returns false and
+  does not consume the cap, so with `queued` counting the scan of `add_cluster_molecule_candidates_by_norns_group` can walk the
+  whole group on every call (the cost grows with the size of the group). It is a
+  run-time cost, not a correctness issue (the gates pass); it is not bounded in this round (log-only note, no behaviour change). The
+  census `Norns proposals:` line (calls, attempted, queued) gives its size.
 
 ## Known limits of the proposal step (round 3; fixed above)
 

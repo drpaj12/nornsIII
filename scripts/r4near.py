@@ -54,7 +54,10 @@ def analyse(design: str, pack: str, arm: str, nlist: "rc.Netlist") -> dict | Non
     if not (run / "paths.json.gz").is_file() or not (cdir / "census.tsv").is_file():
         return None
     rm, cm = nl.read_json(run / "metrics.json"), nl.read_json(cdir / "metrics.json")
-    differs = bool(rm.get("net_sha256") and cm.get("net_sha256") and rm["net_sha256"] != cm["net_sha256"])
+    # both hashes are required: a missing hash is "unchecked" (not "not differing"); an unchecked arm is not used for the
+    # routed weighting or H17c, like a differing one
+    unchecked = not (rm.get("net_sha256") and cm.get("net_sha256"))
+    differs = (not unchecked) and rm["net_sha256"] != cm["net_sha256"]
     paths = load_paths(design, pack)
     cen = rc.Census(cdir / "census.tsv")
     atoms_of_clb, cls = r3lib.clb_atoms_of(run / "final.flat_place")
@@ -73,7 +76,7 @@ def analyse(design: str, pack: str, arm: str, nlist: "rc.Netlist") -> dict | Non
         for n in p["nodes"]:
             if r > rho.get(n[0], 0.0):
                 rho[n[0]] = r
-    out: dict = {"design": design, "pack": pack, "arm": arm, "packing_differs": differs, "paths_in_report": len(paths),
+    out: dict = {"design": design, "pack": pack, "arm": arm, "packing_differs": differs, "packing_unchecked": unchecked, "paths_in_report": len(paths),
                  "cpd_arrival_ns": a1, "margins": {}}
     # crossing rate of all member-member net edges (local nets, driver to sink, both in logic CLBs)
     edges = cross = 0

@@ -1,8 +1,14 @@
 """Round 4 runs (VPR, one at a time under the heavy lock; protocol: docs/plan/round4.md).
 
   python scripts/round4.py gate [design ...]      Stage-1 gates (a) (b) (c) -> data/analysis/r4-gate.json
+  python scripts/round4.py gateq [design ...]     fix round, question Q: gate (b) for the round-3 `attempted` arm, pack-only
+                                                  -> data/analysis/r4-gate-b-attempted.json
+  python scripts/round4.py flatcmp [design ...]   fix round, no VPR: tightened flat-placement compare on existing outputs
+                                                  -> data/analysis/r4-flatcmp.json
   python scripts/round4.py join [design ...]      affinity join: matched fraction per design and source,
                                                   round-3 files against round-4 files -> data/analysis/r4-join.json
+  python scripts/round4.py joinrev [design ...]   reverse coverage of the join (VPR atoms with an entry), no VPR run,
+                                                  reads runs/<d>/r4/census-stock -> adds "reverse" to r4-join.json
   python scripts/round4.py census [design ...]    Stage-2 pack-and-place runs with the census (stock, r3, r4)
   python scripts/round4.py arms [design ...]      Stage-2b/5 arms with timing reports
   python scripts/round4.py status
@@ -42,14 +48,22 @@ def vrun(binary: Path, design: str, cwd: Path, flags: list[str], log_name: str =
                   timeout=TIMEOUT)
 
 
+def flat_body(p: Path, skip: tuple[str, ...] = ("# Created:",)) -> list[str]:
+    """Lines of a flat placement without the one header line that carries a creation time (`# Created: ...`); every other line,
+    including every other `#` line, takes part in the comparison."""
+    lines = p.read_text(errors="replace").splitlines()
+    head = 0
+    while head < len(lines) and lines[head].startswith("#"):
+        head += 1
+    return [x for i, x in enumerate(lines) if not (i < head and x.startswith(skip))]
+
+
 def same(a: Path, b: Path) -> bool:
-    """Byte comparison; for a flat placement the `#` header lines (they carry a creation time) are skipped."""
+    """Byte comparison; for a flat placement only the `# Created:` line of the header block is skipped (it carries the time)."""
     if not (a.is_file() and b.is_file()):
         return False
     if a.name.endswith("flat_place"):
-        def body(p: Path) -> list[str]:
-            return [x for x in p.read_text(errors="replace").splitlines() if not x.startswith("#")]
-        return body(a) == body(b)
+        return flat_body(a) == flat_body(b)
     return filecmp.cmp(a, b, shallow=False)
 
 
@@ -155,6 +169,65 @@ def gate(designs: list[str]) -> int:
     return 0 if ok else 1
 
 
+GATE_Q = nl.DATA / "analysis" / "r4-gate-b-attempted.json"
+
+
+def gate_q(designs: list[str]) -> int:
+    """Fix-round question Q: gate (b) for the round-3 `attempted` arm (word, beta 4, round-4 affinity file): census on against
+    off, `--pack`, seed 1, `.net` byte comparison. Same design list and rules as gate (b) of the registered Stage 1."""
+    res = nl.read_json(GATE_Q) if GATE_Q.is_file() else {}
+    for design in designs:
+        if design in res and res[design]["identical"]:
+            continue
+        ensure_affinity(design)
+        root = TMP / "q" / design
+        base = ["--seed", "1", "--pack"] + aff_args(design, SOURCE, BETA, "r4") + ["--norns_proposal_count", "attempted"]
+        off, on = root / "off", root / "on"
+        rc_off = vrun(NORNS_VPR, design, off, base)
+        rc_on = vrun(NORNS_VPR, design, on, base + ["--norns_pack_census", str(on / "census.tsv")])
+        net = f"{design}.net"
+        ident = rc_off == 0 and rc_on == 0 and same(off / net, on / net)
+        census = on / "census.tsv"
+        res[design] = {"identical": ident, "rc_off": rc_off, "rc_on": rc_on,
+                       "census_bytes": census.stat().st_size if census.is_file() else 0}
+        print(f"gateq {design}: identical={ident}", flush=True)
+        shutil.rmtree(root, ignore_errors=True)
+        nl.write_json(GATE_Q, res)
+    n_ok = sum(1 for r in res.values() if r["identical"])
+    print(f"GATE (b) attempted arm: {n_ok} of {len(res)} identical")
+    return 0 if n_ok == len(res) == len(nl.DESIGN_ORDER) else 1
+
+
+FLATCMP = nl.DATA / "analysis" / "r4-flatcmp.json"
+
+
+def flatcmp(designs: list[str]) -> int:
+    """Fix round, no VPR run: the tightened flat-placement compare (only the `# Created:` line is skipped) on the pairs of
+    existing outputs that exist. The Stage-1 gate scratch directories were deleted when each design finished, so the gate (b) and
+    (c) comparisons themselves cannot be repeated without new runs; the pairs available are the census run (`--analytical_place`,
+    census on) and the routed arm run of the same packing and seed 1 (census off, `--timing_report_npaths 1000`): stock vs stock,
+    headline (census arm r4) vs norns. Reported with the old compare (every `#` line skipped) beside it; the stock arm runs the stock `vpr`, whose
+    version line lacks `-dirty`, so those pairs also get a compare that skips that line (`tight_ignoring_version`)."""
+    def old_body(p: Path) -> list[str]:
+        return [x for x in p.read_text(errors="replace").splitlines() if not x.startswith("#")]
+
+    rows = []
+    for design in designs:
+        for arm, pack in (("stock", "stock"), ("r4", "norns")):
+            a = nl.runs_dir(design, "r4", f"census-{arm}", "final.flat_place")
+            b = nl.runs_dir(design, "r4", f"{pack}.analytic.s1", "final.flat_place")
+            if not (a.is_file() and b.is_file()):
+                continue
+            rows.append({"design": design, "pair": f"census-{arm} vs {pack}.analytic.s1", "tight": same(a, b),
+                         "tight_ignoring_version": flat_body(a, ("# Created:", "# Auto-generated by")) == flat_body(b, ("# Created:", "# Auto-generated by")),
+                         "old": old_body(a) == old_body(b), "header_lines": sum(1 for x in a.read_text(errors="replace").splitlines()[:12] if x.startswith("#"))})
+            print(f"flatcmp {design} {rows[-1]['pair']}: tight={rows[-1]['tight']} old={rows[-1]['old']}", flush=True)
+    nl.write_json(FLATCMP, rows)
+    print(f"FLATCMP tight {sum(r['tight'] for r in rows)} of {len(rows)}, tight ignoring the VPR version line "
+          f"{sum(r['tight_ignoring_version'] for r in rows)}, old {sum(r['old'] for r in rows)}")
+    return 0
+
+
 # ---------------------------------------------------------------------------------------
 # affinity join (Stage 1, item 2)
 
@@ -179,6 +252,42 @@ def join(designs: list[str]) -> int:
                 shutil.rmtree(d, ignore_errors=True)
             print(f"join {design} {source}: {res[design][source]}", flush=True)
         nl.write_json(JOIN, res)
+    return 0
+
+
+def join_reverse(designs: list[str]) -> int:
+    """Reverse coverage (fix round): of the LUT, FF and adder atoms VPR placed in a logic CLB (the `atom_pb_type` column of
+    the stock census run's flat placement), how many that carry a label (by the atom's own name, not by the builder) have an
+    entry in the affinity file: [with entry, labelled, atoms], per kind, source and round. The forward check (above) only
+    shows that every entry matches an atom; atoms without a label are absent from a file by design. No VPR run: reads runs/<d>/r4/census-stock."""
+    res = nl.read_json(JOIN)
+    for design in designs:
+        flat = nl.Flat(nl.runs_dir(design, "r4", "census-stock", "final.flat_place"))
+        kinds = {"lut": "lut", "ff": "latch", "adder": "adder"}
+        atoms: dict[str, list[str]] = {k: [] for k in kinds.values()}
+        for name, row in flat.atoms.items():
+            if row[5] in kinds:
+                atoms[kinds[row[5]]].append(name)
+        members = nl.read_json(nl.runs_dir(design, "words", "members.json"))
+        io = nl.read_json(nl.runs_dir(design, "words", "iowords.json"))
+
+        def label(source: str, a: str) -> str | None:
+            """The label of a VPR atom by its name, independent of the file builder (module path; round-2 word; I/O word)."""
+            if source == "module":
+                return nl.module_of(a) or None
+            w = members[a]["word"] if a in members and members[a]["word"] else None
+            return w or (io.get(a) if source == "wordio" else None)
+
+        rev: dict = {}
+        for source in af.SOURCES:
+            rev[source] = {}
+            for rnd in ("r3", "r4"):
+                have = {x.split("\t")[0] for x in af.affinity_path(design, source, rnd).read_text().splitlines() if x}
+                rev[source][rnd] = {k: [sum(1 for a in v if label(source, a) and a in have),
+                                        sum(1 for a in v if label(source, a)), len(v)] for k, v in atoms.items()}
+        res[design]["reverse"] = rev
+        print(f"joinrev {design}: module r4 " + " ".join(f"{k} {c[0]}/{c[1]}/{c[2]}" for k, c in rev["module"]["r4"].items()), flush=True)
+    nl.write_json(JOIN, res)
     return 0
 
 
@@ -407,6 +516,12 @@ def main(argv: list[str]) -> int:
         return gate(designs)
     if mode == "join":
         return join(designs)
+    if mode == "gateq":
+        return gate_q(designs)
+    if mode == "flatcmp":
+        return flatcmp(designs)
+    if mode == "joinrev":
+        return join_reverse(designs)
     if mode == "census":
         return census(designs)
     if mode == "arms":

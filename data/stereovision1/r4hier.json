@@ -4,6 +4,12 @@
  "M": 13,
  "S": 18845,
  "design": "stereovision1",
+ "elab": {
+  "depth": 5,
+  "instances": 233,
+  "instantiations": 101,
+  "modules": 16
+ },
  "rent": {
   "1": {
    "groups": 14,

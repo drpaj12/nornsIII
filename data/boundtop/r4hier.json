@@ -4,6 +4,12 @@
  "M": 8,
  "S": 930,
  "design": "boundtop",
+ "elab": {
+  "depth": 3,
+  "instances": 16,
+  "instantiations": 14,
+  "modules": 13
+ },
  "rent": {
   "1": {
    "groups": 9,

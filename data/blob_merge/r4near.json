@@ -42,6 +42,7 @@
    },
    "pack": "norns",
    "packing_differs": false,
+   "packing_unchecked": false,
    "paths_in_report": 636,
    "share_w2": {
     "FL": 0.49453505690112504,
@@ -94,6 +95,7 @@
    },
    "pack": "stock",
    "packing_differs": false,
+   "packing_unchecked": false,
    "paths_in_report": 636,
    "share_w2": {
     "FL": 0.5581121538971386,

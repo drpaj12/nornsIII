@@ -1,0 +1,242 @@
+[
+ {
+  "design": "ch_intrinsics",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "ch_intrinsics",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision3",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision3",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "diffeq2",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "diffeq2",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "diffeq1",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "diffeq1",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkPktMerge",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkPktMerge",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "raygentop",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "raygentop",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "sha",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "sha",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "boundtop",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "boundtop",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkSMAdapter4B",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkSMAdapter4B",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "or1200",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "or1200",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision0",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision0",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision1",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision1",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkDelayWorker32B",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "mkDelayWorker32B",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision2",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "stereovision2",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "blob_merge",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-stock vs stock.analytic.s1",
+  "tight": false,
+  "tight_ignoring_version": true
+ },
+ {
+  "design": "blob_merge",
+  "header_lines": 6,
+  "old": true,
+  "pair": "census-r4 vs norns.analytic.s1",
+  "tight": true,
+  "tight_ignoring_version": true
+ }
+]

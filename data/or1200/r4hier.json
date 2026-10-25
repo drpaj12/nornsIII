@@ -4,6 +4,12 @@
  "M": 13,
  "S": 3585,
  "design": "or1200",
+ "elab": {
+  "depth": 3,
+  "instances": 16,
+  "instantiations": 15,
+  "modules": 16
+ },
  "rent": {
   "1": {
    "groups": 14,

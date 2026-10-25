@@ -8,6 +8,10 @@ d_own = weighted operator count of a statement's right-hand side (+, -: 2; *: 4;
 statements that define an identifier on the right-hand side (a statement already on the stack adds 0; non-blocking
 assignments end a chain). Statements are found by a line scanner (a statement runs to its `;`), so this is an
 estimate from text, not from the Odin III netlist.
+
+Span to statement (a rule of this script, written before any data and not in the protocol text): the statement of a span
+is the one that starts on the span's source line, else the nearest statement start within 12 lines above it; a span with
+none is counted as unmatched and left out.
 """
 
 from __future__ import annotations

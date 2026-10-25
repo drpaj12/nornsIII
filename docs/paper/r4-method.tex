@@ -26,39 +26,41 @@ shared-input (sinks of one common local net), orthogonal (same round-two word, o
 filler. Fifty null packings (same CLB sizes, random assignment) give the chance level. Post-route criticality comes from the Odin~III
 critical-path attribution (V1.1.1) of the routed runs; because the Norns BLIFs already carry provenance names the tool's
 two-BLIF input does not exist for them, so \code{scripts/timing4.py} builds the name map from the Norns BLIF and calls the tool's own functions
-(a labelled workaround; the odin3 checkout is not edited).
+(a labelled workaround; the odin3 checkout is not edited). Coverage: the share of critical-path nodes the attribution matches to a provenance name is at least 0.58 in every one of the 264 routed runs, and 1.00 in every run when port nodes (which have no HDL line) are excluded. The routed report holds one path per endpoint (at most 1000), so near-critical counts are per reported path, not per start and end pair.
+
+\paragraph{Depth estimate (H15).} The HDL statement of a span is the statement that starts on the span's source line or, if none does, the nearest statement start within 12 lines above (a rule written in \code{scripts/r4depth.py} before any data, not stated in the protocol text).
 
 \paragraph{Stage-by-bit seed.} Stage = register-to-register level of the atom graph (back edges removed by a DFS), bit = round-two word bit,
 control = CLBs holding the driver of a net of fanout $>32$. Moved CLBs (no carry-chain CLBs) permute among their own analytic slots, each taking the nearest free slot to
 (stage, bit), control in the centre; all other CLBs keep their position.
 
-\begin{table}[t]
-\caption{Affinity join: matched entries of the affinity file, round three (r3) and round four (r4), per source.}
+\begin{table*}[t]
+\caption{Affinity join. Forward: affinity-file entries that match a VPR atom, round three (r3) and round four (r4), per source. Reverse (r4 files): VPR LUT, FF and adder atoms in logic CLBs that carry a label (by their own name) and have an entry in the file; the last column is the same for the round-three module file's adder atoms (it had none).}
 \label{tab:r4join}
-\centering\scriptsize\setlength{\tabcolsep}{2pt}
-\begin{tabular}{@{}lrrrrrr@{}}
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
 \toprule
- & \multicolumn{2}{c}{module} & \multicolumn{2}{c}{word} & \multicolumn{2}{c}{word+io} \\
-design & r3 & r4 & r3 & r4 & r3 & r4 \\
+ & \multicolumn{2}{c}{module} & \multicolumn{2}{c}{word} & \multicolumn{2}{c}{word+io} & \multicolumn{3}{c}{reverse, r4 file} & r3 \\
+design & r3 & r4 & r3 & r4 & r3 & r4 & module & word & word+io & adders \\
 \midrule
-ch\_intrinsics & 144/144 & 144/144 & 81/113 & 81/81 & 113/177 & 113/113 \\
-stereovision3 & 261/261 & 289/289 & 162/162 & 190/190 & 187/189 & 215/215 \\
-diffeq2 & 198/230 & 330/330 & 160/160 & 292/292 & 260/260 & 392/392 \\
-diffeq1 & 391/423 & 523/523 & 257/257 & 389/389 & 353/353 & 485/485 \\
-mkPktMerge & 191/191 & 214/214 & 180/180 & 203/203 & 180/333 & 203/203 \\
-raygentop & 1836/1931 & 2255/2255 & 1186/1234 & 1603/1603 & 1575/1634 & 1992/1992 \\
-sha & 2147/2275 & 2456/2456 & 925/925 & 1234/1234 & 1507/1507 & 1816/1816 \\
-boundtop & 687/762 & 748/748 & 555/620 & 616/616 & 674/748 & 735/735 \\
-mkSMAdapter4B & 1581/1638 & 1892/1892 & 673/787 & 978/978 & 970/1094 & 1275/1275 \\
-or1200 & 2719/2783 & 3233/3233 & 1317/1350 & 1751/1751 & 1870/1947 & 2304/2304 \\
-stereovision0 & 18148/18148 & 20836/20836 & 13666/13667 & 16354/16354 & 14213/14244 & 16901/16901 \\
-stereovision1 & 16536/16632 & 18710/18710 & 13472/13568 & 15622/15622 & 13908/14017 & 16058/16058 \\
-mkDelayWorker32B & 469/1566 & 536/536 & 38/1620 & 104/104 & 38/1643 & 104/104 \\
-stereovision2 & 23877/32721 & 35886/35886 & 22273/22274 & 34282/34282 & 22797/22811 & 34806/34806 \\
-blob\_merge & 6490/6500 & 10011/10011 & 3507/3507 & 7004/7004 & 3677/3716 & 7174/7174 \\
+ch\_intrinsics & 144/144 & 144/144 & 81/113 & 81/81 & 113/177 & 113/113 & 144/144 & 81/81 & 113/113 & 0/0 \\
+stereovision3 & 261/261 & 289/289 & 162/162 & 190/190 & 187/189 & 215/215 & 289/289 & 190/190 & 215/215 & 0/28 \\
+diffeq2 & 198/230 & 330/330 & 160/160 & 292/292 & 260/260 & 392/392 & 330/330 & 292/292 & 392/392 & 0/132 \\
+diffeq1 & 391/423 & 523/523 & 257/257 & 389/389 & 353/353 & 485/485 & 523/523 & 389/389 & 485/485 & 0/132 \\
+mkPktMerge & 191/191 & 214/214 & 180/180 & 203/203 & 180/333 & 203/203 & 214/214 & 203/203 & 203/203 & 0/23 \\
+raygentop & 1836/1931 & 2255/2255 & 1186/1234 & 1603/1603 & 1575/1634 & 1992/1992 & 2255/2255 & 1603/1603 & 1992/1992 & 0/419 \\
+sha & 2147/2275 & 2456/2456 & 925/925 & 1234/1234 & 1507/1507 & 1816/1816 & 2456/2456 & 1234/1234 & 1816/1816 & 0/309 \\
+boundtop & 687/762 & 748/748 & 555/620 & 616/616 & 674/748 & 735/735 & 748/748 & 616/616 & 735/735 & 0/61 \\
+mkSMAdapter4B & 1581/1638 & 1892/1892 & 673/787 & 978/978 & 970/1094 & 1275/1275 & 1892/1892 & 978/978 & 1275/1275 & 0/311 \\
+or1200 & 2719/2783 & 3233/3233 & 1317/1350 & 1751/1751 & 1870/1947 & 2304/2304 & 3233/3233 & 1751/1751 & 2304/2304 & 0/514 \\
+stereovision0 & 18148/18148 & 20836/20836 & 13666/13667 & 16354/16354 & 14213/14244 & 16901/16901 & 20836/20836 & 16354/16354 & 16901/16901 & 0/2688 \\
+stereovision1 & 16536/16632 & 18710/18710 & 13472/13568 & 15622/15622 & 13908/14017 & 16058/16058 & 18710/18710 & 15622/15622 & 16058/16058 & 0/2174 \\
+mkDelayWorker32B & 469/1566 & 536/536 & 38/1620 & 104/104 & 38/1643 & 104/104 & 536/536 & 104/104 & 104/104 & 0/67 \\
+stereovision2 & 23877/32721 & 35886/35886 & 22273/22274 & 34282/34282 & 22797/22811 & 34806/34806 & 35886/35886 & 34282/34282 & 34806/34806 & 0/12069 \\
+blob\_merge & 6490/6500 & 10011/10011 & 3507/3507 & 7004/7004 & 3677/3716 & 7174/7174 & 10011/10011 & 7004/7004 & 7174/7174 & 0/3521 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table}[t]
 \caption{Proposal step, median over designs (census runs, seed 1): fraction of offered molecules that entered the queue and of proposal calls that queued nothing.}

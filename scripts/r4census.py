@@ -91,11 +91,13 @@ class Census:
         # final cluster of an atom: the latest closed cluster that added it (a destroyed cluster has no K)
         self.cseq_of: dict[str, int] = {}
         self.root_of: dict[str, str] = {}
+        self.mol_of: dict[str, tuple[int, int]] = {}  # atom -> the (cluster, index) of the molecule that added it
         for (cseq, idx) in sorted(self.mol):
             if cseq in self.closed:
                 for a in self.atoms_of[(cseq, idx)]:
                     self.cseq_of[a] = cseq
                     self.root_of[a] = self.mol[(cseq, idx)]["root"]
+                    self.mol_of[a] = (cseq, idx)
 
     def sources(self, only: set[int]) -> dict:
         """Per source: molecules added to the clusters `only` (the logic CLBs), mean queue-time gain and terms."""
@@ -290,6 +292,52 @@ def null_stats(design: str, arm: str, nlist: Netlist, crit: dict, groups: dict[s
     return {"samples": NULL_SAMPLES, "mean": mean, "sd": sd}
 
 
+def null_units_stats(design: str, arm: str, nlist: Netlist, crit: dict, groups: dict[str, list[str]],
+                     mol_of: dict[str, tuple[int, int]]) -> dict:
+    """EXPLORATORY null (docs/plan/round4.md, fix-round entry): the registered null shuffles atoms and ignores that the
+    prepacker forces a LUT and its FF (a molecule) into one CLB and that carry chains fill CLBs in sequence. Here the
+    CLBs that hold an adder stay as they are (their pairs are as observed), and the molecules of all other CLBs are
+    the units: each unit goes to a random CLB of the same size pool with room, largest units first, so CLB sizes are
+    kept. An atom without a molecule record is a unit of its own."""
+    fixed: dict[str, list[str]] = {}
+    sizes: list[int] = []
+    units: list[list[str]] = []
+    for clb, atoms in sorted(groups.items()):
+        if any(nlist.kind[a] == "adder" for a in atoms):
+            fixed[clb] = atoms
+            continue
+        sizes.append(len(atoms))
+        by_mol: dict[object, list[str]] = collections.defaultdict(list)
+        for a in atoms:
+            by_mol[mol_of.get(a, ("single", a))].append(a)
+        units.extend(sorted(v) for _, v in sorted(by_mol.items(), key=lambda kv: str(kv[0])))
+    rows = []
+    overflow = 0
+    for k in range(NULL_SAMPLES):
+        rng = random.Random(f"{design}-{arm}-unitnull-{k}-20261025")
+        rem = sizes[:]
+        placed: list[list[str]] = [[] for _ in sizes]
+        spill: list[list[str]] = []
+        for sz in sorted({len(u) for u in units}, reverse=True):
+            todo = [u for u in units if len(u) == sz]
+            rng.shuffle(todo)
+            slots = [i for i, r in enumerate(rem) for _ in range(r // sz)]
+            rng.shuffle(slots)
+            for u, i in zip(todo, slots, strict=False):
+                placed[i].extend(u)
+                rem[i] -= sz
+            spill.extend(todo[len(slots):])
+        overflow = len(spill)
+        fake = {f"c{i}": g for i, g in enumerate(placed) if g}
+        fake.update({f"s{i}": u for i, u in enumerate(spill)})
+        fake.update(fixed)
+        rows.append(pair_stats(nlist, crit, fake)["share"])
+    mean = {c: statistics.fmean(r[c] for r in rows) for c in CLASSES}
+    sd = {c: (statistics.pstdev([r[c] for r in rows]) if len(rows) > 1 else 0.0) for c in CLASSES}
+    return {"samples": NULL_SAMPLES, "mean": mean, "sd": sd, "fixed_clbs": len(fixed), "shuffled_clbs": len(sizes),
+            "units": len(units), "overflow_units": overflow}
+
+
 PROP = re.compile(r"Norns proposals: (\d+) calls, (\d+) with 0 queued, (\d+) molecules attempted, (\d+) queued")
 
 
@@ -306,6 +354,7 @@ def analyse(design: str, arm: str, nlist: Netlist) -> dict | None:
     same = sum(1 for a in groups.values() if len({cen.cseq_of.get(x) for x in a}) == 1 and cen.cseq_of.get(a[0]))
     ps = pair_stats(nlist, cen.pin_crit, groups)
     nl_stats = null_stats(design, arm, nlist, cen.pin_crit, groups)
+    nl_units = null_units_stats(design, arm, nlist, cen.pin_crit, groups, cen.mol_of)
     logic_cseqs = {cen.cseq_of[a] for g in groups.values() for a in g if a in cen.cseq_of}
     rej_c: collections.Counter = collections.Counter()
     for cseq in logic_cseqs:
@@ -326,7 +375,7 @@ def analyse(design: str, arm: str, nlist: Netlist) -> dict | None:
     return {"arm": arm, "logic_clbs": len(groups), "members": sum(len(a) for a in groups.values()),
             "census_clusters": len(cen.closed), "logic_clusters": len(logic_cseqs),
             "census_destroyed": len({k[0] for k in cen.mol} - set(cen.closed)),
-            "clbs_single_census_cluster": same, "pairs": ps, "null": nl_stats, "sources": cen.sources(logic_cseqs),
+            "clbs_single_census_cluster": same, "pairs": ps, "null": nl_stats, "null_units": nl_units, "sources": cen.sources(logic_cseqs),
             "rejections": rej, "rejections_per_cluster": sum(rej.values()) / n_closed,
             "queued_per_cluster": statistics.fmean(len(cen.queued[c]) for c in logic_cseqs) if logic_cseqs else 0.0,
             "proposals": prop}

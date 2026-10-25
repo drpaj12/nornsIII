@@ -117,6 +117,8 @@ def n17() -> dict:
     ms, mt, mf = (med(v) for v in (sv, tv, fv))
     n = len(have)
     h17a: dict = {"n": n, "median_SC": ms, "median_SI_OR": mt, "median_SN_FL": mf,
+                  "median_SN": med([s[d]["SN"] for d in have]), "median_FL": med([s[d]["FL"] for d in have]),
+                  "median_SI": med([s[d]["SI"] for d in have]), "median_OR": med([s[d]["OR"] for d in have]),
                   "s_lt_t": sum(1 for a, b in zip(sv, tv, strict=True) if a < b)}
     if n >= 12 and ms is not None:
         shape_ok = ms <= 0.25 and mt >= 0.50 and ms < mf < mt and h17a["s_lt_t"] >= need(n)
@@ -151,7 +153,7 @@ def n17() -> dict:
     ratios, rows = [], []
     for d in have:
         a = near[d]["arms"].get("stock") if near[d] else None
-        if not a or a["packing_differs"]:
+        if not a or a["packing_differs"] or a.get("packing_unchecked"):
             continue
         m = a["margins"]["0.1"]
         er = a["edge_crossing"]["rate"]
@@ -190,6 +192,19 @@ def n17() -> dict:
             h17d["status"] = "inconclusive"
     else:
         h17d["status"] = "inconclusive (n < 12)"
+    # EXPLORATORY (fix-round entry): the same test against the null that keeps molecules as units and carry-chain CLBs fixed
+    du = [cen[d]["arms"]["stock"]["pairs"]["share"]["SC"] + cen[d]["arms"]["stock"]["pairs"]["share"]["SN"]
+          - cen[d]["arms"]["stock"]["null_units"]["mean"]["SC"] - cen[d]["arms"]["stock"]["null_units"]["mean"]["SN"] for d in have]
+    h17d["exploratory_units"] = {"n": len(du), "median_excess": med(du), "positive": sum(1 for v in du if v > 0),
+                                 "p": wilcoxon(du, "greater") if len(du) >= 6 else float("nan"),
+                                 "median_null_atoms": med([cen[d]["arms"]["stock"]["null"]["mean"]["SC"] + cen[d]["arms"]["stock"]["null"]["mean"]["SN"] for d in have]),
+                                 "median_null_units": med([cen[d]["arms"]["stock"]["null_units"]["mean"]["SC"] + cen[d]["arms"]["stock"]["null_units"]["mean"]["SN"] for d in have]),
+                                 "median_observed": med([cen[d]["arms"]["stock"]["pairs"]["share"]["SC"] + cen[d]["arms"]["stock"]["pairs"]["share"]["SN"] for d in have]),
+                                 "median_fixed_clb_share": med([cen[d]["arms"]["stock"]["null_units"]["fixed_clbs"] / cen[d]["arms"]["stock"]["logic_clbs"] for d in have]),
+                                 "overflow_units": sum(cen[d]["arms"]["stock"]["null_units"]["overflow_units"] for d in have)}
+    eu = h17d["exploratory_units"]
+    eu["status_same_rule"] = ("supported" if eu["median_excess"] >= 0.05 and eu["p"] < 0.05 and eu["positive"] >= need(len(du))
+                              else "not supported" if eu["median_excess"] < 0.01 else "inconclusive")
     out["H17d"] = h17d
     # per-design near-critical table
     tab = {}
@@ -228,6 +243,35 @@ def n17() -> dict:
                      "median_rejections_per_cluster": med(list(rej.values())),
                      "median_hit_rate": med(hit), "median_zero_share": med(zero)}
     out["summary"] = summ
+    # criticality weighting (reported, not tested; protocol "Reported weightings"): median class shares over designs for
+    # the unweighted share, w1 (pack-time criticality) and w2 (post-route criticality; designs whose routed packing
+    # differs from the census packing are left out of w2); near-critical counts and split reasons at both margins.
+    wt: dict = {}
+    reas: dict = {}
+    for pack, arm in (("stock", "stock"), ("norns", "r4")):
+        cols: dict[str, dict[str, list[float]]] = {"unweighted": {}, "w1": {}, "w2": {}}
+        for d in have:
+            a = cen[d]["arms"].get(arm)
+            nr = near[d]["arms"].get(pack) if near[d] else None
+            if not a:
+                continue
+            for c in CLASSES:
+                cols["unweighted"].setdefault(c, []).append(a["pairs"]["share"][c])
+                cols["w1"].setdefault(c, []).append(a["pairs"]["share_w1"][c])
+                if nr and not nr["packing_differs"] and not nr.get("packing_unchecked") and nr["share_w2"]:
+                    cols["w2"].setdefault(c, []).append(nr["share_w2"][c])
+        wt[pack] = {k: {c: med(v) for c, v in cc.items()} | {"n": len(next(iter(cc.values()), []))} for k, cc in cols.items()}
+        reas[pack] = {}
+        for m in ("0.05", "0.1"):
+            rows_m = [near[d]["arms"][pack]["margins"][m] for d in have if near[d] and pack in near[d]["arms"]
+                      and not near[d]["arms"][pack]["packing_differs"] and not near[d]["arms"][pack].get("packing_unchecked")]
+            reas[pack][m] = {"designs": len(rows_m), "median_k": med([x["k"] for x in rows_m]),
+                             "designs_with_split": sum(1 for x in rows_m if x["split"]), "split": sum(x["split"] for x in rows_m),
+                             "crossings": sum(x["crossings"] for x in rows_m), "hops": sum(x["hops"] for x in rows_m),
+                             "capped": sum(1 for x in rows_m if x["capped"]),
+                             "reasons": {r: sum(x["reasons"][r] for x in rows_m) for r in ("R1", "R2", "R3", "R0")}}
+    out["weighted"] = wt
+    out["split_reasons"] = reas
     return out
 
 
@@ -252,20 +296,24 @@ def n12() -> dict:
         p = wilcoxon(vals, "less") if len(vals) >= 6 else float("nan")
         known = (ok >= 12 and p < 0.05) if len(vals) >= 6 else None
         add(kid, f"same-{key} CLBs closer than net connectivity predicts (all 3 seeds)", ok, len(vals), p, known,
-            "data: round-3 n11; null: label permutation within connectivity strata; test: Wilcoxon one-sided over designs")
-    # K3
-    vals, ok = [], 0
+            "data: round-3 n11; null: label permutation within connectivity strata; test: Wilcoxon one-sided over designs"
+            + (f". The relation is defined on {len(vals)} designs only: the literal count of 12 is unreachable by construction"
+               if len(vals) < 12 else ""))
+    # K3: two registered conditions, reported separately: share <= 0.80 in >= 12 designs; above the null in all 15
+    vals, cond_a, cond_b = [], 0, 0
     for d in DESIGNS:
         n8 = jload(d, "n8.json")
         if not n8:
             continue
         sh, nu = n8["stock"]["word"]["share"], n8["null"]["word"]["share"]
         vals.append(sh - nu)
-        if sh <= 0.80 and sh > nu:
-            ok += 1
+        cond_a += 1 if sh <= 0.80 else 0
+        cond_b += 1 if sh > nu else 0
     p = wilcoxon(vals, "greater") if len(vals) >= 6 else float("nan")
-    add("K3", "stock packing dilutes words: word plurality share <= 0.80 and above the null's", ok, len(vals), p,
-        (ok >= 12) if vals else None, "data: round-3 n8; descriptive count (no test beyond the stated null comparison)")
+    add("K3", "stock packing dilutes words: word plurality share <= 0.80 (A, in >= 12 designs) and above the null's (B, in all 15)",
+        cond_a, len(vals), p, (cond_a >= 12 and cond_b == len(vals) == 15) if vals else None,
+        f"data: round-3 n8; condition A holds in {cond_a}/{len(vals)}, condition B in {cond_b}/{len(vals)}; Wilcoxon p for B is descriptive")
+    rows[-1]["cond_b"] = cond_b
     # K4
     vals, ok = [], 0
     for d in DESIGNS:
@@ -323,28 +371,42 @@ def n12() -> dict:
     add("K7", "adder, multiplier and memory atoms hold more of the critical-path delay than of the design's atoms", ok,
         len(vals), p, (ok >= 12 and p < 0.05) if len(vals) >= 6 else None,
         "data: round-4 stock analytic seed 1 attribution; test: Wilcoxon one-sided")
-    # K8
-    rho_list = []
-    for d in DESIGNS:
-        r = r4runs(d)
-        xs = [r[("stock", "analytic", s)] for s in SEEDS if ("stock", "analytic", s) in r]
-        xs += [r[("norns", "analytic", s)] for s in SEEDS if ("norns", "analytic", s) in r]
-        wl = [x["wirelength"] for x in xs]
-        cp = [x["cpd_ns"] for x in xs]
-        if len(xs) >= 5 and len(set(wl)) > 1 and len(set(cp)) > 1:
-            rho_list.append(float(stats.spearmanr(wl, cp).statistic))
-    add("K8", "routed wirelength and CPD move together across runs of one design (Spearman > 0)",
-        sum(1 for v in rho_list if v > 0), len(rho_list), None, (sum(1 for v in rho_list if v > 0) >= 12) if rho_list else None,
-        "data: round-4 analytic runs (both packings, 3 seeds); descriptive")
+    # K8: the registered rule is Spearman between WL and CPD across the seeds within a design, > 0 in >= 12 designs; the
+    # packings are separate sets of 3 points (primary); pooling the two packings (6 points) is a labelled variant.
+    k8: dict[str, list[float]] = {}
+    for label, packs in (("stock", ("stock",)), ("norns", ("norns",)), ("pooled", ("stock", "norns"))):
+        rho_list = []
+        for d in DESIGNS:
+            r = r4runs(d)
+            xs = [r[(pk, "analytic", sd)] for pk in packs for sd in SEEDS if (pk, "analytic", sd) in r]
+            wl = [x["wirelength"] for x in xs]
+            cp = [x["cpd_ns"] for x in xs]
+            if len(xs) >= 3 and len(set(wl)) > 1 and len(set(cp)) > 1:
+                rho_list.append(float(stats.spearmanr(wl, cp).statistic))
+        k8[label] = rho_list
+    for label, rho_list in k8.items():
+        add(f"K8 {label}", "routed wirelength and CPD move together across the seeds of one design (Spearman > 0)"
+            + (" [labelled variant: both packings pooled, 6 points]" if label == "pooled" else f" [{label} packing]"),
+            sum(1 for v in rho_list if v > 0), len(rho_list), None,
+            (sum(1 for v in rho_list if v > 0) >= 12) if rho_list else None,
+            "data: round-4 analytic runs; descriptive" + (" (variant, not counted)" if label == "pooled" else ""))
     for r in rows:  # labelled variant: the count k = 12 of 15 scaled to the n actually defined (ceil(0.8 n))
         if r["known"] is None or r["n"] < 6:
             r["known_scaled"] = None
         elif r["id"] == "K5":
             r["known_scaled"] = r["holds"] == r["n"]
+        elif r["id"] == "K3":
+            r["known_scaled"] = r["holds"] >= math.ceil(0.8 * r["n"]) and r["cond_b"] == r["n"]
         else:
             r["known_scaled"] = r["holds"] >= math.ceil(0.8 * r["n"]) and (r["p"] is None or nan(r["p"]) or r["p"] < 0.05)
-    return {"rows": rows, "n_known": sum(1 for r in rows if r["known"]),
-            "n_known_scaled": sum(1 for r in rows if r.get("known_scaled"))}
+    by_id = {r["id"]: r for r in rows}
+    # K8 is known (primary) iff it holds for both packings; the pooled row is a variant and is not counted
+    counted = [r for r in rows if not r["id"].startswith("K8")]
+    k8_known = bool(by_id["K8 stock"]["known"] and by_id["K8 norns"]["known"])
+    k8_scaled = bool(by_id["K8 stock"].get("known_scaled") and by_id["K8 norns"].get("known_scaled"))
+    return {"rows": rows, "n_known": sum(1 for r in counted if r["known"]) + (1 if k8_known else 0),
+            "n_known_scaled": sum(1 for r in counted if r.get("known_scaled")) + (1 if k8_scaled else 0),
+            "k8_known": k8_known, "k8_known_scaled": k8_scaled}
 
 
 # ---------------------------------------------------------------------------------------
@@ -370,7 +432,8 @@ def n13() -> dict:
         r = r4runs(d)
         if not h or ("stock", "analytic", 1) not in r:
             continue
-        row: dict = {"design": d, "S": h["S"], "M": h["M"], "D": h["D"], "A_med": h["A_med"], "rent": h["rent"]}
+        row: dict = {"design": d, "S": h["S"], "M": h["M"], "D": h["D"], "A_med": h["A_med"], "rent": h["rent"],
+                     "elab": h.get("elab")}
         for pack in ("stock", "norns"):
             rr = [r[(pack, "analytic", s)] for s in SEEDS if (pack, "analytic", s) in r]
             if len(rr) == 3:
@@ -400,6 +463,28 @@ def n13() -> dict:
     a_no = all(tests_a[f"{p}.area"]["rho"] < 0.3 for p in ("stock", "norns"))
     b_ok = all(abs(tests_b[f"{p}.area"]["rho"]) >= 0.5 and tests_b[f"{p}.area"]["p_holm"] < 0.05 for p in ("stock", "norns"))
     b_no = all(abs(tests_b[f"{p}.area"]["rho"]) < 0.3 for p in ("stock", "norns"))
+    # EXPLORATORY (fix-round entry): instantiation tree of the elaborated pre-flatten design (r4hier.elab_hierarchy), which the
+    # provenance names cannot give (D = 1 by construction there). Instances E and depth De against log grid area, Holm over 6.
+    ex_rows = [x for x in rows if x.get("elab")]
+    expl: dict = {"n": len(ex_rows)}
+    if len(ex_rows) >= 8:
+        le = [math.log(x["elab"]["instances"]) for x in ex_rows]
+        de = [float(x["elab"]["depth"]) for x in ex_rows]
+        lsx = [math.log(x["S"]) for x in ex_rows]
+        tests: dict = {}
+        for pack in ("stock", "norns"):
+            ya = [math.log(x[pack]["area"]) for x in ex_rows]
+            for name, xv in (("logE", le), ("De", de)):
+                rho, p = spearman_p(xv, ya)
+                tests[f"{pack}.{name}"] = {"rho": rho, "p": p}
+            rp, pp = partial_spearman(le, ya, lsx)
+            tests[f"{pack}.logE|S"] = {"rho": rp, "p": pp}
+        adj = holm({k: v["p"] for k, v in tests.items()})
+        for k in tests:
+            tests[k]["p_holm"] = adj[k]
+        expl["tests"] = tests
+        expl["depth_values"] = {x["design"]: x["elab"]["depth"] for x in ex_rows}
+    out["exploratory_elab"] = expl
     ratio = [math.log(x["norns"]["area"] / x["stock"]["area"]) for x in rows]
     rc, pc = spearman_p(lm, ratio)
     out.update({"H13a": tests_a, "H13b": tests_b, "H13c": {"rho": rc, "p": pc},
@@ -482,10 +567,14 @@ def arms() -> dict:
     # the report's arrival and slack). rec attr_cpd_ns is the same log line read again, so it is not used here.
     agree, tot, repro, repro_n = 0, 0, 0, 0
     worst, arr_gap = 0.0, []
+    cover, cover_port = [], []
     for d in DESIGNS:
         r = r4runs(d)
         for key, rec in r.items():
             pj = nl.runs_dir(d, "r4", f"{key[0]}.{key[1]}.s{key[2]}", "paths.json.gz")
+            if rec.get("matched_share") is not None:
+                cover.append(rec["matched_share"])
+                cover_port.append(rec["matched_share_excl_port"])
             if rec.get("cpd_ns") is not None and pj.is_file():
                 p1 = json.load(gzip.open(pj, "rt"))[0]
                 tot += 1
@@ -500,7 +589,10 @@ def arms() -> dict:
                 repro_n += 1
                 repro += 1 if (a["wirelength"] == b["wirelength"] and a["chan_width"] == b["chan_width"] and abs(a["cpd_ns"] - b["cpd_ns"]) < 1e-4) else 0
     out["checks"] = {"cpd_agree": agree, "cpd_total": tot, "cpd_max_diff": worst,
-                     "cpd_minus_arrival_median": med(arr_gap), "cpd_minus_arrival_max": max(arr_gap) if arr_gap else None, "stock_repro": repro, "stock_repro_n": repro_n}
+                     "cpd_minus_arrival_median": med(arr_gap), "cpd_minus_arrival_max": max(arr_gap) if arr_gap else None,
+                     "coverage_runs": len(cover), "coverage_min": min(cover) if cover else None,
+                     "coverage_excl_port_min": min(cover_port) if cover_port else None,
+                     "stock_repro": repro, "stock_repro_n": repro_n}
     return out
 
 

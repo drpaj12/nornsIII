@@ -4,6 +4,12 @@
  "M": 14,
  "S": 2439,
  "design": "raygentop",
+ "elab": {
+  "depth": 3,
+  "instances": 16,
+  "instantiations": 15,
+  "modules": 15
+ },
  "rent": {
   "1": {
    "groups": 15,

@@ -5,20 +5,20 @@ Questions: N17 what gets clustered and why; N12 knowns; N13 hierarchy against ch
 Disclosures (entry of the fix round in the protocol): small test runs on \code{ch\_intrinsics} preceded the gates and were deleted (no result uses them: every census and arm record is dated after the gates passed, and the rule scripts were last edited before); four affinity-join passes and one restarted gate ran for builder and compare bugs; the first dated entry amended N16 items 5 and 6 before any N16 data and the final round-four affinity files (adders added) postdate it.
 Outcomes: Table~\ref{tab:r4status}. Protocol \code{fbddfa0}. Next: fix the seed selector and scan order, rerun round three's purity claims with the adder-complete files, and larger designs.
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round-four research questions with status and deciding number (extends Table~\ref{tab:r3log}).}
 \label{tab:r4log}
 \centering\scriptsize
-\begin{tabular}{@{}llp{2.3cm}p{3.6cm}@{}}
+\begin{tabular}{@{}lp{4.6cm}p{3.4cm}p{8.4cm}@{}}
 \toprule
 RQ & hypothesis & status & deciding number \\
 \midrule
 N17 & H17a shape (10/75/15) & not supported & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
 N17 & H17a literal numbers & not supported & same medians against 10/75/15 $\pm0.10$ \\
-N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p=<0.001$, n=15 \\
+N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p<0.001$, n=15 \\
 N17 & H17c critical edges kept together & supported & median ratio 0.652, Wilcoxon $p=0.027$, n=9 (literal rule; reading with an n$<$12 clause: inconclusive (n < 12)) \\
-N17 & H17d packer beats chance (series share) & supported & median excess 0.072, 15/15 positive \\
-N13 & H13a hierarchy vs grid area & supported & n=15 \\
+N17 & H17d series share above the atom-shuffle null (not a clustering-quality result) & supported & median excess 0.072, 15/15 positive; exploratory molecule-unit null: excess 0.023, p<0.001, inconclusive \\
+N13 & H13a module count vs grid area & supported & n=15 (M only: depth not measurable from provenance names) \\
 N13 & H13b beyond design size & inconclusive & n=15 \\
 N13 & H13c packer effect vs hierarchy & inconclusive & n=15 \\
 N15 & H15 depth estimate predicts critical statements & inconclusive & median $\rho$ 0.137, n=12 \\
@@ -33,4 +33,4 @@ N16 & H16 stage$\times$bit seed: stock.cpd\_ns & inconclusive & geomean 0.996, 7
 N16 & H16 stage$\times$bit seed: stock.wirelength & not supported & geomean 1.005, 6/14 better, Holm $p=1.000$ \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}

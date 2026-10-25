@@ -351,7 +351,8 @@ analysis added here is labelled exploratory.
    "at least 12 of 15" cannot be met by K1 (n = 11) by construction; (e) K3 reported as its two registered conditions separately;
    (f) K8 per packing (registered: across seeds within a design; the first write-up pooled the two packings, now a variant);
    (g) N13 depth: provenance names carry one `module/leaf@file:line` level, so D = 1 by construction; H13 tests the module count M
-   (D is measured from the pre-flatten hierarchy as an exploratory addition only if the Odin III build exposes it);
+   (an exploratory measurement of the instantiation tree before `flatten`, from `read_verilog; proc; write_json --odin3` of the
+   `$ODIN3_ROOT` build, is added: instances and depth, `r4hier.elab_hierarchy`; the odin3 checkout is not edited);
    (h) reverse coverage of the affinity join (VPR LUT, FF and adder atoms that have a file entry); (i) the gate (b) comparison
    for the round-3 `attempted` arm, census on against off, pack-only (the question of the review; the registered gate (b) covers
    the stock and `queued` arms).

@@ -5,24 +5,58 @@
 (seed 1; SC series-critical, SN series-noncritical, SI shared-input, OR orthogonal, FL filler), the SC share of the headline Norns packing, the chance level of
 SC+SN under 50 null packings, and the near-critical paths within 10\% of the critical path (k) and how many of them are split across CLBs (m). Per benchmark:
 \begin{itemize}\small
-\item \emph{ch\_intrinsics}: 1.6\% shared-input, 34.8\% orthogonal, 2.5\% series-critical, 61.0\% filler; 5 near-critical paths (10\%), 1 split across CLBs.
-\item \emph{stereovision3}: 12.1\% shared-input, 11.4\% orthogonal, 5.6\% series-critical, 70.8\% filler; 1 near-critical paths (10\%), 1 split across CLBs.
-\item \emph{diffeq2}: 1.1\% shared-input, 63.4\% orthogonal, 4.3\% series-critical, 31.1\% filler; 32 near-critical paths (10\%), 32 split across CLBs.
-\item \emph{diffeq1}: 1.6\% shared-input, 53.3\% orthogonal, 2.8\% series-critical, 42.3\% filler; 32 near-critical paths (10\%), 32 split across CLBs.
-\item \emph{mkPktMerge}: 5.2\% shared-input, 59.4\% orthogonal, 2.9\% series-critical, 32.5\% filler; 39 near-critical paths (10\%), 0 split across CLBs.
-\item \emph{raygentop}: 4.5\% shared-input, 25.3\% orthogonal, 5.0\% series-critical, 65.2\% filler; 55 near-critical paths (10\%), 9 split across CLBs.
-\item \emph{sha}: 10.7\% shared-input, 21.3\% orthogonal, 1.4\% series-critical, 66.6\% filler; 26 near-critical paths (10\%), 26 split across CLBs.
-\item \emph{boundtop}: 3.5\% shared-input, 26.6\% orthogonal, 5.0\% series-critical, 64.9\% filler; 122 near-critical paths (10\%), 118 split across CLBs.
-\item \emph{mkSMAdapter4B}: 5.8\% shared-input, 24.9\% orthogonal, 4.9\% series-critical, 64.4\% filler; 7 near-critical paths (10\%), 7 split across CLBs.
-\item \emph{or1200}: 7.9\% shared-input, 30.5\% orthogonal, 7.8\% series-critical, 53.8\% filler; 72 near-critical paths (10\%), 72 split across CLBs.
-\item \emph{stereovision0}: 2.1\% shared-input, 16.2\% orthogonal, 3.1\% series-critical, 78.6\% filler; 1 near-critical paths (10\%), 1 split across CLBs.
-\item \emph{stereovision1}: 1.7\% shared-input, 26.5\% orthogonal, 4.0\% series-critical, 67.8\% filler; 51 near-critical paths (10\%), 0 split across CLBs.
-\item \emph{mkDelayWorker32B}: 5.4\% shared-input, 17.8\% orthogonal, 8.9\% series-critical, 67.9\% filler; 1 near-critical paths (10\%), 1 split across CLBs.
-\item \emph{stereovision2}: 1.3\% shared-input, 40.2\% orthogonal, 3.4\% series-critical, 55.1\% filler; 431 near-critical paths (10\%), 431 split across CLBs.
-\item \emph{blob\_merge}: 1.7\% shared-input, 51.6\% orthogonal, 3.3\% series-critical, 43.3\% filler; 3 near-critical paths (10\%), 3 split across CLBs.
+\item \emph{ch\_intrinsics}: 1.6\% shared-input, 34.8\% orthogonal, 2.5\% series-critical, 61.0\% SN+FL (non-critical remainder: SN 4.9\%, FL 56.1\%); 5 near-critical reported paths (within 10\%), 1 of them split across CLBs.
+\item \emph{stereovision3}: 12.1\% shared-input, 11.4\% orthogonal, 5.6\% series-critical, 70.8\% SN+FL (non-critical remainder: SN 2.7\%, FL 68.1\%); 1 near-critical reported path (within 10\%), 1 of them split across CLBs.
+\item \emph{diffeq2}: 1.1\% shared-input, 63.4\% orthogonal, 4.3\% series-critical, 31.1\% SN+FL (non-critical remainder: SN 3.2\%, FL 27.9\%); 32 near-critical reported paths (within 10\%), 32 of them split across CLBs.
+\item \emph{diffeq1}: 1.6\% shared-input, 53.3\% orthogonal, 2.8\% series-critical, 42.3\% SN+FL (non-critical remainder: SN 4.9\%, FL 37.4\%); 32 near-critical reported paths (within 10\%), 32 of them split across CLBs.
+\item \emph{mkPktMerge}: 5.2\% shared-input, 59.4\% orthogonal, 2.9\% series-critical, 32.5\% SN+FL (non-critical remainder: SN 1.5\%, FL 31.1\%); 39 near-critical reported paths (within 10\%), 0 of them split across CLBs.
+\item \emph{raygentop}: 4.5\% shared-input, 25.3\% orthogonal, 5.0\% series-critical, 65.2\% SN+FL (non-critical remainder: SN 3.1\%, FL 62.0\%); 55 near-critical reported paths (within 10\%), 9 of them split across CLBs.
+\item \emph{sha}: 10.7\% shared-input, 21.3\% orthogonal, 1.4\% series-critical, 66.6\% SN+FL (non-critical remainder: SN 9.1\%, FL 57.6\%); 26 near-critical reported paths (within 10\%), 26 of them split across CLBs.
+\item \emph{boundtop}: 3.5\% shared-input, 26.6\% orthogonal, 5.0\% series-critical, 64.9\% SN+FL (non-critical remainder: SN 2.5\%, FL 62.4\%); 122 near-critical reported paths (within 10\%), 118 of them split across CLBs.
+\item \emph{mkSMAdapter4B}: 5.8\% shared-input, 24.9\% orthogonal, 4.9\% series-critical, 64.4\% SN+FL (non-critical remainder: SN 5.7\%, FL 58.7\%); 7 near-critical reported paths (within 10\%), 7 of them split across CLBs.
+\item \emph{or1200}: 7.9\% shared-input, 30.5\% orthogonal, 7.8\% series-critical, 53.8\% SN+FL (non-critical remainder: SN 2.4\%, FL 51.4\%); 72 near-critical reported paths (within 10\%), 72 of them split across CLBs.
+\item \emph{stereovision0}: 2.1\% shared-input, 16.2\% orthogonal, 3.1\% series-critical, 78.6\% SN+FL (non-critical remainder: SN 2.8\%, FL 75.8\%); 1 near-critical reported path (within 10\%), 1 of them split across CLBs.
+\item \emph{stereovision1}: 1.7\% shared-input, 26.5\% orthogonal, 4.0\% series-critical, 67.8\% SN+FL (non-critical remainder: SN 1.4\%, FL 66.4\%); 51 near-critical reported paths (within 10\%), 0 of them split across CLBs.
+\item \emph{mkDelayWorker32B}: 5.4\% shared-input, 17.8\% orthogonal, 8.9\% series-critical, 67.9\% SN+FL (non-critical remainder: SN 3.9\%, FL 63.9\%); 1 near-critical reported path (within 10\%), 1 of them split across CLBs.
+\item \emph{stereovision2}: 1.3\% shared-input, 40.2\% orthogonal, 3.4\% series-critical, 55.1\% SN+FL (non-critical remainder: SN 3.7\%, FL 51.4\%); 431 near-critical reported paths (within 10\%), 431 of them split across CLBs.
+\item \emph{blob\_merge}: 1.7\% shared-input, 51.6\% orthogonal, 3.3\% series-critical, 43.3\% SN+FL (non-critical remainder: SN 5.9\%, FL 37.5\%); 3 near-critical reported paths (within 10\%), 3 of them split across CLBs.
 \end{itemize}
-Near-critical counts at both margins, the split reasons (refused by the legalizer, queued and not taken, never proposed) and the post-route and pack-time weighted shares are in
-\code{data/analysis/r4-results.json} and \code{data/<design>/r4near.json}; source shares of the molecules added: stock connectivity\_timing 67.0\%, high\_fanout 1.4\%, seed 9.8\%, transitive 21.8\%.
+Table~\ref{tab:r4weighted} weights the pairs by criticality (median over designs) and Table~\ref{tab:r4reasons} gives the near-critical counts at both margins and the reasons for the crossings; per-design values are in
+\code{data/analysis/r4-results.json} and \code{data/<design>/r4near.json}. Source shares of the molecules added: stock connectivity\_timing 67.0\%, high\_fanout 1.4\%, seed 9.8\%, transitive 21.8\%.
+
+\begin{table}[t]
+\caption{Median class shares (percent) over designs, unweighted and weighted by pack-time ($w_1$, minimum atom criticality) and post-route ($w_2$, minimum path-criticality ratio) criticality; $n$ = designs (w2 needs a routed run whose packing equals the census packing).}
+\label{tab:r4weighted}
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+packing & weight & SC & SN & SI & OR & FL & $n$ \\
+\midrule
+stock & unweighted & 4.0 & 3.2 & 3.5 & 26.6 & 57.6 & 15 \\
+stock & pack-time $w_1$ & 5.0 & 2.6 & 3.6 & 28.6 & 56.4 & 15 \\
+stock & post-route $w_2$ & 5.5 & 2.7 & 4.1 & 29.8 & 54.1 & 15 \\
+norns & unweighted & 3.8 & 2.9 & 3.7 & 38.7 & 51.3 & 15 \\
+norns & pack-time $w_1$ & 4.8 & 2.1 & 3.6 & 38.5 & 49.1 & 15 \\
+norns & post-route $w_2$ & 4.9 & 1.7 & 6.7 & 38.5 & 45.2 & 15 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{Near-critical reported paths at the 5\% and 10\% margins (seed 1, routed run): designs, median count $k$, designs with at least one path split across CLBs, member-member hop crossings and hops (pooled), and the reason of each crossing (R1 refused by the legalizer, R2 queued and not taken, R3 never proposed, R0 no census record).}
+\label{tab:r4reasons}
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}llrrrrrrrr@{}}
+\toprule
+packing & margin & designs & median $k$ & with split & crossings/hops & R1 & R2 & R3 & R0 \\
+\midrule
+stock & 5\% & 15 & 10 & 13 & 1761/7102 & 317 & 47 & 1397 & 0 \\
+stock & 10\% & 15 & 32 & 13 & 3608/13548 & 606 & 78 & 2924 & 0 \\
+norns & 5\% & 15 & 14 & 13 & 1003/4176 & 226 & 68 & 709 & 0 \\
+norns & 10\% & 15 & 19 & 13 & 4260/13262 & 719 & 111 & 3430 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \caption{Pair classes in the stock packing (percent of pairs), headline-packer SC share, chance SC+SN, near-critical paths (k) and split ones (m).}
@@ -55,16 +89,16 @@ blob\_merge & 494 & 3.3 & 5.9 & 1.7 & 51.6 & 37.5 & 3.3 & 0.0 & 3 & 3 \\
 \caption{Round-four hypotheses (n=15 unless stated; literal rules of \code{docs/plan/round4.md}).}
 \label{tab:r4status}
 \centering\scriptsize
-\begin{tabular}{@{}llp{3.2cm}p{7cm}@{}}
+\begin{tabular}{@{}lp{4.6cm}p{3.4cm}p{8.4cm}@{}}
 \toprule
 RQ & hypothesis & status & deciding number \\
 \midrule
 N17 & H17a shape (10/75/15) & not supported & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
 N17 & H17a literal numbers & not supported & same medians against 10/75/15 $\pm0.10$ \\
-N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p=<0.001$, n=15 \\
+N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p<0.001$, n=15 \\
 N17 & H17c critical edges kept together & supported & median ratio 0.652, Wilcoxon $p=0.027$, n=9 (literal rule; reading with an n$<$12 clause: inconclusive (n < 12)) \\
-N17 & H17d packer beats chance (series share) & supported & median excess 0.072, 15/15 positive \\
-N13 & H13a hierarchy vs grid area & supported & n=15 \\
+N17 & H17d series share above the atom-shuffle null (not a clustering-quality result) & supported & median excess 0.072, 15/15 positive; exploratory molecule-unit null: excess 0.023, p<0.001, inconclusive \\
+N13 & H13a module count vs grid area & supported & n=15 (M only: depth not measurable from provenance names) \\
 N13 & H13b beyond design size & inconclusive & n=15 \\
 N13 & H13c packer effect vs hierarchy & inconclusive & n=15 \\
 N15 & H15 depth estimate predicts critical statements & inconclusive & median $\rho$ 0.137, n=12 \\
@@ -82,52 +116,54 @@ N16 & H16 stage$\times$bit seed: stock.wirelength & not supported & geomean 1.00
 \end{table*}
 
 \paragraph{Knowns (N12).} Table~\ref{tab:r4knowns}: 2 relations meet the literal rule (at least 12 of 15 designs, and the stated test);
-3 with the count scaled to the designs defined (labelled, not registered).
-\begin{table}[t]
+3 with the count scaled to the designs defined (labelled, not registered). K1 is defined on 11 designs, so the literal count of 12 is unreachable by construction and its ``no'' is guaranteed whatever the data; the scaled column is a labelled variant. K3 is two registered conditions: A (share $\le0.80$) holds in 11/15 designs (needs 12) and B (above the null) in 15/15 (needs all 15); it is known iff both hold. K8 is registered across the seeds within a design: per packing it holds for 10/15 designs (stock) and 10/15 (norns), known iff both reach 12; the pooled row (6 points per design, both packings) is a labelled variant and is not counted.
+\begin{table*}[t]
 \caption{Knowns from the dataset: holds in $k$ of $n$ designs, test $p$, known under the literal rule and under the scaled count.}
 \label{tab:r4knowns}
-\centering\scriptsize\setlength{\tabcolsep}{2pt}
-\begin{tabular}{@{}llrrcc@{}}
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lp{10.5cm}rrcc@{}}
 \toprule
  & relation & holds & $p$ & known & scaled \\
 \midrule
 K1 & same-module CLBs closer than net connectivity predicts (all 3 seeds) & 10/11 & <0.001 & no & yes \\
 K2 & same-word CLBs closer than net connectivity predicts (all 3 seeds) & 9/12 & 0.017 & no & no \\
-K3 & stock packing dilutes words: word plurality share <= 0.80 and above the null's & 11/15 & <0.001 & no & no \\
+K3 & stock packing dilutes words: word plurality share $\le$ 0.80 (A, in $\ge$ 12 designs) and above the null's (B, in all 15) & 11/15 & <0.001 & no & no \\
 K4 & 4-nearest-neighbour stability across seeds exceeds the permuted null & 15/15 & <0.001 & yes & yes \\
 K5 & packing does not depend on the VPR seed (.net identical across the 3 seeds) & 30/30 & n/a & yes & yes \\
 K6 & the grid is sized by the logic (clb) tile: it has the highest utilisation & 4/15 & n/a & no & no \\
 K7 & adder, multiplier and memory atoms hold more of the critical-path delay than of the design's atoms & 11/15 & <0.001 & no & no \\
-K8 & routed wirelength and CPD move together across runs of one design (Spearman > 0) & 11/15 & n/a & no & no \\
+K8 stock & routed wirelength and CPD move together across the seeds of one design (Spearman $>$ 0) [stock packing] & 10/15 & n/a & no & no \\
+K8 norns & routed wirelength and CPD move together across the seeds of one design (Spearman $>$ 0) [norns packing] & 10/15 & n/a & no & no \\
+K8 pooled & routed wirelength and CPD move together across the seeds of one design (Spearman $>$ 0) [labelled variant: both packings pooled, 6 points] & 11/15 & n/a & no & no \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\paragraph{Hierarchy and chip size (N13).} The designs are small and nearly flat: the provenance module paths have one level in every design, so $D=1$ and the
-per-level Rent exponent exists for one level only. Table~\ref{tab:r4hier} lists atoms $S$, modules $M$, depth $D$ and the mean grid area under stock and norns packing.
+\paragraph{Hierarchy and chip size (N13).} The designs are small (n=15). Provenance names carry one \code{module/leaf@file:line} level, so the depth $D$ read from them is 1 in every design by construction: depth is not measurable from the provenance names, and H13 as registered tests the module count $M$ only. The per-level Rent exponent is therefore a single-level fit, defined for 7 designs and empty for 8; it is not reported further. Exploratory (not registered; instances and depth of Odin~III's elaborated design before flattening against log grid area): norns packing, depth: $\rho=0.67$, Holm $p=0.023$; norns packing, instances: $\rho=0.74$, Holm $p=0.009$; norns packing, instances given design size: $\rho=0.58$, Holm $p=0.056$; stock packing, depth: $\rho=0.67$, Holm $p=0.023$; stock packing, instances: $\rho=0.74$, Holm $p=0.009$; stock packing, instances given design size: $\rho=0.58$, Holm $p=0.056$ (Holm over 6 tests; depth runs from 1 to 5 modules).
+Table~\ref{tab:r4hier} lists atoms $S$, modules $M$, depth $D$ from the names, the instance count and depth of the elaborated design (exploratory), and the mean grid area under stock and norns packing.
 \begin{table}[t]
-\caption{Hierarchy and grid area (mean of 3 seeds, analytic start).}
+\caption{Hierarchy and grid area (mean of 3 seeds, analytic start). $M$, $D$: from provenance names; instances, depth: elaborated design before flattening (exploratory).}
 \label{tab:r4hier}
-\centering\scriptsize
-\begin{tabular}{@{}lrrrrr@{}}
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
-design & $S$ & $M$ & $D$ & area stock & area norns \\
+design & $S$ & $M$ & $D$ & instances & depth & area stock & area norns \\
 \midrule
-ch\_intrinsics & 180 & 1 & 1 & 100.00 & 100.00 \\
-stereovision3 & 319 & 1 & 1 & 49.00 & 49.00 \\
-diffeq2 & 429 & 1 & 1 & 256.00 & 256.00 \\
-diffeq1 & 622 & 1 & 1 & 256.00 & 256.00 \\
-mkPktMerge & 220 & 4 & 1 & 784.00 & 784.00 \\
-raygentop & 2439 & 14 & 1 & 361.00 & 361.00 \\
-sha & 2495 & 1 & 1 & 289.00 & 289.00 \\
-boundtop & 930 & 8 & 1 & 225.00 & 225.00 \\
-mkSMAdapter4B & 2010 & 2 & 1 & 400.00 & 400.00 \\
-or1200 & 3585 & 13 & 1 & 729.00 & 729.00 \\
-stereovision0 & 21002 & 23 & 1 & 1089.00 & 1156.00 \\
-stereovision1 & 18845 & 13 & 1 & 1600.00 & 1600.00 \\
-mkDelayWorker32B & 541 & 2 & 1 & 2500.00 & 2500.00 \\
-stereovision2 & 36057 & 20 & 1 & 6724.00 & 6724.00 \\
-blob\_merge & 10075 & 2 & 1 & 784.00 & 784.00 \\
+ch\_intrinsics & 180 & 1 & 1 & 2 & 2 & 100.00 & 100.00 \\
+stereovision3 & 319 & 1 & 1 & 1 & 1 & 49.00 & 49.00 \\
+diffeq2 & 429 & 1 & 1 & 1 & 1 & 256.00 & 256.00 \\
+diffeq1 & 622 & 1 & 1 & 1 & 1 & 256.00 & 256.00 \\
+mkPktMerge & 220 & 4 & 1 & 7 & 3 & 784.00 & 784.00 \\
+raygentop & 2439 & 14 & 1 & 16 & 3 & 361.00 & 361.00 \\
+sha & 2495 & 1 & 1 & 1 & 1 & 289.00 & 289.00 \\
+boundtop & 930 & 8 & 1 & 16 & 3 & 225.00 & 225.00 \\
+mkSMAdapter4B & 2010 & 2 & 1 & 11 & 3 & 400.00 & 400.00 \\
+or1200 & 3585 & 13 & 1 & 16 & 3 & 729.00 & 729.00 \\
+stereovision0 & 21002 & 23 & 1 & 302 & 4 & 1089.00 & 1156.00 \\
+stereovision1 & 18845 & 13 & 1 & 233 & 5 & 1600.00 & 1600.00 \\
+mkDelayWorker32B & 541 & 2 & 1 & 19 & 3 & 2500.00 & 2500.00 \\
+stereovision2 & 36057 & 20 & 1 & 146 & 3 & 6724.00 & 6724.00 \\
+blob\_merge & 10075 & 2 & 1 & 3 & 2 & 784.00 & 784.00 \\
 \bottomrule
 \end{tabular}
 \end{table}

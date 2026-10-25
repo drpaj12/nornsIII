@@ -4,6 +4,12 @@
  "M": 2,
  "S": 2010,
  "design": "mkSMAdapter4B",
+ "elab": {
+  "depth": 3,
+  "instances": 11,
+  "instantiations": 10,
+  "modules": 8
+ },
  "rent": {},
  "top_level_atoms": 118
 }

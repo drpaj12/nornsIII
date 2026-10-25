@@ -4,6 +4,12 @@
  "M": 4,
  "S": 220,
  "design": "mkPktMerge",
+ "elab": {
+  "depth": 3,
+  "instances": 7,
+  "instantiations": 6,
+  "modules": 7
+ },
  "rent": {
   "1": {
    "groups": 5,
