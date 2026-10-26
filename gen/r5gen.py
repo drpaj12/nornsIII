@@ -305,7 +305,8 @@ def verilog(spec: dict) -> str:
            f"B={b}, seed {spec['seed']}). Known optimal clustering: block b<k> = one CLB.\n"]
     for blk in spec["blocks"]:
         k, slots = blk["k"], blk["slots"]
-        ports = "input clk" + (f", input [{len(slots) - 1}:0] x" if slots else "") + ", output [9:0] q"
+        qports = ", output [9:0] q" if style == "dp" else ", " + ", ".join(f"output q{i}" for i in range(N_LE))
+        ports = "input clk" + (f", input [{len(slots) - 1}:0] x" if slots else "") + qports
         out.append(f"module b{k}({ports});")
         if style == "dp":
             out.append("  reg [9:0] r;")
@@ -313,7 +314,7 @@ def verilog(spec: dict) -> str:
             reg = lambda i: f"r[{i}]"  # noqa: E731
         else:
             out.append("  reg " + ", ".join(f"r{i}" for i in range(N_LE)) + ";")
-            out.append("  assign q = {" + ", ".join(f"r{i}" for i in reversed(range(N_LE))) + "};")
+            out += [f"  assign q{i} = r{i};" for i in range(N_LE)]
             reg = lambda i: f"r{i}"  # noqa: E731
         out.append("  always @(posedge clk) begin")
         for i, f in enumerate(blk["funcs"]):
@@ -323,17 +324,20 @@ def verilog(spec: dict) -> str:
         out.append("endmodule\n")
     out.append("module top(input clk, input [7:0] pi, output [7:0] po);")
     for k in range(b):
-        out.append(f"  wire [9:0] q{k};")
+        out.append(f"  wire [9:0] q{k};" if style == "dp" else "  wire " + ", ".join(f"q{k}_{i}" for i in range(N_LE)) + ";")
     for blk in spec["blocks"]:
         k, slots = blk["k"], blk["slots"]
+        def qs(u, f):
+            return f"q{u}[{f}]" if style == "dp" else f"q{u}_{f}"
+
         conn = [".clk(clk)"]
         if slots:
-            parts = [f"q{s[1]}[{s[2]}]" if s[0] == "q" else f"pi[{s[1]}]" for s in reversed(slots)]
+            parts = [qs(s[1], s[2]) if s[0] == "q" else f"pi[{s[1]}]" for s in reversed(slots)]
             conn.append(".x({" + ", ".join(parts) + "})")
-        conn.append(f".q(q{k})")
+        conn += [f".q(q{k})"] if style == "dp" else [f".q{i}(q{k}_{i})" for i in range(N_LE)]
         out.append(f"  b{k} u{k}({', '.join(conn)});")
     for p, (k, f) in enumerate(spec["po"]):
-        out.append(f"  assign po[{p}] = q{k}[{f}];")
+        out.append(f"  assign po[{p}] = q{k}[{f}];" if style == "dp" else f"  assign po[{p}] = q{k}_{f};")
     out.append("endmodule")
     return "\n".join(out) + "\n"
 
