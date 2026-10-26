@@ -12,7 +12,7 @@ H & test & status & deciding number \\
 \midrule
 H29 & synthesis keeps the construction (k1 to k5) & supported & 105 of 105 kept (100.0\%); k1 to k4 alone 105 of 105 \\
 H30 & the alignment manipulation works & supported & Spearman 0.988; median measured purity 0.100 at a=0, 1.000 at a=1, n=105 \\
-H31 & the forced clustering reproduces the blocks & supported & mean reproduction 1.000, 100.0\% of runs exact, n=315 runs \\
+H31 & the forced clustering reproduces the blocks & supported & mean reproduction 1.000, 100.0\% of designs exact on all three seeds, n=105 designs \\
 H32 & room (stock vs known, mesh and tree cells): CLB & supported & geomean 1.152, 90\% CI [1.132, 1.174], Holm $p<0.001$, n=14 cells \\
 H32 & room (stock vs known, mesh and tree cells): WL & supported & geomean 1.489, 90\% CI [1.394, 1.591], Holm $p<0.001$, n=14 cells \\
 H32 & room (stock vs known, mesh and tree cells): CPD & supported & geomean 1.181, 90\% CI [1.124, 1.237], Holm $p<0.001$, n=14 cells \\
@@ -67,4 +67,5 @@ $a$ & WL & CLB & CPD & WL & CLB & CPD \\
 \bottomrule
 \end{tabular}
 \end{table}
+Why the stock / known wirelength ratio of H32 (1.489) differs from round five's (1.220, n=72 designs): round five pooled all four topologies, and its chain and random designs have no headroom (chain 1.004, random 1.019), diluting the pool; round five's mesh (1.423) and tree (1.522) alone are close to the 1.489 here, which is taken over mesh and tree cells only. The size set does not explain it (round five restricted to $B\ge32$ gives 1.237, n=48), and neither does the aggregation (cells here, designs there).
 Dose-response (H36, WL): median slope -1.317 of ln ratio on measured alignment, 90\% interval of the mean slope [-1.328, -1.106]; labelled variant on the leak-free levels only ($a\le0.75$): median slope -0.786, 14/14 cells negative (supported by the same rule). Norns \code{.net} equal to the stock \code{.net} on all three seeds, per level: a=0: 0 of 21 (mean word purity 0.100), a=1: 0 of 21 (mean word purity 1.000), a=0.25: 0 of 21 (mean word purity 0.265), a=0.5: 0 of 21 (mean word purity 0.510), a=0.75: 0 of 21 (mean word purity 0.757). Fraction of the stock-to-known WL gap closed by norns on designs with stock ratio $\ge1.03$ (mesh and tree): a=0: -4.234 (n=14), a=0.25: -4.000 (n=14), a=0.5: -3.018 (n=14), a=0.75: -1.221 (n=14), a=1: 1.018 (n=14). Mean purity of the packings against the blocks (null in brackets), stock / norns / known: a=0: 0.929 (0.105) / 0.608 / 1.000; a=0.25: 0.929 (0.105) / 0.689 / 1.000; a=0.5: 0.929 (0.105) / 0.796 / 1.000; a=0.75: 0.929 (0.105) / 0.924 / 1.000; a=1: 0.929 (0.105) / 1.000 / 1.000. 

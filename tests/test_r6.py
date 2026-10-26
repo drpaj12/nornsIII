@@ -1,4 +1,6 @@
-"""Round-6 tests (docs/plan/round6.md, Tests). Run: python tests/test_r6.py  (from the repo root, with scipy)."""
+"""Round-6 tests (docs/plan/round6.md, Tests). Run from the repo root with the experiment environment (it needs scipy):
+    . scripts/env.sh; $NR_PY tests/test_r6.py
+Without scipy the file skips cleanly (exit 0, a message on stderr)."""
 
 import hashlib
 import math
@@ -6,6 +8,12 @@ import random
 import sys
 import unittest
 from pathlib import Path
+
+try:
+    import scipy  # noqa: F401
+except ImportError:
+    print("tests/test_r6.py skipped: scipy missing; run `. scripts/env.sh; $NR_PY tests/test_r6.py`", file=sys.stderr)
+    sys.exit(0)
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gen"))
@@ -166,6 +174,10 @@ class Rules(unittest.TestCase):
         self.assertEqual(r["75"]["status"], "inconclusive (n too small)")
 
     def test_hurt(self):
+        # H35 reachability: n too small, and gm >= 1.02 with the Holm p failing
+        self.assertEqual(st.decide_hurt({0: lns(1.08, 5, 0.02)})["0"]["status"], "inconclusive (n too small)")
+        v = [x + (0.6 if i % 2 else -0.6) for i, x in enumerate(lns(1.05, 14, 0.0))]
+        self.assertEqual(st.decide_hurt({0: v})["0"]["status"], "inconclusive")
         r = st.decide_hurt({0: lns(1.08, 14, 0.02), 25: lns(0.95, 14, 0.01), 50: lns(1.015, 14, 0.2)})
         self.assertEqual(r["0"]["status"], "supported")
         self.assertEqual(r["25"]["status"], "not supported")
@@ -183,10 +195,17 @@ class Rules(unittest.TestCase):
         self.assertEqual(st.decide_dose({"WL": cells(-0.06)})["WL"]["status"], "inconclusive")
         self.assertEqual(st.decide_dose({"WL": cells(-0.2, n=5)})["WL"]["status"], "inconclusive (n too small)")
         # slope strong in the median but the Wilcoxon cannot reach 0.05 after Holm over 3 metrics when the others are flat
+        # H36: median slope strong but fewer than 70% of the cells negative -> not "supported"
+        mixed = {c: pts for c, pts in cells(-0.2).items()}
+        flip = {c: [(a, -y) for a, y in pts] for c, pts in list(mixed.items())[:6]}
+        mixed.update(flip)
+        self.assertEqual(st.decide_dose({"WL": mixed})["WL"]["status"], "inconclusive")
         r = st.decide_dose({"WL": cells(-0.2), "CLB": cells(0.0, seed=5), "CPD": cells(0.0, seed=7)})
         self.assertEqual(r["WL"]["status"], "supported")
 
     def test_control(self):
+        # H37 not supported by the gm >= 1.03 branch (the harm side, as observed on chain)
+        self.assertEqual(st.decide_control(lns(1.10, 35, 0.01))["status"], "not supported")
         self.assertEqual(st.decide_control(lns(1.0, 35, 0.005))["status"], "supported")
         self.assertEqual(st.decide_control(lns(0.9, 35, 0.01))["status"], "not supported")
         self.assertEqual(st.decide_control(lns(1.0, 35, 0.2))["status"], "inconclusive")

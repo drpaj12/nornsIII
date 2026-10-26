@@ -244,3 +244,24 @@ All 105 designs were KEPT (k1 to k5) and all 945 runs have rc 0. Correction to e
 estimate was not checked when written; the batch ran in well under the 70 min estimate for the arms. No post-data analysis was
 made; the statuses are the literal pre-data rules. The lane deleted its four probe run directories under `runs/` (round-5 data
 untouched) before the controller's no-delete rule; no file was deleted after that rule.
+
+## Entry 2026-10-26 (d): review fixes (wording and aggregation; no rule change, no status change, no new run)
+
+Written after the round-6 results and the review of them. Dated, so the earlier text stays as it was.
+
+* Placebo. The Placebo bullet and the Stage 1 point (iii) above say the BLIF names and orders differ between levels. After the review
+  the BLIFs of one cell are structurally identical across levels and stock WL, CLB and CPD are bit-identical; only the register names
+  and the `.net` hashes differ. So stock VPR is invariant to register names here (zero noise). The placebo is therefore an invariance
+  check of the stock packer, not a noise null, and the rule "a Norns effect is found only if outside the placebo interval" cannot be
+  applied (the interval has zero width); it was a wording rule and changed no status. The paper no longer calls it a noise null.
+* H31 unit. The protocol says "as round-5 H24" and the first implementation pooled runs (n = 315 known runs). The unit is now the
+  design (105 designs; mean reproduction over a design's three known runs, "exact" = all three exact). The status is unchanged
+  (supported). The change was made after the data; it changes no status.
+* Text added to the paper after review (no rule touched): the per-level chain ratios beside the pooled H37 figure (H37 stays pooled
+  as pre-registered); the scope limit (one packer configuration, beta 4; words of exactly 10 flip-flops = the CLB capacity, word size not varied); the
+  9-run pilot of entry (b) in the appendix disclosures; one sentence on why H32's stock / known WL differs from round 5's (topology mix).
+* Edit history. Two edits to text above were made after the Stage-0 commit 0ffcfc1 (08:49 EDT). (1) Commit 6471720 (08:51 EDT) changed
+  the last Gates line from "no `/home/jamiespa` literal in committed files" to "no absolute home-directory path literal in committed files"
+  (the literal path in the protocol would itself break the gate); same rule, different wording. (2) Commit 8cd4247 (08:52 EDT) changed the
+  timing wording of entry (a) ("between about 08:30 and 08:48 EDT" to "before 08:47 EDT"). Neither changed a rule or threshold, and both were
+  made before any round-6 benchmark synthesis or VPR run. The Stage-0 SHA quoted in the paper is the commit of the original text.

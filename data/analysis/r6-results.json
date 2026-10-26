@@ -914,7 +914,7 @@
  },
  "repro": {
   "mean": 1.0,
-  "n": 315,
+  "n": 105,
   "share_full": 1.0,
   "status": "supported"
  },

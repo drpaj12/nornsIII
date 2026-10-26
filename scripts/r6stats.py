@@ -263,8 +263,12 @@ def analyse() -> dict:
     res["align"] = decide_align([meta(d)[1] for d in kd], [keep[d]["word_purity"] for d in kd])
     res["align_by_level"] = {str(lv): ratio_summary_plain([keep[d]["word_purity"] for d in kd if meta(d)[1] == lv])
                              for lv in ALL_LEVELS}
-    reps = [r["reproduction"] for (d, arm, s), r in runs.items() if arm == "known" and keep.get(d, {}).get("kept")]
-    res["repro"] = s5.decide_repro(reps)
+    # H31 per design (entry 2026-10-26 (d)): mean reproduction over the design's known runs; exact = all runs exact
+    per_d: dict[str, list[float]] = {}
+    for (d, arm, s), r in sorted(runs.items()):
+        if arm == "known" and keep.get(d, {}).get("kept"):
+            per_d.setdefault(d, []).append(r["reproduction"])
+    res["repro"] = s5.decide_repro([sum(v) / len(v) for _, v in sorted(per_d.items())])
     drop = {d for (d, arm, s), r in runs.items() if arm == "known" and keep.get(d, {}).get("kept") and r["reproduction"] < 0.9}
     res["excluded_low_reproduction"] = sorted(drop)
     keep_eff = {d: ({**k, "kept": k["kept"] and d not in drop}) for d, k in keep.items()}
@@ -332,7 +336,8 @@ def median_am(keep: dict, level: int) -> float:
 
 
 def placebo(keep: dict, runs: dict) -> dict:
-    """stock at level L / stock at level 100 of the same cell: the same logic, only register names differ in the HDL."""
+    """stock at level L / stock at level 100 of the same cell: the same logic and structurally identical BLIFs; only the HDL register
+    names (and the .net hashes) differ. An invariance check of the stock packer (zero noise), not a noise null (entry 2026-10-26 (d))."""
     out = {}
     for m in PRIMARY:
         v = per_design(keep, runs, "stock", "stock", m, ref_design=lambda d: f"r6_{meta(d)[0]}_a100_{meta(d)[2]}")

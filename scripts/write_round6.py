@@ -78,7 +78,7 @@ def status_rows(res: dict) -> str:
     k, kk, al, rp, rm = res["keep"], res["keep_k1_k4"], res["align"], res["repro"], res["room"]
     rows.append(f"H29 & synthesis keeps the construction (k1 to k5) & {tex(k['status'])} & {k['kept']} of {k['n']} kept ({pct(k['share'])}); k1 to k4 alone {kk['kept']} of {kk['n']} \\\\")
     rows.append(f"H30 & the alignment manipulation works & {tex(al['status'])} & Spearman {f3(al['rho'])}; median measured purity {f3(al['median_level0'])} at a=0, {f3(al['median_level100'])} at a=1, n={al['n']} \\\\")
-    rows.append(f"H31 & the forced clustering reproduces the blocks & {tex(rp['status'])} & mean reproduction {f3(rp['mean'])}, {pct(rp['share_full'])} of runs exact, n={rp['n']} runs \\\\")
+    rows.append(f"H31 & the forced clustering reproduces the blocks & {tex(rp['status'])} & mean reproduction {f3(rp['mean'])}, {pct(rp['share_full'])} of designs exact on all three seeds, n={rp['n']} designs \\\\")
     for m in ("CLB", "WL", "CPD"):
         v = rm[m]
         rows.append(f"H32 & room (stock vs known, mesh and tree cells): {m} & {tex(v['status'])} & geomean {f3(v['gmean'])}, 90\\% CI {ci(v)}, Holm ${peq(v['p_holm'])}$, n={v['n']} cells \\\\")
@@ -134,7 +134,7 @@ def main() -> int:
     sentence = one_sentence(res)
     k = res["keep"]
     write("r6-abstract.tex", fr"""
-A sixth round removes the leak of the fifth: the Norns HDL-aware packer gained over stock VPR only where the HDL word file was the block partition. It keeps the round-five datapath blocks, topologies (mesh, tree, and a chain control) and known optimal clustering, and changes only how the HDL declares its registers, so that a controlled fraction of each block's flip-flops sit in other blocks' words (alignment a from 1, the leak, to 0, every word spanning about ten blocks): {k['n']} generated designs, {k['kept']} of which keep the construction through Odin III. {sentence} Alignment is a construction on synthetic designs, not a measurement of real HDL. Protocol \code{{{PROTOCOL_SHA}}}.
+A sixth round removes the leak of the fifth: the Norns HDL-aware packer gained over stock VPR only where the HDL word file was the block partition. It keeps the round-five datapath blocks, topologies (mesh, tree, and a chain control) and known optimal clustering, and changes only how the HDL declares its registers, so that a controlled fraction of each block's flip-flops sit in other blocks' words (alignment a from 1, the leak, to 0, every word spanning about ten blocks): {k['n']} generated designs, {k['kept']} of which keep the construction through Odin III. {sentence} Scope: one packer configuration ($\beta=4$) and words of exactly ten bit-slice flip-flops, which equals one CLB ($N_{{\mathrm{{LE}}}}=10$); other word sizes are untested. Alignment is a construction on synthetic designs, not a measurement of real HDL. Protocol \code{{{PROTOCOL_SHA}}}.
 """)
     write("r6-method.tex", fr"""
 \subsection{{Round six: method}}
@@ -183,6 +183,7 @@ $a$ & WL & CLB & CPD & WL & CLB & CPD \\
 \bottomrule
 \end{{tabular}}
 \end{{table}}
+{room_note(res)}
 {variants(res)}
 """)
     write("r6-discussion.tex", fr"""
@@ -192,6 +193,18 @@ $a$ & WL & CLB & CPD & WL & CLB & CPD \\
 """)
     write("r6-appendix.tex", appendix())
     return 0
+
+
+def room_note(res: dict) -> str:
+    """Why H32 (stock / known WL) differs from round 5's H25 (cause: topology mix; size set and aggregation checked)."""
+    r5 = nl.read_json(nl.DATA / "analysis" / "r5-results.json")
+    pooled = r5["room_NL_stock"]["WL"]
+    topo = r5["room_by_topology_NL_stock"]
+    big = r5["room_NL_stock_B32"]["WL"]
+    h = res["room"]["WL"]
+    return (f"Why the stock / known wirelength ratio of H32 ({f3(h['gmean'])}) differs from round five's ({f3(pooled['gmean'])}, n={pooled['n']} designs): round five pooled all four topologies, and its chain and random designs have no headroom "
+            f"(chain {f3(topo['chain']['WL']['gmean'])}, random {f3(topo['rand']['WL']['gmean'])}), diluting the pool; round five's mesh ({f3(topo['mesh']['WL']['gmean'])}) and tree ({f3(topo['tree']['WL']['gmean'])}) alone are close to the {f3(h['gmean'])} here, which is taken over mesh and tree cells only. "
+            f"The size set does not explain it (round five restricted to $B\\ge32$ gives {f3(big['gmean'])}, n={big['n']}), and neither does the aggregation (cells here, designs there).")
 
 
 def variants(res: dict) -> str:
@@ -222,12 +235,18 @@ def discussion(res: dict) -> str:
     d = res["dose"]["WL"]
     out.append(f"The dose-response slope of the wirelength ratio on measured alignment is {f3(d['median_slope'])} (status {tex(d['status'])}); a gain concentrated at $a=1$ would also give a negative slope, so the leak-free variant and the per-level tests H34 carry the non-leaky claim. ")
     c = res["control_chain"]
-    out.append(f"On the chain control, where round five found no headroom, norns / stock is {f3(c['gmean'])} (H37 {tex(c['status'])}). ")
+    ch = [(lv, res["tables"][f"norns/stock_WL_chain_a{lv}"]) for lv in LEVELS]
+    bad = [lv for lv, v in ch if not (0.98 <= v["ci90"][0] and v["ci90"][1] <= 1.02)]
+    out.append(f"On the chain control, where round five found no headroom, norns / stock is {f3(c['gmean'])} pooled over the five levels (H37 {tex(c['status'])}, pooled as pre-registered); per level, a=" +
+               ", ".join(lvl(lv) for lv, _ in ch) + " give " + ", ".join(f2(v["gmean"]) for _, v in ch) +
+               ". The chain control (90\\% interval inside [0.98, 1.02]) " +
+               ("fails at every level $a<1$ and holds at $a=1$." if bad == [lv for lv in LEVELS if lv < 100] else
+                "fails at $a\\in\\{" + ", ".join(lvl(x) for x in bad) + "\\}$.") + " The pooled figure hides this level structure; H37 keeps its pre-registered pooled status. ")
     pl = res["placebo"]["WL"]
-    out.append("The placebo (stock at level $a$ against stock at $a=1$; same logic, different register names) has geometric means " +
+    out.append("The placebo (stock at level $a$ against stock at $a=1$) has geometric mean " +
                ", ".join(f"{f3(pl[str(lv)]['gmean'])} at $a={lvl(lv)}$" for lv in (0, 25, 50, 75)) +
-               ", the size of the movement that renaming alone produces, against which a Norns effect is called found only if it lies outside the placebo interval. ")
-    out.append("Limits: synthetic designs from a generator; the alignment is a construction (a bit-slice deal of flip-flop names), not real HDL, where a word's members need not be bit-slices and LUT words exist; the word file carries flip-flop words only; the Norns packer was not tuned for partial alignment; three topologies and one logic family; the known optimum is a clustering optimum, not a proven wirelength or delay optimum. A result at a given $a$ says what this packer does when that fraction of the HDL words falls in the block, not what real HDL gives.")
+               ". The synthesised BLIFs of one cell are structurally identical across levels and only the register names and the \\code{.net} hashes differ; stock VPR is invariant to register names here (zero noise), so the placebo is an invariance check of the stock packer, not a noise null, and it gives no interval against which to call a Norns effect found. ")
+    out.append("Limits: one packer configuration (the round-four headline setting, $\\beta=4$) on words of exactly ten bit-slice flip-flops, equal to the CLB capacity ($N_{\\mathrm{LE}}=10$); the word size was not varied, so word sizes other than one CLB are untested; synthetic designs from a generator; the alignment is a construction (a bit-slice deal of flip-flop names), not real HDL, where a word's members need not be bit-slices and LUT words exist; the word file carries flip-flop words only; the Norns packer was not tuned for partial alignment; three topologies and one logic family; the known optimum is a clustering optimum, not a proven wirelength or delay optimum. A result at a given $a$ says what this packer does when that fraction of the HDL words falls in the block, not what real HDL gives.")
     return "".join(out)
 
 
@@ -235,7 +254,7 @@ def appendix() -> str:
     return fr"""
 \subsection{{Round six: research log}}
 \label{{sec:r6-appendix}}
-\paragraph{{2026-10-26, round six.}} Peter (2026-10-26): ``Yes to both'' (to: merge Task 3, and run Norns round 6 as the non-leaky HDL-word test). Question N Q3.1 (area, speed, wirelength) on the yardstick of N Q1.6; protocol \code{{{PROTOCOL_SHA}}}. Disclosures: a four-design mechanism probe (synthesis and word recovery, no VPR) preceded the protocol commit and is recorded in the protocol and in \code{{data/r6/probe}}; the Python binding of the Odin III checkout (ABI 7) did not match its built library (ABI 6), so the binding of Odin III v1.1.1 (commit a1cf6ffd, ABI 6) was used; the probe run directories under \code{{runs/}} were deleted by mistake of the lane (they held no round-five data).
+\paragraph{{2026-10-26, round six.}} Peter (2026-10-26): ``Yes to both'' (to: merge Task 3, and run Norns round 6 as the non-leaky HDL-word test). Question N Q3.1 (area, speed, wirelength) on the yardstick of N Q1.6; protocol \code{{{PROTOCOL_SHA}}}. Disclosures: a four-design mechanism probe (synthesis and word recovery, no VPR) preceded the protocol commit and is recorded in the protocol and in \code{{data/r6/probe}}; the Python binding of the Odin III checkout (ABI 7) did not match its built library (ABI 6), so the binding of Odin III v1.1.1 (commit a1cf6ffd, ABI 6) was used; a pilot of the pipeline (nine VPR runs, three arms by three seeds, on each of \code{{r6\_mesh\_a0\_16}} and \code{{r6\_mesh\_a100\_16}}; protocol entry (b)) was made before the arm batch and is included in \code{{data/r6/runs.jsonl}} and in the statistics; the probe run directories under \code{{runs/}} were deleted by mistake of the lane (they held no round-five data).
 
 The research-question table of the research log gains the row
 
