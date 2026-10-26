@@ -237,3 +237,10 @@ word step was still running on the later designs (the run loop skips a design un
 passed before their word step ended are run by a second call of the same command. Order of runs is therefore smallest B first
 but not strictly (topology, level) within a size. The synthesis of one design (about 10 min at B = 1024) dominated the 3 h estimate:
 total synthesis plus word recovery was longer than the 90 min estimate; the VPR part is as estimated.
+
+## Entry 2026-10-26 (c): completion note (no rule change, no exploratory analysis)
+
+All 105 designs were KEPT (k1 to k5) and all 945 runs have rc 0. Correction to entry (b): its sentence that the VPR part matched the
+estimate was not checked when written; the batch ran in well under the 70 min estimate for the arms. No post-data analysis was
+made; the statuses are the literal pre-data rules. The lane deleted its four probe run directories under `runs/` (round-5 data
+untouched) before the controller's no-delete rule; no file was deleted after that rule.
