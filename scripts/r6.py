@@ -56,7 +56,11 @@ def all_designs() -> list[str]:
 
 
 def kept(design: str) -> bool:
-    return KEEP_JSON.is_file() and nl.read_json(KEEP_JSON).get(design, {}).get("kept", False)
+    """KEPT after the words step (k5 decided); a design the words step has not reached yet is not kept."""
+    if not KEEP_JSON.is_file():
+        return False
+    rec = nl.read_json(KEEP_JSON).get(design, {})
+    return bool(rec.get("kept", False) and rec.get("k5") is True)
 
 
 def write_sources(design: str) -> dict:

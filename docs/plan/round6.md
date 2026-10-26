@@ -225,3 +225,15 @@ words fall in the block, not what real HDL gives.
 The header of this file says "written 2026-10-26 08:55 EDT"; the Stage-0 commit 0ffcfc1 was made at 08:49 EDT (the header time
 was a typing slip, not a later edit). The probe (four designs, synthesis and word recovery, no VPR) and the layout printout
 listed above were run before 08:47 EDT (the time printed by the first `date` call of the session after them), all before the Stage-0 commit. Nothing else changed in the rules.
+
+## Entry 2026-10-26 (b): pilot and run order (no rule change)
+
+Written after synthesis of all 105 designs and while word recovery was still running (no round-6 arm result had been looked at
+for any status). Truthful state: all 105 designs synthesised (every one passed k1 to k4); word recovery (k5) was running in a
+background job. A pilot of the pipeline, 9 VPR runs each of `r6_mesh_a0_16` and `r6_mesh_a100_16` (all arms), was made before the batch; it is included in
+`data/r6/runs.jsonl` and in the statistics (same code as the batch). The pilot shows what the protocol does not hide: at B = 16 and
+a = 0 the Norns packer gives 17 CLBs and about 2x the stock wirelength. The arm batch was started while the
+word step was still running on the later designs (the run loop skips a design until its k5 decision exists); designs the loop
+passed before their word step ended are run by a second call of the same command. Order of runs is therefore smallest B first
+but not strictly (topology, level) within a size. The synthesis of one design (about 10 min at B = 1024) dominated the 3 h estimate:
+total synthesis plus word recovery was longer than the 90 min estimate; the VPR part is as estimated.
