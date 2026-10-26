@@ -21,11 +21,11 @@
   "lut": 80
  },
  "largest_words": [
-  10,
-  10,
-  10,
-  10,
-  10
+  1,
+  1,
+  1,
+  1,
+  1
  ],
  "line_groups_largest": [
   10,
@@ -34,10 +34,10 @@
   10,
   10
  ],
- "lines_with_several_words": 0,
- "max_words_on_line": 1,
+ "lines_with_several_words": 8,
+ "max_words_on_line": 10,
  "statement_lines": 8,
  "unjoined_cells": 0,
- "words": 8,
- "words_ge2": 8
+ "words": 80,
+ "words_ge2": 0
 }
