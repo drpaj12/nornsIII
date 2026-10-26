@@ -39,7 +39,9 @@ RUNS_JSONL = rl.DATA5 / "runs.jsonl"
 
 
 def all_designs() -> list[str]:
-    return r5gen.names()
+    """HDL designs and netlist-level designs, smallest B first (netlist level before HDL within a size)."""
+    import r5nl
+    return sorted(r5nl.names() + r5gen.names(), key=lambda n: (r5gen.parse_name("r5_" + n.split("_", 1)[1])[2], not n.startswith("n5_"), n))
 
 
 def kept(design: str) -> bool:
@@ -51,9 +53,12 @@ def synth(designs: list[str]) -> int:
     for d in designs:
         if d in res and res[d].get("synth_rc") == 0:
             continue
-        rl.write_sources(d)
-        rc = rl.synth(d)
-        rec = rl.keep_check(d) if rc == 0 else {"design": d, "kept": False, "failing": ["synth"]}
+        if rl.is_nl(d):
+            rc, rec = 0, rl.synth_nl(d)
+        else:
+            rl.write_sources(d)
+            rc = rl.synth(d)
+            rec = rl.keep_check(d) if rc == 0 else {"design": d, "kept": False, "failing": ["synth"]}
         rec["synth_rc"] = rc
         res[d] = rec
         nl.write_json(KEEP_JSON, res)
@@ -69,7 +74,7 @@ def words(designs: list[str]) -> int:
     nl.DATA = rl.DATA5 / "words"  # build_words writes its summary under DATA/<design>/words.json
     out = {}
     for d in designs:
-        if not kept(d):
+        if not kept(d) or rl.is_nl(d):
             continue
         s = bw.build(d)
         n = af.write(d, "word", "r5")
@@ -84,11 +89,17 @@ def words(designs: list[str]) -> int:
 def aff_flags(design: str, arm: str) -> list[str]:
     if arm == "stock":
         return []
+    if rl.is_nl(design) and arm == "known":
+        rl.write_known_affinity(design)
     if arm == "norns":
         return ["--norns_affinity", str(af.affinity_path(design, "word", "r5")), "--norns_affinity_weight", "4",
                 "--norns_proposal_count", "queued"]
     return ["--norns_affinity", str(af.affinity_path(design, "known", "r5")),
             "--norns_affinity_weight", f"{rl.BETA_KNOWN:g}", "--norns_proposal_count", "queued"]
+
+
+def arms_of(design: str) -> tuple[str, ...]:
+    return ("stock", "known") if rl.is_nl(design) else ARMS
 
 
 def tag(arm: str, seed: int) -> str:
@@ -150,7 +161,7 @@ def arms(designs: list[str]) -> int:
     for d in designs:
         if not kept(d):
             continue
-        for arm in ARMS:
+        for arm in arms_of(d):
             for seed in SEEDS:
                 arm_run(d, arm, seed)
     return 0
@@ -162,7 +173,7 @@ def attr(designs: list[str]) -> int:
     for d in designs:
         if not kept(d):
             continue
-        for arm in ARMS:
+        for arm in arms_of(d):
             for seed in SEEDS:
                 cwd = nl.runs_dir(d, "r5", tag(arm, seed))
                 mp = cwd / "metrics.json"
@@ -170,7 +181,7 @@ def attr(designs: list[str]) -> int:
                     continue
                 rec = nl.read_json(mp)
                 try:
-                    rep = timing4.attribute(cwd, matrix.blif_of(d), netlist_json=timing4.ensure_json(d))
+                    rep = timing4.attribute(cwd, matrix.blif_of(d), netlist_json=None if rl.is_nl(d) else timing4.ensure_json(d))
                 except Exception as exc:  # noqa: BLE001 - recorded
                     rec["attr_error"] = f"{type(exc).__name__}: {exc}"
                     nl.write_json(mp, rec)

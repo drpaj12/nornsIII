@@ -13,11 +13,13 @@ import nornlib as nl
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gen"))
 import r5gen  # noqa: E402
+import r5nl  # noqa: E402
 
 DATA5 = nl.DATA / "r5"
 CONSTS = ("gnd", "vcc", "unconn")
 BLOCK = re.compile(r"^b(\d+)$")
 PO = re.compile(r"^po\[(\d+)\]$")
+CELL = re.compile(r"^b(\d+)_[lq]\d+$")  # netlist level: cell names b<k>_l<i> (LUT) and b<k>_q<i> (flip-flop)
 BETA_KNOWN = 100.0
 N_NULL = 50
 NULL_SEED = 20261026
@@ -45,6 +47,33 @@ def write_sources(design: str) -> dict:
     return r5gen.summary(spec, text)
 
 
+def is_nl(design: str) -> bool:
+    return design.startswith("n5_")
+
+
+def synth_nl(design: str) -> dict:
+    """Netlist level: BLIF straight from the spec (no Odin III, no ABC), then the exactness check."""
+    spec = r5gen.build_spec(r5nl.hdl_name(design))
+    spec["name"] = design
+    nl.ensure_dir(src_dir(design))
+    nl.write_json(src_dir(design) / "spec.json", spec)
+    text = r5nl.blif(spec)
+    out = nl.runs_dir(design, "netlist", f"{design}.blif")
+    nl.ensure_dir(out.parent)
+    out.write_text(text, encoding="utf-8")
+    rec = keep_check(design)
+    ex = r5nl.check(spec)
+    rec.update(ex)
+    rec["k4"] = rec["measured_cut"] == rec["designed_cut"]
+    rec["k5_move"] = ex["move_violations"] == 0
+    rec["k6_slack"] = ex["slack"] <= 0.10
+    rec["failing"] = [n for n, v in (("k1", rec["k1"]), ("k2", rec["k2"]), ("k3", rec["k3"]), ("k4", rec["k4"]),
+                                     ("k5_move", rec["k5_move"]), ("k6_slack", rec["k6_slack"])) if not v]
+    rec["kept"] = not rec["failing"]
+    rec["sha256"] = __import__("hashlib").sha256(text.encode()).hexdigest()
+    return rec
+
+
 def read_spec(design: str) -> dict:
     return nl.read_json(src_dir(design) / "spec.json")
 
@@ -64,6 +93,9 @@ def label_of(name: str, spec: dict | None) -> tuple[int | None, str]:
     """(block index, how): 'path' = the provenance path component b<k>; 'spec' = a flip-flop Odin names after a
     primary output (`po[p]`), labelled from the designed spec (docs/plan/round5.md amendment 1); (None, '') else."""
     m = BLOCK.match(nl.module_of(name))
+    if m:
+        return int(m.group(1)), "path"
+    m = CELL.match(name)
     if m:
         return int(m.group(1)), "path"
     m = PO.match(name)

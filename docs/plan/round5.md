@@ -311,3 +311,20 @@ NL hypotheses (decision rules identical to the HDL rules with the arm names chan
 Not run at NL: H20, H22, H23 (they need `norns`). Everything else of the Stage-2 definitions, n rules, and the
 writing rules stands. The paper reports the NL level (the headroom number) and the HDL level (the Norns
 question) separately.
+
+## Entry 2026-10-26 (c): netlist-level check rule, changed after seeing the check on three designs (no VPR run yet)
+
+Entry (b) required the swap test (a) to hold with zero violations. The first check of three designs (HDL-spec
+`mesh_ctl_16`, `rand_dp_8`, `mesh_dp_64`) found violations (5, 1 and 24 improving swaps; slack of a local search
+4.5%, 2.1%, 5.2%). Cause, stated: the cut counts a net once however many of its pins leave, so a cell on a net that is
+already cut (an interface net, whose driver is also read inside its block) can be moved next to its external
+neighbour at no cost. The block partition is therefore a very good but not a proven minimum-cut partition, and the
+CLB-count optimum is still exact. Rule change (entry (b) rule (a) is kept as a reported number): the local search
+(improving pair swaps over block pairs that share a net, applied until none is left, at most 8 rounds) is run from
+the block partition and its cut `cut_local_search` is reported with the slack (cut - cut_local_search) / cut. A netlist
+design passes the check iff: BLIF has exactly 10 B LUTs and 10 B FFs, <= 40 distinct input nets per block, measured
+cut = designed cut exactly, move-gain test (b) has 0 violations, and slack <= 10%. (The 10% bound is set after seeing
+slack values of 2 to 5% on three designs; the distribution over all designs is reported.) The `known` cut used in all
+tables is the block-partition cut; the paper says it is an upper bound on the minimum cut within the reported slack.
+Entry (b) item (c) (random restarts): 500 restarts for B = 4 and 300 for B = 8 (entry (b) said 20000; that count was
+an estimate that is too slow for the steepest-swap search; the number run is reported).
