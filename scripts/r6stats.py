@@ -14,6 +14,7 @@ import sys
 
 import nornlib as nl
 import r5stats as s5
+import r5lib  # noqa: F401  (puts gen/ on sys.path)
 import r6gen
 
 BOOT_SEED = s5.BOOT_SEED

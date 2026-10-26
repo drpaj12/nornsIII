@@ -1,0 +1,2102 @@
+[
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.025,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 16,
+  "bytes": 19412,
+  "designed_cut": 112,
+  "edges": 48,
+  "ffs": 160,
+  "level": 0,
+  "luts": 160,
+  "name": "r6_mesh_a0_16",
+  "r5_design": "r5_mesh_dp_16",
+  "seed": 20261026,
+  "sha256": "14e6ea56c9e694958b67b902cccd8f95c0ae0bd23a82238dfb988c3efb010e0a",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 7.8125,
+   "own_slot": 0.26875,
+   "purity": 0.31875,
+   "words_per_block": 7.8125
+  },
+  "b": 16,
+  "bytes": 19423,
+  "designed_cut": 112,
+  "edges": 48,
+  "ffs": 160,
+  "level": 25,
+  "luts": 160,
+  "name": "r6_mesh_a25_16",
+  "r5_design": "r5_mesh_dp_16",
+  "seed": 20261026,
+  "sha256": "3c4c2df8193e51b30b965567718164928b811f7372045ee0cf2138d8ea57b84d",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.75,
+   "own_slot": 0.50625,
+   "purity": 0.525,
+   "words_per_block": 5.75
+  },
+  "b": 16,
+  "bytes": 19425,
+  "designed_cut": 112,
+  "edges": 48,
+  "ffs": 160,
+  "level": 50,
+  "luts": 160,
+  "name": "r6_mesh_a50_16",
+  "r5_design": "r5_mesh_dp_16",
+  "seed": 20261026,
+  "sha256": "7c9f7bec492a167407c82444709e066c975b7c8fc997179c1beac8783539f445",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.1875,
+   "own_slot": 0.775,
+   "purity": 0.78125,
+   "words_per_block": 3.1875
+  },
+  "b": 16,
+  "bytes": 19433,
+  "designed_cut": 112,
+  "edges": 48,
+  "ffs": 160,
+  "level": 75,
+  "luts": 160,
+  "name": "r6_mesh_a75_16",
+  "r5_design": "r5_mesh_dp_16",
+  "seed": 20261026,
+  "sha256": "562a998fc644405210738d1f2c788ffb3aeb2269479577bfc740ccd2fdcbf54f",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 16,
+  "bytes": 19435,
+  "designed_cut": 112,
+  "edges": 48,
+  "ffs": 160,
+  "level": 100,
+  "luts": 160,
+  "name": "r6_mesh_a100_16",
+  "r5_design": "r5_mesh_dp_16",
+  "seed": 20261026,
+  "sha256": "6abf1173d94b05c6ae61c656a014311d8ebcc54e8476cbfd093944d4e3a138d1",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.025,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 16,
+  "bytes": 19134,
+  "designed_cut": 76,
+  "edges": 30,
+  "ffs": 160,
+  "level": 0,
+  "luts": 160,
+  "name": "r6_tree_a0_16",
+  "r5_design": "r5_tree_dp_16",
+  "seed": 20261026,
+  "sha256": "0cf04d2f96303193644e6f7df028714cc0173a9aacd9ac9285e00384669721ca",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.125,
+   "own_slot": 0.25625,
+   "purity": 0.2875,
+   "words_per_block": 8.125
+  },
+  "b": 16,
+  "bytes": 19142,
+  "designed_cut": 76,
+  "edges": 30,
+  "ffs": 160,
+  "level": 25,
+  "luts": 160,
+  "name": "r6_tree_a25_16",
+  "r5_design": "r5_tree_dp_16",
+  "seed": 20261026,
+  "sha256": "a304d956405037263d8c5a3a8740f04d37dcef8f844721edfa775392479e3d9f",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.5625,
+   "own_slot": 0.51875,
+   "purity": 0.54375,
+   "words_per_block": 5.5625
+  },
+  "b": 16,
+  "bytes": 19141,
+  "designed_cut": 76,
+  "edges": 30,
+  "ffs": 160,
+  "level": 50,
+  "luts": 160,
+  "name": "r6_tree_a50_16",
+  "r5_design": "r5_tree_dp_16",
+  "seed": 20261026,
+  "sha256": "1adc2b6a1e898f3f7ba960ddd84fb19d467dba118052ee202ff26e3d69076cfb",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.375,
+   "own_slot": 0.75,
+   "purity": 0.7625,
+   "words_per_block": 3.375
+  },
+  "b": 16,
+  "bytes": 19142,
+  "designed_cut": 76,
+  "edges": 30,
+  "ffs": 160,
+  "level": 75,
+  "luts": 160,
+  "name": "r6_tree_a75_16",
+  "r5_design": "r5_tree_dp_16",
+  "seed": 20261026,
+  "sha256": "961df804371dd934c0e87a59a0bd997e2c2f828b2397ee1db4c77a7792ecb5f0",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 16,
+  "bytes": 19143,
+  "designed_cut": 76,
+  "edges": 30,
+  "ffs": 160,
+  "level": 100,
+  "luts": 160,
+  "name": "r6_tree_a100_16",
+  "r5_design": "r5_tree_dp_16",
+  "seed": 20261026,
+  "sha256": "527b17dfe5400714f92ebf0b51734d1db2391b274995699ad7c56c0348b19e91",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.025,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 16,
+  "bytes": 18755,
+  "designed_cut": 46,
+  "edges": 15,
+  "ffs": 160,
+  "level": 0,
+  "luts": 160,
+  "name": "r6_chain_a0_16",
+  "r5_design": "r5_chain_dp_16",
+  "seed": 20261026,
+  "sha256": "728ccc956ea4329e0384b5d91c8a64ad26809a9eaf1db885a7a15c0cbc3524f5",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 7.875,
+   "own_slot": 0.2625,
+   "purity": 0.3125,
+   "words_per_block": 7.875
+  },
+  "b": 16,
+  "bytes": 18761,
+  "designed_cut": 46,
+  "edges": 15,
+  "ffs": 160,
+  "level": 25,
+  "luts": 160,
+  "name": "r6_chain_a25_16",
+  "r5_design": "r5_chain_dp_16",
+  "seed": 20261026,
+  "sha256": "7539987bee0c67eb5639696ebdb27b496b346e74dcdc336d08715ba3a284a198",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.6875,
+   "own_slot": 0.50625,
+   "purity": 0.53125,
+   "words_per_block": 5.6875
+  },
+  "b": 16,
+  "bytes": 18766,
+  "designed_cut": 46,
+  "edges": 15,
+  "ffs": 160,
+  "level": 50,
+  "luts": 160,
+  "name": "r6_chain_a50_16",
+  "r5_design": "r5_chain_dp_16",
+  "seed": 20261026,
+  "sha256": "d0383bd51b34d9d76162b66c5cbce5eda17f6a88df16a0d000f2c1b48e3966cb",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.1875,
+   "own_slot": 0.7625,
+   "purity": 0.78125,
+   "words_per_block": 3.1875
+  },
+  "b": 16,
+  "bytes": 18770,
+  "designed_cut": 46,
+  "edges": 15,
+  "ffs": 160,
+  "level": 75,
+  "luts": 160,
+  "name": "r6_chain_a75_16",
+  "r5_design": "r5_chain_dp_16",
+  "seed": 20261026,
+  "sha256": "6ef38529a57812c67b7bdd4bec9ef4ba04e4f2b55d4cbc51496a3767e8bbcb4f",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 16,
+  "bytes": 18771,
+  "designed_cut": 46,
+  "edges": 15,
+  "ffs": 160,
+  "level": 100,
+  "luts": 160,
+  "name": "r6_chain_a100_16",
+  "r5_design": "r5_chain_dp_16",
+  "seed": 20261026,
+  "sha256": "d732efde6bb4b2dc134647b9bb16552f7a127080e365b5de49253f9c8e95db32",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.00625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 32,
+  "bytes": 38653,
+  "designed_cut": 224,
+  "edges": 104,
+  "ffs": 320,
+  "level": 0,
+  "luts": 320,
+  "name": "r6_mesh_a0_32",
+  "r5_design": "r5_mesh_dp_32",
+  "seed": 20261026,
+  "sha256": "81201ad1b8a9e36f83593477be0600e7256562fc646e82dbd6d6ae6edab53f09",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.25,
+   "own_slot": 0.253125,
+   "purity": 0.275,
+   "words_per_block": 8.25
+  },
+  "b": 32,
+  "bytes": 38670,
+  "designed_cut": 224,
+  "edges": 104,
+  "ffs": 320,
+  "level": 25,
+  "luts": 320,
+  "name": "r6_mesh_a25_32",
+  "r5_design": "r5_mesh_dp_32",
+  "seed": 20261026,
+  "sha256": "abbbddc0a86ff1746b470d8fc009b5ea02d97b9c01a8ad730e5295e078146a3b",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.8125,
+   "own_slot": 0.503125,
+   "purity": 0.51875,
+   "words_per_block": 5.8125
+  },
+  "b": 32,
+  "bytes": 38672,
+  "designed_cut": 224,
+  "edges": 104,
+  "ffs": 320,
+  "level": 50,
+  "luts": 320,
+  "name": "r6_mesh_a50_32",
+  "r5_design": "r5_mesh_dp_32",
+  "seed": 20261026,
+  "sha256": "6c42f96765e74a708a407967651fab2c48d94f1060838419ade3f59b870dcb25",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.3125,
+   "own_slot": 0.75625,
+   "purity": 0.76875,
+   "words_per_block": 3.3125
+  },
+  "b": 32,
+  "bytes": 38685,
+  "designed_cut": 224,
+  "edges": 104,
+  "ffs": 320,
+  "level": 75,
+  "luts": 320,
+  "name": "r6_mesh_a75_32",
+  "r5_design": "r5_mesh_dp_32",
+  "seed": 20261026,
+  "sha256": "ff785997875971db2cb2a191c058cdccfd6de14483c99512ef1baf31b2cf9154",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 32,
+  "bytes": 38694,
+  "designed_cut": 224,
+  "edges": 104,
+  "ffs": 320,
+  "level": 100,
+  "luts": 320,
+  "name": "r6_mesh_a100_32",
+  "r5_design": "r5_mesh_dp_32",
+  "seed": 20261026,
+  "sha256": "9af134179b129ac50d9bdae2a026d23ea3ae7cdbcab1d2e6def6ef9f2c585539",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.00625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 32,
+  "bytes": 37871,
+  "designed_cut": 140,
+  "edges": 62,
+  "ffs": 320,
+  "level": 0,
+  "luts": 320,
+  "name": "r6_tree_a0_32",
+  "r5_design": "r5_tree_dp_32",
+  "seed": 20261026,
+  "sha256": "780134e05d27b8c6a4bcc1680101c83fb32ee365a1d9768a064f05570f8880e1",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.25,
+   "own_slot": 0.253125,
+   "purity": 0.275,
+   "words_per_block": 8.25
+  },
+  "b": 32,
+  "bytes": 37884,
+  "designed_cut": 140,
+  "edges": 62,
+  "ffs": 320,
+  "level": 25,
+  "luts": 320,
+  "name": "r6_tree_a25_32",
+  "r5_design": "r5_tree_dp_32",
+  "seed": 20261026,
+  "sha256": "01bd3addf0df532cba630546b60f9ac41a7f6d57b380a65efa5dfe7f0caa745c",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.84375,
+   "own_slot": 0.509375,
+   "purity": 0.515625,
+   "words_per_block": 5.84375
+  },
+  "b": 32,
+  "bytes": 37883,
+  "designed_cut": 140,
+  "edges": 62,
+  "ffs": 320,
+  "level": 50,
+  "luts": 320,
+  "name": "r6_tree_a50_32",
+  "r5_design": "r5_tree_dp_32",
+  "seed": 20261026,
+  "sha256": "a17403aaab72b424850c016c89b6f0272c23041c137795dc0f36998bbc41a134",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.40625,
+   "own_slot": 0.75625,
+   "purity": 0.759375,
+   "words_per_block": 3.40625
+  },
+  "b": 32,
+  "bytes": 37893,
+  "designed_cut": 140,
+  "edges": 62,
+  "ffs": 320,
+  "level": 75,
+  "luts": 320,
+  "name": "r6_tree_a75_32",
+  "r5_design": "r5_tree_dp_32",
+  "seed": 20261026,
+  "sha256": "a1007fdb5daef8921b76e480cc4acf8a54d5012116ae5b0b9d4fee1e0ee83753",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 32,
+  "bytes": 37896,
+  "designed_cut": 140,
+  "edges": 62,
+  "ffs": 320,
+  "level": 100,
+  "luts": 320,
+  "name": "r6_tree_a100_32",
+  "r5_design": "r5_tree_dp_32",
+  "seed": 20261026,
+  "sha256": "3dcbcda62d66b96b31301daf53d40f1e05b859421a951ff81d8f76858a96a460",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.00625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 32,
+  "bytes": 37314,
+  "designed_cut": 78,
+  "edges": 31,
+  "ffs": 320,
+  "level": 0,
+  "luts": 320,
+  "name": "r6_chain_a0_32",
+  "r5_design": "r5_chain_dp_32",
+  "seed": 20261026,
+  "sha256": "86bc95bc996768627aab739c75e6793e9822c95f170e40996e68df1c59b50ec4",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.1875,
+   "own_slot": 0.25625,
+   "purity": 0.28125,
+   "words_per_block": 8.1875
+  },
+  "b": 32,
+  "bytes": 37329,
+  "designed_cut": 78,
+  "edges": 31,
+  "ffs": 320,
+  "level": 25,
+  "luts": 320,
+  "name": "r6_chain_a25_32",
+  "r5_design": "r5_chain_dp_32",
+  "seed": 20261026,
+  "sha256": "8ba6b96547529e3cc593e9ecbc39fa68310aabe73d590bee840fd65ac08ebd52",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.75,
+   "own_slot": 0.503125,
+   "purity": 0.525,
+   "words_per_block": 5.75
+  },
+  "b": 32,
+  "bytes": 37341,
+  "designed_cut": 78,
+  "edges": 31,
+  "ffs": 320,
+  "level": 50,
+  "luts": 320,
+  "name": "r6_chain_a50_32",
+  "r5_design": "r5_chain_dp_32",
+  "seed": 20261026,
+  "sha256": "0e97bc6d9fb5c3b3f3b3f689a6b2ee555d84a8513ea42a47555cf9d368e144ea",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4375,
+   "own_slot": 0.75,
+   "purity": 0.75625,
+   "words_per_block": 3.4375
+  },
+  "b": 32,
+  "bytes": 37353,
+  "designed_cut": 78,
+  "edges": 31,
+  "ffs": 320,
+  "level": 75,
+  "luts": 320,
+  "name": "r6_chain_a75_32",
+  "r5_design": "r5_chain_dp_32",
+  "seed": 20261026,
+  "sha256": "37798126e2afcb5a819757b783936256e155f33a838e8ea967f21a69f9910109",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 32,
+  "bytes": 37359,
+  "designed_cut": 78,
+  "edges": 31,
+  "ffs": 320,
+  "level": 100,
+  "luts": 320,
+  "name": "r6_chain_a100_32",
+  "r5_design": "r5_chain_dp_32",
+  "seed": 20261026,
+  "sha256": "c7605200180a0cee890ceaf0f3a920eae7601f1f014488d5cc7cfab62a8d81d3",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 64,
+  "bytes": 77253,
+  "designed_cut": 464,
+  "edges": 224,
+  "ffs": 640,
+  "level": 0,
+  "luts": 640,
+  "name": "r6_mesh_a0_64",
+  "r5_design": "r5_mesh_dp_64",
+  "seed": 20261026,
+  "sha256": "8e08f77239bcd0214fb77b4eccb6b95da71d6cbcb6fd6651ec2e9d8bbe092728",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.390625,
+   "own_slot": 0.2546875,
+   "purity": 0.2609375,
+   "words_per_block": 8.390625
+  },
+  "b": 64,
+  "bytes": 77269,
+  "designed_cut": 464,
+  "edges": 224,
+  "ffs": 640,
+  "level": 25,
+  "luts": 640,
+  "name": "r6_mesh_a25_64",
+  "r5_design": "r5_mesh_dp_64",
+  "seed": 20261026,
+  "sha256": "b8821ecf447dac04197feefc8d392f81be4985673ce57ccf409e07446b432188",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.90625,
+   "own_slot": 0.503125,
+   "purity": 0.509375,
+   "words_per_block": 5.90625
+  },
+  "b": 64,
+  "bytes": 77273,
+  "designed_cut": 464,
+  "edges": 224,
+  "ffs": 640,
+  "level": 50,
+  "luts": 640,
+  "name": "r6_mesh_a50_64",
+  "r5_design": "r5_mesh_dp_64",
+  "seed": 20261026,
+  "sha256": "5dd3b1d66e628ec7841eef9f52e42204c4b1a0fe81117687be2797897f19f743",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4375,
+   "own_slot": 0.7515625,
+   "purity": 0.75625,
+   "words_per_block": 3.4375
+  },
+  "b": 64,
+  "bytes": 77286,
+  "designed_cut": 464,
+  "edges": 224,
+  "ffs": 640,
+  "level": 75,
+  "luts": 640,
+  "name": "r6_mesh_a75_64",
+  "r5_design": "r5_mesh_dp_64",
+  "seed": 20261026,
+  "sha256": "d227a2840a350c29c4ce33296a0d97dda1d08466d3b20f67701a99ebe92e9781",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 64,
+  "bytes": 77295,
+  "designed_cut": 464,
+  "edges": 224,
+  "ffs": 640,
+  "level": 100,
+  "luts": 640,
+  "name": "r6_mesh_a100_64",
+  "r5_design": "r5_mesh_dp_64",
+  "seed": 20261026,
+  "sha256": "dc64e773ed2099d037e8662a7b4101394423761a7f2d9d77de03316ddd4426d3",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 64,
+  "bytes": 75245,
+  "designed_cut": 268,
+  "edges": 126,
+  "ffs": 640,
+  "level": 0,
+  "luts": 640,
+  "name": "r6_tree_a0_64",
+  "r5_design": "r5_tree_dp_64",
+  "seed": 20261026,
+  "sha256": "2136f257b3228e176bdede1bc0551db0b33d87c83bccdbe6d8271a6a192c0a7c",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.375,
+   "own_slot": 0.2546875,
+   "purity": 0.2625,
+   "words_per_block": 8.375
+  },
+  "b": 64,
+  "bytes": 75254,
+  "designed_cut": 268,
+  "edges": 126,
+  "ffs": 640,
+  "level": 25,
+  "luts": 640,
+  "name": "r6_tree_a25_64",
+  "r5_design": "r5_tree_dp_64",
+  "seed": 20261026,
+  "sha256": "7ba1d573082f14693905486592f81881843889fb67723d9e28a6bd6e999be5b8",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.90625,
+   "own_slot": 0.5015625,
+   "purity": 0.509375,
+   "words_per_block": 5.90625
+  },
+  "b": 64,
+  "bytes": 75270,
+  "designed_cut": 268,
+  "edges": 126,
+  "ffs": 640,
+  "level": 50,
+  "luts": 640,
+  "name": "r6_tree_a50_64",
+  "r5_design": "r5_tree_dp_64",
+  "seed": 20261026,
+  "sha256": "86c01253defc6db45860e007292abd60ccfe0acbc24e282b84909b8aa01e44a9",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.46875,
+   "own_slot": 0.7515625,
+   "purity": 0.753125,
+   "words_per_block": 3.46875
+  },
+  "b": 64,
+  "bytes": 75276,
+  "designed_cut": 268,
+  "edges": 126,
+  "ffs": 640,
+  "level": 75,
+  "luts": 640,
+  "name": "r6_tree_a75_64",
+  "r5_design": "r5_tree_dp_64",
+  "seed": 20261026,
+  "sha256": "3293cac57172a80e8a7a73eb7ab5a11a320e7df90620664d36d329b6b36e2e34",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 64,
+  "bytes": 75287,
+  "designed_cut": 268,
+  "edges": 126,
+  "ffs": 640,
+  "level": 100,
+  "luts": 640,
+  "name": "r6_tree_a100_64",
+  "r5_design": "r5_tree_dp_64",
+  "seed": 20261026,
+  "sha256": "ec46a5da77dd328f1454895ff367b6bfe17fe1a5638fe2e014c5406a8f276337",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 64,
+  "bytes": 74043,
+  "designed_cut": 142,
+  "edges": 63,
+  "ffs": 640,
+  "level": 0,
+  "luts": 640,
+  "name": "r6_chain_a0_64",
+  "r5_design": "r5_chain_dp_64",
+  "seed": 20261026,
+  "sha256": "91c35009cd196f551ac2df742866cf345b0e8c29f8f1a4bc1c8e9d6382190987",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.375,
+   "own_slot": 0.253125,
+   "purity": 0.2625,
+   "words_per_block": 8.375
+  },
+  "b": 64,
+  "bytes": 74069,
+  "designed_cut": 142,
+  "edges": 63,
+  "ffs": 640,
+  "level": 25,
+  "luts": 640,
+  "name": "r6_chain_a25_64",
+  "r5_design": "r5_chain_dp_64",
+  "seed": 20261026,
+  "sha256": "0e728edfb58850d4641c6d7aeec7980f497236f62b17fbb3c3c9182520c92ddb",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.90625,
+   "own_slot": 0.5046875,
+   "purity": 0.509375,
+   "words_per_block": 5.90625
+  },
+  "b": 64,
+  "bytes": 74087,
+  "designed_cut": 142,
+  "edges": 63,
+  "ffs": 640,
+  "level": 50,
+  "luts": 640,
+  "name": "r6_chain_a50_64",
+  "r5_design": "r5_chain_dp_64",
+  "seed": 20261026,
+  "sha256": "ca984d02888c08d96696a237e4478506effaa80fa1fa9b34138f4718fe9e3416",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.40625,
+   "own_slot": 0.7546875,
+   "purity": 0.759375,
+   "words_per_block": 3.40625
+  },
+  "b": 64,
+  "bytes": 74107,
+  "designed_cut": 142,
+  "edges": 63,
+  "ffs": 640,
+  "level": 75,
+  "luts": 640,
+  "name": "r6_chain_a75_64",
+  "r5_design": "r5_chain_dp_64",
+  "seed": 20261026,
+  "sha256": "0ee228d68ccbb0083d4351a987f75b99a0ebd31d9971ed761ae2ac5affd46fee",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 64,
+  "bytes": 74124,
+  "designed_cut": 142,
+  "edges": 63,
+  "ffs": 640,
+  "level": 100,
+  "luts": 640,
+  "name": "r6_chain_a100_64",
+  "r5_design": "r5_chain_dp_64",
+  "seed": 20261026,
+  "sha256": "d3320a6181c39bced6b1c6db3e8f72cd14e377397e04f8a1a3d2b86965b15802",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 128,
+  "bytes": 155103,
+  "designed_cut": 944,
+  "edges": 464,
+  "ffs": 1280,
+  "level": 0,
+  "luts": 1280,
+  "name": "r6_mesh_a0_128",
+  "r5_design": "r5_mesh_dp_128",
+  "seed": 20261026,
+  "sha256": "db92d6147f641d2a473852125264b683bfaa1add5ea81665916b3b90de8d941c",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.421875,
+   "own_slot": 0.2515625,
+   "purity": 0.2578125,
+   "words_per_block": 8.421875
+  },
+  "b": 128,
+  "bytes": 155166,
+  "designed_cut": 944,
+  "edges": 464,
+  "ffs": 1280,
+  "level": 25,
+  "luts": 1280,
+  "name": "r6_mesh_a25_128",
+  "r5_design": "r5_mesh_dp_128",
+  "seed": 20261026,
+  "sha256": "1052ae79566db59bbd9404f7cb58a86636063d1ddcbc9820350a2ac4fa05b460",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.9609375,
+   "own_slot": 0.50078125,
+   "purity": 0.50390625,
+   "words_per_block": 5.9609375
+  },
+  "b": 128,
+  "bytes": 155207,
+  "designed_cut": 944,
+  "edges": 464,
+  "ffs": 1280,
+  "level": 50,
+  "luts": 1280,
+  "name": "r6_mesh_a50_128",
+  "r5_design": "r5_mesh_dp_128",
+  "seed": 20261026,
+  "sha256": "4f094dc2daba9b2f7f29f1a89dde7772b55a4d37f529d614c89599d5589d95c7",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4609375,
+   "own_slot": 0.7515625,
+   "purity": 0.75390625,
+   "words_per_block": 3.4609375
+  },
+  "b": 128,
+  "bytes": 155280,
+  "designed_cut": 944,
+  "edges": 464,
+  "ffs": 1280,
+  "level": 75,
+  "luts": 1280,
+  "name": "r6_mesh_a75_128",
+  "r5_design": "r5_mesh_dp_128",
+  "seed": 20261026,
+  "sha256": "d837339065e0ffaadf9b13a5a9aabd841d760f84c3196d79bc6116a968427671",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 128,
+  "bytes": 155318,
+  "designed_cut": 944,
+  "edges": 464,
+  "ffs": 1280,
+  "level": 100,
+  "luts": 1280,
+  "name": "r6_mesh_a100_128",
+  "r5_design": "r5_mesh_dp_128",
+  "seed": 20261026,
+  "sha256": "996e9d0594135ecf566cf54e9175ae25728c2406e00d29dff4d458f349f34550",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 128,
+  "bytes": 150644,
+  "designed_cut": 524,
+  "edges": 254,
+  "ffs": 1280,
+  "level": 0,
+  "luts": 1280,
+  "name": "r6_tree_a0_128",
+  "r5_design": "r5_tree_dp_128",
+  "seed": 20261026,
+  "sha256": "d5596fa2578e9df77be9427c4749397658a68236bf6a1f5595608d87e574f17e",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4296875,
+   "own_slot": 0.253125,
+   "purity": 0.25703125,
+   "words_per_block": 8.4296875
+  },
+  "b": 128,
+  "bytes": 150672,
+  "designed_cut": 524,
+  "edges": 254,
+  "ffs": 1280,
+  "level": 25,
+  "luts": 1280,
+  "name": "r6_tree_a25_128",
+  "r5_design": "r5_tree_dp_128",
+  "seed": 20261026,
+  "sha256": "4ea308875babb997663ae041acc09ab7101bcce2d8aa369c5679793ee33becf5",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.96875,
+   "own_slot": 0.5,
+   "purity": 0.503125,
+   "words_per_block": 5.96875
+  },
+  "b": 128,
+  "bytes": 150684,
+  "designed_cut": 524,
+  "edges": 254,
+  "ffs": 1280,
+  "level": 50,
+  "luts": 1280,
+  "name": "r6_tree_a50_128",
+  "r5_design": "r5_tree_dp_128",
+  "seed": 20261026,
+  "sha256": "8c45e284c52e5ef3274ab4e201723552bc215d6bde7968eb3d34c916fd6483f9",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.484375,
+   "own_slot": 0.75,
+   "purity": 0.7515625,
+   "words_per_block": 3.484375
+  },
+  "b": 128,
+  "bytes": 150726,
+  "designed_cut": 524,
+  "edges": 254,
+  "ffs": 1280,
+  "level": 75,
+  "luts": 1280,
+  "name": "r6_tree_a75_128",
+  "r5_design": "r5_tree_dp_128",
+  "seed": 20261026,
+  "sha256": "0a7f595eeb8b67aacfed1fb70a1be92c669995d030d0d5e534ee71ef4c58cfce",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 128,
+  "bytes": 150736,
+  "designed_cut": 524,
+  "edges": 254,
+  "ffs": 1280,
+  "level": 100,
+  "luts": 1280,
+  "name": "r6_tree_a100_128",
+  "r5_design": "r5_tree_dp_128",
+  "seed": 20261026,
+  "sha256": "492c4d220778d0a77e877f2a046ca491b525c673c9f8e1ea3af39477a27e34fd",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 128,
+  "bytes": 148270,
+  "designed_cut": 270,
+  "edges": 127,
+  "ffs": 1280,
+  "level": 0,
+  "luts": 1280,
+  "name": "r6_chain_a0_128",
+  "r5_design": "r5_chain_dp_128",
+  "seed": 20261026,
+  "sha256": "9d09639cb29f741bfe4997fc8ce29afe426059525b0eca6dc820ac0953da3000",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4453125,
+   "own_slot": 0.2515625,
+   "purity": 0.25546875,
+   "words_per_block": 8.4453125
+  },
+  "b": 128,
+  "bytes": 148310,
+  "designed_cut": 270,
+  "edges": 127,
+  "ffs": 1280,
+  "level": 25,
+  "luts": 1280,
+  "name": "r6_chain_a25_128",
+  "r5_design": "r5_chain_dp_128",
+  "seed": 20261026,
+  "sha256": "36327e30dc98b4dc503fbae9d4ce7cd7e6b9e0f1822f850866dafa4bf35aeba6",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.9375,
+   "own_slot": 0.5015625,
+   "purity": 0.50625,
+   "words_per_block": 5.9375
+  },
+  "b": 128,
+  "bytes": 148342,
+  "designed_cut": 270,
+  "edges": 127,
+  "ffs": 1280,
+  "level": 50,
+  "luts": 1280,
+  "name": "r6_chain_a50_128",
+  "r5_design": "r5_chain_dp_128",
+  "seed": 20261026,
+  "sha256": "e6395387fb665b350d4469b29d90c49d39e6634c5c7d1c053f585d0574265e75",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4765625,
+   "own_slot": 0.7515625,
+   "purity": 0.75234375,
+   "words_per_block": 3.4765625
+  },
+  "b": 128,
+  "bytes": 148382,
+  "designed_cut": 270,
+  "edges": 127,
+  "ffs": 1280,
+  "level": 75,
+  "luts": 1280,
+  "name": "r6_chain_a75_128",
+  "r5_design": "r5_chain_dp_128",
+  "seed": 20261026,
+  "sha256": "554110a4c3217e5c94ac83865135e2888e067cc43b5758f1b7c9b1e1df7b54cd",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 128,
+  "bytes": 148411,
+  "designed_cut": 270,
+  "edges": 127,
+  "ffs": 1280,
+  "level": 100,
+  "luts": 1280,
+  "name": "r6_chain_a100_128",
+  "r5_design": "r5_chain_dp_128",
+  "seed": 20261026,
+  "sha256": "69b7cfcda7deb8db2a74c1105a6b7196d8d18cc9430c17d239faf6631017b95c",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 256,
+  "bytes": 312633,
+  "designed_cut": 1936,
+  "edges": 960,
+  "ffs": 2560,
+  "level": 0,
+  "luts": 2560,
+  "name": "r6_mesh_a0_256",
+  "r5_design": "r5_mesh_dp_256",
+  "seed": 20261026,
+  "sha256": "2b7fe13171b2fac81b1cf867fe61e2fd7af87c6a0f0c87691458015f03cbe60c",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4609375,
+   "own_slot": 0.25078125,
+   "purity": 0.25390625,
+   "words_per_block": 8.4609375
+  },
+  "b": 256,
+  "bytes": 312728,
+  "designed_cut": 1936,
+  "edges": 960,
+  "ffs": 2560,
+  "level": 25,
+  "luts": 2560,
+  "name": "r6_mesh_a25_256",
+  "r5_design": "r5_mesh_dp_256",
+  "seed": 20261026,
+  "sha256": "643fb20c4d8a90149871eb11343745692745488ec486eefe163259eecb16c676",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.984375,
+   "own_slot": 0.501171875,
+   "purity": 0.5015625,
+   "words_per_block": 5.984375
+  },
+  "b": 256,
+  "bytes": 312793,
+  "designed_cut": 1936,
+  "edges": 960,
+  "ffs": 2560,
+  "level": 50,
+  "luts": 2560,
+  "name": "r6_mesh_a50_256",
+  "r5_design": "r5_mesh_dp_256",
+  "seed": 20261026,
+  "sha256": "5cc69c1e1009b5cbc910eaf94cff899a27e6881d2d4a5ce0b9eae2ad23ea9abd",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.48046875,
+   "own_slot": 0.750390625,
+   "purity": 0.751953125,
+   "words_per_block": 3.48046875
+  },
+  "b": 256,
+  "bytes": 312850,
+  "designed_cut": 1936,
+  "edges": 960,
+  "ffs": 2560,
+  "level": 75,
+  "luts": 2560,
+  "name": "r6_mesh_a75_256",
+  "r5_design": "r5_mesh_dp_256",
+  "seed": 20261026,
+  "sha256": "72d5aba0128ccf5a5ff0d62228bfbd060fc26b5b38bc6bf318c1304d1a7db602",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 256,
+  "bytes": 312930,
+  "designed_cut": 1936,
+  "edges": 960,
+  "ffs": 2560,
+  "level": 100,
+  "luts": 2560,
+  "name": "r6_mesh_a100_256",
+  "r5_design": "r5_mesh_dp_256",
+  "seed": 20261026,
+  "sha256": "1fe0a6244b6bf051a729b65f5504e9386cc6c5095c5260c1da83df029796dd36",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 256,
+  "bytes": 302728,
+  "designed_cut": 1036,
+  "edges": 510,
+  "ffs": 2560,
+  "level": 0,
+  "luts": 2560,
+  "name": "r6_tree_a0_256",
+  "r5_design": "r5_tree_dp_256",
+  "seed": 20261026,
+  "sha256": "1cfab6947956266947b35581612999656559071d0803e190cd8d6b73f9694ec3",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.47265625,
+   "own_slot": 0.251171875,
+   "purity": 0.252734375,
+   "words_per_block": 8.47265625
+  },
+  "b": 256,
+  "bytes": 302772,
+  "designed_cut": 1036,
+  "edges": 510,
+  "ffs": 2560,
+  "level": 25,
+  "luts": 2560,
+  "name": "r6_tree_a25_256",
+  "r5_design": "r5_tree_dp_256",
+  "seed": 20261026,
+  "sha256": "9d5c0ffab2247f6d08e90df60cfb3f9352fb6a9d56f9267fee7de07e78152b7c",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.9765625,
+   "own_slot": 0.501171875,
+   "purity": 0.50234375,
+   "words_per_block": 5.9765625
+  },
+  "b": 256,
+  "bytes": 302832,
+  "designed_cut": 1036,
+  "edges": 510,
+  "ffs": 2560,
+  "level": 50,
+  "luts": 2560,
+  "name": "r6_tree_a50_256",
+  "r5_design": "r5_tree_dp_256",
+  "seed": 20261026,
+  "sha256": "b85e80681efd9aea20b6930ba1980485603b6a4e20287077010bb623bc0d7c18",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.5,
+   "own_slot": 0.75,
+   "purity": 0.75,
+   "words_per_block": 3.5
+  },
+  "b": 256,
+  "bytes": 302881,
+  "designed_cut": 1036,
+  "edges": 510,
+  "ffs": 2560,
+  "level": 75,
+  "luts": 2560,
+  "name": "r6_tree_a75_256",
+  "r5_design": "r5_tree_dp_256",
+  "seed": 20261026,
+  "sha256": "c9a5e7316a0be2b68f334dccc386e4d7b3a659410b1be15ebe3323d56a98b2c8",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 256,
+  "bytes": 302937,
+  "designed_cut": 1036,
+  "edges": 510,
+  "ffs": 2560,
+  "level": 100,
+  "luts": 2560,
+  "name": "r6_tree_a100_256",
+  "r5_design": "r5_tree_dp_256",
+  "seed": 20261026,
+  "sha256": "5edda4bcba2e4e04237e61f1ea78cb5c2f853596cf0e8a9e4ec43e90a289ad4e",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.0015625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 256,
+  "bytes": 297564,
+  "designed_cut": 526,
+  "edges": 255,
+  "ffs": 2560,
+  "level": 0,
+  "luts": 2560,
+  "name": "r6_chain_a0_256",
+  "r5_design": "r5_chain_dp_256",
+  "seed": 20261026,
+  "sha256": "d563ec31f363df493cee47a2a8226a52b6524035c7e4529d1a75a35ea19d12f8",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.46875,
+   "own_slot": 0.251171875,
+   "purity": 0.253125,
+   "words_per_block": 8.46875
+  },
+  "b": 256,
+  "bytes": 297669,
+  "designed_cut": 526,
+  "edges": 255,
+  "ffs": 2560,
+  "level": 25,
+  "luts": 2560,
+  "name": "r6_chain_a25_256",
+  "r5_design": "r5_chain_dp_256",
+  "seed": 20261026,
+  "sha256": "e154d50ad49d2ed8c446365816b33376a5ae2bbd87c1acb2ef02c067889c3ead",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.96875,
+   "own_slot": 0.5015625,
+   "purity": 0.503125,
+   "words_per_block": 5.96875
+  },
+  "b": 256,
+  "bytes": 297768,
+  "designed_cut": 526,
+  "edges": 255,
+  "ffs": 2560,
+  "level": 50,
+  "luts": 2560,
+  "name": "r6_chain_a50_256",
+  "r5_design": "r5_chain_dp_256",
+  "seed": 20261026,
+  "sha256": "df0b324ac6e4b34d3e1500429da3dc4ae40625fc8183fe668ac0bd5f1277eb00",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4921875,
+   "own_slot": 0.75078125,
+   "purity": 0.75078125,
+   "words_per_block": 3.4921875
+  },
+  "b": 256,
+  "bytes": 297859,
+  "designed_cut": 526,
+  "edges": 255,
+  "ffs": 2560,
+  "level": 75,
+  "luts": 2560,
+  "name": "r6_chain_a75_256",
+  "r5_design": "r5_chain_dp_256",
+  "seed": 20261026,
+  "sha256": "d8a0ba1602a9203d21dcdd48352aed30136ed2b93e74f0e4998189552475ffd8",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 256,
+  "bytes": 297957,
+  "designed_cut": 526,
+  "edges": 255,
+  "ffs": 2560,
+  "level": 100,
+  "luts": 2560,
+  "name": "r6_chain_a100_256",
+  "r5_design": "r5_chain_dp_256",
+  "seed": 20261026,
+  "sha256": "ea7e9fcd69dbf168047d88eb76c3ed5bdfdbbd2b3d99943571cbbe79b010e165",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 512,
+  "bytes": 627266,
+  "designed_cut": 3920,
+  "edges": 1952,
+  "ffs": 5120,
+  "level": 0,
+  "luts": 5120,
+  "name": "r6_mesh_a0_512",
+  "r5_design": "r5_mesh_dp_512",
+  "seed": 20261026,
+  "sha256": "315cd5adc7c1994f49284f6ae94682bb7985f4869fb71984fd5825682d78686d",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.484375,
+   "own_slot": 0.2505859375,
+   "purity": 0.2515625,
+   "words_per_block": 8.484375
+  },
+  "b": 512,
+  "bytes": 627351,
+  "designed_cut": 3920,
+  "edges": 1952,
+  "ffs": 5120,
+  "level": 25,
+  "luts": 5120,
+  "name": "r6_mesh_a25_512",
+  "r5_design": "r5_mesh_dp_512",
+  "seed": 20261026,
+  "sha256": "9c4d124ee6cd7b379909998370c9af8aaefe2ecd6679ab1e587cd2f4d6fec4cf",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.994140625,
+   "own_slot": 0.5001953125,
+   "purity": 0.5005859375,
+   "words_per_block": 5.994140625
+  },
+  "b": 512,
+  "bytes": 627416,
+  "designed_cut": 3920,
+  "edges": 1952,
+  "ffs": 5120,
+  "level": 50,
+  "luts": 5120,
+  "name": "r6_mesh_a50_512",
+  "r5_design": "r5_mesh_dp_512",
+  "seed": 20261026,
+  "sha256": "2e1a13b877e26bf1669677d2ecf327e0f64029e8cf401280324cb86fab0ad5df",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.498046875,
+   "own_slot": 0.75,
+   "purity": 0.7501953125,
+   "words_per_block": 3.498046875
+  },
+  "b": 512,
+  "bytes": 627502,
+  "designed_cut": 3920,
+  "edges": 1952,
+  "ffs": 5120,
+  "level": 75,
+  "luts": 5120,
+  "name": "r6_mesh_a75_512",
+  "r5_design": "r5_mesh_dp_512",
+  "seed": 20261026,
+  "sha256": "0267e656b2097440ef8053d8da4f58ab4cd2441507d6d803a46912b4a14d9817",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 512,
+  "bytes": 627585,
+  "designed_cut": 3920,
+  "edges": 1952,
+  "ffs": 5120,
+  "level": 100,
+  "luts": 5120,
+  "name": "r6_mesh_a100_512",
+  "r5_design": "r5_mesh_dp_512",
+  "seed": 20261026,
+  "sha256": "b57d6622d6b9a0dd97eb2edc32ae9edc9fb6d991d1e8a0d28faa36cc762ba9ea",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 512,
+  "bytes": 607250,
+  "designed_cut": 2060,
+  "edges": 1022,
+  "ffs": 5120,
+  "level": 0,
+  "luts": 5120,
+  "name": "r6_tree_a0_512",
+  "r5_design": "r5_tree_dp_512",
+  "seed": 20261026,
+  "sha256": "d0c82ca2a7b057baa8036ea8d6afe46e868be1d95673b41765a51e7cf17bf8a2",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.482421875,
+   "own_slot": 0.250390625,
+   "purity": 0.2517578125,
+   "words_per_block": 8.482421875
+  },
+  "b": 512,
+  "bytes": 607355,
+  "designed_cut": 2060,
+  "edges": 1022,
+  "ffs": 5120,
+  "level": 25,
+  "luts": 5120,
+  "name": "r6_tree_a25_512",
+  "r5_design": "r5_tree_dp_512",
+  "seed": 20261026,
+  "sha256": "1eb2251f6b8914eb9d67f550727f61a23d64f983e90f79ea26c43745a279506a",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.984375,
+   "own_slot": 0.5001953125,
+   "purity": 0.5015625,
+   "words_per_block": 5.984375
+  },
+  "b": 512,
+  "bytes": 607466,
+  "designed_cut": 2060,
+  "edges": 1022,
+  "ffs": 5120,
+  "level": 50,
+  "luts": 5120,
+  "name": "r6_tree_a50_512",
+  "r5_design": "r5_tree_dp_512",
+  "seed": 20261026,
+  "sha256": "2ffa675b319f24c849f8c13a9bc4afe35dfdc41fedf6c4974a3656cf4da4dca6",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.498046875,
+   "own_slot": 0.7501953125,
+   "purity": 0.7501953125,
+   "words_per_block": 3.498046875
+  },
+  "b": 512,
+  "bytes": 607589,
+  "designed_cut": 2060,
+  "edges": 1022,
+  "ffs": 5120,
+  "level": 75,
+  "luts": 5120,
+  "name": "r6_tree_a75_512",
+  "r5_design": "r5_tree_dp_512",
+  "seed": 20261026,
+  "sha256": "753850b1122cd66c17059ea2041112432e3f5fd9b1695fd5cc780714fad838d2",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 512,
+  "bytes": 607693,
+  "designed_cut": 2060,
+  "edges": 1022,
+  "ffs": 5120,
+  "level": 100,
+  "luts": 5120,
+  "name": "r6_tree_a100_512",
+  "r5_design": "r5_tree_dp_512",
+  "seed": 20261026,
+  "sha256": "742794a74f50af2a0daf93003c8e40c49a1e91d33fe18bc878add6268c93c382",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 512,
+  "bytes": 595967,
+  "designed_cut": 1038,
+  "edges": 511,
+  "ffs": 5120,
+  "level": 0,
+  "luts": 5120,
+  "name": "r6_chain_a0_512",
+  "r5_design": "r5_chain_dp_512",
+  "seed": 20261026,
+  "sha256": "4d4262cdc2ee7493a685ba0b6dd17a3d0ae96762a59072113fe9251da152b06a",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.48046875,
+   "own_slot": 0.250390625,
+   "purity": 0.251953125,
+   "words_per_block": 8.48046875
+  },
+  "b": 512,
+  "bytes": 596182,
+  "designed_cut": 1038,
+  "edges": 511,
+  "ffs": 5120,
+  "level": 25,
+  "luts": 5120,
+  "name": "r6_chain_a25_512",
+  "r5_design": "r5_chain_dp_512",
+  "seed": 20261026,
+  "sha256": "97ffa1050eaf5f30d04e60750ec2a6021a99f19b8f4aa8512ecd30f71eda45d3",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.994140625,
+   "own_slot": 0.5001953125,
+   "purity": 0.5005859375,
+   "words_per_block": 5.994140625
+  },
+  "b": 512,
+  "bytes": 596405,
+  "designed_cut": 1038,
+  "edges": 511,
+  "ffs": 5120,
+  "level": 50,
+  "luts": 5120,
+  "name": "r6_chain_a50_512",
+  "r5_design": "r5_chain_dp_512",
+  "seed": 20261026,
+  "sha256": "e4d97989e69733ad6b367e62e5e4b77590abb9a1fe3b9388cf292a88c03513db",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.5,
+   "own_slot": 0.75,
+   "purity": 0.75,
+   "words_per_block": 3.5
+  },
+  "b": 512,
+  "bytes": 596630,
+  "designed_cut": 1038,
+  "edges": 511,
+  "ffs": 5120,
+  "level": 75,
+  "luts": 5120,
+  "name": "r6_chain_a75_512",
+  "r5_design": "r5_chain_dp_512",
+  "seed": 20261026,
+  "sha256": "70bb5b40830c604be5fc62a2b01506e90fad1fbcd539e2182bd8493b4bf36978",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 512,
+  "bytes": 596848,
+  "designed_cut": 1038,
+  "edges": 511,
+  "ffs": 5120,
+  "level": 100,
+  "luts": 5120,
+  "name": "r6_chain_a100_512",
+  "r5_design": "r5_chain_dp_512",
+  "seed": 20261026,
+  "sha256": "f4430cbe9c7bc7caddd599f167f4632e92ce3bb1e4c2d19700ed1a1f776bcee8",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 1024,
+  "bytes": 1258938,
+  "designed_cut": 7952,
+  "edges": 3968,
+  "ffs": 10240,
+  "level": 0,
+  "luts": 10240,
+  "name": "r6_mesh_a0_1024",
+  "r5_design": "r5_mesh_dp_1024",
+  "seed": 20261026,
+  "sha256": "db5624bd4a7ad6035254fa0f87dd05d0ee408a30f7ee508ff5cde5535e8cfb44",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4912109375,
+   "own_slot": 0.250390625,
+   "purity": 0.25087890625,
+   "words_per_block": 8.4912109375
+  },
+  "b": 1024,
+  "bytes": 1259053,
+  "designed_cut": 7952,
+  "edges": 3968,
+  "ffs": 10240,
+  "level": 25,
+  "luts": 10240,
+  "name": "r6_mesh_a25_1024",
+  "r5_design": "r5_mesh_dp_1024",
+  "seed": 20261026,
+  "sha256": "afc00f9ba093cf182fb6b1a1010336c6bb0ead7f7e3031b209e6b8fb729c4641",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.9951171875,
+   "own_slot": 0.5001953125,
+   "purity": 0.50048828125,
+   "words_per_block": 5.9951171875
+  },
+  "b": 1024,
+  "bytes": 1259167,
+  "designed_cut": 7952,
+  "edges": 3968,
+  "ffs": 10240,
+  "level": 50,
+  "luts": 10240,
+  "name": "r6_mesh_a50_1024",
+  "r5_design": "r5_mesh_dp_1024",
+  "seed": 20261026,
+  "sha256": "0e8271bf87661e06f149751a921029af166f8a8a74d2cc62e799fd2d2f181773",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4951171875,
+   "own_slot": 0.750390625,
+   "purity": 0.75048828125,
+   "words_per_block": 3.4951171875
+  },
+  "b": 1024,
+  "bytes": 1259282,
+  "designed_cut": 7952,
+  "edges": 3968,
+  "ffs": 10240,
+  "level": 75,
+  "luts": 10240,
+  "name": "r6_mesh_a75_1024",
+  "r5_design": "r5_mesh_dp_1024",
+  "seed": 20261026,
+  "sha256": "650305dad3383be846bfb7431bc62dd739c2c0bf28b2b343f4b32926db66d5ce",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 1024,
+  "bytes": 1259399,
+  "designed_cut": 7952,
+  "edges": 3968,
+  "ffs": 10240,
+  "level": 100,
+  "luts": 10240,
+  "name": "r6_mesh_a100_1024",
+  "r5_design": "r5_mesh_dp_1024",
+  "seed": 20261026,
+  "sha256": "9bf206aeaa376d2c7b350e7974c7ceee8cb94400ddd1abf3fdb4b8617f4a29b6",
+  "topology": "mesh"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 1024,
+  "bytes": 1216855,
+  "designed_cut": 4108,
+  "edges": 2046,
+  "ffs": 10240,
+  "level": 0,
+  "luts": 10240,
+  "name": "r6_tree_a0_1024",
+  "r5_design": "r5_tree_dp_1024",
+  "seed": 20261026,
+  "sha256": "f0c72e7936c131c8f006dacf6aa073849deb72d436fafd68c7692cb92aedeaf5",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4921875,
+   "own_slot": 0.25029296875,
+   "purity": 0.25078125,
+   "words_per_block": 8.4921875
+  },
+  "b": 1024,
+  "bytes": 1216972,
+  "designed_cut": 4108,
+  "edges": 2046,
+  "ffs": 10240,
+  "level": 25,
+  "luts": 10240,
+  "name": "r6_tree_a25_1024",
+  "r5_design": "r5_tree_dp_1024",
+  "seed": 20261026,
+  "sha256": "7e276657b9e8d65a9d67c3458973889b50f5acbd4d0c55318c9237be6aa7ec28",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.99609375,
+   "own_slot": 0.50029296875,
+   "purity": 0.500390625,
+   "words_per_block": 5.99609375
+  },
+  "b": 1024,
+  "bytes": 1217103,
+  "designed_cut": 4108,
+  "edges": 2046,
+  "ffs": 10240,
+  "level": 50,
+  "luts": 10240,
+  "name": "r6_tree_a50_1024",
+  "r5_design": "r5_tree_dp_1024",
+  "seed": 20261026,
+  "sha256": "46d205911e644e265b82fc20b48265c90d9001efff2c89761d97a944b3e0332d",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4970703125,
+   "own_slot": 0.7501953125,
+   "purity": 0.75029296875,
+   "words_per_block": 3.4970703125
+  },
+  "b": 1024,
+  "bytes": 1217222,
+  "designed_cut": 4108,
+  "edges": 2046,
+  "ffs": 10240,
+  "level": 75,
+  "luts": 10240,
+  "name": "r6_tree_a75_1024",
+  "r5_design": "r5_tree_dp_1024",
+  "seed": 20261026,
+  "sha256": "f6f99d677d8427ba3a7c3de5b4604bb73256f76883ad2c57c76903c443a0b29d",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 1024,
+  "bytes": 1217346,
+  "designed_cut": 4108,
+  "edges": 2046,
+  "ffs": 10240,
+  "level": 100,
+  "luts": 10240,
+  "name": "r6_tree_a100_1024",
+  "r5_design": "r5_tree_dp_1024",
+  "seed": 20261026,
+  "sha256": "af387c01c25ea33fab681554ea032ad46331f842200eeb491cea1fb99f95ea1c",
+  "topology": "tree"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 10.0,
+   "own_slot": 0.000390625,
+   "purity": 0.1,
+   "words_per_block": 10.0
+  },
+  "b": 1024,
+  "bytes": 1194385,
+  "designed_cut": 2062,
+  "edges": 1023,
+  "ffs": 10240,
+  "level": 0,
+  "luts": 10240,
+  "name": "r6_chain_a0_1024",
+  "r5_design": "r5_chain_dp_1024",
+  "seed": 20261026,
+  "sha256": "c06a30e64ff470425519f753e52dd9c0c747e1360caf9fdc89679ec93a945e25",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 8.4921875,
+   "own_slot": 0.25029296875,
+   "purity": 0.25078125,
+   "words_per_block": 8.4921875
+  },
+  "b": 1024,
+  "bytes": 1194620,
+  "designed_cut": 2062,
+  "edges": 1023,
+  "ffs": 10240,
+  "level": 25,
+  "luts": 10240,
+  "name": "r6_chain_a25_1024",
+  "r5_design": "r5_chain_dp_1024",
+  "seed": 20261026,
+  "sha256": "355251d32dd16c0d4796a6bca149d78f83378b6e807d975084977e355963155d",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 5.9951171875,
+   "own_slot": 0.50009765625,
+   "purity": 0.50048828125,
+   "words_per_block": 5.9951171875
+  },
+  "b": 1024,
+  "bytes": 1194856,
+  "designed_cut": 2062,
+  "edges": 1023,
+  "ffs": 10240,
+  "level": 50,
+  "luts": 10240,
+  "name": "r6_chain_a50_1024",
+  "r5_design": "r5_chain_dp_1024",
+  "seed": 20261026,
+  "sha256": "b76ee15e12017068e0960614b83fc3c00223e55f1096d99d8dbc6c2391bc0344",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 3.4970703125,
+   "own_slot": 0.75009765625,
+   "purity": 0.75029296875,
+   "words_per_block": 3.4970703125
+  },
+  "b": 1024,
+  "bytes": 1195087,
+  "designed_cut": 2062,
+  "edges": 1023,
+  "ffs": 10240,
+  "level": 75,
+  "luts": 10240,
+  "name": "r6_chain_a75_1024",
+  "r5_design": "r5_chain_dp_1024",
+  "seed": 20261026,
+  "sha256": "1342d0d60311266442bd7338ca6577669648b55016c9ba64a8e76424fd5a1719",
+  "topology": "chain"
+ },
+ {
+  "alignment": {
+   "blocks_per_word": 1.0,
+   "own_slot": 1.0,
+   "purity": 1.0,
+   "words_per_block": 1.0
+  },
+  "b": 1024,
+  "bytes": 1195320,
+  "designed_cut": 2062,
+  "edges": 1023,
+  "ffs": 10240,
+  "level": 100,
+  "luts": 10240,
+  "name": "r6_chain_a100_1024",
+  "r5_design": "r5_chain_dp_1024",
+  "seed": 20261026,
+  "sha256": "f90b3f3f56f773d918e652004fcd38870d7734d4e96a5877068fe4b89ff547c2",
+  "topology": "chain"
+ }
+]

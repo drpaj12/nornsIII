@@ -1,0 +1,20 @@
+
+\subsection{Round six: research log}
+\label{sec:r6-appendix}
+\paragraph{2026-10-26, round six.} Peter (2026-10-26): ``Yes to both'' (to: merge Task 3, and run Norns round 6 as the non-leaky HDL-word test). Question N Q3.1 (area, speed, wirelength) on the yardstick of N Q1.6; protocol \code{0ffcfc1}. Disclosures: a four-design mechanism probe (synthesis and word recovery, no VPR) preceded the protocol commit and is recorded in the protocol and in \code{data/r6/probe}; the Python binding of the Odin III checkout (ABI 7) did not match its built library (ABI 6), so the binding of Odin III v1.1.1 (commit a1cf6ffd, ABI 6) was used; the probe run directories under \code{runs/} were deleted by mistake of the lane (they held no round-five data).
+
+The research-question table of the research log gains the row
+
+\begin{table}[t]
+\caption{Research question updated in round six.}
+\label{tab:r6rq}
+\centering\scriptsize
+\begin{tabular}{@{}lp{6.4cm}@{}}
+\toprule
+RQ & question (measures) \\
+\midrule
+N Q3.1 & Does packing by higher-level ideas keep the HDL structure, and does it improve placement area and speed when the HDL words do not match the optimal blocks? (area, speed, wirelength) \\
+\bottomrule
+\end{tabular}
+\end{table}
+Regeneration: \code{python scripts/write\_round6.py} from \code{data/analysis/r6-results.json} (\code{scripts/r6stats.py}); the steps that need \code{runs/} are \code{r6.py synth, words, arms}, and their outputs are committed in \code{data/r6/} (\code{keep.json}, \code{runs.jsonl}, \code{designs.json}).
