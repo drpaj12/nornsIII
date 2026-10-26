@@ -328,3 +328,16 @@ slack values of 2 to 5% on three designs; the distribution over all designs is r
 tables is the block-partition cut; the paper says it is an upper bound on the minimum cut within the reported slack.
 Entry (b) item (c) (random restarts): 500 restarts for B = 4 and 300 for B = 8 (entry (b) said 20000; that count was
 an estimate that is too slow for the steepest-swap search; the number run is reported).
+
+## Entry 2026-10-26 (d): `ctl` style exposes no vector (generator change before any measurement run of the 72 designs)
+
+The word recovery of the first `ctl` test design (`r5_chain_ctl_8`) found 8 words (one per block) although the registers
+are scalars: the block output was the bus `q[9:0]`, and Odin III names the flip-flop nets after it. That contradicts the
+Stage-1 statement "the HDL exposes no word" for `ctl`. Change: in `ctl` the block outputs are ten scalar ports
+`q0..q9` and the top-level wires are scalars, so no `[i]` bus name exists for those registers. `dp` is unchanged and
+exposes the bus `q[9:0]` and the register `r[9:0]` (verified: word recovery returns one word per block, covering the
+10 flip-flops of every block; LUTs carry no word label). All `ctl` designs were re-synthesised and the keep check re-run
+after this change (keep.json is overwritten for them; the earlier `ctl` keep outcomes are not used). A pilot VPR run
+of the smallest designs (`r5_chain_dp_4`, `n5_chain_dp_4`, 9 + 6 runs, all arms) was made to test the pipeline before the
+batch; it is included in `data/r5/runs.jsonl` and in the statistics (same code as the batch). At B = 4 all arms
+pack the blocks exactly (purity 1.0), so ratio = 1 for those designs.
