@@ -114,7 +114,7 @@ def main() -> int:
 affinity join) and a post-route critical-path attribution from Odin~III answer what gets clustered: over @@n@@ designs the stock
 packer's CLB pairs are, by median, {pct(a['median_SC'])} series-critical, {pct(a['median_SI_OR'])} shared-input or orthogonal and
 {pct(a['median_SN_FL'])} series-noncritical or filler (SN+FL, the non-critical remainder; medians SN {pct(a['median_SN'])}, FL {pct(a['median_FL'])}).
-Peter's illustration was 10/75/15: shape {a['shape']}, literal numbers {a['numbers']} (orthogonal is a lower bound: the words cover about half the LUTs, and the registered rule's ``t$<$0.40'' arm is sensitive to it).
+Peter's 10/75/15 was an illustration of the kind of answer the classification data can give, not a guess to test; the measured shares above are the finding (n={a['n']}; orthogonal is a lower bound: the words cover about half the LUTs).
 Near-critical edges are split across CLBs less often than edges in general (H17c {n17['H17c']['status']} by the literal rule: median rate ratio {f3(n17['H17c']['median_ratio'])}, ${peq(n17['H17c'].get('p'))}$, {n17['H17c']['n']} designs with at least 20 hops; with an n$<$12 clause, a reading outside the registered rule, {n17['H17c']['status_n12_variant']}).
 Hierarchy versus chip size: H13a {n13['status']['H13a']}, H13b {n13['status']['H13b']}. The norns packer against stock on critical-path delay: {arms['all']['H14']['cpd_ns'].get('status')}; the stage-by-bit seed: see Table~\ref{{tab:r4status}}.
 Found in this round: the round-three affinity files lacked every adder (carry-chain) atom, so round three's affinity results describe a packer that did not see carry chains (Section~\ref{{sec:r4-method}}).
@@ -210,8 +210,7 @@ fixed counting & {pct(summ['r4']['median_hit_rate'])} & {pct(summ['r4']['median_
     h17b, h17c, h17d = n17["H17b"], n17["H17c"], n17["H17d"]
     eu = h17d["exploratory_units"]
     status_rows = [
-        ("N17", "H17a shape (10/75/15)", a["shape"], f"medians SC {pct(a['median_SC'])}, SI+OR {pct(a['median_SI_OR'])}, SN+FL {pct(a['median_SN_FL'])}, n={a['n']}"),
-        ("N17", "H17a literal numbers", a["numbers"], "same medians against 10/75/15 $\\pm0.10$"),
+        ("N17", "measured pair shares (Peter's 10/75/15 was an illustration, not a test)", "measured", f"medians SC {pct(a['median_SC'])}, SI+OR {pct(a['median_SI_OR'])}, SN+FL {pct(a['median_SN_FL'])}, n={a['n']}"),
         ("N17", "H17b packer changes SC share", h17b["status"], f"median $\\Delta$SC {f3(h17b.get('median_dSC'))}, Holm ${peq(h17b.get('p_holm_SC'))}$, n={h17b['n']}"),
         ("N17", "H17c critical edges kept together", h17c["status"], f"median ratio {f3(h17c.get('median_ratio'))}, Wilcoxon ${peq(h17c.get('p'))}$, n={h17c['n']} (literal rule; reading with an n$<$12 clause: {h17c['status_n12_variant']})"),
         ("N17", "H17d series share above the atom-shuffle null (not a clustering-quality result)", h17d["status"],
@@ -377,8 +376,8 @@ metric & comparison & geomean & better \\
 \subsection{{Round four: discussion}}
 \label{{sec:r4-discussion}}
 The census answers Peter's question with data. In the stock packing the pairs that are neither series-critical nor shared-input nor orthogonal are {pct(a['median_SN_FL'])} by median (SN+FL, the non-critical remainder: series-noncritical {pct(a['median_SN'])}, filler {pct(a['median_FL'])}; a series-noncritical pair does share a direct net, so this is not a share of pairs without a net). Series-critical pairs are
-{pct(a['median_SC'])} and shared-input plus orthogonal pairs {pct(a['median_SI_OR'])}; the illustration of 10/75/15 is {a['shape']} in shape and {a['numbers']} in numbers.
-The orthogonal class counts same-word pairs, and words cover about half the LUTs, so it is a lower bound; ``not supported'' for the shape rests partly on that bound (the rule's $t<0.40$ arm). The headline packer changes the series-critical share by {f3(h17b.get('median_dSC'))} (median).
+{pct(a['median_SC'])} and shared-input plus orthogonal pairs {pct(a['median_SI_OR'])}; Peter's 10/75/15 was an illustration of what the classification data could teach, not a guess to test; these measured shares are the result.
+The orthogonal class counts same-word pairs, and words cover about half the LUTs, so it is a lower bound on the shared-input plus orthogonal share. The headline packer changes the series-critical share by {f3(h17b.get('median_dSC'))} (median).
 Near-critical paths are counted per benchmark (reported paths) in Table~\ref{{tab:r4census}}; most designs have few reported paths within 10\%, so H17c rests on {h17c['n']} designs that pass the registered 20-hop filter: by the literal rule it is {h17c['status']} (median ratio {f3(h17c['median_ratio'])}, one-sided Wilcoxon ${peq(h17c.get('p'))}$); under the labelled reading with an n$<$12 clause (not in the registered rule) it is {h17c['status_n12_variant']}.
 H17d is {h17d['status']} against the registered null, which shuffles atoms (excess {f3(h17d['median_excess'])} of series pairs over the null's {pct(eu['median_null_atoms'])}, observed {pct(eu['median_observed'])}). That null ignores that the prepacker forces a LUT and its FF into one CLB and that carry chains fill CLBs in sequence. An exploratory null that keeps those molecules as units and leaves the {pct(eu['median_fixed_clb_share'])} (median) of CLBs that hold an adder as they are gives a null of {pct(eu['median_null_units'])} and an excess of {f3(eu['median_excess'])} ({eu['status_same_rule']} by the same rule, {peq(eu['p'])}). H17d therefore says that the packed pairs include forced ones; it is not a measure of clustering quality.
 The hierarchy test (N13) is on {n13['n']} small designs, and the provenance names expose one level, so it tests the module count, not depth. The round-three affinity files lacked every adder atom; the round-four headline
@@ -392,6 +391,7 @@ Limits: the depth estimate is a text heuristic; the attribution workaround uses 
 What round three suggested: the Norns packer raised purity but not wirelength, and the proposal counter and the affinity join were suspect.
 Questions: N17 what gets clustered and why; N12 knowns; N13 hierarchy against chip size; N14 to N16 the packer, a timing-from-provenance estimate and a stage-by-bit seed with critical-path delay everywhere.
 Disclosures (entry of the fix round in the protocol): small test runs on \code{{ch\_intrinsics}} preceded the gates and were deleted (no result uses them: every census and arm record is dated after the gates passed, and the rule scripts were last edited before); four affinity-join passes and one restarted gate ran for builder and compare bugs; the first dated entry amended N16 items 5 and 6 before any N16 data and the final round-four affinity files (adders added) postdate it.
+Reframe (Peter, 2026-10-26): ``my 10/75/15 wasn't an actual guess it was an example of what we could learn from the classification data''; the paper therefore reports the measured shares as the finding and no longer lists H17a as a hypothesis (protocol entry of 2026-10-26).
 Outcomes: Table~\ref{{tab:r4status}}. Protocol \code{{{PROTOCOL_SHA}}}. Next: fix the seed selector and scan order, rerun round three's purity claims with the adder-complete files, and larger designs.
 
 \begin{{table*}}[t]

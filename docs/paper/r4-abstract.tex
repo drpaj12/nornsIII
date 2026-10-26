@@ -3,7 +3,7 @@
 affinity join) and a post-route critical-path attribution from Odin~III answer what gets clustered: over 15 designs the stock
 packer's CLB pairs are, by median, 4.0\% series-critical, 32.0\% shared-input or orthogonal and
 64.4\% series-noncritical or filler (SN+FL, the non-critical remainder; medians SN 3.2\%, FL 57.6\%).
-Peter's illustration was 10/75/15: shape not supported, literal numbers not supported (orthogonal is a lower bound: the words cover about half the LUTs, and the registered rule's ``t$<$0.40'' arm is sensitive to it).
+Peter's 10/75/15 was an illustration of the kind of answer the classification data can give, not a guess to test; the measured shares above are the finding (n=15; orthogonal is a lower bound: the words cover about half the LUTs).
 Near-critical edges are split across CLBs less often than edges in general (H17c supported by the literal rule: median rate ratio 0.652, $p=0.027$, 9 designs with at least 20 hops; with an n$<$12 clause, a reading outside the registered rule, inconclusive (n < 12)).
 Hierarchy versus chip size: H13a supported, H13b inconclusive. The norns packer against stock on critical-path delay: not supported; the stage-by-bit seed: see Table~\ref{tab:r4status}.
 Found in this round: the round-three affinity files lacked every adder (carry-chain) atom, so round three's affinity results describe a packer that did not see carry chains (Section~\ref{sec:r4-method}).
