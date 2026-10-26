@@ -224,4 +224,4 @@ words fall in the block, not what real HDL gives.
 
 The header of this file says "written 2026-10-26 08:55 EDT"; the Stage-0 commit 0ffcfc1 was made at 08:49 EDT (the header time
 was a typing slip, not a later edit). The probe (four designs, synthesis and word recovery, no VPR) and the layout printout
-listed above were run between about 08:30 and 08:48 EDT, all before the Stage-0 commit. Nothing else changed in the rules.
+listed above were run before 08:47 EDT (the time printed by the first `date` call of the session after them), all before the Stage-0 commit. Nothing else changed in the rules.
