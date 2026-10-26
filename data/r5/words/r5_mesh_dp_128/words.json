@@ -1,0 +1,43 @@
+{
+ "bit_indexed": 1280,
+ "blif_identical": true,
+ "block_overwrites": 0,
+ "blocks": 2560,
+ "blocks_in_word": 1280,
+ "by_kind": {
+  "ff": 1280,
+  "hard": 0,
+  "lut": 0
+ },
+ "by_rule": {
+  "b": 1280,
+  "none": 1280
+ },
+ "design": "r5_mesh_dp_128",
+ "final_cells": 2560,
+ "kind_total": {
+  "ff": 1280,
+  "hard": 0,
+  "lut": 1280
+ },
+ "largest_words": [
+  10,
+  10,
+  10,
+  10,
+  10
+ ],
+ "line_groups_largest": [
+  10,
+  10,
+  10,
+  10,
+  10
+ ],
+ "lines_with_several_words": 0,
+ "max_words_on_line": 1,
+ "statement_lines": 128,
+ "unjoined_cells": 0,
+ "words": 128,
+ "words_ge2": 128
+}
