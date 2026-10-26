@@ -16,7 +16,11 @@ NR_PY=${NR_PY:-/tmp/claude-1000/nr-loki-venv/bin/python}
 # The Norns checkout: the current directory when sourced from it, or set NORN explicitly.
 NORN=${NORN:-$(pwd)}
 [ -f "$NORN/scripts/nornlib.py" ] || echo "env.sh: NORN=$NORN is not a Norns checkout; source from it or set NORN" >&2
-export PYTHONPATH="$NORN/scripts:$LOKI_HOME:$ODIN3_ROOT/plugins/python"
+# Python binding of Odin III. Default: the checkout. If the checkout moved to a newer ABI than its built libodin3.so
+# ("libodin3 ABI version does not match"), point ODIN3_PLUGIN at an older `plugins/python` extracted with git archive
+# (round 6 used commit a1cf6ffd, ABI 6; the header must sit at <dir>/../../include/odin3/odin3.h).
+export ODIN3_PLUGIN=${ODIN3_PLUGIN:-$ODIN3_ROOT/plugins/python}
+export PYTHONPATH="$NORN/scripts:$LOKI_HOME:$ODIN3_PLUGIN"
 # The Norns packer (packer/): a private VTR build with the provenance-affinity packer overlay.
 export NORNS_VTR=${NORNS_VTR:-$WS_ROOT/work/norns-vtr}
 export NORNS_VPR=${NORNS_VPR:-$NORNS_VTR/build/vpr/vpr}
