@@ -241,3 +241,73 @@ paper from the worktree and from the archive copy with 0 undefined references an
 sizes 32..1024 = 7 sizes x 8 = 56 designs; the variant uses 56), H21 has 8 cells x 9 sizes, H23 has 36 pairs. A rule needs
 n >= 12 designs (>= 6 cells, >= 12 pairs) else it is inconclusive; with fewer than 45 kept designs (< 5 sizes per cell)
 H21's cells shrink and the status can be inconclusive; that is stated in the paper.
+
+## Entry 2026-10-26 (a): Amendment 1, generator and label changes found while building the HDL generator
+
+Written after the Stage-0 commit (7886f49) and after HDL generation and Odin III synthesis of designs had been run
+(no VPR run exists, no result of any arm exists). Truthful order: the first synthesis attempts of the generator showed
+that synthesis (ABC `scorr`, and sweeping of unobservable logic) removes degenerate logic, which is exactly what the
+keep rule (k1) exists to detect. Changes made to the GENERATOR (not to any rule, threshold or hypothesis) in response:
+1. Primary outputs: a block's j-th primary output is flip-flop 9 - j (two outputs on one flip-flop made buffer LUTs).
+   Chain: primary inputs enter the first block and primary outputs leave the last block (otherwise the tail of a
+   chain reaches no output and is swept). `rand`: a Hamiltonian CYCLE plus B random edges (strongly connected).
+2. `ctl` style: the function is the self leaf XORed at the root with a tree over the other five leaves that has
+   exactly two AND/OR nodes and two XOR nodes (all-AND/OR trees and self-AND collapse to constants). The `dp` style is
+   unchanged.
+3. Block viability filter in the generator: every flip-flop must reach an output flip-flop through the dependencies
+   (observability) and, in a 64-trajectory 48-cycle simulation of the block alone from the zero state, take both
+   values and differ from every other flip-flop and its complement. A block failing either is redrawn (200 draws).
+4. Label rule: Odin names a flip-flop that drives a primary output after the port (`po[p]`). Such an atom is labelled
+   from the designed spec (p -> block of po[p]) and counted in `labelled_spec`. k3 uses path plus spec labels. The
+   ORIGINAL k3 (path labels only, >= 99%) is also computed (`kept_original_rule`), and the paper reports both
+   counts; the statuses use the amended rule; the original-rule count is shown beside H18.
+Seen before this entry: after changes 1 to 3, 63 of 72 HDL designs were KEPT (all failures are k1: a few logic
+elements of a block removed by synthesis; the nine failures were in `ctl` cells). H18 will report this. No exclusion
+decision is changed: the keep rule and the exclusion of non-kept designs stand as written.
+
+## Entry 2026-10-26 (b): netlist-level arm (Peter, 2026-10-26, approved "Yes"), added by a dated entry
+
+Stage 0 was already pushed, so this is a dated entry. Truthful state at the time of writing: the 72 HDL designs
+exist and were synthesised (entry (a)); no netlist-level design exists; no VPR run of round 5 exists. The netlist-level
+arm is specified here before any netlist-level design is generated.
+
+Two levels, same block, topology, style and size parameters (the same 72 specs, `gen/r5gen.py` `build_spec`):
+* NETLIST level (pure TPEKO, exact optimum): the LUT/FF netlist is written directly as BLIF by `gen/r5nl.py` from the
+  spec, with no Odin III and no ABC. Block k = 10 LUT/FF pairs (a 6-LUT whose output feeds one flip-flop; cells named
+  `b<k>_l<i>` for the LUT output net and `b<k>_q<i>` for the flip-flop output net), so the intended clustering is
+  known without any provenance. Names: `n5_<topology>_<style>_<B>`. Level label "NL". Provenance does not exist at this
+  level: the Norns HDL-aware packer does not apply (it needs words from Odin III provenance); the stated reason goes
+  in the paper. Arms: `stock` and `known` (forced clustering: the same Norns binary and affinity file of block
+  numbers, beta 100, exactly the `known` arm of Stage 2, its affinity file built from the cell names). 72 designs x 2
+  arms x 3 seeds = 432 runs. Same flow, flags, metrics, seeds, statistics as Stage 2.
+* HDL level ("HDL"): the designs of Stage 1/2 as already specified (arms stock, norns, known). Question: do HDL
+  ideas close the gap.
+
+Exactness argument at the NL level. (i) CLB count: each block holds 10 LUT/FF pairs; one logic element holds one
+6-LUT, 10 logic elements per CLB, so any legal packing needs >= ceil(10 B / 10) = B logic CLBs, and the block
+partition has exactly B: the optimal CLB count is exactly B. A packing with B CLBs puts exactly 10 pairs in every
+CLB (a balanced partition into parts of 10). (ii) Cut: the optimal external-net count among packings with B CLBs is
+NOT proven minimal by a closed-form argument; the check is computational and is stated as a check, not a proof.
+For every design: (a) swap test: for every pair of cells (a in block A, b in block B, A != B) where A and B share at
+least one net, the cut after swapping a and b is >= the cut before (the cut change is computed exactly from the nets
+of a and b); (b) move-gain test: each cell has more nets in common with its own block than with any other single
+block (strict); (c) for the sizes B = 4 and 8 the cut of the block partition is compared with the best of 20000 random
+balanced partitions improved by greedy swaps (a heuristic search; it reports if it finds a smaller cut, which would
+void "minimum" for that design and is then reported; the CLB-count optimality is unaffected). A design passes the
+netlist check iff (a) and (b) hold for all pairs/cells and the BLIF has exactly 10 B LUTs, 10 B FFs, <= 40 distinct
+input nets per block and the designed cut exactly (|measured - designed| = 0). A failing design is excluded from the NL
+hypotheses and listed. The `known` arm is then the "optimum" for CLB count (exact) and for cut (swap-local optimum
+with the heuristic search of (c)); WL and CPD of it are what VPR achieves from it.
+Critical-path chain: the `chain` topology is the designed critical-path structure (the minimal number of
+inter-CLB hops of the path from the first to the last block is B - 1); a separate dedicated critical-chain design is
+not built this round (stated limit).
+
+NL hypotheses (decision rules identical to the HDL rules with the arm names changed; `norns` does not exist at NL):
+* H25 = H19 at NL (room for stock VPR): metrics CLB, WL, CPD against `known`; Holm over the 3 metrics.
+* H26 = H21 at NL (gap growth with size), `stock` only: 2 tests (CLB, WL), Holm over the 2.
+* H27 = H24 at NL (the forced clustering reproduces the blocks), same thresholds.
+* H28 (NL check): supported iff >= 90% of the 72 NL designs pass the netlist check and every cell has >= 6 passing
+  designs; not supported iff < 70% pass; otherwise inconclusive.
+Not run at NL: H20, H22, H23 (they need `norns`). Everything else of the Stage-2 definitions, n rules, and the
+writing rules stands. The paper reports the NL level (the headroom number) and the HDL level (the Norns
+question) separately.
