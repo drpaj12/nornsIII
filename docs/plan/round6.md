@@ -219,3 +219,9 @@ real HDL; the word file carries only flip-flop words (LUTs carry none); the know
 WL or CPD optimum; the Norns configuration is the round-4 headline one, not tuned for partial alignment; three topologies, one
 logic family (`dp` blocks of round 5). A result at a given a says what this packer does when a stated fraction of the HDL
 words fall in the block, not what real HDL gives.
+
+## Entry 2026-10-26 (a): timestamp correction (no rule change)
+
+The header of this file says "written 2026-10-26 08:55 EDT"; the Stage-0 commit 0ffcfc1 was made at 08:49 EDT (the header time
+was a typing slip, not a later edit). The probe (four designs, synthesis and word recovery, no VPR) and the layout printout
+listed above were run between about 08:30 and 08:48 EDT, all before the Stage-0 commit. Nothing else changed in the rules.
