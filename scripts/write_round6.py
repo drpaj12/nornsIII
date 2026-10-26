@@ -65,8 +65,8 @@ def one_sentence(res: dict) -> str:
              f"(supported at a in {{{', '.join(lvl(x) for x in sup)}}}; lowest measured word-file purity of a supported level "
              f"{f3(res['break_even']['lowest_measured_alignment'])})")
     else:
-        a = (f"At no non-leaky alignment tested (a in {{0, 0.25, 0.5, 0.75}}) does the literal H34 rule support a wirelength gain of "
-             f"HDL-aware packing over stock VPR (statuses: " + ", ".join(f"a={lvl(x)} {tex(ben[str(x)]['status'])}" for x in (0, 25, 50, 75)) + ")")
+        a = ("At no non-leaky alignment tested (a in {0, 0.25, 0.5, 0.75}) does the literal H34 rule support a wirelength gain of "
+             "HDL-aware packing over stock VPR (statuses: " + ", ".join(f"a={lvl(x)} {tex(ben[str(x)]['status'])}" for x in (0, 25, 50, 75)) + ")")
     b = (f"; with the leak (a=1) the wirelength ratio is {f3(leak['gmean'])} ({tex(leak['status'])})")
     c = ("; it hurts (WL at least 2\\% worse, Holm) at a in {" + ", ".join(lvl(x) for x in hurts) + "}" if hurts else
          "; it does not hurt by the literal H35 rule at any alignment tested (" + ", ".join(f"a={lvl(x)} {tex(hurt[str(x)]['status'])}" for x in LEVELS) + ")")

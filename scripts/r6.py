@@ -14,7 +14,6 @@ import collections
 import hashlib
 import json
 import re
-import shutil
 import sys
 import types
 
@@ -166,9 +165,7 @@ def arm_run(design: str, arm: str, seed: int) -> dict:
     if done(design, arm, seed):
         return nl.read_json(nl.runs_dir(design, "r6", tag(arm, seed), "metrics.json"))
     cwd = nl.runs_dir(design, "r6", tag(arm, seed))
-    if cwd.exists():
-        shutil.rmtree(cwd)
-    nl.ensure_dir(cwd)
+    nl.ensure_dir(cwd)  # an unfinished earlier directory is reused (VPR overwrites); nothing is deleted
     flags = ["--seed", str(seed), "--timing_report_npaths", str(NPATHS),
              "--write_initial_place_file", str(cwd / "initial.place"),
              "--write_flat_place", str(cwd / "final.flat_place")] + aff_flags(design, arm)
@@ -195,9 +192,6 @@ def arm_run(design: str, arm: str, seed: int) -> dict:
         rec["affinity_matched"] = [int(m.group(1)), int(m.group(2)), int(m.group(3))] if m else None
     else:
         rec["error"] = matrix.vpr_error(cwd / "vpr.out")
-    for f in list(cwd.iterdir()):
-        if f.name not in KEEP_FILES:
-            f.unlink() if f.is_file() else shutil.rmtree(f, ignore_errors=True)
     nl.write_json(cwd / "metrics.json", rec)
     RUNS_JSONL.parent.mkdir(parents=True, exist_ok=True)
     with RUNS_JSONL.open("a", encoding="utf-8") as fh:

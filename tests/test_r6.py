@@ -91,7 +91,8 @@ class Keep(unittest.TestCase):
         spec = r5gen.build_spec("r5_chain_dp_8")
         text = r5nl.blif(spec)
         old = nl.RUNS
-        with tempfile.TemporaryDirectory(prefix="nr6-") as tmp:
+        tmp = tempfile.mkdtemp(prefix="nr6-", dir="/tmp/claude-1000")
+        if True:
             nl.RUNS = Path(tmp)
             try:
                 d = "t6"
