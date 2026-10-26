@@ -74,7 +74,7 @@ class Rules(unittest.TestCase):
         n = 20
         self.assertEqual(st.decide_close({"WL": [math.log(0.9) - 0.01 * i for i in range(n)]})["WL"]["status"], "supported")
         self.assertEqual(st.decide_close({"WL": [math.log(1.03)] * n})["WL"]["status"], "not supported")
-        self.assertEqual(st.decide_close({"WL": [math.log(0.995)] * n})["WL"]["status"], "inconclusive")
+        self.assertEqual(st.decide_close({"WL": [math.log(0.8)] * 5 + [math.log(1 + 0.001 * (i + 1)) for i in range(15)]})["WL"]["status"], "inconclusive")
 
     def test_growth_reaches_all_statuses(self):
         def cells(sl):

@@ -96,3 +96,9 @@ same checkout, overlays `packer/vpr/`, configures with the stock flags (release,
 `VTR_ASSERT_LEVEL=2`) without Odin, Parmys, ABC and tests, and builds the `vpr` target with
 `-j4` under the heavy lock (`/tmp/claude-1000/odin3-heavy.lock`). The binary is
 `$NORNS_VPR` (`scripts/env.sh`: `$NORNS_VTR/build/vpr/vpr`). Build output stays out of git.
+
+## Round 5
+
+Round 5 (docs/plan/round5.md) uses this packer unchanged: no file under `packer/vpr/` changed after round 4 (`DIFFSTAT.txt` and
+`VTR_COMMIT` are current). The `known` arm is this binary with `--norns_affinity <block membership>`,
+`--norns_affinity_weight 100` and `--norns_proposal_count queued`; the `norns` arm is the round-4 headline configuration.

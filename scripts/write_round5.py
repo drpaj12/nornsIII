@@ -31,6 +31,10 @@ def pf(p) -> str:
     return "<0.001" if p < 0.001 else f"{p:.3f}"
 
 
+def peq(p) -> str:
+    return "p=n/a" if p is None or (isinstance(p, float) and math.isnan(p)) else ("p<0.001" if p < 0.001 else f"p={p:.3f}")
+
+
 def pct(x) -> str:
     return "n/a" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{100 * x:.1f}\\%"
 
@@ -54,19 +58,6 @@ def growth_rows(res: dict, key: str, label: str, hyp: str) -> str:
         v = res[key][m]
         rows.append(f"{hyp} & {label}: {m} & {tex(v['status'])} & median slope {f3(v['median_slope'])} per doubling, "
                     f"{v['positive_cells']}/{v['cells']} cells positive, Holm $p={pf(v['p_holm'])}$, permutation $p={pf(v['perm_p'])}$ \\\\")
-    return "\n".join(rows)
-
-
-def gap_table(res: dict, metric: str) -> str:
-    cols = [("NL", "stock"), ("HDL", "stock"), ("HDL", "norns")]
-    sizes = sorted({int(b) for lv, pk in cols for b in res[f"gap_by_size_{lv}_{pk}"][metric]})
-    rows = []
-    for b in sizes:
-        cells = []
-        for lv, pk in cols:
-            v = res[f"gap_by_size_{lv}_{pk}"][metric].get(str(b))
-            cells.append(f3(v) if v is not None else "n/a")
-        rows.append(f"{b} & " + " & ".join(cells) + r" \\")
     return "\n".join(rows)
 
 
@@ -138,7 +129,8 @@ B & NL & stock & norns & NL & stock & norns \\
 \bottomrule
 \end{{tabular}}
 \end{{table}}
-Variants (labelled, no status changed): sizes $B\ge32$ only: {variant_summary(res)}. Reported, not tested: the channel-width ratio and the cut ratio of each packer ({report_summary(res)}); the largest null purity of any packing against the known blocks was {f3(res.get('null_purity_max'))}.
+Variants (labelled, no status changed): sizes $B\ge32$ only: {variant_summary(res)}. Reported, not tested: the channel-width ratio and the cut ratio of each packer ({report_summary(res)}); the largest null purity of any packing against the known blocks was {f3(res.get('null_purity_max'))}. The Odin III attribution agreed with VPR's critical-path delay (0.5\% tolerance) in {attr_agree(res)}; the share of member-to-member hops on the reported critical paths that cross CLBs is {attr_cross(res)}.
+\paragraph{{Exploratory (dated entry (e), no status changed): by topology.}} {topo_text(res)}
 """)
     write("r5-discussion.tex", fr"""
 \subsection{{Round five: discussion}}
@@ -168,6 +160,23 @@ def gap_table_pair(res: dict) -> str:
     return "\n".join(rows)
 
 
+def attr_agree(res: dict) -> str:
+    a = res["attribution"]
+    return f"{sum(v['runs'] - v['disagree'] for v in a.values())} of {sum(v['runs'] for v in a.values())} runs"
+
+
+def attr_cross(res: dict) -> str:
+    return ", ".join(f"{tex(k)} {pct(v['crossing_share'])}" for k, v in sorted(res["attribution"].items()))
+
+
+def topo_text(res: dict) -> str:
+    g = res["exploratory_topology_gap"]
+    rows = []
+    for key in ("NL_stock_WL", "HDL_stock_WL", "HDL_norns_WL", "NL_stock_CLB", "HDL_stock_CLB", "HDL_norns_CLB"):
+        rows.append(f"{tex(key)}: " + ", ".join(f"{t} {f3(v)}" for t, v in g[key].items()))
+    return "Ratio to the known clustering by topology (geometric mean over designs): " + "; ".join(rows) + "."
+
+
 def variant_summary(res: dict) -> str:
     parts = []
     for key, lab in (("room_NL_stock_B32", "NL stock"), ("room_HDL_stock_B32", "HDL stock"), ("room_HDL_norns_B32", "HDL norns")):
@@ -192,6 +201,10 @@ def discussion(res: dict) -> str:
     h = res["room_HDL_norns"]
     c = res["close_HDL"]
     out.append(f"At the HDL level the HDL-aware packer's wirelength ratio to the known clustering is {f3(h['WL']['gmean'])}, against the stock packer's {f3(res['room_HDL_stock']['WL']['gmean'])}; the direct comparison norns against stock gives wirelength {f3(c['WL']['gmean'])} ({c['WL']['status']}), CLB count {f3(c['CLB']['gmean'])} ({c['CLB']['status']}) and critical-path delay {f3(c['CPD']['gmean'])} ({c['CPD']['status']}). ")
+    cs = res["close_HDL_by_style"]
+    out.append(f"By style, the comparison norns against stock gives wirelength {f3(cs['dp']['WL']['gmean'])} ({cs['dp']['WL']['status']}) for \\code{{dp}} (the HDL has the vector, and word recovery returns one word per block, so the word affinity file is the block partition on the flip-flops: the favourable case, and partly a leak of the answer) and {f3(cs['ctl']['WL']['gmean'])} ({cs['ctl']['WL']['status']}) for \\code{{ctl}} (no words, so the Norns packer equals the stock packer). H23 compares the purity gain between styles: median {f3(res['h23']['median'])} per pair, {peq(res['h23']['p'])}; the literal rule needs a median of 0.05, and the gain is concentrated in the topologies where blocks are not already packed (see the exploratory topology table), so the status is {res['h23']['status']}. ")
+    t = res["exploratory_topology_gap"]["NL_stock_WL"]
+    out.append(f"Exploratory: the stock gap sits in the mesh ({f3(t['mesh'])}) and the tree ({f3(t['tree'])}); chains ({f3(t['chain'])}) and random sparse graphs ({f3(t['rand'])}) leave no room for a clustering (a chain packs by connectivity; the random graph has no locality). ")
     out.append("Limits: the optimum is a clustering optimum by construction, the cut is an upper bound on the minimum cut within the stated slack, and ratios are against what VPR achieves from the known clustering, not against a proven placement optimum. The generated functions are random or XOR-heavy, which is not the structure of human RTL (compare the distribution-shift reading of Loki's round three).")
     return "".join(out)
 
@@ -203,6 +216,21 @@ def appendix() -> str:
 \subsection{{Round five: research log}}
 \label{{sec:r5-appendix}}
 \paragraph{{2026-10-26, round five.}} Peter: ``{quotes[0]}'' and ``{quotes[1]}'' Peter (2026-10-26) then asked for a netlist-level arm (pure TPEKO, exact optimum) beside the HDL level, reported separately. Question N Q1.6 (area, speed, wirelength); protocol \code{{{PROTOCOL_SHA}}}, with dated entries: (a) generator changes found by the keep check (outputs, chain I/O, rand cycle, \code{{ctl}} functions, viability filter, spec labels for port-named flip-flops), (b) the netlist level, (c) the netlist check rule (local-search slack, changed after seeing three checks), (d) \code{{ctl}} scalar ports (a word was found where none was intended). Disclosures: HDL generation and synthesis preceded entries (a) to (d); a pilot VPR run of the two smallest designs preceded the batch and is included.
+Research question N Q1.6 (area, speed, wirelength): on designs with a known optimal clustering, how far are the VPR packer and the Norns packer from it, and how does the gap grow with size? The answer is in Table~\ref{{tab:r5status}} (statuses), Table~\ref{{tab:r5gap}} (gap per size) and the discussion; the RQ table of the research log gains the row
+
+\begin{{table}}[t]
+\caption{{Research question added in round five.}}
+\label{{tab:r5rq}}
+\centering\scriptsize
+\begin{{tabular}}{{@{{}}lp{{6.4cm}}@{{}}}}
+\toprule
+RQ & question (measures) \\
+\midrule
+N Q1.6 & On designs with a known optimal clustering, how far are the VPR packer and the Norns HDL-aware packer from it, and how does the gap grow with size? (area, speed, wirelength) \\
+\bottomrule
+\end{{tabular}}
+\end{{table}}
+Regeneration: \code{{python scripts/write\_round5.py}} from \code{{data/analysis/r5-results.json}} (\code{{scripts/r5stats.py}}); the steps that need \code{{runs/}} (VPR logs, flat placements, BLIFs) are \code{{r5.py synth, words, arms, attr, hops}}, and their outputs are committed in \code{{data/r5/}} (\code{{keep.json}}, \code{{runs.jsonl}}, \code{{designs.json}}).
 """
 
 

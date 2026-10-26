@@ -284,7 +284,48 @@ def analyse() -> dict:
     res["h23"] = decide_h23(pairs)
     res["purity_gain_mean"] = {st: (sum(v for d, v in gain.items() if meta(d)[1] == st) /
                                     max(1, sum(1 for d in gain if meta(d)[1] == st))) for st in ("dp", "ctl")}
+    res["attribution"] = attribution(keep)
+    res["exploratory_topology_gap"] = topology_gap(keep, runs)
     return res
+
+
+def attribution(keep: dict) -> dict:
+    """CPD cross-check (VPR against the Odin III attribution, 0.5% tolerance) and the share of member-member hops of the
+    reported critical paths that cross CLBs, per level and arm."""
+    import r5lib as rl
+    out: dict = {}
+    for d, k in keep.items():
+        if not k["kept"]:
+            continue
+        for arm in ("stock", "norns", "known"):
+            for s in (1, 2, 3):
+                p = nl.runs_dir(d, "r5", f"{arm}.s{s}", "metrics.json")
+                if not p.is_file():
+                    continue
+                r = nl.read_json(p)
+                if r.get("rc") != 0 or "attr_cpd_ns" not in r:
+                    continue
+                o = out.setdefault(f"{meta(d)[3]}_{arm}", {"runs": 0, "disagree": 0, "hops": 0, "crossing": 0})
+                o["runs"] += 1
+                o["disagree"] += abs(r["attr_cpd_ns"] - r["cpd_ns"]) > 0.005 * r["cpd_ns"]
+                o["hops"] += r.get("path_hops", 0)
+                o["crossing"] += r.get("path_hops_crossing", 0)
+    for o in out.values():
+        o["crossing_share"] = o["crossing"] / o["hops"] if o["hops"] else float("nan")
+    del rl
+    return out
+
+
+def topology_gap(keep: dict, runs: dict) -> dict:
+    """EXPLORATORY (dated entry (e) of the protocol): geometric-mean ratio to the known clustering per topology; no status."""
+    out: dict = {}
+    for level, arm in (("NL", "stock"), ("HDL", "stock"), ("HDL", "norns")):
+        for m in ("WL", "CLB"):
+            by: dict[str, list[float]] = {}
+            for d, v in per_design(keep, runs, level, arm, "known", m).items():
+                by.setdefault(meta(d)[0], []).append(v)
+            out[f"{level}_{arm}_{m}"] = {t: gmean_ratio(v) for t, v in sorted(by.items())}
+    return out
 
 
 def main() -> int:

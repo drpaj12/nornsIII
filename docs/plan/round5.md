@@ -341,3 +341,13 @@ after this change (keep.json is overwritten for them; the earlier `ctl` keep out
 of the smallest designs (`r5_chain_dp_4`, `n5_chain_dp_4`, 9 + 6 runs, all arms) was made to test the pipeline before the
 batch; it is included in `data/r5/runs.jsonl` and in the statistics (same code as the batch). At B = 4 all arms
 pack the blocks exactly (purity 1.0), so ratio = 1 for those designs.
+
+## Entry 2026-10-26 (e): exploratory analyses after the data (no status changed)
+
+Written after all 999 round-5 runs existed and `data/analysis/r5-results.json` had been read. Exploratory, labelled, change no
+status: (1) geometric-mean ratio to the known clustering per topology (`exploratory_topology_gap` in the results file), made
+because the size slopes of H21/H26 were small while the ratios were large, which suggested the gap depends on the topology
+rather than on size; (2) the CPD cross-check and the share of critical-path hops that cross CLBs (`attribution`), planned
+as reported-not-tested in Stage 2. Clarification of the `n` section above (typing slip, no rule change): with all 72 designs kept, the variant B >= 32 has
+7 sizes x 8 cells = 56 designs; the numbers actually used are the n printed with each result (63 HDL designs and 72 netlist
+designs were kept; the variant has 39 and 56).

@@ -1,0 +1,19 @@
+
+\subsection{Round five: research log}
+\label{sec:r5-appendix}
+\paragraph{2026-10-26, round five.} Peter: ``Tpeko tells us what is still possible, so from a clustering perspective it's an interesting approach.'' and ``So, the rose and Thomas just taught me stuff. We could build it again, but it's just insight.'' Peter (2026-10-26) then asked for a netlist-level arm (pure TPEKO, exact optimum) beside the HDL level, reported separately. Question N Q1.6 (area, speed, wirelength); protocol \code{7886f49}, with dated entries: (a) generator changes found by the keep check (outputs, chain I/O, rand cycle, \code{ctl} functions, viability filter, spec labels for port-named flip-flops), (b) the netlist level, (c) the netlist check rule (local-search slack, changed after seeing three checks), (d) \code{ctl} scalar ports (a word was found where none was intended). Disclosures: HDL generation and synthesis preceded entries (a) to (d); a pilot VPR run of the two smallest designs preceded the batch and is included.
+Research question N Q1.6 (area, speed, wirelength): on designs with a known optimal clustering, how far are the VPR packer and the Norns packer from it, and how does the gap grow with size? The answer is in Table~\ref{tab:r5status} (statuses), Table~\ref{tab:r5gap} (gap per size) and the discussion; the RQ table of the research log gains the row
+
+\begin{table}[t]
+\caption{Research question added in round five.}
+\label{tab:r5rq}
+\centering\scriptsize
+\begin{tabular}{@{}lp{6.4cm}@{}}
+\toprule
+RQ & question (measures) \\
+\midrule
+N Q1.6 & On designs with a known optimal clustering, how far are the VPR packer and the Norns HDL-aware packer from it, and how does the gap grow with size? (area, speed, wirelength) \\
+\bottomrule
+\end{tabular}
+\end{table}
+Regeneration: \code{python scripts/write\_round5.py} from \code{data/analysis/r5-results.json} (\code{scripts/r5stats.py}); the steps that need \code{runs/} (VPR logs, flat placements, BLIFs) are \code{r5.py synth, words, arms, attr, hops}, and their outputs are committed in \code{data/r5/} (\code{keep.json}, \code{runs.jsonl}, \code{designs.json}).

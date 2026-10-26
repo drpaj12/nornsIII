@@ -1,0 +1,60 @@
+
+\subsection{Round five: results}
+\label{sec:r5-results}
+Table~\ref{tab:r5status} gives every hypothesis with its status and deciding number. Table~\ref{tab:r5gap} gives the geometric-mean ratio of each packer to the known clustering per size (routed wirelength, then logic CLB count). The netlist level is the headroom number; the HDL level is the Norns question.
+\begin{table*}[t]
+\caption{Round-five hypotheses (protocol \code{7886f49}). Ratios are packer / known clustering, geometric mean over designs of the geometric mean over three seeds.}
+\label{tab:r5status}
+\centering\scriptsize
+\begin{tabular}{@{}lp{4.4cm}p{2.6cm}p{9.0cm}@{}}
+\toprule
+H & test & status & deciding number \\
+\midrule
+H18 & HDL: synthesis keeps the construction & inconclusive & 63 of 72 kept (87.5\%); original label rule 32 of 72 \\
+H28 & NL: netlist check passes & supported & 72 of 72 pass (100.0\%) \\
+H24 & HDL: forced clustering reproduces the blocks & supported & mean reproduction 1.000, 100.0\% of runs exact, n=189 runs \\
+H27 & NL: forced clustering reproduces the blocks & supported & mean reproduction 1.000, 100.0\% of runs exact, n=216 runs \\
+H25 & NL stock vs known: CLB & supported & geomean 1.073, 90\% CI [1.056, 1.090], Holm $p=<0.001$, n=72 \\
+H25 & NL stock vs known: WL & supported & geomean 1.220, 90\% CI [1.168, 1.275], Holm $p=<0.001$, n=72 \\
+H25 & NL stock vs known: CPD & supported & geomean 1.093, 90\% CI [1.068, 1.118], Holm $p=<0.001$, n=72 \\
+H19 & HDL stock vs known: CLB & supported & geomean 1.073, 90\% CI [1.055, 1.092], Holm $p=<0.001$, n=63 \\
+H19 & HDL stock vs known: WL & supported & geomean 1.219, 90\% CI [1.163, 1.280], Holm $p=<0.001$, n=63 \\
+H19 & HDL stock vs known: CPD & supported & geomean 1.082, 90\% CI [1.055, 1.110], Holm $p=<0.001$, n=63 \\
+H20 & HDL norns vs known: CLB & inconclusive & geomean 1.031, 90\% CI [1.019, 1.045], Holm $p=<0.001$, n=63 \\
+H20 & HDL norns vs known: WL & supported & geomean 1.099, 90\% CI [1.057, 1.147], Holm $p=0.003$, n=63 \\
+H20 & HDL norns vs known: CPD & inconclusive & geomean 1.032, 90\% CI [1.009, 1.056], Holm $p=0.018$, n=63 \\
+H26 & NL stock: CLB & not supported & median slope 0.000 per doubling, 5/8 cells positive, Holm $p=0.578$, permutation $p=0.231$ \\
+H26 & NL stock: WL & inconclusive & median slope 0.004 per doubling, 5/8 cells positive, Holm $p=0.461$, permutation $p=0.069$ \\
+H21 & HDL stock: CLB & not supported & median slope 0.000 per doubling, 5/8 cells positive, Holm $p=0.473$, permutation $p=0.346$ \\
+H21 & HDL stock: WL & inconclusive & median slope 0.009 per doubling, 6/8 cells positive, Holm $p=0.195$, permutation $p=0.045$ \\
+H21 & HDL norns: CLB & not supported & median slope 0.000 per doubling, 2/8 cells positive, Holm $p=1.000$, permutation $p=0.790$ \\
+H21 & HDL norns: WL & not supported & median slope -0.001 per doubling, 3/8 cells positive, Holm $p=0.742$, permutation $p=0.701$ \\
+H22 & HDL norns vs stock: CLB & supported & geomean 0.961, 90\% CI [0.946, 0.976], Holm $p=<0.001$, n=63 \\
+H22 & HDL norns vs stock: WL & supported & geomean 0.902, 90\% CI [0.866, 0.936], Holm $p=<0.001$, n=63 \\
+H22 & HDL norns vs stock: CPD & supported & geomean 0.954, 90\% CI [0.935, 0.971], Holm $p=<0.001$, n=63 \\
+H23 & purity gain, \code{dp} minus \code{ctl} & not supported & median 0.000, $p=<0.001$, 51.9\% of pairs positive, n=27 pairs \\
+\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table}[t]
+\caption{Gap to the known clustering per size B: routed wirelength ratio (left three) and logic CLB ratio (right three); NL stock, HDL stock, HDL norns.}
+\label{tab:r5gap}
+\centering\scriptsize
+\begin{tabular}{@{}rrrr@{\hspace{6pt}}rrr@{}}
+\toprule
+B & NL & stock & norns & NL & stock & norns \\
+\midrule
+4 & 1.073 & 1.052 & 1.029 & 1.057 & 1.057 & 1.028 \\
+8 & 1.237 & 1.255 & 1.151 & 1.102 & 1.102 & 1.059 \\
+16 & 1.262 & 1.275 & 1.158 & 1.061 & 1.061 & 1.030 \\
+32 & 1.223 & 1.220 & 1.111 & 1.081 & 1.080 & 1.034 \\
+64 & 1.301 & 1.353 & 1.153 & 1.079 & 1.099 & 1.046 \\
+128 & 1.286 & 1.314 & 1.156 & 1.074 & 1.083 & 1.042 \\
+256 & 1.224 & 1.204 & 1.089 & 1.074 & 1.066 & 1.021 \\
+512 & 1.210 & 1.152 & 0.999 & 1.071 & 1.049 & 1.000 \\
+1024 & 1.182 & 1.125 & 0.987 & 1.055 & 1.045 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Variants (labelled, no status changed): sizes $B\ge32$ only: NL stock CLB 1.072, WL 1.237, CPD 1.109 (supported for WL); HDL stock CLB 1.073, WL 1.237, CPD 1.089 (supported for WL); HDL norns CLB 1.027, WL 1.091, CPD 1.022 (inconclusive for WL). Reported, not tested: the channel-width ratio and the cut ratio of each packer (NL stock: W 1.026, cut 1.126; HDL stock: W 1.030, cut 1.127; HDL norns: W 1.014, cut 1.061); the largest null purity of any packing against the known blocks was 0.438. The Odin III attribution agreed with VPR's critical-path delay (0.5\% tolerance) in 999 of 999 runs; the share of member-to-member hops on the reported critical paths that cross CLBs is HDL\_known 42.0\%, HDL\_norns 43.0\%, HDL\_stock 43.6\%, NL\_known 43.1\%, NL\_stock 44.3\%.
+\paragraph{Exploratory (dated entry (e), no status changed): by topology.} Ratio to the known clustering by topology (geometric mean over designs): NL\_stock\_WL: chain 1.004, mesh 1.423, rand 1.019, tree 1.522; HDL\_stock\_WL: chain 1.027, mesh 1.444, rand 1.011, tree 1.528; HDL\_norns\_WL: chain 1.028, mesh 1.168, rand 1.009, tree 1.224; NL\_stock\_CLB: chain 1.001, mesh 1.169, rand 1.007, tree 1.124; HDL\_stock\_CLB: chain 1.003, mesh 1.178, rand 1.007, tree 1.128; HDL\_norns\_CLB: chain 1.003, mesh 1.063, rand 1.007, tree 1.059.

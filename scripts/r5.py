@@ -167,6 +167,34 @@ def arms(designs: list[str]) -> int:
     return 0
 
 
+def hop_counts(flat, paths) -> tuple[int, int]:
+    """(member-member hops, hops whose two atoms sit in different logic CLBs) over the reported paths."""
+    hops = cross = 0
+    for p in paths:
+        for a, b in zip(p["nodes"], p["nodes"][1:]):
+            ca, cb = flat.clb_of(a), flat.clb_of(b)
+            if ca and cb and flat.atoms[a][5] in ("lut", "ff") and flat.atoms[b][5] in ("lut", "ff"):
+                hops += 1
+                cross += ca != cb
+    return hops, cross
+
+
+def hops(designs: list[str]) -> int:
+    """Recompute the hop counts from the kept paths (no VPR, no Odin)."""
+    for d in designs:
+        for arm in arms_of(d):
+            for seed in SEEDS:
+                cwd = nl.runs_dir(d, "r5", tag(arm, seed))
+                if not (cwd / "paths.json.gz").is_file():
+                    continue
+                rec = nl.read_json(cwd / "metrics.json")
+                with gzip.open(cwd / "paths.json.gz", "rt") as fh:
+                    paths = json.load(fh)
+                rec["path_hops"], rec["path_hops_crossing"] = hop_counts(nl.Flat(cwd / "final.flat_place"), paths)
+                nl.write_json(cwd / "metrics.json", rec)
+    return 0
+
+
 def attr(designs: list[str]) -> int:
     import timing4
     rl.use_generated_sources()
@@ -187,16 +215,9 @@ def attr(designs: list[str]) -> int:
                     nl.write_json(mp, rec)
                     print(f"attr {d}/{tag(arm, seed)}: {rec['attr_error']}", flush=True)
                     continue
-                flat = nl.Flat(cwd / "final.flat_place")
                 paths = [{"index": p["index"], "slack": p["slack_ns"], "arrival": p["arrival_ns"],
                           "nodes": [n["atom"] for n in p["nodes"]]} for p in rep["paths"]]
-                hops = cross = 0
-                for p in paths:
-                    for a, b in zip(p["nodes"], p["nodes"][1:]):
-                        ca, cb = flat.clb_of(a), flat.clb_of(b)
-                        if ca and cb and flat.atoms[a][5] in ("lut", "latch") and flat.atoms[b][5] in ("lut", "latch"):
-                            hops += 1
-                            cross += ca != cb
+                hops, cross = hop_counts(nl.Flat(cwd / "final.flat_place"), paths)
                 with gzip.open(cwd / "paths.json.gz", "wt") as fh:
                     json.dump(paths, fh)
                 nl.write_json(cwd / "attr.json", {k: v for k, v in rep.items() if k != "paths"})
@@ -217,7 +238,7 @@ def status() -> int:
 
 def main(argv: list[str]) -> int:
     mode, designs = argv[0], argv[1:] or all_designs()
-    fn = {"synth": synth, "words": words, "arms": arms, "attr": attr}.get(mode)
+    fn = {"synth": synth, "words": words, "arms": arms, "attr": attr, "hops": hops}.get(mode)
     if mode == "status":
         return status()
     if fn is None:
