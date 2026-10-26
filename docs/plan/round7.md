@@ -239,5 +239,9 @@ default flow). A research-log entry with Peter's quote; the RQ table rows for N 
 
 ## Entries after the first commit
 
-(none yet)
+* 2026-10-26 13:56 EDT, timestamp correction (truthful record). The header of this file says "written ... 13:50 EDT" and the disk paragraph
+  dates the stereovision2 probe "13:55 EDT": both times were written ahead of the clock and are wrong. The git record is the truth: the Stage-0
+  commit 93c983a is dated 13:45:36 EDT; the ch_intrinsics probe ran at about 13:42, the stereovision2 probe finished at 13:45:06; the
+  first round-7 run (n5_mesh_dp_16, stock, seed 1) finished at 13:46:50, after the Stage-0 commit. No round-7 run precedes the commit. The
+  rules are unchanged.
 
