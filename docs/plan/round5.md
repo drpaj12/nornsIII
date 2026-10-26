@@ -351,3 +351,34 @@ rather than on size; (2) the CPD cross-check and the share of critical-path hops
 as reported-not-tested in Stage 2. Clarification of the `n` section above (typing slip, no rule change): with all 72 designs kept, the variant B >= 32 has
 7 sizes x 8 cells = 56 designs; the numbers actually used are the n printed with each result (63 HDL designs and 72 netlist
 designs were kept; the variant has 39 and 56).
+
+## Entry 2026-10-26 (f): review fixes (dated; no VPR run, no status rule changed; literal pre-data rules made primary)
+
+Written after the results were read and reviewed. Compute-only; the local-search convergence rerun below is the only new
+computation. Corrections to how earlier entries were applied:
+1. H28. The pre-data rule is entry (b): a netlist design passes iff the swap test has zero violations (plus k1 to k5).
+   Under it 37 of 72 pass, so the LITERAL status of H28 is **not supported** (< 70%). Entry (c)'s rule (slack <= 10%) was
+   chosen after seeing slacks of 2 to 5% on three designs; it passes 72 of 72 (supported) and is a LABELLED POST-DATA
+   VARIANT. Its sensitivity at a 5% bound: 63 of 72 pass (87.5%, inconclusive). The paper and the results file report all
+   three. H25 to H27 were computed on the 72 designs that pass the entry (c) rule (labelled variant); the entry (b)
+   subset (37 designs) is reported beside H25 as a further variant (`room_NL_stock_literal_subset`).
+2. H18. Entry (a) changed the label rule (k3) after the labels had been seen. Under the ORIGINAL rule (path labels only,
+   >= 99%) 32 of 72 HDL designs are KEPT, so the LITERAL status of H18 is **not supported**; the amended rule (63 of 72,
+   87.5%, inconclusive) is a labelled variant. Hypotheses H19 to H24 use the 63 designs kept under the amended rule (not
+   re-decided on the 32); the paper says so. The sentence "not to any rule" in entry (a) was inaccurate: change 4 is a
+   change of the label rule and is treated as one here.
+3. H21 was registered as 4 tests with Holm over the 4 (2 packers x 2 metrics). The first analysis ran Holm over 2 per packer
+   and used 2000 permutations (registered 10000). Both are corrected: Holm over the 4, permutations 10000. No status changed.
+4. The local search of entry (c) is capped at 8 rounds. It converged within the cap on every netlist design (at most 3
+   rounds); the slack after convergence equals the slack reported (`slack_converged`, `ls_rounds` in keep.json, step
+   `scripts/r5conv.py`). The slack is an upper bound on how far the block cut is from a local optimum of pair swaps, and
+   a lower bound on non-minimality only. The random-restart search (500 restarts at B = 4, 300 at B = 8, protocol
+   20000) found no partition with a smaller cut than the block partition, but its best cuts at B = 8 (79 to 86) are far
+   above the block cuts (30 to 56), so it is weak evidence of minimality.
+5. `tests/test_r5.py`, `test_close_reaches_all_statuses`, third assertion (the inconclusive case) was rewritten in the
+   commit with the results (90f9626), after the data existed, because the original input (all log 0.995) is "not
+   supported" by the written rule (the 90% interval lies inside [0.98, 1.02]); the new input is a constructed one that
+   reaches "inconclusive". The rule itself did not change.
+6. Exploratory (labelled, change no status): the fraction of the gap closed for H22 (promised in the H22 rule), H19, H20
+   and H25 by topology (promised "per topology" variants), and the leak measurement (norns .net equal to stock .net per
+   style, purity per style); the H23 ceiling (pairs with d = 0 and the mean headroom).

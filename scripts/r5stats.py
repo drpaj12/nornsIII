@@ -14,6 +14,7 @@ import nornlib as nl
 
 BOOT_SEED = 20261026
 N_BOOT = 10000
+PERM_REPS = 10000  # registered (protocol H21); an earlier draft ran 2000 (dated entry (f))
 METRICS = {"CLB": "logic_clbs", "WL": "wirelength", "CPD": "cpd_ns", "W": "chan_width", "CUT": "cut"}
 MIN_N = 12
 MIN_CELLS = 6
@@ -133,7 +134,7 @@ def decide_growth(cells: dict[str, dict[str, list[tuple[int, float]]]]) -> dict:
             status = "inconclusive"
         # permutation null: ln r permuted over the sizes of each cell, median slope at least the observed
         ge = 0
-        reps = 2000
+        reps = PERM_REPS
         for _ in range(reps):
             sl = []
             for c, pts in sorted(cells[t].items()):
@@ -239,6 +240,7 @@ def analyse() -> dict:
         res[f"keep_{level}"] = decide_keep({d: keep[d]["kept"] for d in ds}, cell_of)
         if level == "HDL":
             res["keep_HDL_original_rule"] = decide_keep({d: keep[d].get("kept_original_rule", False) for d in ds}, cell_of)
+    growth_cells: dict[tuple, dict] = {}
     for level, packers in (("HDL", ("stock", "norns")), ("NL", ("stock",))):
         for pk in packers:
             logs = {m: per_design(keep, runs, level, pk, "known", m) for m in ("CLB", "WL", "CPD")}
@@ -248,19 +250,41 @@ def analyse() -> dict:
             for m in ("W", "CUT"):
                 v = list(per_design(keep, runs, level, pk, "known", m).values())
                 res[f"report_{level}_{pk}_{m}"] = {"n": len(v), "gmean": gmean_ratio(v)}
-            cells: dict[str, dict[str, list]] = {}
             for m in ("CLB", "WL"):
-                cells[m] = {}
+                growth_cells[(level, pk, m)] = {}
                 for d, v in logs[m].items():
                     topo, style, b, _ = meta(d)
-                    cells[m].setdefault(f"{topo}_{style}", []).append((b, v))
-            res[f"growth_{level}_{pk}"] = decide_growth(cells)
+                    growth_cells[(level, pk, m)].setdefault(f"{topo}_{style}", []).append((b, v))
             res[f"gap_by_size_{level}_{pk}"] = {
                 m: {str(b): gmean_ratio([v for d, v in logs[m].items() if meta(d)[2] == b])
                     for b in sorted({meta(d)[2] for d in logs[m]})} for m in logs}
         reps = [r["reproduction"] for (d, arm, s), r in runs.items()
                 if arm == "known" and meta(d)[3] == level and keep.get(d, {}).get("kept")]
         res[f"repro_{level}"] = decide_repro(reps)
+    # H21: Holm over the registered 4 tests (2 packers x 2 metrics); H26: Holm over its 2 tests (NL, stock)
+    joint = decide_growth({f"{pk}_{m}": growth_cells[("HDL", pk, m)] for pk in ("stock", "norns") for m in ("CLB", "WL")})
+    for pk in ("stock", "norns"):
+        res[f"growth_HDL_{pk}"] = {m: joint[f"{pk}_{m}"] for m in ("CLB", "WL")}
+    res["growth_NL_stock"] = decide_growth({m: growth_cells[("NL", "stock", m)] for m in ("CLB", "WL")})
+    # H28 / H18 literal pre-data rules and labelled variants
+    nlk = [d for d in keep if meta(d)[3] == "NL"]
+    res["keep_NL_literal"] = decide_keep({d: nl_literal_pass(keep[d]) for d in nlk}, cell_of)
+    for thr in (0.05,):
+        res[f"keep_NL_slack{int(thr * 100)}"] = decide_keep({d: nl_literal_pass(keep[d], slack=thr) for d in nlk}, cell_of)
+    res["local_search"] = local_search_summary(keep)
+    # variants on the literal-pass NL subset (H25 and H26 as the pre-data entry (b) rule would have decided them)
+    lit = {d: k for d, k in keep.items() if meta(d)[3] != "NL" or nl_literal_pass(k)}
+    logs_l = {m: per_design(lit, runs, "NL", "stock", "known", m) for m in ("CLB", "WL", "CPD")}
+    res["room_NL_stock_literal_subset"] = decide_room({m: list(v.values()) for m, v in logs_l.items()})
+    # H19/H20/H25 per topology (labelled variant of the registered rule)
+    for level, pk in (("NL", "stock"), ("HDL", "stock"), ("HDL", "norns")):
+        lg = {m: per_design(keep, runs, level, pk, "known", m) for m in ("CLB", "WL", "CPD")}
+        res[f"room_by_topology_{level}_{pk}"] = {
+            t: decide_room({m: [v for d, v in lg[m].items() if meta(d)[0] == t] for m in lg})
+            for t in ("chain", "mesh", "tree", "rand")}
+    # H22 variant: fraction of the gap closed on designs with r_stock >= 1.03
+    res["gap_closed_HDL"] = gap_closed(keep, runs)
+    res["leak_HDL"] = leak(keep, runs)
     # H22 and H23 (HDL only)
     logs = {m: per_design(keep, runs, "HDL", "norns", "stock", m) for m in ("CLB", "WL", "CPD")}
     res["close_HDL"] = decide_close({m: list(v.values()) for m, v in logs.items()})
@@ -282,11 +306,90 @@ def analyse() -> dict:
             if other in gain:
                 pairs.append(gain[d] - gain[other])
     res["h23"] = decide_h23(pairs)
+    res["h23"].update(h23_ceiling(keep, runs, gain))
     res["purity_gain_mean"] = {st: (sum(v for d, v in gain.items() if meta(d)[1] == st) /
                                     max(1, sum(1 for d in gain if meta(d)[1] == st))) for st in ("dp", "ctl")}
     res["attribution"] = attribution(keep)
     res["exploratory_topology_gap"] = topology_gap(keep, runs)
     return res
+
+
+def nl_literal_pass(k: dict, slack: float | None = None) -> bool:
+    """Netlist check of dated entry (b), the pre-data rule: zero improving swaps (and the other items k1 to k5). With `slack`
+    the entry (c) rule at that bound is used instead (entry (c) itself uses 0.10)."""
+    base = k["k1"] and k["k2"] and k["k3"] and k["k4"] and k["k5_move"]
+    if slack is None:
+        return bool(base and k["swap_violations"] == 0)
+    return bool(base and k["slack"] <= slack)
+
+
+def local_search_summary(keep: dict) -> dict:
+    nlk = {d: k for d, k in keep.items() if d.startswith("n5_")}
+    sl = sorted(k["slack"] for k in nlk.values())
+    return {"n": len(nlk), "converged_within_cap": sum(k["ls_converged_within_cap"] for k in nlk.values()),
+            "max_rounds": max(k["ls_rounds"] for k in nlk.values()),
+            "slack_min": sl[0], "slack_median": statistics.median(sl), "slack_max": sl[-1],
+            "slack_converged_max": max(k["slack_converged"] for k in nlk.values()),
+            "slack_le5": sum(x <= 0.05 for x in sl), "slack_le10": sum(x <= 0.10 for x in sl),
+            "swap_zero": sum(k["swap_violations"] == 0 for k in nlk.values()),
+            "restart_designs": sum("search_best" in k for k in nlk.values()),
+            "search_best_min_gap": min(k["search_best"] - k["cut"] for k in nlk.values() if "search_best" in k),
+            "search_smaller": sum(bool(k.get("search_found_smaller")) for k in nlk.values()),
+            "search_best_range": [min(k["search_best"] for k in nlk.values() if k["b"] == 8 if "search_best" in k),
+                                  max(k["search_best"] for k in nlk.values() if k["b"] == 8 if "search_best" in k)],
+            "block_cut_b8_range": [min(k["cut"] for k in nlk.values() if k["b"] == 8),
+                                   max(k["cut"] for k in nlk.values() if k["b"] == 8)]}
+
+
+def gap_closed(keep: dict, runs: dict) -> dict:
+    """EXPLORATORY variant of H22: (r_stock - r_norns) / (r_stock - 1) per design with r_stock >= 1.03 (r = ratio to known)."""
+    out: dict = {}
+    for m in ("CLB", "WL", "CPD"):
+        st = per_design(keep, runs, "HDL", "stock", "known", m)
+        nr = per_design(keep, runs, "HDL", "norns", "known", m)
+        vals = []
+        for d, ls in st.items():
+            rs = math.exp(ls)
+            if rs >= 1.03 and d in nr:
+                vals.append((rs - math.exp(nr[d])) / (rs - 1))
+        out[m] = {"n": len(vals), "mean": sum(vals) / len(vals) if vals else float("nan"),
+                  "median": statistics.median(vals) if vals else float("nan")}
+    return out
+
+
+def leak(keep: dict, runs: dict) -> dict:
+    """Per style, HDL level: designs whose norns .net equals the stock .net on all three seeds, and mean purity of both arms."""
+    out: dict = {}
+    for st in ("dp", "ctl"):
+        ds = [d for d, k in keep.items() if k["kept"] and meta(d)[3] == "HDL" and meta(d)[1] == st]
+        same = 0
+        pn, ps, n = 0.0, 0.0, 0
+        for d in ds:
+            a = [runs.get((d, "norns", s)) for s in (1, 2, 3)]
+            b = [runs.get((d, "stock", s)) for s in (1, 2, 3)]
+            if not all(a) or not all(b):
+                continue
+            same += all(x["net_sha256"] == y["net_sha256"] for x, y in zip(a, b))
+            pn += sum(x["purity"] for x in a) / 3
+            ps += sum(x["purity"] for x in b) / 3
+            n += 1
+        out[st] = {"designs": n, "net_equal_stock": same, "purity_norns": pn / n if n else float("nan"),
+                   "purity_stock": ps / n if n else float("nan")}
+    return out
+
+
+def h23_ceiling(keep: dict, runs: dict, gain: dict) -> dict:
+    """The ceiling of H23: pairs with d = 0 and the mean headroom (1 - stock purity of the dp design) against the 0.05 threshold."""
+    zero, head, dd = 0, [], []
+    for d in gain:
+        topo, style, b, _ = meta(d)
+        other = f"r5_{topo}_ctl_{b}"
+        if style == "dp" and other in gain:
+            dd.append(gain[d] - gain[other])
+            zero += (gain[d] - gain[other]) == 0
+            head.append(1 - runs[(d, "stock", 1)]["purity"])
+    return {"pairs_zero": zero, "mean_headroom": sum(head) / len(head) if head else float("nan"),
+            "mean_d": sum(dd) / len(dd) if dd else float("nan")}
 
 
 def attribution(keep: dict) -> dict:
@@ -320,7 +423,7 @@ def topology_gap(keep: dict, runs: dict) -> dict:
     """EXPLORATORY (dated entry (e) of the protocol): geometric-mean ratio to the known clustering per topology; no status."""
     out: dict = {}
     for level, arm in (("NL", "stock"), ("HDL", "stock"), ("HDL", "norns")):
-        for m in ("WL", "CLB"):
+        for m in ("WL", "CLB", "CPD"):
             by: dict[str, list[float]] = {}
             for d, v in per_design(keep, runs, level, arm, "known", m).items():
                 by.setdefault(meta(d)[0], []).append(v)

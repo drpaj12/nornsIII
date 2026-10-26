@@ -14,6 +14,8 @@ from pathlib import Path
 import r5gen
 
 N_RESTARTS = {4: 500, 8: 300}
+PROTOCOL_ROUNDS = 8  # local-search cap of entry (c)
+MAX_ROUNDS = 200  # run to convergence for the report (review fix, item 5)
 
 
 def nl_name(hdl_name: str) -> str:
@@ -129,7 +131,12 @@ def check(spec: dict) -> dict:
     swap_bad = 0
     pairs = 0
     cur = base
-    for rnd_ in range(8):  # first round: count violations; every round applies the improving swaps (local search)
+    cur8 = base
+    rounds = 0
+    converged = False
+    for rnd_ in range(MAX_ROUNDS):  # first round: count violations; every round applies the improving swaps (local search)
+        if rnd_ == PROTOCOL_ROUNDS:
+            cur8 = cur  # the protocol's cap (entry (c)): cut_local_search and slack are read after 8 rounds
         changed = 0
         for x, y in sorted(adj):
             for i in range(r5gen.N_LE):
@@ -149,10 +156,16 @@ def check(spec: dict) -> dict:
                         changed += 1
                     else:
                         part[ca], part[cb] = x, y
+        rounds += 1
         if not changed:
+            converged = True
             break
+    if rounds <= PROTOCOL_ROUNDS:
+        cur8 = cur
     res = {"cut": base, "move_violations": move_bad, "swap_violations": swap_bad, "swap_pairs": pairs,
-           "cut_local_search": cur, "slack": (base - cur) / base}
+           "cut_local_search": cur8, "slack": (base - cur8) / base,
+           "ls_rounds": rounds, "ls_converged_within_cap": rounds <= PROTOCOL_ROUNDS and converged,
+           "cut_local_search_converged": cur, "slack_converged": (base - cur) / base}
     if b in N_RESTARTS:
         res["search_best"], res["search_restarts"] = search(nets, cells, b, N_RESTARTS[b], spec["name"])
         res["search_found_smaller"] = res["search_best"] < base

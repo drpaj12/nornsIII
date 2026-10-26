@@ -88,6 +88,19 @@ class Rules(unittest.TestCase):
         self.assertEqual(st.decide_h23([0.0] * 20)["status"], "not supported")
         self.assertEqual(st.decide_h23([0.03 + 0.001 * i for i in range(20)])["status"], "inconclusive")
 
+    def test_h21_four_tests_holm(self):
+        def cells(sl):
+            return {f"c{i}": [(2 ** j, sl * j + 0.001 * i) for j in range(2, 11)] for i in range(8)}
+        out = st.decide_growth({"stock_CLB": cells(0.05), "stock_WL": cells(0.05), "norns_CLB": cells(0.0), "norns_WL": cells(0.0)})
+        self.assertEqual([out[k]["status"] for k in sorted(out)], ["not supported", "not supported", "supported", "supported"])
+
+    def test_nl_literal_rule(self):
+        k = {"k1": True, "k2": True, "k3": True, "k4": True, "k5_move": True, "swap_violations": 3, "slack": 0.04}
+        self.assertFalse(st.nl_literal_pass(k))
+        self.assertTrue(st.nl_literal_pass(k, slack=0.05))
+        self.assertFalse(st.nl_literal_pass(dict(k, slack=0.07), slack=0.05))
+        self.assertTrue(st.nl_literal_pass(dict(k, swap_violations=0)))
+
     def test_keep_and_repro(self):
         cell = {f"d{i}": f"c{i % 8}" for i in range(72)}
         self.assertEqual(st.decide_keep({d: True for d in cell}, cell)["status"], "supported")
