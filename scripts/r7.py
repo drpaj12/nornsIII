@@ -163,8 +163,31 @@ def source_pcrit(design: str, arm: str, seed: int) -> dict[str, float]:
     return pc
 
 
+MIN_FREE_GB = 30.0
+
+
+def disk_guard() -> None:
+    """Stop before starting a design when the Windows host disk (/mnt/c) has < 30 GB free (controller rule 2026-10-26)."""
+    free = shutil.disk_usage("/mnt/c").free / 1e9
+    if free < MIN_FREE_GB:
+        print(f"disk guard: /mnt/c has {free:.1f} GB free (< {MIN_FREE_GB:g}); not starting a new design", flush=True)
+        raise SystemExit(3)
+
+
+def scratch_list() -> int:
+    """Write runs/r7/scratch_done.txt: scratch subdirectories of designs whose kept files are in runs/r7 (safe for the controller to clear)."""
+    root = scratch_root()
+    done = [d for d in default_designs() if (lib.R7 / d / "rounds.json").is_file() and "hindsight_arm" in nl.read_json(lib.R7 / d / "rounds.json")
+            and (root / d).is_dir()]
+    (lib.R7 / "scratch_done.txt").write_text("".join(f"{root / d}\n" for d in done), encoding="utf-8")
+    print(f"{len(done)} finished designs listed in runs/r7/scratch_done.txt")
+    return 0
+
+
 def hindsight(design: str) -> dict:
     """Stage 2 for one design: stock (if missing) then rounds h1..h5; writes runs/r7/<d>/rounds.json."""
+    if not (lib.R7 / design / "rounds.json").is_file():
+        disk_guard()
     out_path = lib.R7 / design / "rounds.json"
     arm_runs(design, "stock", None, census=True)
     stock = ok_runs(design, "stock")
@@ -248,11 +271,14 @@ def main(argv: list[str]) -> int:
     mode, designs = argv[0], argv[1:] or default_designs()
     if mode == "status":
         return status()
+    if mode == "scratchlist":
+        return scratch_list()
     for d in designs:
         if mode == "stock":
             arm_runs(d, "stock", None, census=True)
         elif mode == "hind":
             hindsight(d)
+            scratch_list()
         else:
             nl.die(f"unknown mode {mode}")
     return 0
