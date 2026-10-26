@@ -261,7 +261,7 @@ Written after the round-6 results and the review of them. Dated, so the earlier 
   as pre-registered); the scope limit (one packer configuration, beta 4; words of exactly 10 flip-flops = the CLB capacity, word size not varied); the
   9-run pilot of entry (b) in the appendix disclosures; one sentence on why H32's stock / known WL differs from round 5's (topology mix).
 * Edit history. Two edits to text above were made after the Stage-0 commit 0ffcfc1 (08:49 EDT). (1) Commit 6471720 (08:51 EDT) changed
-  the last Gates line from "no `/home/jamiespa` literal in committed files" to "no absolute home-directory path literal in committed files"
+  the last Gates line from a gate naming one literal user-home path (the path itself, now left out so this file passes the gate) to "no absolute home-directory path literal in committed files"
   (the literal path in the protocol would itself break the gate); same rule, different wording. (2) Commit 8cd4247 (08:52 EDT) changed the
   timing wording of entry (a) ("between about 08:30 and 08:48 EDT" to "before 08:47 EDT"). Neither changed a rule or threshold, and both were
   made before any round-6 benchmark synthesis or VPR run. The Stage-0 SHA quoted in the paper is the commit of the original text.
