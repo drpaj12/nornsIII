@@ -1,0 +1,1352 @@
+**
+(norns.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-02-24> (IEEEtran.cls
+Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen138
+\@IEEEtrantmpdimenB=\dimen139
+\@IEEEtrantmpdimenC=\dimen140
+\@IEEEtrantmpcountA=\count181
+\@IEEEtrantmpcountB=\count182
+\@IEEEtrantmpcountC=\count183
+\@IEEEtrantmptoksA=\toks16
+LaTeX Font Info:    Trying to load font information for TU+ptm on input line 50
+3.
+LaTeX Font Info:    No file TUptm.fd. on input line 503.
+
+LaTeX Font Warning: Font shape `TU/ptm/m/n' undefined
+(Font)              using `TU/lmr/m/n' instead on input line 503.
+
+-- Using 8.5in x 11in (letter) paper.
+-- Using DVI output.
+\@IEEEnormalsizeunitybaselineskip=\dimen141
+-- This is a 10 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen142
+\CLASSINFOnormalsizeunitybaselineskip=\dimen143
+\IEEEnormaljot=\dimen144
+
+LaTeX Font Warning: Font shape `TU/ptm/bx/n' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 1090.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/m/it' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 1090.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/bx/it' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 1090.
+
+\IEEEquantizedlength=\dimen145
+\IEEEquantizedlengthdiff=\dimen146
+\IEEEquantizedtextheightdiff=\dimen147
+\IEEEilabelindentA=\dimen148
+\IEEEilabelindentB=\dimen149
+\IEEEilabelindent=\dimen150
+\IEEEelabelindent=\dimen151
+\IEEEdlabelindent=\dimen152
+\IEEElabelindent=\dimen153
+\IEEEiednormlabelsep=\dimen154
+\IEEEiedmathlabelsep=\dimen155
+\IEEEiedtopsep=\skip47
+\c@section=\count184
+\c@subsection=\count185
+\c@subsubsection=\count186
+\c@paragraph=\count187
+\c@IEEEsubequation=\count188
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\c@figure=\count189
+\c@table=\count190
+\@IEEEeqnnumcols=\count191
+\@IEEEeqncolcnt=\count192
+\@IEEEsubeqnnumrollback=\count193
+\@IEEEquantizeheightA=\dimen156
+\@IEEEquantizeheightB=\dimen157
+\@IEEEquantizeheightC=\dimen158
+\@IEEEquantizeprevdepth=\dimen159
+\@IEEEquantizemultiple=\count194
+\@IEEEquantizeboxA=\box50
+\@IEEEtmpitemindent=\dimen160
+\IEEEPARstartletwidth=\dimen161
+\c@IEEEbiography=\count195
+\@IEEEtranrubishbin=\box51
+) (cite.sty
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 332.
+Package: cite 2015/02/27  v 5.5
+) (amsmath.sty
+Package: amsmath 2021/10/15 v2.17l AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+ (amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks17
+\ex@=\dimen162
+)) (amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen163
+) (amsopn.sty
+Package: amsopn 2021/08/26 v2.02 operator names
+)
+\inf@bad=\count196
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count197
+\leftroot@=\count198
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count199
+\DOTSCASE@=\count266
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box52
+\strutbox@=\box53
+\big@size=\dimen164
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count267
+\c@MaxMatrixCols=\count268
+\dotsspace@=\muskip16
+\c@parentequation=\count269
+\dspbrk@lvl=\count270
+\tag@help=\toks18
+\row@=\count271
+\column@=\count272
+\maxfields@=\count273
+\andhelp@=\toks19
+\eqnshift@=\dimen165
+\alignsep@=\dimen166
+\tagshift@=\dimen167
+\tagwidth@=\dimen168
+\totwidth@=\dimen169
+\lineht@=\dimen170
+\@envbody=\toks20
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks21
+LaTeX Info: Redefining \[ on input line 2938.
+LaTeX Info: Redefining \] on input line 2939.
+) (graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks22
+) (graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+ (trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: xetex.def on input line 107.
+ (xetex.def
+File: xetex.def 2021/03/18 v5.0k Graphics/color driver for xetex
+))
+\Gin@req@height=\dimen171
+\Gin@req@width=\dimen172
+) (booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen173
+\lightrulewidth=\dimen174
+\cmidrulewidth=\dimen175
+\belowrulesep=\dimen176
+\belowbottomsep=\dimen177
+\aboverulesep=\dimen178
+\abovetopsep=\dimen179
+\cmidrulesep=\dimen180
+\cmidrulekern=\dimen181
+\defaultaddspace=\dimen182
+\@cmidla=\count274
+\@cmidlb=\count275
+\@aboverulesep=\dimen183
+\@belowrulesep=\dimen184
+\@thisruleclass=\count276
+\@lastruleclass=\count277
+\@thisrulewidth=\dimen185
+)
+(array.sty
+Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
+\col@sep=\dimen186
+\ar@mcellbox=\box54
+\extrarowheight=\dimen187
+\NC@list=\toks23
+\extratabsurround=\skip53
+\backup@length=\skip54
+\ar@cellbox=\box55
+) (url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+) (listings.sty
+\lst@mode=\count278
+\lst@gtempboxa=\box56
+\lst@token=\toks24
+\lst@length=\count279
+\lst@currlwidth=\dimen188
+\lst@column=\count280
+\lst@pos=\count281
+\lst@lostspace=\dimen189
+\lst@width=\dimen190
+\lst@newlines=\count282
+\lst@lineno=\count283
+\lst@maxwidth=\dimen191
+ (lstmisc.sty
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count284
+\lst@skipnumbers=\count285
+\lst@framebox=\box57
+) (listings.cfg
+File: listings.cfg 2020/03/24 1.8d listings configuration
+))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+ (tikz.sty
+(pgf.sty (pgfrcs.sty (pgfutil-common.tex
+\pgfutil@everybye=\toks25
+\pgfutil@tempdima=\dimen192
+\pgfutil@tempdimb=\dimen193
+ (pgfutil-common-lists.tex))
+(pgfutil-latex.def
+\pgfutil@abb=\box58
+) (pgfrcs.code.tex (pgf.revision.tex)
+Package: pgfrcs 2021/05/15 v3.1.9a (3.1.9a)
+))
+Package: pgf 2021/05/15 v3.1.9a (3.1.9a)
+ (pgfcore.sty
+(pgfsys.sty (pgfsys.code.tex
+Package: pgfsys 2021/05/15 v3.1.9a (3.1.9a)
+ (pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks26
+\pgfkeys@temptoks=\toks27
+ (pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks28
+))
+\pgf@x=\dimen194
+\pgf@y=\dimen195
+\pgf@xa=\dimen196
+\pgf@ya=\dimen197
+\pgf@xb=\dimen198
+\pgf@yb=\dimen199
+\pgf@xc=\dimen256
+\pgf@yc=\dimen257
+\pgf@xd=\dimen258
+\pgf@yd=\dimen259
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count286
+\c@pgf@countb=\count287
+\c@pgf@countc=\count288
+\c@pgf@countd=\count289
+\t@pgf@toka=\toks29
+\t@pgf@tokb=\toks30
+\t@pgf@tokc=\toks31
+\pgf@sys@id@count=\count290
+
+(pgf.cfg
+File: pgf.cfg 2021/05/15 v3.1.9a (3.1.9a)
+)
+Driver file for pgf: pgfsys-xetex.def
+ (pgfsys-xetex.def
+File: pgfsys-xetex.def 2021/05/15 v3.1.9a (3.1.9a)
+ (pgfsys-dvipdfmx.def
+File: pgfsys-dvipdfmx.def 2021/05/15 v3.1.9a (3.1.9a)
+ (pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2021/05/15 v3.1.9a (3.1.9a)
+)
+\pgfsys@objnum=\count291
+)))
+(pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfsyssoftpath@smallbuffer@items=\count292
+\pgfsyssoftpath@bigbuffer@items=\count293
+) (pgfsysprotocol.code.tex
+File: pgfsysprotocol.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)) (xcolor.sty
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
+ (color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: xetex.def on input line 227.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
+)
+(pgfcore.code.tex
+Package: pgfcore 2021/05/15 v3.1.9a (3.1.9a)
+ (pgfmath.code.tex (pgfmathcalc.code.tex (pgfmathutil.code.tex) (pgfmathparser.
+code.tex
+\pgfmath@dimen=\dimen260
+\pgfmath@count=\count294
+\pgfmath@box=\box59
+\pgfmath@toks=\toks32
+\pgfmath@stack@operand=\toks33
+\pgfmath@stack@operation=\toks34
+) (pgfmathfunctions.code.tex
+(pgfmathfunctions.basic.code.tex) (pgfmathfunctions.trigonometric.code.tex)
+(pgfmathfunctions.random.code.tex) (pgfmathfunctions.comparison.code.tex)
+(pgfmathfunctions.base.code.tex) (pgfmathfunctions.round.code.tex)
+(pgfmathfunctions.misc.code.tex) (pgfmathfunctions.integerarithmetics.code.tex)
+)) (pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count295
+)) (pgfint.code.tex) (pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@picminx=\dimen261
+\pgf@picmaxx=\dimen262
+\pgf@picminy=\dimen263
+\pgf@picmaxy=\dimen264
+\pgf@pathminx=\dimen265
+\pgf@pathmaxx=\dimen266
+\pgf@pathminy=\dimen267
+\pgf@pathmaxy=\dimen268
+\pgf@xx=\dimen269
+\pgf@xy=\dimen270
+\pgf@yx=\dimen271
+\pgf@yy=\dimen272
+\pgf@zx=\dimen273
+\pgf@zy=\dimen274
+)
+(pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@path@lastx=\dimen275
+\pgf@path@lasty=\dimen276
+) (pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@shorten@end@additional=\dimen277
+\pgf@shorten@start@additional=\dimen278
+)
+(pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfpic=\box60
+\pgf@hbox=\box61
+\pgf@layerbox@main=\box62
+\pgf@picture@serial@count=\count296
+) (pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgflinewidth=\dimen279
+)
+(pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@pt@x=\dimen280
+\pgf@pt@y=\dimen281
+\pgf@pt@temp=\dimen282
+) (pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfarrowsep=\dimen283
+) (pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@max=\dimen284
+\pgf@sys@shading@range@num=\count297
+\pgf@shadingcount=\count298
+) (pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+
+(pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfexternal@startupbox=\box63
+)) (pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+))) (pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfnodeparttextbox=\box64
+) (pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@nodesepstart=\dimen285
+\pgf@nodesepend=\dimen286
+) (pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2021/05/15 v3.1.9a (3.1.9a)
+)) (pgffor.sty (pgfkeys.sty (pgfkeys.code.tex)) (pgfmath.sty (pgfmath.code.tex)
+) (pgffor.code.tex
+Package: pgffor 2021/05/15 v3.1.9a (3.1.9a)
+
+(pgfmath.code.tex)
+\pgffor@iter=\dimen287
+\pgffor@skip=\dimen288
+\pgffor@stack=\toks35
+\pgffor@toks=\toks36
+)) (tikz.code.tex
+Package: tikz 2021/05/15 v3.1.9a (3.1.9a)
+ (pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@plot@mark@count=\count299
+\pgfplotmarksize=\dimen289
+)
+\tikz@lastx=\dimen290
+\tikz@lasty=\dimen291
+\tikz@lastxsaved=\dimen292
+\tikz@lastysaved=\dimen293
+\tikz@lastmovetox=\dimen294
+\tikz@lastmovetoy=\dimen295
+\tikzleveldistance=\dimen296
+\tikzsiblingdistance=\dimen297
+\tikz@figbox=\box65
+\tikz@figbox@bg=\box66
+\tikz@tempbox=\box67
+\tikz@tempbox@bg=\box68
+\tikztreelevel=\count300
+\tikznumberofchildren=\count301
+\tikznumberofcurrentchild=\count302
+\tikz@fig@count=\count303
+
+(pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfmatrixcurrentrow=\count304
+\pgfmatrixcurrentcolumn=\count305
+\pgf@matrix@numberofcolumns=\count306
+)
+\tikz@expandcount=\count307
+ (tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)))
+(tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(pgflibraryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfarrowinset=\dimen298
+\pgfarrowlength=\dimen299
+\pgfarrowwidth=\dimen300
+\pgfarrowlinewidth=\dimen301
+) (tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+
+(pgflibraryshapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)) (tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@layerbox@background=\box69
+\pgf@layerboxsaved@background=\box70
+)
+(tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (tikzlibrarymatrix.code.tex
+File: tikzlibrarymatrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)
+(IMAGE/odin3-tikz-styles
+\odinfigbox=\box71
+) (l3backend-xetex.def
+File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
+\c__kernel_sys_dvipdfmx_version_int=\count308
+\l__color_backend_stack_int=\count309
+\g__color_backend_stack_int=\count310
+\g__graphics_track_int=\count311
+\l__pdf_internal_box=\box72
+\g__pdf_backend_object_int=\count312
+\g__pdf_backend_annotation_int=\count313
+\g__pdf_backend_link_int=\count314
+) (norns.aux)
+\openout1 = `norns.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 3
+7.
+ (ts1cmr.fd
+File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 37.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/it' undefined
+(Font)              using `TU/ptm/bx/it' instead on input line 37.
+
+-- Lines per column: 56 (exact).
+\c@lstlisting=\count315
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 40.
+
+(r4-abstract) (r5-abstract
+LaTeX Font Info:    Trying to load font information for TU+pcr on input line 2.
+
+LaTeX Font Info:    No file TUpcr.fd. on input line 2.
+
+
+LaTeX Font Warning: Font shape `TU/pcr/bx/n' undefined
+(Font)              using `TU/lmr/m/n' instead on input line 2.
+
+) (r6-abstract)
+Underfull \vbox (badness 4205) has occurred while \output is active []
+
+ [1
+
+
+]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 71.
+
+
+Underfull \hbox (badness 4084) in paragraph at lines 71--73
+[]\TU/pcr/bx/n/9 Index Terms—FPGA placement, simulated annealing,
+ []
+
+
+LaTeX Font Warning: Font shape `TU/ptm/m/sc' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 76.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 160.
+
+
+LaTeX Font Warning: Font shape `TU/pcr/m/n' undefined
+(Font)              using `TU/lmr/m/n' instead on input line 161.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 173.
+
+[2]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 183.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 195.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 202.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 223.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 236.
+
+[3]
+
+LaTeX Font Warning: Font shape `TU/pcr/m/sc' undefined
+(Font)              using `TU/pcr/m/n' instead on input line 317.
+
+(IMAGE/fig_norns) (r2-method
+Underfull \vbox (badness 1394) has occurred while \output is active []
+
+ [4]
+Underfull \vbox (badness 1097) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5])
+(r3-method [6]
+Underfull \hbox (badness 6675) in paragraph at lines 55--67
+ \TU/pcr/m/n/10 f) RQ-N11, proximity.: [][] On the stock-packing,
+ []
+
+) (r4-method [7]
+Overfull \hbox (35.5122pt too wide) in paragraph at lines 41--63
+ [][] 
+ []
+
+
+Overfull \hbox (3.10207pt too wide) in paragraph at lines 69--77
+ [][] 
+ []
+
+) (r5-method)
+Underfull \hbox (badness 10000) in paragraph at lines 6--363
+\TU/pcr/m/n/10 in advance: r5_chain_ctl_1024, r5_chain_ctl_512,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 6--363
+\TU/pcr/m/n/10 r5_chain_ctl_64, r5_mesh_ctl_1024,
+ []
+
+(r6-method) [8]
+Overfull \hbox (12.0401pt too wide) in paragraph at lines 378--390
+ [][] 
+ []
+
+(r2-results
+Overfull \hbox (4.92813pt too wide) in paragraph at lines 13--28
+ [][] 
+ []
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 30.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [9]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 78.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 85.
+
+[10]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 112.
+
+) (r3-results
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 4.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 10.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 13.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 41.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 44.
+
+[11]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 46.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 48.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 50.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 52.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--81
+[]|\TU/pcr/m/sc/8 inconclusive (pilot-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 84--84
+[]|\TU/pcr/m/sc/8 inconclusive (pilot-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--85
+[]|\TU/pcr/m/sc/8 inconclusive (pilot-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 86--86
+[]|\TU/pcr/m/sc/8 inconclusive (pilot-
+ []
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 156.
+
+) (r4-results [12]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [13]
+Underfull \hbox (badness 5147) in paragraph at lines 24--26
+\TU/pcr/m/n/10 molecules added: stock connectivity_timing 67.0%,
+ []
+
+
+Overfull \hbox (25.95833pt too wide) in paragraph at lines 49--59
+ [][] 
+ []
+
+
+Overfull \hbox (29.63321pt too wide) in paragraph at lines 65--86
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 96--96
+[]|\TU/ptm/bx/it/7 measured pair shares (Peter’s
+ []
+
+
+Underfull \hbox (badness 3039) in paragraph at lines 96--96
+\TU/ptm/bx/it/7 10/75/15 was an illustration, not
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--107
+[]|\TU/ptm/bx/it/7 H16 stage$\OMS/cmsy/m/n/7 ^^B$\TU/ptm/bx/it/7 bit seed:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--110
+[]|\TU/ptm/bx/it/7 H16 stage$\OMS/cmsy/m/n/7 ^^B$\TU/ptm/bx/it/7 bit seed:
+ []
+
+
+Overfull \hbox (17.62231pt too wide) in paragraph at lines 147--168
+ [][] 
+ []
+
+) (r5-results
+Underfull \hbox (badness 1571) in paragraph at lines 63--64
+\TU/pcr/m/n/10 ogy (geometric mean over designs): NL_stock_WL:
+ []
+
+
+Underfull \hbox (badness 3861) in paragraph at lines 63--64
+\TU/pcr/m/n/10 chain 1.004, mesh 1.423, rand 1.019, tree 1.522;
+ []
+
+
+Underfull \hbox (badness 3861) in paragraph at lines 63--64
+\TU/pcr/m/n/10 chain 1.003, mesh 1.178, rand 1.007, tree 1.128;
+ []
+
+) [14]
+Underfull \vbox (badness 7047) has occurred while \output is active []
+
+ [15]
+(r6-results) (r2-discussion [16]
+Underfull \vbox (badness 1796) has occurred while \output is active []
+
+)
+Underfull \vbox (badness 1796) has occurred while \output is active []
+
+ [17]
+(r3-discussion) [18] (r4-discussion)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19]
+(r5-discussion [20]) (r6-discussion) [21] (r2-conclusion) (r2-appendix
+** WARNING: Ignoring useless \section in Appendix (line 2).
+
+Overfull \hbox (32.87611pt too wide) in paragraph at lines 68--89
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--101
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 102--102
+[]|\TU/pcr/m/sc/8 seeds win at $\OT1/cmr/m/n/8 2\OMS/cmsy/m/n/8 ^^B$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--102
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--103
+[]|\TU/pcr/m/sc/8 H7a words beat
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 103--103
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
+[]|\TU/pcr/m/sc/8 H7b slices beat
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 104--104
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 4872) in paragraph at lines 104--105
+[]|\TU/pcr/m/sc/8 WL 0.982, ch.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 106--106
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--107
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Overfull \hbox (3.95604pt too wide) in paragraph at lines 107--108
+[]|\TU/pcr/m/sc/8 0.997/1.020/1.029| 
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 108--108
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 109--109
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+) (r3-appendix [22]
+Underfull \hbox (badness 1762) in paragraph at lines 17--18
+ \TU/pcr/m/n/10 l) 2026-10-24, round three: outcomes.: [][] H8 sup-
+ []
+
+
+Underfull \hbox (badness 4291) in paragraph at lines 41--42
+\TU/pcr/m/sc/8 rity 0.63, split
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 42--43
+[]|\TU/pcr/m/sc/8 median gain
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 42--43
+\TU/pcr/m/sc/8 24.1%, 15/15
+ []
+
+
+Underfull \hbox (badness 3219) in paragraph at lines 43--43
+\TU/pcr/m/sc/8 up, CLBs within
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 43--43
+[]|\TU/pcr/m/sc/8 inconclusive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--43
+\TU/pcr/m/sc/8 (pilot-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+[]|\TU/pcr/m/sc/8 purity +0.000
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+\TU/pcr/m/sc/8 (without pilot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+\TU/pcr/m/sc/8 +0.035), CLB
+ []
+
+
+Underfull \hbox (badness 3815) in paragraph at lines 44--44
+[]|\TU/pcr/m/sc/8 H9a word purity
+ []
+
+
+Underfull \hbox (badness 3219) in paragraph at lines 44--44
+\TU/pcr/m/sc/8 up, CLBs within
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--45
+[]|\TU/pcr/m/sc/8 purity +0.111
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--45
+\TU/pcr/m/sc/8 (without pilot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--45
+\TU/pcr/m/sc/8 +0.120), CLB
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 45--45
+[]|\TU/pcr/m/sc/8 H9a word+io
+ []
+
+
+Underfull \hbox (badness 4341) in paragraph at lines 45--45
+\TU/pcr/m/sc/8 purity up, CLBs
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+[]|\TU/pcr/m/sc/8 purity +0.104
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+\TU/pcr/m/sc/8 (without pilot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+\TU/pcr/m/sc/8 +0.124), CLB
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+[]|\TU/pcr/m/sc/8 H9b module
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+\TU/pcr/m/sc/8 changes WL
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 46--46
+[]|\TU/pcr/m/sc/8 inconclusive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
+\TU/pcr/m/sc/8 (pilot-
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 46--47
+[]|\TU/pcr/m/sc/8 geomean 1.051,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+\TU/pcr/m/sc/8 3/15 better,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+\OML/cmm/m/it/8 p \OT1/cmr/m/n/8 = 0\OML/cmm/m/it/8 :\OT1/cmr/m/n/8 090$\TU/pcr
+/m/sc/8 ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+\TU/pcr/m/sc/8 without pilot
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 47--47
+[]|\TU/pcr/m/sc/8 inconclusive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--47
+\TU/pcr/m/sc/8 (pilot-
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 47--48
+[]|\TU/pcr/m/sc/8 geomean 1.032,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--48
+\TU/pcr/m/sc/8 4/15 better,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--48
+\OML/cmm/m/it/8 p \OT1/cmr/m/n/8 = 0\OML/cmm/m/it/8 :\OT1/cmr/m/n/8 188$\TU/pcr
+/m/sc/8 ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--48
+\TU/pcr/m/sc/8 without pilot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
+[]|\TU/pcr/m/sc/8 H9b word+io
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
+\TU/pcr/m/sc/8 changes WL
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 48--48
+[]|\TU/pcr/m/sc/8 inconclusive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
+\TU/pcr/m/sc/8 (pilot-
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 48--49
+[]|\TU/pcr/m/sc/8 geomean 1.030,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+\TU/pcr/m/sc/8 4/15 better,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+\OML/cmm/m/it/8 p \OT1/cmr/m/n/8 = 0\OML/cmm/m/it/8 :\OT1/cmr/m/n/8 188$\TU/pcr
+/m/sc/8 ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+\TU/pcr/m/sc/8 without pilot
+ []
+
+
+Underfull \hbox (badness 3019) in paragraph at lines 49--49
+[]|\TU/pcr/m/sc/8 H9c module+seed
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 49--50
+[]|\TU/pcr/m/sc/8 geomean 1.064,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[]|\TU/pcr/m/sc/8 H9c word+seed
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 50--51
+[]|\TU/pcr/m/sc/8 geomean 1.039,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 51--52
+[]|\TU/pcr/m/sc/8 geomean 1.039,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\TU/pcr/m/sc/8 H10b word+io
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\TU/pcr/m/sc/8 not
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 52--53
+[]|\TU/pcr/m/sc/8 geomean 0.998,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--53
+[]|\TU/pcr/m/sc/8 H11 same-word
+ []
+
+
+Underfull \hbox (badness 3679) in paragraph at lines 53--53
+\TU/pcr/m/sc/8 pairs closer than
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 53--53
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+[]|\TU/pcr/m/sc/8 median -0.176,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+\TU/pcr/m/sc/8 sign-consistent,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+\TU/pcr/m/sc/8 scaling (10
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+\TU/pcr/m/sc/8 needed):
+ []
+
+
+Underfull \hbox (badness 4108) in paragraph at lines 54--54
+[]|\TU/pcr/m/sc/8 H11 same-module
+ []
+
+
+Underfull \hbox (badness 3679) in paragraph at lines 54--54
+\TU/pcr/m/sc/8 pairs closer than
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 54--54
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+[]|\TU/pcr/m/sc/8 median -0.188,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+\TU/pcr/m/sc/8 sign-consistent,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+\TU/pcr/m/sc/8 scaling (9
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+\TU/pcr/m/sc/8 needed):
+ []
+
+
+Overfull \hbox (1.73688pt too wide) in paragraph at lines 55--55
+[]|\TU/pcr/m/sc/8 inconclusive| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--56
+[]|\TU/pcr/m/sc/8 supported only
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--56
+\TU/pcr/m/sc/8 if both are;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--56
+\TU/pcr/m/sc/8 unregistered
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--56
+\TU/pcr/m/sc/8 scaling:
+ []
+
+
+LaTeX Warning: Float too large for page by 2.65092pt on input line 58.
+
+) (r4-appendix
+Underfull \hbox (badness 3482) in paragraph at lines 2--8
+ \TU/pcr/m/n/10 o) 2026-10-25, round four.: [][] Peter (2026-10-24):
+ []
+
+[23]
+Underfull \hbox (badness 10000) in paragraph at lines 17--17
+[]|\TU/pcr/m/n/7 measured pair shares (Peter’s
+ []
+
+
+Underfull \hbox (badness 3039) in paragraph at lines 17--17
+\TU/pcr/m/n/7 10/75/15 was an illustration, not
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 28--28
+[]|\TU/pcr/m/n/7 H16 stage$\OMS/cmsy/m/n/7 ^^B$\TU/pcr/m/n/7 bit seed:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 31--31
+[]|\TU/pcr/m/n/7 H16 stage$\OMS/cmsy/m/n/7 ^^B$\TU/pcr/m/n/7 bit seed:
+ []
+
+) (r5-appendix)
+Underfull \hbox (badness 1360) in paragraph at lines 19--489
+[]\TU/pcr/m/n/10 Regeneration: python scripts/write_round5.py from
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 19--489
+\TU/pcr/m/n/10 data/analysis/r5-results.json (scripts/r5stats.py); the
+ []
+
+(r6-appendix)
+Underfull \hbox (badness 1360) in paragraph at lines 20--491
+[]\TU/pcr/m/n/10 Regeneration: python scripts/write_round6.py from
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--491
+\TU/pcr/m/n/10 data/analysis/r6-results.json (scripts/r6stats.py); the
+ []
+
+[24] (norns.bbl)
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+[25] [26
+
+] (norns.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ )
+Output written on norns.xdv (26 pages, 1418284 bytes).

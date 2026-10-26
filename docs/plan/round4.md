@@ -359,3 +359,12 @@ analysis added here is labelled exploratory.
 7. Method details not in the registered text (committed before any data, so not post-hoc): H15's span-to-statement rule in
    `r4depth.py` (the nearest statement start within 12 lines above the span's line); the flat-placement gate compare skips only
    the header block of `#` lines (fix round: tightened from every line starting with `#`).
+
+## Entry 2026-10-26 (reframe of H17a; no data, script or rule change)
+
+Peter 2026-10-26: "my 10/75/15 wasn't an actual guess it was an example of what we could learn from the classification data". H17a
+above (and its statuses "shape not supported", "literal numbers not supported") read the 10/75/15 as a prediction. It was an
+illustration of the kind of answer the census gives. From this entry on the paper presents the measured shares as the finding
+(medians over the 15 designs: SC 4.0%, SI+OR 32.0%, SN+FL 64.4%, n = 15, generated) and lists no H17a row in the status tables. The H17a text
+above stays as written (it records what was registered); `scripts/r4stats.py`, `data/analysis/r4-results.json` and all round-4 data are unchanged, so the
+H17a statuses still sit in the stats record but are no longer reported as a hypothesis result.

@@ -3,6 +3,7 @@
 What round three suggested: the Norns packer raised purity but not wirelength, and the proposal counter and the affinity join were suspect.
 Questions: N17 what gets clustered and why; N12 knowns; N13 hierarchy against chip size; N14 to N16 the packer, a timing-from-provenance estimate and a stage-by-bit seed with critical-path delay everywhere.
 Disclosures (entry of the fix round in the protocol): small test runs on \code{ch\_intrinsics} preceded the gates and were deleted (no result uses them: every census and arm record is dated after the gates passed, and the rule scripts were last edited before); four affinity-join passes and one restarted gate ran for builder and compare bugs; the first dated entry amended N16 items 5 and 6 before any N16 data and the final round-four affinity files (adders added) postdate it.
+Reframe (Peter, 2026-10-26): ``my 10/75/15 wasn't an actual guess it was an example of what we could learn from the classification data''; the paper therefore reports the measured shares as the finding and no longer lists H17a as a hypothesis (protocol entry of 2026-10-26).
 Outcomes: Table~\ref{tab:r4status}. Protocol \code{fbddfa0}. Next: fix the seed selector and scan order, rerun round three's purity claims with the adder-complete files, and larger designs.
 
 \begin{table*}[t]
@@ -13,8 +14,7 @@ Outcomes: Table~\ref{tab:r4status}. Protocol \code{fbddfa0}. Next: fix the seed 
 \toprule
 RQ & hypothesis & status & deciding number \\
 \midrule
-N17 & H17a shape (10/75/15) & not supported & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
-N17 & H17a literal numbers & not supported & same medians against 10/75/15 $\pm0.10$ \\
+N17 & measured pair shares (Peter's 10/75/15 was an illustration, not a test) & measured & medians SC 4.0\%, SI+OR 32.0\%, SN+FL 64.4\%, n=15 \\
 N17 & H17b packer changes SC share & not supported & median $\Delta$SC -0.003, Holm $p<0.001$, n=15 \\
 N17 & H17c critical edges kept together & supported & median ratio 0.652, Wilcoxon $p=0.027$, n=9 (literal rule; reading with an n$<$12 clause: inconclusive (n < 12)) \\
 N17 & H17d series share above the atom-shuffle null (not a clustering-quality result) & supported & median excess 0.072, 15/15 positive; exploratory molecule-unit null: excess 0.023, p<0.001, inconclusive \\
