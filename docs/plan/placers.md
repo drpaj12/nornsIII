@@ -532,3 +532,22 @@ and is multiplied by 0.5 when the acceptance ratio exceeds 0.96 (`placer1.cc:340
 * **Stop rules** are those of Section 5 and Section 9.4 with these precisions: (a) pipeline faults (rc not 0, no legal route, reader warning, an atom without a cell, a moved pad or hard block) stop the affected design for that arm, are listed, and are retried once (Section 5 rule 4); (b) the 2x rule of Section 9.4 is
   EVALUATED per design on the held-out medians and per run, and a fire is reported and the arm labelled, not a halt, because its cause is already recorded (Section 10.1) and this dispatch keeps the arm labelled; (c) memory: stop if one nextpnr process passes 13 GB (about 56% of the 23 GB VM);
   (d) Section 5 rule 5 (an arm past 8 h on `stereovision2`: cut the largest designs first, commit the cut); (e) stop if `/mnt/c` has under 30 GB free; (f) no arm, option or parameter is chosen on seeds 4-6.
+
+### 10.5 Dated entry 2026-10-27: SA start temperature chosen on seeds 1-3 (before any substitute-set seed 4-6 run)
+Grid of Section 10.2 run on the substitute set, seeds 1-3, driver `scripts/placers_main.py` (tag `temp_sel`, metrics `data/placers/temp_sel_<design>.json`, table by `scripts/placers_temp_table.py sel`).
+The T = 1 rows reproduce the Dispatch 3 gate numbers exactly (same WL for `vpr_sa`, `vpr_sa_reread` and `ext_nextpnr_sa` on every seed), so VPR and nextpnr runs are deterministic. All 45 external runs and 9 control runs: rc 0, legal route.
+Quantity Q(T) and the largest WL ratio to `vpr_sa_reread` over the 9 (design, seed) pairs:
+```
+     T     Q(T)  max WL ratio  missing/illegal  per-pair WL ratio (design seed)
+     1    1.631          4.03                0  rand_1:0.88 rand_2:1.28 rand_3:1.35 mesh_1:1.09 mesh_2:1.26 mesh_3:1.26 chain1:4.03 chain2:1.16 chain3:1.71
+     3    1.693          4.81                0  rand_1:0.93 rand_2:0.79 rand_3:0.97 mesh_1:1.13 mesh_2:1.36 mesh_3:1.23 chain1:1.08 chain2:4.49 chain3:4.81
+    10    1.487          3.42                0  rand_1:1.07 rand_2:0.87 rand_3:1.06 mesh_1:1.14 mesh_2:1.05 mesh_3:1.30 chain1:1.66 chain2:2.03 chain3:3.42
+    30    1.602          4.27                0  rand_1:1.21 rand_2:1.02 rand_3:0.97 mesh_1:1.05 mesh_2:1.06 mesh_3:1.15 chain1:2.57 chain2:4.27 chain3:1.81
+   100    1.172          1.33                0  rand_1:1.31 rand_2:1.00 rand_3:0.86 mesh_1:0.98 mesh_2:1.33 mesh_3:1.19 chain1:1.19 chain2:1.09 chain3:1.02
+
+choice (smallest Q, ties under 1% to the smaller T): T = 100; max WL ratio there 1.33; 2x rule met
+```
+**Choice: T = 100** (smallest Q(T) = 1.172; the 2x rule of Section 9.4 is met, max WL ratio 1.33). Q(T) is not monotone in T for T = 1 to 30 (1.63, 1.69, 1.49, 1.60): the chain design with three seeds is noisy there, so only T = 100 is distinctly better and "the temperature falls too fast" is a partial explanation at best, tested by this one change. From here on `ext_nextpnr_sa` means `--placer sa --starttemp 100`
+in the main comparison; the T = 1 arm is kept as a labelled secondary row on the substitute set only. The held-out substitute-set run (seeds 4-6: `ext_nextpnr_sa` at T = 100 and T = 1, `vpr_sa`, `vpr_sa_reread`) follows this commit.
+**Scheduling deviation (stated, not a selection leak):** to use idle time, the main-comparison drivers were started before this choice with the arms that have no tunable parameter (`vpr_ap`, `vpr_ap_reread`, `vpr_sa`, `vpr_sa_reread`, `ext_nextpnr_heap`), seeds 1 to 6 per design in one pass, so their seeds 4-6 were
+run before this entry. Nothing is chosen from them: the only parameter of the dispatch (T) was fixed above from the substitute set seeds 1-3. `ext_nextpnr_sa` on the main designs runs after this commit.
