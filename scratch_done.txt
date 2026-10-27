@@ -14,3 +14,10 @@
 /tmp/claude-1000/nr7f-final.log
 /tmp/claude-1000/nr7f-tex.log
 /home/jamiespa/odin3-ws/work/norns-exp/vpr_stdout.log
+/tmp/claude-1000/nr7g-scratch
+/tmp/claude-1000/nr7g-check.log
+/tmp/claude-1000/nr7g-heldout.log
+/tmp/claude-1000/nr7g-m1
+/tmp/claude-1000/nr7g-m2
+/tmp/claude-1000/nr7g-mkfix.py
+/tmp/claude-1000/nr7g-tex

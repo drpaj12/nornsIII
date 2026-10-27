@@ -53,6 +53,18 @@ def family(design: str) -> str:
     return design
 
 
+def disjoint_dist(dist: np.ndarray, best_stock: list[int]) -> tuple[np.ndarray, np.ndarray]:
+    """(R2 target, baseline feature) of the stock arm: mean distance over the 5 best stock seeds, and over the other seeds. The two seed
+    sets are disjoint (item 9); with no ordering both are the mean over all seeds, with no other seeds the baseline is 0."""
+    if not best_stock:
+        m = dist.mean(axis=1)
+        return m, m
+    top = [s - 1 for s in best_stock[:5]]
+    other = [s - 1 for s in best_stock[5:]]
+    assert not set(top) & set(other)
+    return dist[:, top].mean(axis=1), (dist[:, other].mean(axis=1) if other else np.zeros(len(dist), dtype=np.float32))
+
+
 class D:
     """One design's mining data."""
 
@@ -92,13 +104,11 @@ class D:
                        "inst": self._ids([i if i else None for i in insts])}
         self.kind = np.array([{"lut": 0, "latch": 1, "adder": 2}[k] for k in kinds], dtype=np.uint8)
         self.E = np.flatnonzero((self.src & (4 | 8)) > 0)  # pairs unbiased by co-location (uniform or connected-uniform)
-        self.dist5 = self.dist[:, [s - 1 for s in self.best_stock[:5]]].mean(axis=1) if self.best_stock else self.dist.mean(axis=1)
+        self.dist5, self.dist_other = disjoint_dist(self.dist, self.best_stock)
         self.dist10 = self.dist.mean(axis=1)   # Table XI and the figures only; NOT used as a model feature (see below)
         # Item 9 (fix round 2): the baseline distance feature and the R2 target use DISJOINT seed sets. Target 'aff' (stock arm):
         # baseline = mean over the stock seeds that are NOT among the best 5 (dist5, the R2 target). Target 'net' (the .net arms,
         # same flow as the target): baseline = net0 seeds 1-5, R2 target = net0 seeds 6-10 (the held-out seeds).
-        other = [s - 1 for s in self.best_stock[5:]] if len(self.best_stock) > 5 else []
-        self.dist_other = self.dist[:, other].mean(axis=1) if other else np.zeros(len(self.a), dtype=np.float32)
         self._net0: dict[str, np.ndarray | None] = {}
         # the stock clustering is seed-invariant; its co-CLB flag and mean distance are baseline features (B5)
         sb = (self.best_stock[0] if self.best_stock else 1) - 1

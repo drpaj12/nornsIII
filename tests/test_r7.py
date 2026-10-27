@@ -204,11 +204,22 @@ class T(unittest.TestCase):
         vals[("d", "known")] = 50.0
         r = rstats.recovery("d", "stock", "h", "known", "wirelength", (1, 2, 3), rd)
         self.assertAlmostEqual(r["value"], math.log(100 / 99) / math.log(2))
-        # a design with no gain never enters the pooled medians
-        recs = [{"design": "n5_x_16", "recovery": {"WL": {"value": None, "note": "no gain found"}, "CLB": {"value": 0.5}, "CPD": {"value": 0.5}}}]
-        p = rfstats.pooled_recovery(recs)["all"]["WL"]
-        self.assertIsNone(p["median"])
-        self.assertEqual(p["n_nogain"], 1)
+        # item 2 (fix round 2): a design with no gain found counts as recovery 0 in the pooled (headline) median and stays out of the defined-only one
+        recs = [{"design": "n5_x_16", "no_gain": True,
+                 "recovery_heldout": {"WL": {"value": 0.0, "note": "no gain found, counted as 0"}, "CLB": {"value": 0.0}, "CPD": {"value": None, "note": "no gap to recover"}}},
+                {"design": "n5_y_16", "no_gain": False,
+                 "recovery_heldout": {"WL": {"value": 0.5}, "CLB": {"value": 0.25}, "CPD": {"value": 0.5}}},
+                {"design": "n5_z_16", "no_gain": False,
+                 "recovery_heldout": {"WL": {"value": 0.25}, "CLB": {"value": 0.25}, "CPD": {"value": 0.5}}}]
+        p = rfstats.pooled_recovery(recs, "recovery_heldout")["all"]["WL"]
+        self.assertAlmostEqual(p["median"], 0.25)            # median of 0, 0.5, 0.25
+        self.assertAlmostEqual(p["median_defined_only"], 0.375)   # median of 0.5, 0.25
+        self.assertEqual((p["n_pooled"], p["n_defined"], p["n_nogain"]), (3, 2, 1))
+        c = rfstats.pooled_recovery(recs, "recovery_heldout")["all"]["CPD"]
+        self.assertEqual((c["n_pooled"], c["n_nogain"]), (2, 0))   # no gap to recover: not counted at all
+        # affinity-bias style record: H = stock, value None, known arm 1.5x better -> counted as 0
+        aff = [{"design": "n5_a_16", "no_gain": True, "recovery": {"WL": {"value": None, "note": "no gain found", "known_gap": 1.5}}}]
+        self.assertEqual(rfstats.pooled_recovery(aff)["all"]["WL"]["median"], 0.0)
 
     def test_net_legality_rules(self):
         class U:
@@ -478,6 +489,15 @@ class T(unittest.TestCase):
             missing = set(ids.values()) - set(int(x) for x in u)
             self.assertIn(missing, expected)
         self.assertEqual({frozenset(set(ids.values()) - set(int(x) for x in u)) for u in seen}, {frozenset(e) for e in expected})
+
+    def test_distance_seed_sets_are_disjoint(self):
+        dist = np.tile(np.arange(1, 11, dtype=np.float32), (4, 1))     # column j holds the value seed j+1
+        order = [7, 3, 9, 1, 5, 2, 4, 6, 8, 10]
+        target, base = mine.disjoint_dist(dist, order)
+        self.assertAlmostEqual(float(target[0]), np.mean([7, 3, 9, 1, 5]))
+        self.assertAlmostEqual(float(base[0]), np.mean([2, 4, 6, 8, 10]))
+        t5, b5 = mine.disjoint_dist(dist[:, :5], [3, 1, 2, 5, 4])
+        self.assertEqual(float(b5[0]), 0.0)    # five seeds only: the baseline has no seeds left, it is zero (never the target's seeds)
 
     def test_boot_ci_resamples_families(self):
         vals = [0.1, 0.1, 0.1, 0.1, 0.3]

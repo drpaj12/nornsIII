@@ -180,7 +180,14 @@ def oos_stats(d: dict) -> tuple[int, int, float]:
 
 def w_more(ratio) -> str:
     """The W gap is net0 over the arm (below 1 means the arm needs a wider channel): the width the arm needs in excess of net0, in percent."""
-    return "n/a" if nan(ratio) else f"{100 * (1 / ratio - 1):.0f}"
+    return "n/a" if nan(ratio) else f"{100 * (1 / ratio - 1):.1f}"
+
+
+def w_txt(d: dict) -> str:
+    """The channel-width trade-off beside the WL, CPD and CLB gaps (item 6): W is net0 over the arm, so a value below 1 means the arm needs more width."""
+    h = ho(d)
+    return (f"channel-width ratio (net0 over the arm; below 1 means the arm needs a wider channel) {f3(h['h_not_net0']['W'])} held out, "
+            f"about {w_more(h['h_not_net0']['W'])}\\% more width, and {f3(h['selection_h_not_net0']['W'])} on the selection seeds, in sample, about {w_more(h['selection_h_not_net0']['W'])}\\% more")
 
 
 def arm_counts(d: dict) -> dict:
@@ -222,7 +229,7 @@ def abstract(d: dict) -> str:
             f"The held-out wirelength gap (stock clustering over the arm) has median {f3(h['pooled_all']['WL'])} over all {n_real} designs (no gain found counted as 1) "
             f"and {f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs where an arm was chosen; critical-path-delay gap {f3(h['pooled_all']['CPD'])} and {f3(h['h_not_net0']['CPD'])}, "
             f"CLB-count gap {f3(h['pooled_all']['CLB'])} and {f3(h['h_not_net0']['CLB'])}. "
-            f"The gain is paid in routing resources: the median channel-width ratio is {f3(h['h_not_net0']['W'])}, about {w_more(h['h_not_net0']['W'])}\\% more channel width for the arm. "
+            f"Median {w_txt(d)}. "
             f"On the selection seeds, in sample, the median wirelength gap over the same {h['n_h_not_net0']} designs is {f3(h['selection_h_not_net0']['WL'])}. "
             f"On the known constructions the procedure recovers a median of {f2(rec['median'])} of the wirelength gap held out (no gain counted as 0; {f2(rec['median_defined_only'])} over the {rec['n_defined']} constructions where it found one). "
             f"The earlier affinity-bias arm, tested out of sample (arm chosen on seeds 1 to 5, evaluated on 6 to 10), finds no gain on {none} of {noos} designs and a median wirelength gap of {f3(oos_wl)} on the others. "
@@ -539,7 +546,7 @@ def results(d: dict) -> str:
              rf"is borderline on {len(h['classes']['borderline'])} and worse on {len(h['classes']['worse'])}, and no arm beat the stock clustering on {len(h['no_gain_designs'])}. "
              rf"The median held-out wirelength gap is {f3(h['pooled_all']['WL'])} over all designs (no gain found = 1), {f3(h['h_not_net0']['WL'])} over the designs with an arm and "
              rf"{f3(h['heldout_gain']['WL'])} over the designs with a held-out gain only (the last is selected on the held-out result and is the most optimistic); on the selection seeds, in sample, the median over the designs with an arm was {f3(h['selection_h_not_net0']['WL'])}. "
-             rf"The arm pays for it in channel width: the median W ratio is {f3(h['h_not_net0']['W'])} (about {w_more(h['h_not_net0']['W'])}\% more width)." + chk_txt + " "
+             rf"Channel width: median {w_txt(d)}." + chk_txt + " "
              r"Table~\ref{tab:r7gapaff} gives the affinity-bias arm, "
              r"Tables~\ref{tab:r7calib} and~\ref{tab:r7calibB} the calibration against the known clustering, Table~\ref{tab:r7dup} the duplication counts, and "
              r"Tables~\ref{tab:r7xi} to~\ref{tab:r7coef} with Figures~\ref{fig:r7classes} and~\ref{fig:r7dist} the first mining. All mining is exploratory.",
@@ -586,13 +593,13 @@ def discussion(d: dict) -> str:
 \label{{sec:r7-discussion}}
 \textbf{{Hindsight gap.}} The arm chosen on seeds 1 to 5 is measured on seeds 6 to 10. It has a held-out gain on {len(h['classes']['gain'])} of {h['n_real']} VTR designs, is borderline on {len(h['classes']['borderline'])} and worse on {len(h['classes']['worse'])}; on {len(h['no_gain_designs'])} no arm beat the stock clustering on the selection seeds. The median held-out wirelength gap (net0 over the arm) is {f3(h['pooled_all']['WL'])} over all designs (no gain = 1),
 {f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs with an arm, {f3(h['without_borderline']['WL'])} when the borderline designs are left out ({h['without_borderline']['n']}) and {f3(h['heldout_gain']['WL'])} over the {h['heldout_gain']['n']} designs with a held-out gain; critical-path-delay gap {f3(h['pooled_all']['CPD'])}, {f3(h['h_not_net0']['CPD'])}, {f3(h['without_borderline']['CPD'])}, {f3(h['heldout_gain']['CPD'])} and CLB-count gap {f3(h['pooled_all']['CLB'])}, {f3(h['h_not_net0']['CLB'])}, {f3(h['without_borderline']['CLB'])}, {f3(h['heldout_gain']['CLB'])} in the same order. The in-sample medians on the selection seeds were {f3(h['selection_h_not_net0']['WL'])}, {f3(h['selection_h_not_net0']['CPD'])} and {f3(h['selection_h_not_net0']['CLB'])}: the difference to the held-out numbers is the selection bias.
-The gain is paid in channel width (median W ratio {f3(h['h_not_net0']['W'])}, about {w_more(h['h_not_net0']['W'])}\\% more width for the arm, held out). On the designs without an arm the statement is about this procedure (a greedy move or swap of logic elements within
-distance {w(lib.RADIUS)} from one placement), not about the packer. On the known constructions the procedure recovers a median of {f2(rn['WL']['median'])} of the wirelength gap on the held-out seeds, counting the {rn['WL']['n_nogain']} constructions with no gain found as 0 ({rn['WL']['n_pooled']} constructions with a gap to recover; Table~\\ref{{tab:r7calibB}} by size); over the {rn['WL']['n_defined']} constructions where an arm was chosen the median is {f2(rn['WL']['median_defined_only'])}
+Channel width: median {w_txt(d)}. On the designs without an arm the statement is about this procedure (a greedy move or swap of logic elements within
+distance {w(lib.RADIUS)} from one placement), not about the packer. On the known constructions the procedure recovers a median of {f2(rn['WL']['median'])} of the wirelength gap on the held-out seeds, counting the {rn['WL']['n_nogain']} constructions with no gain found as 0 ({rn['WL']['n_pooled']} constructions with a gap to recover; Table~\ref{{tab:r7calibB}} by size); over the {rn['WL']['n_defined']} constructions where an arm was chosen the median is {f2(rn['WL']['median_defined_only'])}
 (selection seeds, in sample: {f2(rsel['WL']['median'])} pooled, {f2(rsel['WL']['median_defined_only'])} defined only). So it falls well short of the known clustering on most constructions and the real-design gap is a best-known reference, not an optimum
-(the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports). A recovery above 1 (n5\\_tree\\_dp\\_16, wirelength) means the arm beat the known clustering, which is known by construction and not optimal.
+(the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports). A recovery above 1 (n5\_tree\_dp\_16, wirelength) means the arm beat the known clustering, which is known by construction and not optimal.
 Why stock over known is {f2(min(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} to {f2(max(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} here against round five's headline of
 about 1.22: round five's geometric mean is over all 72 designs, whose chain and random topologies have no gap (chain 1.004, random 1.019) while mesh and tree sit at 1.423 and 1.522
-(\\code{{r5-results.tex}}, topology paragraph); this round uses only mesh and tree, and the flow and the known arm are the same (\\code{{scripts/r5.py}} \\code{{arm\\_run}} and \\code{{scripts/r7.py}} \\code{{run\\_arm}} both use VPR's default flow and weight {lib.AFF_BETA:g}):
+(\code{{r5-results.tex}}, topology paragraph); this round uses only mesh and tree, and the flow and the known arm are the same (\code{{scripts/r5.py}} \code{{arm\_run}} and \code{{scripts/r7.py}} \code{{run\_arm}} both use VPR's default flow and weight {lib.AFF_BETA:g}):
 the stock-over-known wirelength agrees with round five's on the same designs within a factor of {f3(rc['r7_over_r5_min'])} to {f3(rc['r7_over_r5_max'])} ({rc['n']} designs).
 
 \textbf{{Out-of-sample check (affinity-bias arm).}} Choosing the arm on seeds 1 to 5 and evaluating stock over arm on seeds 6 to 10 finds no gain on {oos_none} of {len(oos)} designs; on the other {len(oos) - oos_none} the median wirelength gap is {f3(oos_wl)} (in-sample median on the same designs {f3(ins_wl)}).
