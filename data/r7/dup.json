@@ -613,5 +613,101 @@
    "saved_share_of_cpd": 0.12520284974899304,
    "share_of_luts": 0.015315052508751459
   }
+ },
+ {
+  "H": {
+   "cand_with_hard_sink": 1.0,
+   "cand_with_pad_sink": 2.0,
+   "candidates": 45.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "other_only": 0.0,
+   "paths_with_hop": 0.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.007079924480805538
+  },
+  "design": "stereovision1",
+  "stock": {
+   "cand_with_hard_sink": 1.0,
+   "cand_with_pad_sink": 2.0,
+   "candidates": 45.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "other_only": 0.0,
+   "paths_with_hop": 0.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.007079924480805538
+  }
+ },
+ {
+  "H": {
+   "cand_with_hard_sink": 2.0,
+   "cand_with_pad_sink": 2.0,
+   "candidates": 3.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "other_only": 2.0,
+   "paths_with_hop": 0.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.006818181818181818
+  },
+  "design": "mkDelayWorker32B",
+  "stock": {
+   "cand_with_hard_sink": 2.0,
+   "cand_with_pad_sink": 2.0,
+   "candidates": 3.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "other_only": 2.0,
+   "paths_with_hop": 0.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.006818181818181818
+  }
+ },
+ {
+  "design": "stereovision2",
+  "stock": {
+   "cand_with_hard_sink": 3.0,
+   "cand_with_pad_sink": 2.0,
+   "candidates": 23.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "other_only": 0.0,
+   "paths_with_hop": 0.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.00273321449792038
+  }
+ },
+ {
+  "design": "blob_merge",
+  "stock": {
+   "cand_with_hard_sink": 0.0,
+   "cand_with_pad_sink": 1.0,
+   "candidates": 274.0,
+   "near10": 10.0,
+   "near10_share": 0.0364963503649635,
+   "near5": 9.5,
+   "near5_share": 0.03467153284671533,
+   "other_only": 0.0,
+   "paths_with_hop": 158.0,
+   "runs": 10,
+   "saved_share_of_cpd": 0.09643112300475201,
+   "share_of_luts": 0.04582706138150192
+  }
  }
 ]
