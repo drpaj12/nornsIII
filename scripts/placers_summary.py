@@ -203,8 +203,14 @@ if bad:
     sys.exit(2)
 
 if a.sensitivity:
-    old, _, _ = load(False)
+    main_only, _, _ = load(False)
     new = runs
+    # old = the new data with only the reread controls of the four normalised designs taken from the main_ records (the raw-file runs),
+    # so that the family rows differ by the reread change alone (the stereovision1 heap correction is in both)
+    old = {k: (main_only[k] if (k[0] in NORMALISED and k[1] in CTRL.values() and k in main_only) else v) for k, v in new.items()}
+    same = sum(1 for k, v in new.items() if k[0] in NORMALISED and k[1] in ("vpr_ap", "vpr_sa") and k in main_only and v.get("wl") == main_only[k].get("wl") and v.get("cpd_ns") == main_only[k].get("cpd_ns"))
+    tot = sum(1 for k in new if k[0] in NORMALISED and k[1] in ("vpr_ap", "vpr_sa") and k in main_only)
+    print(f"Determinism check: {same} of {tot} re-run vpr_ap/vpr_sa records of the four designs equal the main_ record in WL and CPD.")
     print("Reread controls of the four normalised designs, held-out seeds 4-6 median: old (raw file, main_) -> new (normalised file, fix1_)")
     print(f"{'design':10s} {'arm':14s} {'WL old':>9s} {'WL new':>9s} {'CPD old':>8s} {'CPD new':>8s} {'WLxCPD old':>11s} {'WLxCPD new':>11s}")
     for d in NORMALISED:

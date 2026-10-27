@@ -1,4 +1,4 @@
-Seeds 4,5,6: median [min-max]. ext_nextpnr_sa = --starttemp 100.
+Seeds 4,5,6: median [min-max]. ext_nextpnr_sa = --starttemp 100. Designs with n=20 BLE slots: ['blob_merge', 'stereovision0'].
 H0: adders, multipliers and RAMs are fixed at the positions of the VPR analytic placer (vpr_ap, seed 1), as are the pads, in both external arms and for every seed. nextpnr therefore places only the LUT/flip-flop logic, around hard blocks and pads that VPR's analytic placer chose. The external arms inherit that part of VPR's solution; the annealing-family external arm inherits it from the analytic family. nextpnr has no timing model; both VPR families are timing-driven.
 
 == family analytic
@@ -12,11 +12,11 @@ stereovision3     ext_nextpnr_heap        1062 [1047-1230]     34 [32-34]     2.
 mkPktMerge        vpr_ap               14682 [13909-15035]     38 [38-46]     3.95 [3.83-4.05]      57586 [54929-59508] 1.18 [1.14-1.19]                  - 6/6
 mkPktMerge        vpr_ap_reread        14199 [13918-14656]     40 [38-46]     3.85 [3.81-3.87]      54934 [53584-55887] 0.82 [0.81-0.86]                  - 6/6
 mkPktMerge        ext_nextpnr_heap     13817 [13779-13975]     46 [46-46]     3.96 [3.81-3.99]      55098 [52487-55339] 0.86 [0.82-0.86]   0.04 [0.04-0.05] 6/6
-diffeq2           vpr_ap                  7875 [7061-8032]     54 [52-66]  13.54 [12.85-14.41]    106610 [90725-115712] 0.49 [0.47-0.49]                  - 6/6
-diffeq2           vpr_ap_reread           7724 [6956-8209]     60 [48-66]  13.43 [12.97-13.92]    103700 [90245-114307] 0.36 [0.35-0.36]                  - 6/6
+diffeq2           vpr_ap                  7875 [7061-8032]     54 [52-66]  13.54 [12.85-14.41]    106610 [90725-115712] 0.51 [0.48-0.51]                  - 6/6
+diffeq2           vpr_ap_reread           8038 [6956-8182]     56 [50-66]  13.27 [12.97-13.57]    106630 [90245-111005] 0.37 [0.36-0.37]                  - 6/6
 diffeq2           ext_nextpnr_heap        7885 [7225-8277]     54 [48-60]  13.84 [12.94-14.06]    102017 [99989-116404] 0.39 [0.36-0.41]   0.03 [0.03-0.04] 6/6
-diffeq1           vpr_ap                 9935 [9817-10377]     52 [48-54]  17.49 [17.36-17.63]   172493 [171685-182904] 0.57 [0.55-0.57]                  - 6/6
-diffeq1           vpr_ap_reread        10501 [10445-11632]     48 [44-48]  18.66 [17.56-19.70]   194900 [184367-229120] 0.39 [0.38-0.39]                  - 6/6
+diffeq1           vpr_ap                 9935 [9817-10377]     52 [48-54]  17.49 [17.36-17.63]   172493 [171685-182904] 0.69 [0.68-0.70]                  - 6/6
+diffeq1           vpr_ap_reread         10501 [9401-11632]     48 [44-58]  17.56 [17.02-19.70]   184367 [160000-229120] 0.47 [0.46-0.49]                  - 6/6
 diffeq1           ext_nextpnr_heap      10256 [9752-10648]     48 [44-50]  17.56 [17.52-18.12]   185867 [171220-186604] 0.51 [0.49-0.61]   0.07 [0.06-0.09] 6/6
 boundtop          vpr_ap                  6162 [6150-6337]     38 [38-40]     2.72 [2.58-2.73]      16740 [15915-17289] 0.62 [0.61-0.63]                  - 6/6
 boundtop          vpr_ap_reread           6209 [5156-6406]     40 [38-48]     2.73 [2.63-2.84]      16935 [13550-18190] 0.49 [0.47-0.51]                  - 6/6
@@ -30,24 +30,24 @@ mkSMAdapter4B     ext_nextpnr_heap     17194 [16531-17583]     50 [46-50]     5.
 sha               vpr_ap               13565 [13480-14163]     64 [62-66]  10.15 [10.07-10.50]   137689 [135764-148734] 1.83 [1.78-1.85]                  - 6/6
 sha               vpr_ap_reread     DROPPED legal 0/6 ['Error 1:']
 sha               ext_nextpnr_heap  DROPPED legal 0/6 ['Error 1:']
-raygentop         vpr_ap               23490 [23404-23633]     66 [60-68]     5.26 [5.10-5.32]   123551 [120456-124425] 1.79 [1.79-1.84]                  - 6/6
-raygentop         vpr_ap_reread        23640 [23471-24808]     64 [62-66]     5.90 [5.12-5.96]   140870 [120282-146376] 1.43 [1.37-1.44]                  - 6/6
+raygentop         vpr_ap               23490 [23404-23633]     66 [60-68]     5.26 [5.10-5.32]   123551 [120456-124425] 1.72 [1.72-1.75]                  - 6/6
+raygentop         vpr_ap_reread        23640 [23471-24808]     64 [62-66]     5.90 [5.12-5.96]   140870 [120282-146376] 1.37 [1.35-1.39]                  - 6/6
 raygentop         ext_nextpnr_heap     25091 [24180-25471]     56 [56-56]     5.71 [5.21-6.58]   145537 [126056-165005] 1.38 [1.38-1.42]   0.99 [0.96-0.99] 6/6
-or1200            vpr_ap               41747 [39916-41783]     80 [80-88]     8.74 [8.68-8.75]   362417 [349181-365186] 4.12 [4.11-4.54]                  - 6/6
-or1200            vpr_ap_reread        41065 [40833-41695]     88 [82-88]     8.77 [8.62-8.96]   365530 [352031-368127] 3.72 [3.35-3.78]                  - 6/6
+or1200            vpr_ap               41747 [39916-41783]     80 [80-88]     8.74 [8.68-8.75]   362417 [349181-365186] 3.97 [3.87-3.98]                  - 6/6
+or1200            vpr_ap_reread        41340 [41100-41382]     86 [84-88]     8.61 [8.55-8.70]   354015 [353962-359573] 3.20 [3.19-3.24]                  - 6/6
 or1200            ext_nextpnr_heap     40847 [39616-41707]     80 [76-90]     8.69 [8.61-8.87]   351533 [344175-369876] 3.61 [3.39-3.64]   2.42 [2.38-2.43] 6/6
 blob_merge        vpr_ap               60581 [59377-60650]     58 [58-60]  13.57 [13.50-13.86]   818007 [805746-840833] 7.93 [7.64-8.23]                  - 6/6
 blob_merge        vpr_ap_reread        62861 [59662-64264]     60 [58-62]  13.78 [13.54-14.19]   885519 [807883-892155] 6.68 [6.11-7.93]                  - 6/6
-blob_merge        ext_nextpnr_heap     60756 [59494-64513]     58 [58-60]  13.88 [13.79-13.89]   843166 [826354-889802] 6.35 [6.32-6.40] 10.69 [10.24-11.35] 6/6
+blob_merge        ext_nextpnr_heap     60756 [59494-64513]     58 [58-60]  13.88 [13.79-13.89]   843166 [826354-889802] 6.35 [6.32-6.40] 10.69 [10.24-11.35] 6/6 n=20
 stereovision0     vpr_ap               57331 [55779-57727]     48 [46-50]     3.66 [3.55-4.25]   210047 [197834-245122] 13.63 [9.92-17.59]                  - 6/6
 stereovision0     vpr_ap_reread        57221 [56840-58549]     50 [48-50]     3.87 [3.66-4.19]   221303 [208026-245603] 10.10 [7.88-12.43]                  - 6/6
-stereovision0     ext_nextpnr_heap     59751 [57573-59839]     46 [46-48]     4.13 [3.69-4.26]   245549 [220709-247417] 6.34 [6.32-6.36] 19.27 [18.21-20.09] 6/6
+stereovision0     ext_nextpnr_heap     59751 [57573-59839]     46 [46-48]     4.13 [3.69-4.26]   245549 [220709-247417] 6.34 [6.32-6.36] 19.27 [18.21-20.09] 6/6 n=20
 stereovision1     vpr_ap            121799 [120395-121807]     72 [72-72]     6.03 [5.54-6.88]   726030 [675086-837450] 12.42 [8.78-18.87]                  - 6/6
 stereovision1     vpr_ap_reread     121638 [121475-123795]     74 [74-74]     5.60 [5.27-6.29]   680866 [640503-779266] 14.49 [7.47-15.16]                  - 6/6
-stereovision1     ext_nextpnr_heap  120625 [118395-122859]     72 [70-74]     5.89 [5.31-5.89]   696874 [652602-710134] 9.66 [8.54-15.77] 24.29 [13.60-33.55] 6/6
+stereovision1     ext_nextpnr_heap  120625 [118395-122859]     72 [70-74]     5.89 [5.31-5.89]   696874 [652602-710134] 8.90 [8.78-9.37] 18.68 [15.75-19.32] 6/6
 stereovision2     vpr_ap            385014 [380368-388515]     78 [76-80]  13.17 [13.02-13.43] 5109788 [5011804-5118219] 60.40 [59.97-66.56]                  - 6/6
 stereovision2     vpr_ap_reread     DROPPED legal 2/6 ['Error 1:']
-stereovision2     ext_nextpnr_heap  DROPPED legal 0/6 ['Error 1:']
+stereovision2     ext_nextpnr_heap  DROPPED legal 0/6 ['Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block my_fir_f2/$n52324@$WS/external/vtr-verilog-to-routing/vtr_flow/benchmarks/verilog/stereovision2.v:1542 contains atom my_fir_f2/$n52326@$WS/external/vtr-verilog-to-routing/vtr_flow/benchmarks/verilog/stereovision2.v:1542 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, | # Analytical Placement']
 
 == family annealing
 design            arm                                   WL              W               CPD ns                   WLxCPD      VPR place s          nextpnr s legal
@@ -61,10 +61,10 @@ mkPktMerge        vpr_sa               14704 [14620-14836]     36 [36-38]     4.
 mkPktMerge        vpr_sa_reread        14610 [14155-14720]     36 [36-40]     4.01 [3.83-4.06]      59061 [54277-59328] 0.82 [0.80-0.83]                  - 6/6
 mkPktMerge        ext_nextpnr_sa       13866 [13820-13876]     46 [46-46]     3.91 [3.85-3.97]      54168 [53191-55114] 0.89 [0.83-0.90]   0.45 [0.43-0.47] 6/6
 diffeq2           vpr_sa                  8067 [7604-8100]     50 [44-50]  13.41 [13.37-13.52]   108312 [101995-109028] 0.16 [0.15-0.18]                  - 6/6
-diffeq2           vpr_sa_reread           8118 [8019-8402]     44 [42-50]  13.35 [13.24-13.52]   109765 [106167-112199] 0.32 [0.31-0.33]                  - 6/6
+diffeq2           vpr_sa_reread           8118 [8019-8850]     42 [40-50]  13.52 [13.24-14.03]   109765 [106167-124162] 0.32 [0.30-0.33]                  - 6/6
 diffeq2           ext_nextpnr_sa          7958 [7486-7965]     50 [50-54]  12.92 [12.75-13.53]    102844 [95424-107764] 0.38 [0.36-0.44]   0.64 [0.61-0.64] 6/6
-diffeq1           vpr_sa                 9608 [9510-10724]     56 [52-58]  17.24 [17.20-18.41]   165268 [163999-197395] 0.22 [0.21-0.26]                  - 6/6
-diffeq1           vpr_sa_reread         10022 [9616-11499]     54 [48-54]  17.65 [17.40-19.42]   176890 [167349-223280] 0.38 [0.38-0.40]                  - 6/6
+diffeq1           vpr_sa                 9608 [9510-10724]     56 [52-58]  17.24 [17.20-18.41]   165268 [163999-197395] 0.29 [0.26-0.32]                  - 6/6
+diffeq1           vpr_sa_reread        10119 [10022-10425]     50 [50-54]  17.80 [17.65-17.97]   181876 [176890-185571] 0.46 [0.44-0.49]                  - 6/6
 diffeq1           ext_nextpnr_sa        10122 [9874-10916]     48 [48-50]  17.55 [17.38-18.24]   177599 [171615-199083] 0.50 [0.50-0.51]   1.93 [1.91-1.99] 6/6
 boundtop          vpr_sa                  6195 [5793-6260]     40 [38-42]     2.97 [2.93-3.01]      18140 [17219-18823] 0.20 [0.19-0.20]                  - 6/6
 boundtop          vpr_sa_reread           6214 [5610-6268]     38 [38-46]     2.99 [2.95-3.04]      18502 [16748-18865] 0.43 [0.43-0.44]                  - 6/6
@@ -78,35 +78,91 @@ mkSMAdapter4B     ext_nextpnr_sa       16941 [16300-17592]     50 [50-52]     6.
 sha               vpr_sa               12997 [12996-14861]     64 [54-66]   10.01 [9.83-10.25]   130087 [127695-152374] 0.43 [0.41-0.46]                  - 6/6
 sha               vpr_sa_reread     DROPPED legal 0/6 ['Error 1:']
 sha               ext_nextpnr_sa    DROPPED legal 0/6 ['Error 1:']
-raygentop         vpr_sa               25426 [24967-26498]     56 [56-58]     5.86 [5.00-6.13]   155155 [124775-155745] 0.76 [0.73-0.78]                  - 6/6
-raygentop         vpr_sa_reread        24166 [23885-24873]     58 [58-62]     5.32 [4.85-5.69]   132445 [117102-135820] 1.29 [1.20-1.40]                  - 6/6
+raygentop         vpr_sa               25426 [24967-26498]     56 [56-58]     5.86 [5.00-6.13]   155155 [124775-155745] 0.73 [0.68-0.74]                  - 6/6
+raygentop         vpr_sa_reread        24166 [23885-24970]     58 [58-62]     5.36 [4.85-5.69]   133727 [117102-135820] 1.19 [1.19-1.36]                  - 6/6
 raygentop         ext_nextpnr_sa       24181 [23326-24606]     58 [58-58]     4.97 [4.87-5.82]   117690 [115829-143093] 1.42 [1.40-1.42]   8.79 [8.46-9.16] 6/6
-or1200            vpr_sa               47199 [45958-47921]     86 [82-88]     8.62 [8.61-8.64]   406339 [397184-413139] 2.27 [2.19-2.31]                  - 6/6
-or1200            vpr_sa_reread        47091 [45676-48100]     86 [84-90]     8.92 [8.70-8.94]   420264 [397589-429870] 3.58 [3.34-3.87]                  - 6/6
+or1200            vpr_sa               47199 [45958-47921]     86 [82-88]     8.62 [8.61-8.64]   406339 [397184-413139] 1.99 [1.98-2.03]                  - 6/6
+or1200            vpr_sa_reread        46760 [46440-48804]     84 [80-88]     8.72 [8.68-8.81]   405675 [405015-430024] 3.33 [3.32-3.37]                  - 6/6
 or1200            ext_nextpnr_sa       40876 [39667-41591]     82 [76-92]     8.58 [8.34-8.81]   346681 [340307-360032] 3.44 [3.44-3.85] 21.86 [21.43-23.63] 6/6
 blob_merge        vpr_sa               64327 [61982-66455]     60 [60-62]  14.33 [14.30-14.52]   934163 [888252-950340] 1.55 [1.53-1.63]                  - 6/6
 blob_merge        vpr_sa_reread        62262 [61893-63260]     62 [60-62]  14.22 [13.94-14.30]   885020 [882003-885503] 6.07 [5.70-6.48]                  - 6/6
-blob_merge        ext_nextpnr_sa       61071 [59761-65001]     58 [56-60]  14.09 [13.68-14.13]   860661 [844441-889227] 6.37 [6.15-6.38] 84.33 [81.50-85.19] 6/6
+blob_merge        ext_nextpnr_sa       61071 [59761-65001]     58 [56-60]  14.09 [13.68-14.13]   860661 [844441-889227] 6.37 [6.15-6.38] 84.33 [81.50-85.19] 6/6 n=20
 stereovision0     vpr_sa               57529 [54711-59799]     50 [44-56]     3.82 [3.80-3.84]   221110 [208812-227228] 4.53 [3.58-5.06]                  - 6/6
 stereovision0     vpr_sa_reread        55569 [54173-58967]     54 [44-54]     3.73 [3.68-3.83]   207243 [199596-226100] 14.58 [7.34-14.65]                  - 6/6
-stereovision0     ext_nextpnr_sa       58555 [56604-58762]     48 [46-48]     4.25 [3.82-4.37]   250008 [216008-255929] 6.28 [6.27-6.36] 165.50 [163.24-170.89] 6/6
+stereovision0     ext_nextpnr_sa       58555 [56604-58762]     48 [46-48]     4.25 [3.82-4.37]   250008 [216008-255929] 6.28 [6.27-6.36] 165.50 [163.24-170.89] 6/6 n=20
 stereovision1     vpr_sa            125218 [122355-131806]     76 [76-78]     6.31 [5.59-6.46]   809161 [684470-831883] 4.48 [2.87-6.53]                  - 6/6
 stereovision1     vpr_sa_reread     128058 [125992-128507]     76 [74-78]     5.86 [5.74-6.74]   750349 [737867-849622] 8.65 [6.35-13.87]                  - 6/6
 stereovision1     ext_nextpnr_sa    120860 [119491-122626]     70 [70-74]     6.01 [5.60-6.07]   733499 [668820-737040] 6.93 [6.67-7.19] 136.79 [135.10-138.08] 6/6
 stereovision2     vpr_sa            399009 [394720-407499]     88 [88-90]  13.69 [13.59-13.73] 5423131 [5405572-5593250] 13.71 [12.83-15.73]                  - 6/6
 stereovision2     vpr_sa_reread     393322 [390154-405779]     90 [88-96]  13.62 [13.14-13.85] 5357164 [5125687-5619268] 29.73 [28.14-39.56]                  - 6/6
-stereovision2     ext_nextpnr_sa    DROPPED legal 0/6 ['Error 1:']
+stereovision2     ext_nextpnr_sa    DROPPED legal 0/6 ['Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block my_fir_f2/$n52324@$WS/external/vtr-verilog-to-routing/vtr_flow/benchmarks/verilog/stereovision2.v:1542 contains atom my_fir_f2/$n52326@$WS/external/vtr-verilog-to-routing/vtr_flow/benchmarks/verilog/stereovision2.v:1542 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, | # Analytical Placement']
 
-== family analytic: geometric mean over designs of arm median / reference median (95% percentile bootstrap over designs)
-  vpr_ap            / vpr_ap_reread : wl 0.977 [0.922, 1.020] n=13; cpd 0.979 [0.937, 1.016] n=13; wlcpd 0.941 [0.862, 1.002] n=13
-  vpr_ap_reread     / vpr_ap        : wl 1.023 [0.981, 1.082] n=13; cpd 1.022 [0.985, 1.067] n=13; wlcpd 1.062 [0.998, 1.162] n=13
-  ext_nextpnr_heap  / vpr_ap_reread : wl 1.005 [0.987, 1.022] n=13; cpd 1.020 [0.997, 1.043] n=13; wlcpd 1.023 [0.990, 1.059] n=13
-  ext_nextpnr_heap  / vpr_ap        : wl 1.028 [0.980, 1.093] n=13; cpd 1.043 [1.006, 1.089] n=13; wlcpd 1.087 [1.006, 1.208] n=13
+== family analytic: geometric mean over designs of arm median / reference median (95% percentile bootstrap, 10000 resamples)
+  vpr_ap / vpr_ap_reread                 [all eligible designs]
+      wl     0.974  design-bootstrap [0.919, 1.016] (pre-registered)  two-level [0.915, 1.026]  n=13
+      cpd    0.985  design-bootstrap [0.944, 1.022] (pre-registered)  two-level [0.933, 1.027]  n=13
+      wlcpd  0.946  design-bootstrap [0.865, 1.005] (pre-registered)  two-level [0.860, 1.035]  n=13
+  vpr_ap / vpr_ap_reread                 [without the n=20 designs (blob_merge, stereovision0)]
+      wl     0.972  design-bootstrap [0.910, 1.021] (pre-registered)  two-level [0.908, 1.034]  n=11
+      cpd    0.989  design-bootstrap [0.940, 1.031] (pre-registered)  two-level [0.926, 1.033]  n=11
+      wlcpd  0.947  design-bootstrap [0.854, 1.016] (pre-registered)  two-level [0.846, 1.047]  n=11
+  vpr_ap_reread / vpr_ap                 [all eligible designs]
+      wl     1.027  design-bootstrap [0.984, 1.088] (pre-registered)  two-level [0.975, 1.091]  n=13
+      cpd    1.015  design-bootstrap [0.978, 1.060] (pre-registered)  two-level [0.974, 1.073]  n=13
+      wlcpd  1.057  design-bootstrap [0.995, 1.157] (pre-registered)  two-level [0.966, 1.161]  n=13
+  vpr_ap_reread / vpr_ap                 [without the n=20 designs (blob_merge, stereovision0)]
+      wl     1.029  design-bootstrap [0.978, 1.099] (pre-registered)  two-level [0.966, 1.100]  n=11
+      cpd    1.011  design-bootstrap [0.970, 1.065] (pre-registered)  two-level [0.968, 1.080]  n=11
+      wlcpd  1.055  design-bootstrap [0.983, 1.174] (pre-registered)  two-level [0.955, 1.184]  n=11
+  ext_nextpnr_heap / vpr_ap_reread       [all eligible designs]
+      wl     1.001  design-bootstrap [0.984, 1.019] (pre-registered)  two-level [0.973, 1.041]  n=13
+      cpd    1.027  design-bootstrap [1.009, 1.046] (pre-registered)  two-level [0.985, 1.060]  n=13
+      wlcpd  1.028  design-bootstrap [0.996, 1.061] (pre-registered)  two-level [0.972, 1.087]  n=13
+  ext_nextpnr_heap / vpr_ap_reread       [without the n=20 designs (blob_merge, stereovision0)]
+      wl     1.000  design-bootstrap [0.983, 1.019] (pre-registered)  two-level [0.968, 1.046]  n=11
+      cpd    1.026  design-bootstrap [1.005, 1.046] (pre-registered)  two-level [0.982, 1.064]  n=11
+      wlcpd  1.028  design-bootstrap [0.996, 1.063] (pre-registered)  two-level [0.965, 1.097]  n=11
+  ext_nextpnr_heap / vpr_ap              [all eligible designs]
+      wl     1.028  design-bootstrap [0.981, 1.094] (pre-registered)  two-level [0.980, 1.103]  n=13
+      cpd    1.043  design-bootstrap [1.007, 1.089] (pre-registered)  two-level [0.993, 1.099]  n=13
+      wlcpd  1.087  design-bootstrap [1.006, 1.212] (pre-registered)  two-level [0.989, 1.202]  n=13
+  ext_nextpnr_heap / vpr_ap              [without the n=20 designs (blob_merge, stereovision0)]
+      wl     1.029  design-bootstrap [0.973, 1.107] (pre-registered)  two-level [0.971, 1.112]  n=11
+      cpd    1.037  design-bootstrap [0.999, 1.090] (pre-registered)  two-level [0.987, 1.108]  n=11
+      wlcpd  1.085  design-bootstrap [0.994, 1.230] (pre-registered)  two-level [0.976, 1.225]  n=11
 
-== family annealing: geometric mean over designs of arm median / reference median (95% percentile bootstrap over designs)
-  vpr_sa            / vpr_sa_reread : wl 0.992 [0.960, 1.017] n=14; cpd 0.986 [0.930, 1.027] n=14; wlcpd 0.983 [0.906, 1.042] n=14
-  vpr_sa_reread     / vpr_sa        : wl 1.008 [0.984, 1.043] n=14; cpd 1.014 [0.973, 1.075] n=14; wlcpd 1.017 [0.959, 1.102] n=14
-  ext_nextpnr_sa    / vpr_sa_reread : wl 0.947 [0.919, 0.977] n=13; cpd 1.003 [0.974, 1.039] n=13; wlcpd 0.952 [0.907, 1.004] n=13
-  ext_nextpnr_sa    / vpr_sa        : wl 0.956 [0.921, 0.994] n=13; cpd 1.019 [0.961, 1.090] n=13; wlcpd 0.970 [0.895, 1.071] n=13
+== family annealing: geometric mean over designs of arm median / reference median (95% percentile bootstrap, 10000 resamples)
+  vpr_sa / vpr_sa_reread                 [all eligible designs]
+      wl     0.992  design-bootstrap [0.960, 1.016] (pre-registered)  two-level [0.953, 1.026]  n=14
+      cpd    0.986  design-bootstrap [0.930, 1.027] (pre-registered)  two-level [0.924, 1.027]  n=14
+      wlcpd  0.983  design-bootstrap [0.905, 1.042] (pre-registered)  two-level [0.894, 1.046]  n=14
+  vpr_sa / vpr_sa_reread                 [without the n=20 designs (blob_merge, stereovision0)]
+      wl     0.985  design-bootstrap [0.949, 1.012] (pre-registered)  two-level [0.943, 1.024]  n=12
+      cpd    0.981  design-bootstrap [0.917, 1.028] (pre-registered)  two-level [0.911, 1.028]  n=12
+      wlcpd  0.971  design-bootstrap [0.887, 1.037] (pre-registered)  two-level [0.870, 1.046]  n=12
+  vpr_sa_reread / vpr_sa                 [all eligible designs]
+      wl     1.008  design-bootstrap [0.984, 1.043] (pre-registered)  two-level [0.975, 1.050]  n=14
+      cpd    1.014  design-bootstrap [0.974, 1.075] (pre-registered)  two-level [0.974, 1.081]  n=14
+      wlcpd  1.017  design-bootstrap [0.960, 1.104] (pre-registered)  two-level [0.956, 1.122]  n=14
+  vpr_sa_reread / vpr_sa                 [without the n=20 designs (blob_merge, stereovision0)]
+      wl     1.015  design-bootstrap [0.989, 1.054] (pre-registered)  two-level [0.976, 1.060]  n=12
+      cpd    1.019  design-bootstrap [0.972, 1.091] (pre-registered)  two-level [0.972, 1.097]  n=12
+      wlcpd  1.030  design-bootstrap [0.963, 1.127] (pre-registered)  two-level [0.957, 1.153]  n=12
+  ext_nextpnr_sa / vpr_sa_reread         [all eligible designs]
+      wl     0.947  design-bootstrap [0.919, 0.975] (pre-registered)  two-level [0.913, 0.995]  n=13
+      cpd    1.003  design-bootstrap [0.973, 1.039] (pre-registered)  two-level [0.964, 1.046]  n=13
+      wlcpd  0.952  design-bootstrap [0.909, 1.003] (pre-registered)  two-level [0.899, 1.023]  n=13
+  ext_nextpnr_sa / vpr_sa_reread         [without the n=20 designs (blob_merge, stereovision0)]
+      wl     0.935  design-bootstrap [0.908, 0.961] (pre-registered)  two-level [0.901, 0.989]  n=11
+      cpd    0.993  design-bootstrap [0.965, 1.028] (pre-registered)  two-level [0.953, 1.042]  n=11
+      wlcpd  0.930  design-bootstrap [0.897, 0.965] (pre-registered)  two-level [0.884, 1.003]  n=11
+  ext_nextpnr_sa / vpr_sa                [all eligible designs]
+      wl     0.956  design-bootstrap [0.921, 0.994] (pre-registered)  two-level [0.917, 1.012]  n=13
+      cpd    1.019  design-bootstrap [0.962, 1.088] (pre-registered)  two-level [0.964, 1.101]  n=13
+      wlcpd  0.970  design-bootstrap [0.894, 1.072] (pre-registered)  two-level [0.899, 1.089]  n=13
+  ext_nextpnr_sa / vpr_sa                [without the n=20 designs (blob_merge, stereovision0)]
+      wl     0.951  design-bootstrap [0.912, 0.994] (pre-registered)  two-level [0.906, 1.015]  n=11
+      cpd    1.014  design-bootstrap [0.951, 1.098] (pre-registered)  two-level [0.955, 1.109]  n=11
+      wlcpd  0.961  design-bootstrap [0.879, 1.077] (pre-registered)  two-level [0.886, 1.106]  n=11
 
 2x rule (per run, all seeds):  no run over 2x

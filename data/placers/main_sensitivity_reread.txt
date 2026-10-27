@@ -1,0 +1,25 @@
+Determinism check: 48 of 48 re-run vpr_ap/vpr_sa records of the four designs equal the main_ record in WL and CPD.
+Reread controls of the four normalised designs, held-out seeds 4-6 median: old (raw file, main_) -> new (normalised file, fix1_)
+design     arm               WL old    WL new  CPD old  CPD new  WLxCPD old  WLxCPD new
+diffeq1    vpr_ap_reread      10501     10501   18.660   17.557      194900      184367
+diffeq1    vpr_sa_reread      10022     10119   17.650   17.801      176890      181876
+diffeq2    vpr_ap_reread       7724      8038   13.426   13.266      103700      106630
+diffeq2    vpr_sa_reread       8118      8118   13.354   13.521      109765      109765
+or1200     vpr_ap_reread      41065     41340    8.767    8.614      365530      354015
+or1200     vpr_sa_reread      47091     46760    8.925    8.721      420264      405675
+raygentop  vpr_ap_reread      23640     23640    5.900    5.900      140870      140870
+raygentop  vpr_sa_reread      24166     24166    5.325    5.356      132445      133727
+
+Family means vs the reread control, old reread -> new reread (gmean; all eligible designs; design bootstrap):
+  vpr_ap / vpr_ap_reread                 wl     0.977 [0.922, 1.020] n=13 -> 0.974 [0.919, 1.016] n=13
+  vpr_ap / vpr_ap_reread                 cpd    0.979 [0.938, 1.016] n=13 -> 0.985 [0.944, 1.022] n=13
+  vpr_ap / vpr_ap_reread                 wlcpd  0.941 [0.861, 1.003] n=13 -> 0.946 [0.865, 1.005] n=13
+  ext_nextpnr_heap / vpr_ap_reread       wl     1.005 [0.988, 1.023] n=13 -> 1.001 [0.984, 1.019] n=13
+  ext_nextpnr_heap / vpr_ap_reread       cpd    1.020 [0.998, 1.043] n=13 -> 1.027 [1.009, 1.046] n=13
+  ext_nextpnr_heap / vpr_ap_reread       wlcpd  1.023 [0.990, 1.059] n=13 -> 1.028 [0.996, 1.061] n=13
+  vpr_sa / vpr_sa_reread                 wl     0.992 [0.960, 1.016] n=14 -> 0.992 [0.960, 1.016] n=14
+  vpr_sa / vpr_sa_reread                 cpd    0.986 [0.930, 1.028] n=14 -> 0.986 [0.930, 1.027] n=14
+  vpr_sa / vpr_sa_reread                 wlcpd  0.983 [0.905, 1.043] n=14 -> 0.983 [0.905, 1.042] n=14
+  ext_nextpnr_sa / vpr_sa_reread         wl     0.947 [0.919, 0.976] n=13 -> 0.947 [0.919, 0.975] n=13
+  ext_nextpnr_sa / vpr_sa_reread         cpd    1.003 [0.973, 1.039] n=13 -> 1.003 [0.973, 1.039] n=13
+  ext_nextpnr_sa / vpr_sa_reread         wlcpd  0.952 [0.907, 1.004] n=13 -> 0.952 [0.909, 1.003] n=13
