@@ -17,7 +17,7 @@ each run; per net, fanout and CLBs spanned. Post-route criticality is path based
 (fle: a LUT with its flip-flop, or a pair of small LUTs); CLBs with carry chains stay as they are. Take the best run of the previous arm
 (seeds 1, 2, 3, 4, 5; lowest wirelength~$\times$~critical-path delay), keep its CLB positions fixed, and move logic elements between CLBs within Manhattan distance two
 (or swap them) by greedy search, minimising the sum over nets of $(1+4\,\mathrm{pcrit})\cdot$HPWL under the exact CLB legality of the architecture
-(at most 10 logic elements, 40 distinct input nets and one clock per CLB; the crossbar is complete). The clustering is written as a \code{.net} file and VPR is run with packing off
+(at most 10 logic elements, 40 distinct input nets and one clock per CLB; the crossbar is complete). The clustering is written as a \code{.net} file and VPR (VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, doi 10.1145/3734798, commit \code{3c9a4d23b2}) is run with packing off
 (\code{--net\_file}, annealing placement from a random start, the router of every other arm), so the clustering VPR places is the one written (fidelity 1.0 by construction, asserted for every run
 from the placed CLBs). \code{net0} is the stock clustering written by the same code and placed the same way, so \code{net0} and the hindsight arm differ only in the clustering. Repeat from
 the best run of each round until the median objective stops improving by 1\% or after five rounds. The rule is fixed in advance: the arm is the round with the lowest median objective over the five seeds, and the \emph{gap} of a metric is
