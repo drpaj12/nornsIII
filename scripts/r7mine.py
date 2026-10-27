@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import gzip
 import sys
+from pathlib import Path
 
 import numpy as np
 
@@ -39,7 +40,8 @@ def family(design: str) -> str:
     """Design family for the leave-out: designs of one family share code, so a model must not train on a sibling of the
     held-out design. stereovision0-3, diffeq1-2 and the mk* modules (mkPktMerge, mkSMAdapter4B, mkDelayWorker32B) are families;
     every other design, and every calibration construction, is its own family (the n5_ constructions of one topology and style
-    but another size are one family)."""
+    but another size are one family). boundtop and raygentop are separate families: their Verilog shares no module name
+    (5 and 5 modules) and only 2 non-trivial source lines (fix round 2, item 20)."""
     if design.startswith("stereovision"):
         return "stereovision"
     if design.startswith("diffeq"):
@@ -91,7 +93,13 @@ class D:
         self.kind = np.array([{"lut": 0, "latch": 1, "adder": 2}[k] for k in kinds], dtype=np.uint8)
         self.E = np.flatnonzero((self.src & (4 | 8)) > 0)  # pairs unbiased by co-location (uniform or connected-uniform)
         self.dist5 = self.dist[:, [s - 1 for s in self.best_stock[:5]]].mean(axis=1) if self.best_stock else self.dist.mean(axis=1)
-        self.dist10 = self.dist.mean(axis=1)
+        self.dist10 = self.dist.mean(axis=1)   # Table XI and the figures only; NOT used as a model feature (see below)
+        # Item 9 (fix round 2): the baseline distance feature and the R2 target use DISJOINT seed sets. Target 'aff' (stock arm):
+        # baseline = mean over the stock seeds that are NOT among the best 5 (dist5, the R2 target). Target 'net' (the .net arms,
+        # same flow as the target): baseline = net0 seeds 1-5, R2 target = net0 seeds 6-10 (the held-out seeds).
+        other = [s - 1 for s in self.best_stock[5:]] if len(self.best_stock) > 5 else []
+        self.dist_other = self.dist[:, other].mean(axis=1) if other else np.zeros(len(self.a), dtype=np.float32)
+        self._net0: dict[str, np.ndarray | None] = {}
         # the stock clustering is seed-invariant; its co-CLB flag and mean distance are baseline features (B5)
         sb = (self.best_stock[0] if self.best_stock else 1) - 1
         self.co_stock = ((self.co["stock"] >> sb) & 1).astype(np.float32)
@@ -124,6 +132,49 @@ class D:
     def target(self, name: str) -> np.ndarray | None:
         return {"aff": self.co_best, "net": self.co_net}[name]
 
+    def _flat_xy(self, fp: Path) -> tuple[np.ndarray, np.ndarray]:
+        idx = {n: i for i, n in enumerate(self.names)}
+        x = np.full(self.n, -1000, dtype=np.int32)
+        y = np.full(self.n, -1000, dtype=np.int32)
+        for a, row in nl.Flat(fp).atoms.items():
+            i = idx.get(lib.base_name(a))
+            if i is not None:
+                x[i], y[i] = int(row[0]), int(row[1])
+        return x, y
+
+    def net0_dist(self, seeds: tuple[int, ...]) -> np.ndarray | None:
+        """Mean Manhattan CLB distance of every pair over the net0 runs of `seeds` (the .net flow of the 'net' target); None if a run is missing."""
+        key = ",".join(map(str, seeds))
+        if key in self._net0:
+            return self._net0[key]
+        acc = []
+        for s in seeds:
+            fp = R7F / self.design / f"net0.s{s}" / "final.flat_place"
+            if not fp.is_file():
+                self._net0[key] = None
+                return None
+            x, y = self._flat_xy(fp)
+            d = np.abs(x[self.a] - x[self.b]) + np.abs(y[self.a] - y[self.b])
+            acc.append(np.minimum(np.where((x[self.a] < 0) | (x[self.b] < 0), 254, d), 254).astype(np.float32))
+        self._net0[key] = np.mean(acc, axis=0)
+        return self._net0[key]
+
+    def dist_base(self, target: str) -> np.ndarray:
+        """Distance feature of the baseline model (disjoint from dist_r2)."""
+        if target == "net":
+            d = self.net0_dist(lib.NET_SEEDS)
+            if d is not None:
+                return d
+        return self.dist_other
+
+    def dist_r2(self, target: str) -> np.ndarray:
+        """Regression target of the R2 comparison (disjoint from dist_base)."""
+        if target == "net":
+            d = self.net0_dist(lib.HELD_SEEDS)
+            if d is not None:
+                return d
+        return self.dist5
+
     @staticmethod
     def _ids(vals: list) -> np.ndarray:
         tab: dict = {}
@@ -149,7 +200,7 @@ class D:
         out["bit_close"] = np.where(both, 1.0 / (1.0 + np.abs(L["bit"][a].astype(np.int32) - L["bit"][b])), 0.0)
         return out
 
-    def base_matrix(self, idx: np.ndarray) -> np.ndarray:
+    def base_matrix(self, idx: np.ndarray, target: str = "aff") -> np.ndarray:
         a, b = self.a[idx], self.b[idx]
         ns = self.nshared[idx].astype(np.float32)
         ser = self.series[idx].astype(np.float32)
@@ -160,16 +211,27 @@ class D:
                 np.where(mf > 0, np.log1p(mf), 0.0), np.minimum(self.pcrit[a], self.pcrit[b]),
                 np.maximum(self.pcrit[a], self.pcrit[b]), ((lo == 0) & (hi == 0)).astype(np.float32),
                 ((lo == 0) & (hi == 1)).astype(np.float32), ((lo == 1) & (hi == 1)).astype(np.float32), (hi == 2).astype(np.float32),
-                self.co_stock[idx], np.log1p(self.dist10[idx])]
+                self.co_stock[idx], np.log1p(self.dist_base(target)[idx])]
         return np.stack(cols, axis=1).astype(np.float32)
 
 
-def boot_mean_ci(vals: list[float], seed: int = lib.RNG_SEED) -> tuple[float, float]:
-    v = np.array([x for x in vals if x == x], dtype=float)
-    if len(v) < 2:
+def boot_mean_ci(vals: list[float], groups: list[str] | None = None, seed: int = lib.RNG_SEED) -> tuple[float, float]:
+    """95% percentile bootstrap interval of the mean. With `groups` (the family of each value) the resampling unit is the FAMILY:
+    families are drawn with replacement and all their designs enter (item 16, fix round 2); without, the values are the units."""
+    pairs = [(x, g) for x, g in zip(vals, groups if groups is not None else range(len(vals))) if x == x]
+    if len(pairs) < 2:
+        return float("nan"), float("nan")
+    by: dict = {}
+    for x, g in pairs:
+        by.setdefault(g, []).append(x)
+    fam = [np.array(v, dtype=float) for v in by.values()]
+    if len(fam) < 2:
         return float("nan"), float("nan")
     rng = np.random.default_rng(seed)
-    m = v[rng.integers(0, len(v), size=(BOOT, len(v)))].mean(axis=1)
+    sums = np.array([f.sum() for f in fam])
+    cnts = np.array([len(f) for f in fam], dtype=float)
+    pick = rng.integers(0, len(fam), size=(BOOT, len(fam)))
+    m = sums[pick].sum(axis=1) / cnts[pick].sum(axis=1)
     return float(np.percentile(m, 2.5)), float(np.percentile(m, 97.5))
 
 
@@ -350,7 +412,7 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
 
     def prep(d: D, perm: np.ndarray | None, sub: np.ndarray) -> dict:
         rel = d.rel_from(perm, sub)
-        base = d.base_matrix(sub)
+        base = d.base_matrix(sub, target)
         hdl = np.stack([rel[f].astype(np.float32) for f in HDL_FEATS], axis=1)
         return {"base": base, "hdl": hdl}
 
@@ -374,11 +436,13 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
             tr = subset(d, TRAIN_CAP, 1)
             te = subset(d, EVAL_CAP, 2)
             y1 = d.target(target)
-            scale = float(d.dist5[d.E].mean()) or 1.0
+            r2t = d.dist_r2(target)
+            scale = float(r2t[d.E].mean()) or 1.0
             data[d.design] = {"ptr": prep(d, perm, tr), "pte": prep(d, perm, te), "y1tr": y1[tr], "y1te": y1[te],
-                              "y2tr": d.dist5[tr] / scale, "y2te": d.dist5[te] / scale,
+                              "y2tr": r2t[tr] / scale, "y2te": r2t[te] / scale,
+                              "chg_tr": (y1[tr] != d.co_stock[tr]), "chg_te": (y1[te] != d.co_stock[te]),
                               "conn": (d.src[te] & 8) > 0, "uni": ((d.src[te] & 8) == 0) & ((d.src[te] & 4) > 0)}
-        res: dict = {"auc": {}, "auc_uni": {}, "r2": {}, "coef": {}}
+        res: dict = {"auc": {}, "auc_uni": {}, "auc_chg": {}, "r2": {}, "coef": {}}
         for held in designs:
             train = [data[d.design] for d in designs if family(d.design) != family(held.design)]
             if not train:
@@ -404,25 +468,44 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
                 ytr2 = np.concatenate([t["y2tr"] for t in train])
                 rg = Ridge(alpha=1.0).fit(sc.transform(Xtr), ytr2)
                 res["r2"].setdefault(name, {})[held.design] = float(r2_score(te["y2te"], rg.predict(sc.transform(fx(te["pte"])))))
+            # Item 10 (fix round 2): the pairs whose co-CLB status CHANGED between the stock clustering and the target clustering
+            # (D+ joined, D- split). The stock co-CLB flag is dropped (on these pairs it equals 1 - target), so the model must rank the
+            # joined against the split pairs from the other features alone; trained on the changed pairs of the other families.
+            keep = [i for i, f in enumerate(BASE_FEATS) if f != "co_stock"]
+            Xc = {"base": lambda p: p["base"][:, keep], "full": lambda p: np.hstack([p["base"][:, keep], p["hdl"]])}
+            if perm_seed is not None:
+                Xc = {k: v for k, v in Xc.items() if k != "base"}
+            ctr = np.concatenate([t["chg_tr"] for t in train])
+            ytr_all = np.concatenate([t["y1tr"] for t in train])
+            cte = te["chg_te"]
+            if ctr.sum() >= 50 and cte.sum() >= 20 and len(set(ytr_all[ctr])) == 2 and len(set(te["y1te"][cte])) == 2:
+                for name, fx in Xc.items():
+                    Xtr = np.vstack([fx(t["ptr"])[t["chg_tr"]] for t in train])
+                    sc = StandardScaler().fit(Xtr)
+                    lr = LogisticRegression(max_iter=300, C=1.0).fit(sc.transform(Xtr), ytr_all[ctr])
+                    p = lr.predict_proba(sc.transform(fx(te["pte"])[cte]))[:, 1]
+                    res["auc_chg"].setdefault(name, {})[held.design] = float(roc_auc_score(te["y1te"][cte], p))
+                    res.setdefault("n_chg", {})[held.design] = int(cte.sum())
         return res
 
     obs = fit_eval(None, True)
     out["observed"] = obs
     nulls = [fit_eval(k, False) for k in range(shuffles)]
     summ: dict = {}
-    for tgt in ("auc", "auc_uni", "r2"):
+    for tgt in ("auc", "auc_uni", "auc_chg", "r2"):
         for name in ("bit", "full"):
-            dd = [obs[tgt][name][h] - obs[tgt]["base"][h] for h in obs[tgt].get(name, {}) if h in obs[tgt]["base"]
-                  and obs[tgt][name][h] == obs[tgt][name][h] and obs[tgt]["base"][h] == obs[tgt]["base"][h]]
+            base_t = obs[tgt].get("base", {})
+            hs = [h for h in obs[tgt].get(name, {}) if h in base_t and obs[tgt][name][h] == obs[tgt][name][h] and base_t[h] == base_t[h]]
+            dd = [obs[tgt][name][h] - base_t[h] for h in hs]
             nd = []
             for nres in nulls:
-                v = [nres[tgt][name][h] - obs[tgt]["base"][h] for h in nres[tgt].get(name, {}) if h in obs[tgt]["base"]
-                     and nres[tgt][name][h] == nres[tgt][name][h] and obs[tgt]["base"][h] == obs[tgt]["base"][h]]
+                v = [nres[tgt][name][h] - base_t[h] for h in nres[tgt].get(name, {}) if h in base_t
+                     and nres[tgt][name][h] == nres[tgt][name][h] and base_t[h] == base_t[h]]
                 if v:
                     nd.append(float(np.mean(v)))
-            lo, hi = boot_mean_ci(dd)
+            lo, hi = boot_mean_ci(dd, [family(h) for h in hs])
             summ[f"{tgt}_{name}_minus_base"] = {"mean": float(np.mean(dd)) if dd else None, "median": float(np.median(dd)) if dd else None,
-                                                "per_design": dict(zip([h for h in obs[tgt].get(name, {}) if h in obs[tgt]["base"]], dd)),
+                                                "per_design": dict(zip(hs, dd)),
                                                 "ci_lo": lo, "ci_hi": hi,
                                                 "n_designs": len(dd), "n_positive": int(sum(1 for x in dd if x > 0)),
                                                 "null_mean": float(np.mean(nd)) if nd else None,
@@ -431,7 +514,7 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
     coefs: dict = {}
     for f in list(BASE_FEATS) + list(HDL_FEATS):
         v = [c[f] for c in obs["coef"].values()]
-        lo, hi = boot_mean_ci(v)
+        lo, hi = boot_mean_ci(v, [family(h) for h in obs["coef"]])
         coefs[f] = {"mean": float(np.mean(v)) if v else None, "ci_lo": lo, "ci_hi": hi}
     out["summary"] = summ
     out["coef_full"] = coefs

@@ -37,6 +37,7 @@ SEEDS = lib.NET_SEEDS   # Peter 2026-10-26: new runs use 5 seeds; the arm is cho
 MIN_OK = 4   # a design needs at least 4 of the 5 runs of an arm
 NORNS_LOCK = Path(os.environ.get("NORNS_VPR_LOCK", "/tmp/claude-1000/norns-vpr.lock"))   # Peter 2026-10-26: Norns VPR runs use their own lock
 CAP_FLE, CAP_IN = lib.CAP_FLE, lib.CAP_IN
+CAP_OUT = lib.CAP_OUT   # clb output pins (20) O[0..19]: out[o] of fle s sits at pin 10*o + s (arch clbouts1/clbouts2)
 TIMEOUT = 7200
 NEW_KEY = 10 ** 6               # cluster keys at or above this are new (not in the stock file)
 
@@ -244,10 +245,12 @@ def _build_clb(model: NetModel, key: int, uids: list[int], index: int) -> ET.Ele
             if n:
                 cons = model.consumers.get(n, set())
                 consumers_out[(s, o)] = n in model.fixed_consumed or any(c not in uids for c in cons)
-    opins = ["open"] * 20
+    opins = ["open"] * CAP_OUT
     for (s, o), need in consumers_out.items():
         if need:
+            assert 0 <= 10 * o + s < CAP_OUT, f"clb {key}: output pin {10 * o + s} beyond the {CAP_OUT} pins of the architecture"
             opins[10 * o + s] = f"fle[{s}].out[{o}]->clbouts{o + 1}"
+    assert sum(1 for t in opins if t != "open") <= CAP_OUT   # the output-pin cap (20 = 10 fle x 2 outputs), checked per clb
     first = slots[min(slots)]
     names = {a for u in units for a in u.atoms} | {u.name for u in units}
     cname = model.stock_name.get(key, "")
