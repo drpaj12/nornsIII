@@ -77,7 +77,7 @@ def net_gap(design: str) -> dict | None:
         rec["heldout"] = gaps(design, harm, lib.HELD_SEEDS)     # held-out seeds 6-10
         rec["heldout_class"] = classify(rec["heldout"]["objective"])
         rec["heldout_runs"] = {a: sum(1 for s_ in lib.HELD_SEEDS if (rn.read_metrics(design, a, s_) or {}).get("rc") == 0) for a in ("net0", harm)}
-    rec["heldout_probe_pre_amendment"] = design == "n5_mesh_dp_16"   # its seeds 6-10 were run before the amendment (queued probe); H = net0 there
+    rec["heldout_probe_pre_amendment"] = design == PROBE_DESIGN   # its seeds 6-10 were run before the amendment (queued probe); H = net0 there
     # flow difference: the analytical-placement flow of runs/r7 (stock) over net0 (same clustering, annealing from a random start)
     ap = {}
     for m, f in METRICS:
@@ -129,6 +129,9 @@ def pooled_recovery(recs: list[dict], key: str = "recovery") -> dict:
     return out
 
 
+PROBE_DESIGN = "n5_mesh_dp_16"   # its seeds 6-10 are the queued probe run before the amendment
+
+
 def corpus() -> dict:
     """Runs of runs/r7f: last record per (design, arm, seed), by arm kind and by seed group (selection 1-5, held-out 6-10)."""
     p = rn.R7F / "runs.jsonl"
@@ -150,6 +153,7 @@ def corpus() -> dict:
             "runs_by_arm": {a: sum(1 for r in ok if r["arm"] == a) for a in sorted({r["arm"] for r in ok})},
             "runs_by_kind": by_kind,
             "runs_heldout_ok": sum(1 for r in ok if r["seed"] in lib.HELD_SEEDS),
+            "runs_heldout_probe": sum(1 for r in ok if r["seed"] in lib.HELD_SEEDS and r["design"] == PROBE_DESIGN),   # run before the amendment (item 14)
             "runs_selection_ok": sum(1 for r in ok if r["seed"] in lib.NET_SEEDS),
             "runs_beyond_protocol_seeds": sum(1 for r in ok if r["seed"] not in lib.NET_SEEDS and r["seed"] not in lib.HELD_SEEDS)}
 
@@ -168,7 +172,7 @@ def heldout_summary(real: list[dict]) -> dict:
     out["no_gain_designs"] = [r["design"] for r in real if r["no_gain"]]
     sets = {"pooled_all": [(r, None) for r in real], "h_not_net0": [(r, "x") for r in ch],
             "heldout_gain": [(r, "x") for r in ch if r["heldout_class"] == "gain"],
-            "without_borderline": [(r, "x") for r in ch if r["heldout_class"] in ("gain", "worse")]}
+            "gain_or_worse": [(r, "x") for r in ch if r["heldout_class"] in ("gain", "worse")]}   # borderline left out (fix round 3, item 13: named for what it holds)
     for name, items in sets.items():
         row: dict = {"n": len(items)}
         for m, _f in METRICS:

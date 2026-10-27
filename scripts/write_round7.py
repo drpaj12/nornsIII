@@ -41,6 +41,10 @@ def f2(x) -> str:
     return "n/a" if nan(x) else f"{x:.2f}"
 
 
+def f4(x) -> str:
+    return "n/a" if nan(x) else f"{x:.4f}"
+
+
 def f3(x) -> str:
     return "n/a" if nan(x) else f"{x:.3f}"
 
@@ -227,29 +231,37 @@ def abstract(d: dict) -> str:
     n_real = h["n_real"]
     rec = sm["recovery_net"]["all"]["WL"]
     none, noos, oos_wl = oos_stats(d)
+    wd = min((g for g in real(nd) if "heldout" in g and g["heldout"]), key=lambda g: g["heldout"]["WL"]["gm"])
+    worst = f"{tex(wd['design'])} wirelength gap {cint(wd['heldout']['WL'])}"
     mm = d["mine"]["models"]
-    prim = next((mm[k] for k in ("net_gain", "aff_gain") if mm[k]["designs"] and mm[k]["summary"]["auc_full_minus_base"]["n_designs"]), None)
+    prim_name = next((k for k in ("net_gain", "aff_gain") if mm[k]["designs"] and mm[k]["summary"]["auc_full_minus_base"]["n_designs"]), None)
+    prim = mm[prim_name] if prim_name else None
     mine_txt = ""
     if prim is not None:
         a = prim["summary"]["auc_full_minus_base"]
         u = prim["summary"]["auc_uni_full_minus_base"]
-        mine_txt = (f"On held-out design families, HDL features change the AUC of predicting which pairs hindsight co-locates by {f3(a['mean'])} on connected pairs "
-                    f"(shuffled-label null {f3(a['null_mean'])}) and {f3(u['mean'])} on uniform pairs (null {f3(u['null_mean'])}), "
-                    "so in this data they add little beyond net structure and the stock clustering. ")
+        r2 = prim["summary"]["r2_full_minus_base"]
+        dist_src = ("placement distance (\\code{log\\_dist\\_stock}, from the \\code{net0} runs of seeds 1 to 5, the same placements the hindsight clustering was built from)"
+                    if prim_name == "net_gain" else "the stock placement distance (\\code{log\\_dist\\_stock})")
+        mine_txt = (f"The mining baseline already holds net connectivity, criticality, the stock clustering's co-location and {dist_src}; on held-out design families its AUC for predicting which pairs hindsight co-locates is "
+                    f"{f3(prim['auc_base_mean'])} (median {f3(prim['auc_base_median'])}) on connected pairs and {f3(prim['auc_uni_base_mean'])} (median {f3(prim['auc_uni_base_median'])}) on uniform pairs, so the room for HDL features is small (ceiling-limited). "
+                    f"Adding the HDL features changes the AUC by {f4(a['mean'])} [{f4(a['ci_lo'])}, {f4(a['ci_hi'])}] on connected pairs (shuffled-label null {f4(a['null_mean'])}) and by {f4(u['mean'])} [{f4(u['ci_lo'])}, {f4(u['ci_hi'])}] on uniform pairs "
+                    f"(null {f4(u['null_mean'])}; positive on {u['n_positive']} of {u['n_designs']} designs), a small gain above the null on uniform pairs, and changes the $R^2$ of normalised distance by {f3(r2['mean'])} (median {f3(r2['median'])}). ")
     return (r"\paragraph{Round seven (data first).} Rounds one to six each tested an idea. Round seven tests none: it runs " +
             f"{runs} VPR placements ({n_real} VTR designs and {len(calib(nd))} constructions whose block clustering is known by construction) and reports what the data shows. "
             f"All runs use {VPRCITE}. "
             r"The hindsight clustering is the stock clustering with logic elements moved or swapped between neighbouring CLBs according to where the best stock placement "
             r"put them; it is written as a VPR \code{.net} and run with packing off, so VPR builds exactly that clustering. "
-            f"The arm is chosen on seeds 1 to 5 and measured on the held-out seeds 6 to 10. On the held-out seeds the arm has an objective interval above 1 on {n_gain} of {n_real} VTR designs "
-            f"({len(h['classes']['borderline'])} borderline, {len(h['classes']['worse'])} worse) and no gain was found on {n_nogain}. "
-            f"The held-out wirelength gap (stock clustering over the arm) has median {f3(h['pooled_all']['WL'])} over all {n_real} designs (no gain found counted as 1) "
-            f"and {f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs where an arm was chosen; critical-path-delay gap {f3(h['pooled_all']['CPD'])} and {f3(h['h_not_net0']['CPD'])}, "
-            f"CLB-count gap {f3(h['pooled_all']['CLB'])} and {f3(h['h_not_net0']['CLB'])}. "
+            f"The arm is chosen on seeds 1 to 5 and measured on the held-out seeds 6 to 10. The objective is wirelength times critical-path delay, and a gap is the stock clustering over the arm (above 1 favours the arm). "
+            f"On the {h['n_h_not_net0']} designs measured held out (those where an arm other than the stock clustering was chosen) the median wirelength gap is {f3(h['h_not_net0']['WL'])}, "
+            f"critical-path-delay gap {f3(h['h_not_net0']['CPD'])} and CLB-count gap {f3(h['h_not_net0']['CLB'])}; the objective interval is above 1 on {n_gain} of them "
+            f"({len(h['classes']['borderline'])} borderline, {len(h['classes']['worse'])} worse). Individual metrics are worse on some designs ({worst}). "
+            f"Over all {n_real} designs the median wirelength gap is {f3(h['pooled_all']['WL'])} (critical-path-delay gap {f3(h['pooled_all']['CPD'])}, CLB-count gap {f3(h['pooled_all']['CLB'])}), but {n_nogain} of the {n_real} are imputed as 1: "
+            f"on them no arm beat the stock clustering on the selection seeds (a selection-seed result, in sample); they never ran on seeds 6 to 10, so no gain on them is not a held-out finding. "
             f"Median {w_txt(d)}. "
             f"On the selection seeds, in sample, the median wirelength gap over the same {h['n_h_not_net0']} designs is {f3(h['selection_h_not_net0']['WL'])}. "
             f"On the known constructions the procedure recovers a median of {f2(rec['median'])} of the wirelength gap held out (no gain counted as 0; {f2(rec['median_defined_only'])} over the {rec['n_defined']} constructions where it found one). "
-            f"The earlier affinity-bias arm, tested out of sample (arm chosen on seeds 1 to 5, evaluated on 6 to 10), finds no gain on {none} of {noos} designs and a median wirelength gap of {f3(oos_wl)} on the others. "
+            f"For the earlier affinity-bias arm only the choice of the arm was out of sample (chosen on seeds 1 to 5, evaluated on 6 to 10); its construction used all ten seeds, a bias that favours a gain, so its finding of no gain on {none} of {noos} designs (median wirelength gap {f3(oos_wl)} on the others) holds. "
             f"{mine_txt}"
             "Everything after the gap is exploratory and carries a shuffled-label null. "
             "The gap is a best-known bound made by selection, not an optimum.\n")
@@ -325,7 +337,7 @@ def gap_table_net(d: dict) -> str:
     for key, lab in (("pooled_all", f"all {h['pooled_all']['n']} designs (no gain found = 1)"),
                      ("h_not_net0", f"the {h['h_not_net0']['n']} designs with an arm"),
                      ("heldout_gain", f"the {h['heldout_gain']['n']} with a held-out gain"),
-                     ("without_borderline", f"arm chosen, borderline left out ({h['without_borderline']['n']})")):
+                     ("gain_or_worse", f"gain or worse only, borderline left out ({h['gain_or_worse']['n']})")):
         r = h[key]
         srows.append(f"held out: {lab} & {f3(r['WL'])} & {f3(r['CPD'])} & {f3(r['CLB'])} & {f3(r['W'])} \\\\")
     sel = h["selection_h_not_net0"]
@@ -398,7 +410,7 @@ def calib_table(d: dict) -> str:
                       r"\begin{tabular}{@{}lrrrrrrrr@{}}", r"\toprule", r"design & WL known & WL H & WL rec. & WL rec. sel. & CLB known & CLB H & CLB rec. & CPD rec. \\", r"\midrule"] +
                      rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
     prows = []
-    for arm, key in (("\\code{.net}, held out", "recovery_net"), ("\\code{.net}, selection seeds", "recovery_net_selection"), ("affinity-bias", "recovery_affinity")):
+    for arm, key in (("\\code{.net}, held out", "recovery_net"), ("\\code{.net}, selection seeds", "recovery_net_selection"), ("affinity-bias, in sample, ten seeds", "recovery_affinity")):
         for grp in ("B16", "B64", "B256", "all"):
             cells = []
             for m in ("WL", "CLB", "CPD"):
@@ -408,6 +420,7 @@ def calib_table(d: dict) -> str:
     tab2 = "\n".join([r"\begin{table*}[t]", r"\caption{Round 7, recovery of the known-clustering gap, median over the designs of a size where the known clustering is at least 5\% better. "
                       r"Per metric two medians: the pooled one (the headline), where a design with no gain found counts as recovery 0 (pooled designs / designs of that size in brackets), "
                       r"and the one over the designs where an arm other than the stock was chosen (their number in brackets). Recovery is computed from the aggregated geometric means over seeds. "
+                      r"The affinity-bias rows are in sample on all ten seeds (the arm was built and chosen on them), unlike the held-out \code{.net} rows. "
                       rf"A median of 1 would mean the procedure reaches the known clustering. VPR runs: {VPRCITE}.}}", r"\label{tab:r7calibB}", r"\centering\scriptsize\setlength{\tabcolsep}{3pt}",
                       r"\begin{tabular}{@{}llrrrrrr@{}}", r"\toprule", r" & & \multicolumn{2}{c}{WL} & \multicolumn{2}{c}{CLB} & \multicolumn{2}{c}{CPD} \\",
                       r"arm & $B$ & pooled & defined only & pooled & defined only & pooled & defined only \\", r"\midrule"] + prows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
@@ -436,7 +449,8 @@ def model_table(m: dict, label: str, name: str, tag: str) -> str:
     rows = []
     for key, lab in (("auc_bit_minus_base", "AUC (connected pairs), bit features"), ("auc_full_minus_base", "AUC (connected pairs), all HDL"),
                      ("auc_uni_full_minus_base", "AUC (uniform pairs), all HDL"),
-                     ("auc_chg_full_minus_base", "AUC (pairs whose co-location changed), all HDL"),
+                     ("auc_chg_conn_full_minus_base", "AUC (changed pairs, connected sample), all HDL"),
+                     ("auc_chg_uni_full_minus_base", "AUC (changed pairs, uniform sample), all HDL"),
                      ("r2_bit_minus_base", "$R^2$ of normalised distance, bit features"), ("r2_full_minus_base", "$R^2$ of normalised distance, all HDL")):
         v = s.get(key)
         if v is None or not v["n_designs"]:
@@ -554,11 +568,13 @@ def results(d: dict) -> str:
         chk_txt = (f" The equivalence check (\\code{{scripts/r7netcheck.py}}) ran on all {tt['files']} written \\code{{.net}} files ({tt['atoms_checked']} atoms; the stock files are included): "
                    f"{tt['files_ok']} of {tt['files']} files pass; {tt['B_lut_mismatch'] + tt['B_ff_mismatch']} atoms differ from the BLIF in their input nets, "
                    f"{tt['C_lut_vs_stock'] + tt['C_ff_vs_stock']} from the stock \\code{{.net}}, {tt['D_needed_output_without_clbout']} nets read outside their CLB lack an output pin, "
-                   f"{tt['E_input_net_undriven']} CLB input pins carry an undriven net.")
+                   f"{tt['E_input_net_undriven']} CLB input pins carry a net that is undriven where the stock file drives it (compared per pin, not by count; "
+                   f"the stock files themselves have {sum(f.get('E_undriven_in_stock', 0) for f in chk.get('files', []) if f.get('file') == 'stock.net.gz')} such pins, in {sum(1 for f in chk.get('files', []) if f.get('file') == 'stock.net.gz' and f.get('E_undriven_in_stock'))} designs). The checker has its own parser and compares the pin-index to net lists with the stock file. "
+                   "The layout of the \\code{clbouts} output pins is validated by the stock \\code{.net} files that VPR wrote passing the same check, and by VPR reading every written file.")
     parts = [r"\subsection{Round seven results}", r"\label{sec:r7-results}",
              rf"All VPR runs of this round use VTR~\cite{{rose2012vtr}} and VTR~9~\cite{{elgammal2025vtr9}} at commit \code{{3c9a4d23b2}}. "
              rf"The corpus has {c['runs_ok']} completed analytical-placement VPR runs ({c['runs_failed']} failed) in {c['vpr_seconds'] / 3600:.2f}~h of VPR time and "
-             rf"{nc['runs_ok']} runs of the \code{{.net}} arms ({nc['runs_failed']} failed, {nc['runs_selection_ok']} on the selection seeds, {nc['runs_heldout_ok']} on the held-out seeds) in {nc['vpr_seconds'] / 3600:.2f}~h; "
+             rf"{nc['runs_ok']} runs of the \code{{.net}} arms ({nc['runs_failed']} failed, {nc['runs_selection_ok']} on the selection seeds, {nc['runs_heldout_ok']} on the held-out seeds, of which {nc['runs_heldout_probe']} are the n5\_mesh\_dp\_16 probe run before the protocol amendment) in {nc['vpr_seconds'] / 3600:.2f}~h; "
              rf"Table~\ref{{tab:r7runs}} counts the runs per arm and seeds and Table~\ref{{tab:r7corpus}} lists the designs. Table~\ref{{tab:r7gap}} and Figure~\ref{{fig:r7gap}} give the hindsight gap of the \code{{.net}} arm on the held-out seeds "
              rf"(the headline) next to the selection seeds: the arm has a held-out gain on {len(h['classes']['gain'])} of {h['n_real']} designs ({tex(', '.join(h['classes']['gain'])) or 'none'}), "
              rf"is borderline on {len(h['classes']['borderline'])} and worse on {len(h['classes']['worse'])}, and no arm beat the stock clustering on {len(h['no_gain_designs'])}. "
@@ -597,10 +613,16 @@ def discussion(d: dict) -> str:
                      f"{f3(s['mean'])} (median {f3(s['median'])}) [{f3(s['ci_lo'])}, {f3(s['ci_hi'])}] over a baseline with net connectivity, criticality and the stock clustering's own co-location and distance, "
                      f"against {f3(s['null_mean'])} [{f3(s['null_lo'])}, {f3(s['null_hi'])}] when the HDL labels are shuffled (the interval resamples design families, not designs). "
                      f"The variant that keeps designs where hindsight equals the stock clustering ({tex('aff_all')}) is in Table~\\ref{{tab:r7modelaffall}} only and is not used for a headline number.")
-        ch = mm["summary"].get("auc_chg_full_minus_base")
-        if ch and ch["n_designs"]:
-            model_txt += (f" On the pairs whose co-location changed between the stock and the hindsight clustering (joined against split, stock flag removed from the features) "
-                          f"the change is {f3(ch['mean'])} (median {f3(ch['median'])}) over {ch['n_designs']} designs, shuffled null {f3(ch['null_mean'])}.")
+        ch_parts = []
+        for key, lab in (("auc_chg_conn_full_minus_base", "connected"), ("auc_chg_uni_full_minus_base", "uniform")):
+            ch = mm["summary"].get(key)
+            if ch and ch["n_designs"]:
+                ch_parts.append(f"{f3(ch['mean'])} (median {f3(ch['median'])}) [{f3(ch['ci_lo'])}, {f3(ch['ci_hi'])}] on the {lab} pairs of {ch['n_designs']} designs (shuffled null {f3(ch['null_mean'])})")
+        if ch_parts:
+            model_txt += (" On the pairs whose co-location changed between the stock and the hindsight clustering (joined against split) the AUC change is " + " and ".join(ch_parts) +
+                          ": not distinguishable from 0 and not from the null. Both \\code{co\\_stock} and \\code{log\\_dist\\_stock} were removed from the features there, because both encode the outcome. "
+                          "On the changed set the label is $y = 1 - \\mathrm{co\\_stock}$, so this AUC partly measures how well the features predict the stock packer's own choice rather than hindsight. "
+                          "The connected and the uniform pairs are scored apart because their inclusion probabilities differ.")
         model_txt += (" The baseline distance feature and the distance regression target use disjoint seed sets (stock: the five best seeds for the target, the other five for the baseline; "
                       "\\code{.net}: net0 seeds 6 to 10 for the target, 1 to 5 for the baseline), and the target placement flow of the \\code{.net} target is the baseline's flow.")
     else:
@@ -610,12 +632,12 @@ def discussion(d: dict) -> str:
     return rf"""\subsection{{Round seven: what the data says and what it cannot say}}
 \label{{sec:r7-discussion}}
 \textbf{{Hindsight gap.}} The arm chosen on seeds 1 to 5 is measured on seeds 6 to 10. It has a held-out gain on {len(h['classes']['gain'])} of {h['n_real']} VTR designs, is borderline on {len(h['classes']['borderline'])} and worse on {len(h['classes']['worse'])}; on {len(h['no_gain_designs'])} no arm beat the stock clustering on the selection seeds. The median held-out wirelength gap (net0 over the arm) is {f3(h['pooled_all']['WL'])} over all designs (no gain = 1),
-{f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs with an arm, {f3(h['without_borderline']['WL'])} when the borderline designs are left out ({n_designs(h['without_borderline']['n'])}) and {f3(h['heldout_gain']['WL'])} over the {n_designs(h['heldout_gain']['n'])} with a held-out gain; critical-path-delay gap {f3(h['pooled_all']['CPD'])}, {f3(h['h_not_net0']['CPD'])}, {f3(h['without_borderline']['CPD'])}, {f3(h['heldout_gain']['CPD'])} and CLB-count gap {f3(h['pooled_all']['CLB'])}, {f3(h['h_not_net0']['CLB'])}, {f3(h['without_borderline']['CLB'])}, {f3(h['heldout_gain']['CLB'])} in the same order. The in-sample medians on the selection seeds were {f3(h['selection_h_not_net0']['WL'])}, {f3(h['selection_h_not_net0']['CPD'])} and {f3(h['selection_h_not_net0']['CLB'])}: the difference to the held-out numbers is the selection bias.
+{f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs with an arm, {f3(h['gain_or_worse']['WL'])} when the borderline designs are left out ({n_designs(h['gain_or_worse']['n'])}) and {f3(h['heldout_gain']['WL'])} over the {n_designs(h['heldout_gain']['n'])} with a held-out gain; critical-path-delay gap {f3(h['pooled_all']['CPD'])}, {f3(h['h_not_net0']['CPD'])}, {f3(h['gain_or_worse']['CPD'])}, {f3(h['heldout_gain']['CPD'])} and CLB-count gap {f3(h['pooled_all']['CLB'])}, {f3(h['h_not_net0']['CLB'])}, {f3(h['gain_or_worse']['CLB'])}, {f3(h['heldout_gain']['CLB'])} in the same order. The in-sample medians on the selection seeds were {f3(h['selection_h_not_net0']['WL'])}, {f3(h['selection_h_not_net0']['CPD'])} and {f3(h['selection_h_not_net0']['CLB'])}: the difference to the held-out numbers is the selection bias.
 Channel width: median {w_txt(d)}. On the designs without an arm the statement is about this procedure (a greedy move or swap of logic elements within
 distance {w(lib.RADIUS)} from one placement), not about the packer. On the known constructions the procedure recovers a median of {f2(rn['WL']['median'])} of the wirelength gap on the held-out seeds, counting the {rn['WL']['n_nogain']} constructions with no gain found as 0 ({rn['WL']['n_pooled']} constructions with a gap to recover; Table~\ref{{tab:r7calibB}} by size); over the {rn['WL']['n_defined']} constructions where an arm was chosen the median is {f2(rn['WL']['median_defined_only'])}
 (selection seeds, in sample: {f2(rsel['WL']['median'])} pooled, {f2(rsel['WL']['median_defined_only'])} defined only). So it falls well short of the known clustering on most constructions and the real-design gap is a best-known reference, not an optimum
 (the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports). A recovery above 1 means the arm beat the known clustering, which is known by construction and not optimal (wirelength: {over_one(d)}).
-Why stock over known is {f2(min(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} to {f2(max(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} here against round five's headline of
+Why stock over known is {f2(min(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} to {f2(max(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} on the selection seeds (seeds 1 to 5; held out, seeds 6 to 10: {f2(min(g['known_heldout']['WL']['gm'] for g in calib(nd) if g.get('known_heldout')))} to {f2(max(g['known_heldout']['WL']['gm'] for g in calib(nd) if g.get('known_heldout')))}) against round five's headline of
 about 1.22: round five's geometric mean is over all 72 designs, whose chain and random topologies have no gap (chain 1.004, random 1.019) while mesh and tree sit at 1.423 and 1.522
 (\code{{r5-results.tex}}, topology paragraph); this round uses only mesh and tree, and the flow and the known arm are the same (\code{{scripts/r5.py}} \code{{arm\_run}} and \code{{scripts/r7.py}} \code{{run\_arm}} both use VPR's default flow and weight {lib.AFF_BETA:g}):
 the stock-over-known wirelength agrees with round five's on the same designs within a factor of {f3(rc['r7_over_r5_min'])} to {f3(rc['r7_over_r5_max'])} ({rc['n']} designs).
@@ -660,6 +682,8 @@ N Q2.4 & Mined from many placements linked to the HDL: which HDL relations (word
 \paragraph{{Agent defaults.}} The hindsight clustering is written as a \code{{.net}} (logic elements as units, exact CLB legality of the architecture) and run with packing off, from the best run of the previous round, arm chosen and evaluated on seeds 1 to 5 (in sample); the cost weight $1+{lib.CRIT_W:g}\,\mathrm{{pcrit}}$, the move radius of {w(lib.RADIUS)} CLBs are fixed in the protocol; carry-chain CLBs stay as they are; the affinity-bias arm of the first batch is kept and renamed. The best affinity-bias run is used for the disagreement table and the figures; the \code{{.net}} clustering is used as a mining target. The raw VPR directories are kept in scratch directories ({c['scratch_bytes'] / 1e9:.1f}~GB for the first batch) and \code{{runs/r7}} holds {c['runs_r7_bytes'] / 1e9:.1f}~GB; nothing was deleted.
 
 \paragraph{{Fix round two (2026-10-27).}} A review of the first fix round found that the arm was chosen and reported on the same seeds and that the recovery medians dropped the designs where no arm was chosen. A protocol amendment, written and pushed before the first held-out run (\code{{docs/plan/round7.md}}), fixes the arm from \code{{rounds.json}} and runs \code{{net0}}, the arm and (constructions) the known clustering on seeds 6 to 10 under the Norns lock; the held-out gap is the headline, the gap on seeds 1 to 5 is labelled selection seeds, and the recovery headline counts a design with no gain found as 0 beside the median over the designs where an arm was chosen. The null arm of the review (net0 with permuted legal slots through the same selection) was optional and was not run. The queued 10-seed probe of n5\_mesh\_dp\_16 did run (its seeds 6 to 10 are the held-out runs of that design). The mining baseline now uses a distance feature disjoint in seeds from the distance target, the confidence intervals resample design families, and the held-out models are also scored on the pairs whose co-location changed.
+
+\paragraph{{Fix round three (2026-10-27).}} Text, labels and the checker only; no VPR run. The abstract leads with the designs measured held out and labels the other designs as imputed, the affinity-bias recovery is labelled in sample on ten seeds, the mining text names the baseline features and its AUC ceiling, the changed-pair AUC is split into connected and uniform pairs, and the equivalence checker has its own parser and compares pin lists and per-pin undriven sets with the stock file.
 
 Regeneration: \code{{python scripts/write\_round7.py}} from \code{{data/r7/*.json}}; the steps that need \code{{runs/}} are \code{{r7.py hind}}, \code{{r7net.py run}}, \code{{r7corpus.py}}, \code{{r7stats.py}}, \code{{r7fstats.py}} and \code{{r7mine.py}}.
 """
