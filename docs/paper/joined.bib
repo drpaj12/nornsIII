@@ -13254,7 +13254,15 @@ doi={10.1145/800139.804528}}
   title        = {nextpnr: portable {FPGA} place and route tool},
   year         = {2026},
   howpublished = {\url{https://github.com/YosysHQ/nextpnr}},
-  note         = {ISC licence. Commit 9691ce8c43fa (2026-10-26) read; not built or run in dispatch 1.}
+  note         = {ISC licence. Commit 9691ce8c43fa (2026-10-26); built out of tree in dispatch 2 and run unmodified with the Norns k6 viaduct uarch overlay in dispatch 3.}
+}
+
+% Checked: 2026-10-27, https://github.com/cseed/arachne-pnr README (states it is not maintained and points to nextpnr; it implements place and route for the Lattice iCE40, input BLIF) and its COPYING file (MIT License, Copyright (c) 2015-2018 Cotton Seed). nextpnr common/place/placer1.cc header: "Simulated annealing implementation based on arachne-pnr". Software entry; no paper is claimed, none was found on the repository page.
+@misc{arachnepnr,
+  author       = {Cotton Seed},
+  title        = {Arachne-pnr: place and route for the {Lattice iCE40} {FPGA} family},
+  howpublished = {\url{https://github.com/cseed/arachne-pnr}},
+  note         = {MIT licence. Not maintained; cited because nextpnr's simulated-annealing placer (placer1.cc) is based on it. Not built or run.}
 }
 
 % Checked: 2026-10-27, https://doi.org/10.1109/FPL.2012.6339278 (Crossref record: 22nd International Conference on Field Programmable Logic and Applications (FPL), August 2012, pages 143-150, authors Marcel Gort and Jason H. Anderson) and the nextpnr source common/place/placer_heap.cc header ("[[cite]] HeAP").

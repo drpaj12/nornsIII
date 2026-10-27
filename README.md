@@ -22,6 +22,11 @@ hot can the anneal start before it destroys the seed?
   ASP-DAC 2022; elfPlace, Li et al., ICCAD 2019) and OpenPARF (BSD-3-Clause; Mai et al., ASICON 2023).
   VTR is cited as the first VTR paper (Rose et al., FPGA 2012) and VTR 9 (Elgammal et al., TRETS 2025),
   commit 3c9a4d23b2. Keys and `% Checked:` lines are in `docs/paper/joined.bib`.
+- `placers/nextpnr_k6/` — our own nextpnr "viaduct" uarch for the VTR k6_frac_N10 grid (ISC, derived in
+  structure from nextpnr's `generic/viaduct/example`, credit gatecat), kept as an overlay and a two-line
+  CMake patch that `build.sh` applies to a `git archive` copy of nextpnr under `/tmp`; nextpnr itself is not
+  forked or vendored. Its `sa` placer is based on arachne-pnr (Cotton Seed, MIT; not built or run here).
+  Converters: `scripts/nextpnr_blif2json.py`, `scripts/nextpnr_readback.py`; gate runner `scripts/placers_gate.py`.
 
 Urd uses what the design was (the provenance hierarchy), Verdandi what is recovered now
 (Loki III clusters), and Skuld what shall be (the placement they constrain).
