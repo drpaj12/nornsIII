@@ -88,7 +88,7 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
                 keep.append(ln.strip()[:400])
                 if i + 1 < len(ls) and ls[i + 1].strip():
                     keep.append(ls[i + 1].strip()[:400])
-        rec["error"] = " | ".join(keep[:8])
+        rec["error"] = " | ".join(keep[:8]).replace(str(nl.WS_ROOT), "$WS").replace(str(Path.home()), "~")  # no absolute home paths in committed records
     return rec
 
 
