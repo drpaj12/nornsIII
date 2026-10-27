@@ -30,10 +30,23 @@ import r7lib as lib
 import r7net as rn
 
 _UP = re.compile(r"^(\w+)(?:\[(\d+)\])?\.(\w+)\[(\d+)\]->")
+_INST = re.compile(r"^(\w+)\[(\d+)\]$")   # own copies of r7net's parse helpers: the checker does not share its parse with the writer
 
 
 def _tok(block: ET.Element, kind: str, name: str) -> list[str]:
-    return rn._tokens(block, kind, name)
+    """Tokens of the port `name` under `kind` (inputs, outputs, clocks) of a block."""
+    for p in block.findall(f"{kind}/port"):
+        if p.get("name") == name:
+            return (p.text or "").split()
+    return []
+
+
+def _child(block: ET.Element, inst: str) -> ET.Element | None:
+    """The direct child block with this instance name."""
+    for c in block.findall("block"):
+        if c.get("instance") == inst:
+            return c
+    return None
 
 
 def _input_net(block: ET.Element, parent: dict[ET.Element, ET.Element], port: str, idx: int, kind: str = "inputs") -> str | None:
@@ -52,7 +65,7 @@ def _input_net(block: ET.Element, parent: dict[ET.Element, ET.Element], port: st
     if m.group(2) is None and m.group(1) == base_p:
         kind_up = "clocks" if m.group(3) == "clk" else "inputs"
         return _input_net(par, parent, m.group(3), int(m.group(4)), kind_up)
-    sib = rn._child(par, f"{m.group(1)}[{m.group(2)}]")
+    sib = _child(par, f"{m.group(1)}[{m.group(2)}]")
     return None if sib is None else _out_net(sib, parent, m.group(3), int(m.group(4)))
 
 
@@ -68,7 +81,7 @@ def _out_net(block: ET.Element, parent: dict[ET.Element, ET.Element], port: str,
         return t
     if m.group(2) is not None and f"{m.group(1)}[{m.group(2)}]" == block.get("instance") and m.group(3) in ("in",):
         return _input_net(block, parent, m.group(3), int(m.group(4)))
-    c = rn._child(block, f"{m.group(1)}[{m.group(2)}]")
+    c = _child(block, f"{m.group(1)}[{m.group(2)}]")
     return None if c is None else _out_net(c, parent, m.group(3), int(m.group(4)))
 
 
@@ -108,6 +121,7 @@ def read_net(path: Path) -> dict[str, Any]:
     o_nets: list[list[str | None]] = []
     o_tokens: list[list[str]] = []
     clb_of_top = []
+    names = [b.get("name", "") for b in top]
     for b in top:
         ins = set()
         for p in b.findall("inputs/port"):
@@ -115,7 +129,7 @@ def read_net(path: Path) -> dict[str, Any]:
         for p in b.findall("clocks/port"):
             ins.update(t for t in (p.text or "").split() if "->" not in t and t != "open")
         in_nets.append(ins)
-        if not rn._INST.match(b.get("instance", "")) or rn._INST.match(b.get("instance", "")).group(1) != "clb":
+        if not _INST.match(b.get("instance", "")) or _INST.match(b.get("instance", "")).group(1) != "clb":
             driven_inside.append(set())
             o_nets.append([])
             o_tokens.append([])
@@ -132,7 +146,7 @@ def read_net(path: Path) -> dict[str, Any]:
         di = set()
         dfle = set()
         for blk in b.iter("block"):
-            m = rn._INST.match(blk.get("instance", ""))
+            m = _INST.match(blk.get("instance", ""))
             if not m or blk.get("name") == "open":
                 continue
             kind = m.group(1)
@@ -160,7 +174,18 @@ def read_net(path: Path) -> dict[str, Any]:
         o_tokens.append(toks)
         o_nets.append([_out_net(b, parent, "O", j) if t != "open" else None for j, t in enumerate(toks)])
     return {"lut": lut, "ff": ff, "dup": dup, "in_nets": in_nets, "driven": driven_inside, "driven_fle": driven_fle, "o_nets": o_nets,
-            "o_tokens": o_tokens, "is_clb": clb_of_top, "top_in": set((root.findtext("inputs") or "").split()) | set((root.findtext("clocks") or "").split()), "n_top": len(top)}
+            "o_tokens": o_tokens, "names": names, "is_clb": clb_of_top, "top_in": set((root.findtext("inputs") or "").split()) | set((root.findtext("clocks") or "").split()), "n_top": len(top)}
+
+
+def undriven_set(n: dict[str, Any]) -> set[tuple[str, str]]:
+    """(clb name, net) of every clb input net that no other top-level block drives and that is not a top-level input."""
+    out: set[tuple[str, str]] = set()
+    for i in range(n["n_top"]):
+        if not n["is_clb"][i]:
+            continue
+        driven = set().union(*[n["driven"][j] for j in range(n["n_top"]) if j != i]) | n["top_in"]
+        out.update((n["names"][i], x) for x in n["in_nets"][i] if x not in driven)
+    return out
 
 
 def check(net_path: Path | dict[str, Any], blif: dict[str, Any] | None, stock: dict[str, Any] | None) -> dict[str, Any]:
@@ -214,15 +239,13 @@ def check(net_path: Path | dict[str, Any], blif: dict[str, Any] | None, stock: d
     r["B_lut_mismatch"], r["B_ff_mismatch"] = bad_l, bad_f
     # C: vs the stock .net
     if stock is not None:
-        cl = sum(1 for a, p in n["lut"].items() if a in stock["lut"] and sorted(x for x in p if x) != sorted(x for x in stock["lut"][a] if x))
+        cl = sum(1 for a, p in n["lut"].items() if a in stock["lut"] and p != stock["lut"][a])   # pin index to net, as lists
         cf = sum(1 for a, p in n["ff"].items() if a in stock["ff"] and p != stock["ff"][a])
         r["C_lut_vs_stock"], r["C_ff_vs_stock"] = cl, cf
         r["C_atoms_not_in_stock"] = sum(1 for a in n["lut"] if a not in stock["lut"]) + sum(1 for a in n["ff"] if a not in stock["ff"])
     # D, E
-    def outside_driven(i: int) -> set[str]:
-        return set().union(*[n["driven"][j] for j in range(n["n_top"]) if j != i]) | n["top_in"]
-
-    bad_out_missing = bad_out_dead = bad_pin = in_undriven = 0
+    bad_out_missing = bad_out_dead = bad_pin = 0
+    undriven = undriven_set(n)
     for i in range(n["n_top"]):
         if not n["is_clb"][i]:
             continue
@@ -241,20 +264,12 @@ def check(net_path: Path | dict[str, Any], blif: dict[str, Any] | None, stock: d
                 bad_pin += 1
             if x is not None and x not in others:
                 bad_out_dead += 1
-        for x in n["in_nets"][i]:
-            if x not in outside_driven(i):
-                in_undriven += 1
     r["D_needed_output_without_clbout"], r["D_clbout_pin_bad"], r["D_clbout_unread"] = bad_out_missing, bad_pin, bad_out_dead
-    r["E_input_net_undriven"] = in_undriven
+    r["E_input_net_undriven"] = len(undriven)
     if stock is not None and n is not stock:
-        n_s = stock
-        e_s = 0
-        for i in range(n_s["n_top"]):
-            if n_s["is_clb"][i]:
-                out_s = set().union(*[n_s["driven"][j] for j in range(n_s["n_top"]) if j != i]) | n_s["top_in"]
-                e_s += sum(1 for x in n_s["in_nets"][i] if x not in out_s)
-        r["E_undriven_in_stock"] = e_s
-        r["E_input_net_undriven"] = max(0, in_undriven - e_s)   # a net undriven in the stock file (primary input without a pad entry) is not the writer's
+        und_s = undriven_set(stock)
+        r["E_undriven_in_stock"] = len(und_s)
+        r["E_input_net_undriven"] = len(undriven - und_s)   # per pin: a (clb, net) undriven in the stock file too (primary input without a pad entry) is not the writer's
     keys = [k for k in r if k.startswith(("A_missing", "B_", "C_lut", "C_ff", "C_atoms", "D_needed", "D_clbout_pin", "E_input")) or k == "duplicate_atoms"]
     r["ok"] = all(r[k] == 0 for k in keys)
     return r

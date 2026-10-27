@@ -370,6 +370,18 @@ class T(unittest.TestCase):
         self.assertGreater(rcheck.check(read(t2), None, stock)["D_needed_output_without_clbout"], 0)
         self.assertGreater(n_before, 0)
 
+    def test_checker_pin_order_and_per_pin_undriven(self):
+        """Fix round 3 (items 8, 9): the stock comparison is by pin index (a swap of two input pins is flagged), and the undriven check is per (clb, net)."""
+        stock = rcheck.read_net(self.FIXTURE)
+        self.assertEqual(rcheck.check(stock, None, stock)["C_lut_vs_stock"], 0)
+        import copy
+        moved = copy.deepcopy(stock)
+        name = next(a for a, p in moved["lut"].items() if len(set(x for x in p if x)) >= 2 and p[0] != p[1])
+        moved["lut"][name][0], moved["lut"][name][1] = moved["lut"][name][1], moved["lut"][name][0]
+        self.assertGreater(rcheck.check(moved, None, stock)["C_lut_vs_stock"], 0)
+        und = rcheck.undriven_set(stock)
+        self.assertTrue(all(isinstance(x, tuple) and len(x) == 2 for x in und))
+
     def _stub_view_and_flat(self, m):
         """One pseudo-atom per fle unit: it reads the unit's input nets and drives its output nets; CLBs sit in a row at x = 1, 2, 3."""
         class V:
