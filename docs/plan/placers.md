@@ -386,3 +386,103 @@ the DFF's name in the attribute `FF_ATOM`), and retypes a lone LUT6 or DFF to `B
 legaliser problem of Section 9.2 item 1 does not arise). Tile legality is unchanged (at most 40 distinct external input nets). The merge rule mirrors VPR's molecule rule (LUT output net with exactly one sink,
 that sink a flip-flop D pin); where VPR forms a molecule differently, VPR's error above would show it, and such a run counts as a failed gate run. The gate of Section 9.4 (substitute set, arms, seeds, pass criteria,
 2x stop rule) is unchanged and is run now with this uarch. A development run of `n5_rand_ctl_64` seed 1 on the new uarch (SA 958 HPWL, HeAP 961 HPWL, both legal readbacks) is the only look at the new rule.
+
+### 9.8 Gate result (2026-10-27, uarch of Section 9.7, substitute set of Section 9.4; metrics `data/placers/gate_<design>.json`, table by `scripts/placers_gate_table.py`)
+Pass criteria met on all 54 external-arm and VPR-arm runs of the three designs: rc 0, "Circuit successfully routed", 0 reader warnings, 0 atoms without a cell, 0 moved pads. nextpnr peak RSS at most 0.3 GB
+(rand_ctl_16, mesh_ctl_64) and chain_ctl_256 below 1 GB (see JSON `max_rss_kb`). **Stop rule fired:** `ext_nextpnr_sa` seed 1 on `n5_chain_ctl_256` has WL 11492 = 4.03x `vpr_sa_reread` (4.16x `vpr_ap_reread`, 2.762 k).
+Nothing was tuned. Likely cause (from the logs, not yet tested by any change): nextpnr's SA collapses to a greedy descent (its temperature falls from 1 to 6e-4 within 15 iterations, no timing term) and ends at an HPWL of
+3514, 3064 and 3465 for seeds 1 to 3 against 1183, 1193 and 1439 for HeAP on the same design. VPR's full legaliser then starts from that placement: seed 1 gave 257 CLBs instead of the 256 the construction
+needs and an initial bb_cost of 140.1 (seed 2: 39.8; HeAP seed 1: 21.6; `vpr_sa_reread` seed 1: 21.2) that VPR's low-temperature anneal only brought to 73.8. The result is a poor start for
+VPR, not a converter fault (the same flow with the HeAP file or VPR's own file is fine). Seeds 4 to 6 are not run. All rows below are seeds 1 to 3 (selection seeds), per family.
+```
+
+n5_rand_ctl_16  grid [7, 7]  converter: 160 LUT, 160 FF, 17 pads, 0.11 s
+ family analytic
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_ap                 1  0 True      412   22   1.114        0.14  
+  vpr_ap                 2  0 True      424   20   1.183        0.13  
+  vpr_ap                 3  0 True      412   22   1.217        0.13  
+  vpr_ap_reread          1  0 True      471   18   1.322        0.10  
+  vpr_ap_reread          2  0 True      444   22   1.135        0.11  
+  vpr_ap_reread          3  0 True      427   18   1.256        0.10  
+  ext_nextpnr_heap       1  0 True      520   22   1.192        0.11  0.23
+  ext_nextpnr_heap       2  0 True      503   18   1.353        0.11  0.14
+  ext_nextpnr_heap       3  0 True      420   22   1.143        0.10  0.15
+ family annealing
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_sa                 1  0 True      409   26   1.038        0.02  
+  vpr_sa                 2  0 True      514   20   1.238        0.02  
+  vpr_sa                 3  0 True      433   20   1.098        0.02  
+  vpr_sa_reread          1  0 True      470   22   1.407        0.10  
+  vpr_sa_reread          2  0 True      483   20   1.362        0.10  
+  vpr_sa_reread          3  0 True      443   20   1.223        0.10  
+  ext_nextpnr_sa         1  0 True      415   20   1.170        0.10  1.14
+  ext_nextpnr_sa         2  0 True      616   22   1.397        0.11  1.08
+  ext_nextpnr_sa         3  0 True      597   22   1.419        0.12  1.06
+ stop-rule ext_nextpnr_heap s1: WL / vpr_ap_reread = 1.10
+ stop-rule ext_nextpnr_heap s2: WL / vpr_ap_reread = 1.13
+ stop-rule ext_nextpnr_heap s3: WL / vpr_ap_reread = 0.98
+ stop-rule ext_nextpnr_sa s1: WL / vpr_sa_reread = 0.88
+ stop-rule ext_nextpnr_sa s2: WL / vpr_sa_reread = 1.28
+ stop-rule ext_nextpnr_sa s3: WL / vpr_sa_reread = 1.35
+
+n5_mesh_ctl_64  grid [13, 13]  converter: 640 LUT, 640 FF, 17 pads, 0.39 s
+ family analytic
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_ap                 1  0 True     4176   26   1.465        0.59  
+  vpr_ap                 2  0 True     4342   26   1.811        0.60  
+  vpr_ap                 3  0 True     4653   24   1.936        0.58  
+  vpr_ap_reread          1  0 True     4459   26   2.026        0.38  
+  vpr_ap_reread          2  0 True     4697   24   1.726        0.48  
+  vpr_ap_reread          3  0 True     3988   28   1.812        0.35  
+  ext_nextpnr_heap       1  0 True     3241   24   1.833        0.35  0.99
+  ext_nextpnr_heap       2  0 True     2933   24   1.440        0.36  1.13
+  ext_nextpnr_heap       3  0 True     2692   24   1.310        0.35  0.88
+ family annealing
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_sa                 1  0 True     3450   22   1.851        0.09  
+  vpr_sa                 2  0 True     3594   22   2.545        0.08  
+  vpr_sa                 3  0 True     3130   24   1.507        0.10  
+  vpr_sa_reread          1  0 True     3334   22   1.989        0.32  
+  vpr_sa_reread          2  0 True     2930   24   1.327        0.30  
+  vpr_sa_reread          3  0 True     3048   24   1.393        0.32  
+  ext_nextpnr_sa         1  0 True     3645   26   2.603        0.34  5.92
+  ext_nextpnr_sa         2  0 True     3682   26   1.709        0.34  5.74
+  ext_nextpnr_sa         3  0 True     3840   26   1.706        0.38  6.17
+ stop-rule ext_nextpnr_heap s1: WL / vpr_ap_reread = 0.73
+ stop-rule ext_nextpnr_heap s2: WL / vpr_ap_reread = 0.62
+ stop-rule ext_nextpnr_heap s3: WL / vpr_ap_reread = 0.68
+ stop-rule ext_nextpnr_sa s1: WL / vpr_sa_reread = 1.09
+ stop-rule ext_nextpnr_sa s2: WL / vpr_sa_reread = 1.26
+ stop-rule ext_nextpnr_sa s3: WL / vpr_sa_reread = 1.26
+
+n5_chain_ctl_256  grid [21, 21]  converter: 2560 LUT, 2560 FF, 17 pads, 1.43 s
+ family analytic
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_ap                 1  0 True     2818   38   1.092        1.77  
+  vpr_ap                 2  0 True     2843   34   1.092        1.77  
+  vpr_ap                 3  0 True     2791   38   1.093        1.76  
+  vpr_ap_reread          1  0 True     2762   38   1.093        1.04  
+  vpr_ap_reread          2  0 True     2866   34   1.096        1.08  
+  vpr_ap_reread          3  0 True     2790   38   1.093        1.05  
+  ext_nextpnr_heap       1  0 True     2894   26   1.087        1.04  8.78
+  ext_nextpnr_heap       2  0 True     2814   26   1.090        1.05  9.05
+  ext_nextpnr_heap       3  0 True     3729   34   1.091        1.09  5.73
+ family annealing
+  arm                 seed rc routed   WL     W   CPD_ns  vpr_place_s  nextpnr_s(heap+sa|init+sa)
+  vpr_sa                 1  0 True     2943   28   1.092        0.27  
+  vpr_sa                 2  0 True     2867   26   1.099        0.27  
+  vpr_sa                 3  0 True     2909   34   1.089        0.28  
+  vpr_sa_reread          1  0 True     2855   34   1.093        1.12  
+  vpr_sa_reread          2  0 True     2875   26   1.090        1.08  
+  vpr_sa_reread          3  0 True     2900   34   1.089        1.02  
+  ext_nextpnr_sa         1  0 True    11492   26   1.660        1.25  35.96
+  ext_nextpnr_sa         2  0 True     3333   38   1.205        1.07  34.17
+  ext_nextpnr_sa         3  0 True     4959   34   1.235        1.10  32.88
+ stop-rule ext_nextpnr_heap s1: WL / vpr_ap_reread = 1.05
+ stop-rule ext_nextpnr_heap s2: WL / vpr_ap_reread = 0.98
+ stop-rule ext_nextpnr_heap s3: WL / vpr_ap_reread = 1.34
+ stop-rule ext_nextpnr_sa s1: WL / vpr_sa_reread = 4.03  > 2x STOP
+ stop-rule ext_nextpnr_sa s2: WL / vpr_sa_reread = 1.16
+ stop-rule ext_nextpnr_sa s3: WL / vpr_sa_reread = 1.71
+```
