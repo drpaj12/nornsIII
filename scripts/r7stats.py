@@ -39,13 +39,18 @@ def gm_ci(ratios: list[float]) -> dict:
     return {"gm": math.exp(statistics.fmean(logs)), "lo": math.exp(lo), "hi": math.exp(hi), "n": len(logs)}
 
 
-def seed_ratios(design: str, num_arm: str, den_arm: str, field: str) -> list[float]:
+def seed_ratio_pairs(design: str, num_arm: str, den_arm: str, field: str) -> list[tuple[int, float]]:
+    """(seed, ratio) for every seed where both arms ran ok with the field set: ONE filter builds ratios and seeds together."""
     out = []
     for s in lib.SEEDS:
         a, b = lib.read_metrics(design, num_arm, s), lib.read_metrics(design, den_arm, s)
         if a and b and a.get("rc") == 0 and b.get("rc") == 0 and a.get(field) and b.get(field):
-            out.append(float(a[field]) / float(b[field]))
+            out.append((s, float(a[field]) / float(b[field])))
     return out
+
+
+def seed_ratios(design: str, num_arm: str, den_arm: str, field: str) -> list[float]:
+    return [r for _s, r in seed_ratio_pairs(design, num_arm, den_arm, field)]
 
 
 
@@ -107,8 +112,7 @@ def design_gap(design: str) -> dict | None:
     rec["oos"] = {"arm": oarm, "no_gain": oarm == "stock", "medians_seeds_1_5": meds}
     if oarm != "stock":
         for m, f in METRICS:
-            rec["oos"][m] = gm_ci([x for x, s_ in zip(seed_ratios(design, "stock", oarm, f), [s_ for s_ in lib.SEEDS
-                                   if (lib.read_metrics(design, "stock", s_) and lib.read_metrics(design, oarm, s_))]) if s_ in te])
+            rec["oos"][m] = gm_ci([r for s_, r in seed_ratio_pairs(design, "stock", oarm, f) if s_ in te])
     rec["fidelity_h1"] = fids[0] if fids else None
     rec["fidelity_H"] = next((r.get("fidelity", {}).get("share") for r in rounds["rounds"] if r["arm"] == harm), None)
     rec["fidelity_max"] = max((f for f in fids if f is not None), default=None)
