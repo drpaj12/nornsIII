@@ -1,0 +1,508 @@
+[
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_dp_16",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_ctl_16",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_dp_16",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_ctl_16",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_dp_64",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_ctl_64",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_dp_64",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_ctl_64",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_dp_256",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_mesh_ctl_256",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_dp_256",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  },
+  "design": "n5_tree_ctl_256",
+  "stock": {
+   "candidates": 0.0,
+   "near10": 0.0,
+   "near10_share": null,
+   "near5": 0.0,
+   "near5_share": null,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.0
+  }
+ },
+ {
+  "H": {
+   "candidates": 4.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 1.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.04081632653061224
+  },
+  "design": "ch_intrinsics",
+  "stock": {
+   "candidates": 4.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 1.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.04081632653061224
+  }
+ },
+ {
+  "H": {
+   "candidates": 13.0,
+   "near10": 1.0,
+   "near10_share": 0.07692307692307693,
+   "near5": 1.0,
+   "near5_share": 0.07692307692307693,
+   "paths_with_hop": 47.5,
+   "saved_share_of_cpd": 0.14881492091782908,
+   "share_of_luts": 0.07602339181286549
+  },
+  "design": "stereovision3",
+  "stock": {
+   "candidates": 15.0,
+   "near10": 1.0,
+   "near10_share": 0.06666666666666667,
+   "near5": 1.0,
+   "near5_share": 0.06666666666666667,
+   "paths_with_hop": 36.0,
+   "saved_share_of_cpd": 0.13575379568342205,
+   "share_of_luts": 0.08771929824561403
+  }
+ },
+ {
+  "H": {
+   "candidates": 5.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 32.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.024875621890547265
+  },
+  "design": "diffeq2",
+  "stock": {
+   "candidates": 8.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 28.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.03980099502487562
+  }
+ },
+ {
+  "H": {
+   "candidates": 7.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 121.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.02356902356902357
+  },
+  "design": "diffeq1",
+  "stock": {
+   "candidates": 7.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 121.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.02356902356902357
+  }
+ },
+ {
+  "H": {
+   "candidates": 3.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.01675977653631285
+  },
+  "design": "mkPktMerge",
+  "stock": {
+   "candidates": 3.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 0.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.01675977653631285
+  }
+ },
+ {
+  "H": {
+   "candidates": 59.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 6.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.05493482309124767
+  },
+  "design": "raygentop",
+  "stock": {
+   "candidates": 59.0,
+   "near10": 0.0,
+   "near10_share": 0.0,
+   "near5": 0.0,
+   "near5_share": 0.0,
+   "paths_with_hop": 6.0,
+   "saved_share_of_cpd": 0.0,
+   "share_of_luts": 0.05493482309124767
+  }
+ },
+ {
+  "H": {
+   "candidates": 31.0,
+   "near10": 2.0,
+   "near10_share": 0.06451612903225806,
+   "near5": 2.0,
+   "near5_share": 0.06451612903225806,
+   "paths_with_hop": 156.0,
+   "saved_share_of_cpd": 0.0950014851651319,
+   "share_of_luts": 0.02397525135344161
+  },
+  "design": "sha",
+  "stock": {
+   "candidates": 31.0,
+   "near10": 2.0,
+   "near10_share": 0.06451612903225806,
+   "near5": 2.0,
+   "near5_share": 0.06451612903225806,
+   "paths_with_hop": 156.0,
+   "saved_share_of_cpd": 0.0950014851651319,
+   "share_of_luts": 0.02397525135344161
+  }
+ },
+ {
+  "H": {
+   "candidates": 31.0,
+   "near10": 4.0,
+   "near10_share": 0.12903225806451613,
+   "near5": 4.0,
+   "near5_share": 0.12903225806451613,
+   "paths_with_hop": 192.0,
+   "saved_share_of_cpd": 0.06621549128784349,
+   "share_of_luts": 0.06031128404669261
+  },
+  "design": "boundtop",
+  "stock": {
+   "candidates": 31.0,
+   "near10": 4.0,
+   "near10_share": 0.12903225806451613,
+   "near5": 4.0,
+   "near5_share": 0.12903225806451613,
+   "paths_with_hop": 192.0,
+   "saved_share_of_cpd": 0.06621549128784349,
+   "share_of_luts": 0.06031128404669261
+  }
+ },
+ {
+  "H": {
+   "candidates": 89.0,
+   "near10": 6.0,
+   "near10_share": 0.06741573033707865,
+   "near5": 2.0,
+   "near5_share": 0.02247191011235955,
+   "paths_with_hop": 199.0,
+   "saved_share_of_cpd": 0.0765627156701029,
+   "share_of_luts": 0.08396226415094339
+  },
+  "design": "mkSMAdapter4B",
+  "stock": {
+   "candidates": 89.0,
+   "near10": 6.0,
+   "near10_share": 0.06741573033707865,
+   "near5": 2.0,
+   "near5_share": 0.02247191011235955,
+   "paths_with_hop": 199.0,
+   "saved_share_of_cpd": 0.0765627156701029,
+   "share_of_luts": 0.08396226415094339
+  }
+ },
+ {
+  "H": {
+   "candidates": 459.0,
+   "near10": 16.0,
+   "near10_share": 0.034858387799564274,
+   "near5": 1.0,
+   "near5_share": 0.002178649237472767,
+   "paths_with_hop": 200.0,
+   "saved_share_of_cpd": 0.09231574385100878,
+   "share_of_luts": 0.1913297207169654
+  },
+  "design": "or1200",
+  "stock": {
+   "candidates": 459.0,
+   "near10": 16.0,
+   "near10_share": 0.034858387799564274,
+   "near5": 1.0,
+   "near5_share": 0.002178649237472767,
+   "paths_with_hop": 200.0,
+   "saved_share_of_cpd": 0.09231574385100878,
+   "share_of_luts": 0.1913297207169654
+  }
+ }
+]

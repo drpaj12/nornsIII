@@ -1,0 +1,21 @@
+\subsection{Round seven: a placement corpus and a hindsight clustering}
+\label{sec:r7-method}
+Round seven asks two questions of data instead of testing an idea (N Q1.7: how far is the VPR packer from a best-known clustering made with
+hindsight from good placements, and how much would LUT duplication add; N Q2.4: which HDL relations predict that atoms sit together in good
+placements). Its protocol, committed before any run, is \code{docs/plan/round7.md} (commit \code{93c983a}); the one quantity defined in
+advance is the \emph{hindsight gap} per design, and every other analysis is exploratory.
+
+\textbf{Corpus.} 10 VTR designs of rounds one to four and 12 round-five netlist-level constructions
+(mesh and tree, $B\in\{16,64,256\}$, whose block clustering is optimal by construction), each with VPR seeds 1 to 10, the architecture of rounds one
+to six, VPR's default analytical-placement flow (VTR~\cite{rose2012vtr} and VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}, version 9.0.0-dev; the flow already clusters with APPack from atom positions; there is no separate analytical hindsight
+start), and routing at the minimum channel width. Each run records, per atom, the construct chain from the provenance names, the word and bit
+index, the CLB, its coordinates, the pack-time and post-route criticality and slack; per pair, the N17 class, the HDL relations and the distance in
+each run; per net, fanout and CLBs spanned. Post-route criticality is path based, from the 200 worst reported paths.
+
+\textbf{Hindsight clustering.} Take the best stock run (lowest wirelength~$\times$~critical-path delay). Keep its CLB positions fixed and move
+LUT--FF molecules between CLBs within Manhattan distance two (or swap them) by greedy search, minimising the sum over nets of
+$(1+4\,\mathrm{pcrit})\cdot$HPWL under an approximate CLB capacity (10 LUTs, 20 flip-flops, 40 inputs, 20 outputs); CLBs with carry chains stay
+fixed. The result is handed to the packer as an affinity file at weight 100 (round five's known arm), so VPR's own legality check applies, and the
+clustering VPR actually builds is measured. Repeat from the best run of each round until the median objective stops improving by 1\% or after five
+rounds. The \emph{gap} of a metric is stock over hindsight, seed for seed, with a bootstrap interval over the ten seeds. \emph{Duplication}
+candidates are single LUTs whose output net has sinks in two or more CLBs; nothing is built.

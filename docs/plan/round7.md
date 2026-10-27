@@ -244,4 +244,19 @@ default flow). A research-log entry with Peter's quote; the RQ table rows for N 
   commit 93c983a is dated 13:45:36 EDT; the ch_intrinsics probe ran at about 13:42, the stereovision2 probe finished at 13:45:06; the
   first round-7 run (n5_mesh_dp_16, stock, seed 1) finished at 13:46:50, after the Stage-0 commit. No round-7 run precedes the commit. The
   rules are unchanged.
-
+* 2026-10-26 20:30 EDT, Stage 1-3 notes (nothing above changed; each item is a choice the protocol left open or a deviation, with the reason).
+  (1) The run flags are exactly the ones above, with `--route_file /dev/null` (works). Cited VTR: first VTR paper and VTR 9 at commit 3c9a4d23b2.
+  (2) Evaluation set for mining: the two samples that are unbiased by co-location (uniform random pairs and a uniform sample of ALL connected pairs, up to 500 000,
+      added to the universe as a fourth sample, `src` bit 8). Co-located pairs and the connected-never-co-located sample are in the universe but not used for the
+      models or the Table-XI statistic, because they are selected on the outcome.
+  (3) Table-XI statistic is computed on the mean stock distance over the 10 seeds (not per seed) for both the observed value and the null.
+  (4) Best hindsight run for mining = the lowest-objective run among all hindsight-arm runs (also when the fixed-point arm H is stock).
+  (5) Stock packing turned out identical across the 10 seeds on every design (co-CLB status of 100% of universe pairs invariant), so "stability across seeds"
+      is read on placement (within two CLBs in a seed) instead of co-CLB; the co-CLB invariance is itself reported.
+  (6) The hindsight clustering is delivered through the Norns affinity file, not a hand-written `.net` (stated in the protocol); the realised clustering fidelity is reported.
+  (7) Main-set status at this entry: the heavy lock was held for long stretches by another lane (hours with about one run completed), so the main set is partial:
+      the 10 designs ch_intrinsics ... or1200 of the order above are complete; stereovision0, stereovision1, mkDelayWorker32B, stereovision2 and blob_merge are not
+      (a driver is still queued on the lock and is not killed; results from it are not in this round's numbers). The gap table, duplication and mining use the 10 complete designs
+      plus the 12 calibration designs. No design was cut for time or memory by choice.
+  (8) A disk guard (stop before a new design when /mnt/c has < 30 GB free) and `runs/r7/scratch_done.txt` (scratch subdirectories whose kept files are in runs/r7)
+      were added on the controller's request; no run was affected.

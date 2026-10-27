@@ -222,11 +222,17 @@ def disagreement(ds: list[D], shuffles: int) -> dict:
 def stability(ds: list[D], shuffles: int) -> dict:
     """Pairs that share a CLB in >= 1 stock run: the share that do so in >= 8 of the 10 seeds ("knowns"), by relation and class."""
     hist = np.zeros(11, dtype=np.int64)
+    inv_n = [0, 0]
     cls_stable = np.zeros((5, 2), dtype=np.int64)
     obs = {lv: np.zeros(4, dtype=np.int64) for lv in LEVELS}  # stable&rel, rel, stable&~rel, ~rel
     nul = [{lv: np.zeros(4, dtype=np.int64) for lv in LEVELS} for _ in range(shuffles)]
     for d in ds:
-        k = POP[d.co["stock"] & 1023]
+        cm = d.co["stock"] & 1023
+        inv_n[0] += int(((cm == 0) | (cm == 1023))[cm >= 0].sum())
+        inv_n[1] += len(cm)
+        # near in a seed = Manhattan CLB distance <= 2 (co-located included); evaluated on the unbiased pairs
+        k = np.zeros(len(cm), dtype=np.uint8)
+        k[d.E] = (d.dist[d.E] <= 2).sum(axis=1)
         idx = np.flatnonzero(k >= 1)
         stable = k[idx] >= 8
         hist += np.bincount(k[idx], minlength=11)
@@ -256,7 +262,9 @@ def stability(ds: list[D], shuffles: int) -> dict:
                       "diff": diff(o), "null_diff_mean": float(np.mean(nd)) if nd else None,
                       "null_lo": float(np.percentile(nd, 2.5)) if nd else None, "null_hi": float(np.percentile(nd, 97.5)) if nd else None,
                       "related_pairs": int(o[1])}
-    return {"hist_seeds_co_stock": hist.tolist(), "pairs": int(hist.sum()), "stable_ge8": int(hist[8:].sum()),
+    return {"co_clb_pairs_seed_invariant_share": inv_n[0] / inv_n[1] if inv_n[1] else None,
+            "definition": "near = Manhattan CLB distance <= 2 in a seed; pairs of the unbiased samples near in >= 1 seed; stable = near in >= 8 of 10",
+            "hist_seeds_co_stock": hist.tolist(), "pairs": int(hist.sum()), "stable_ge8": int(hist[8:].sum()),
             "by_class_stable_share": {c: (float(cls_stable[i, 0] / cls_stable[i, 1]) if cls_stable[i, 1] else None)
                                       for i, c in enumerate(("SC", "SN", "SI", "OR", "FL"))},
             "by_class_pairs": {c: int(cls_stable[i, 1]) for i, c in enumerate(("SC", "SN", "SI", "OR", "FL"))}, "levels": levels}

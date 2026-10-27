@@ -6,10 +6,12 @@ optimum, the duplication counts. Reads runs/r7/<d>/ and writes data/r7/gap.json,
 
 from __future__ import annotations
 
+import json
 import math
 import random
 import statistics
 import sys
+from pathlib import Path
 
 import nornlib as nl
 import r7lib as lib
@@ -124,7 +126,48 @@ def dup_summary(design: str, harm: str | None) -> dict | None:
     return out
 
 
+def corpus_summary() -> dict:
+    """Runs per design and arm (ok, failed), logic CLBs, VPR seconds, disk sizes (bytes) of runs/r7 and the scratch directory."""
+    import subprocess
+    p = lib.R7 / "runs.jsonl"
+    rows = [json.loads(x) for x in p.read_text().splitlines()] if p.is_file() else []
+    last: dict[tuple, dict] = {}
+    for r in rows:
+        last[(r["design"], r["arm"], r["seed"])] = r
+    per: dict[str, dict] = {}
+    for (d, arm, _s), r in last.items():
+        e = per.setdefault(d, {"ok": 0, "failed": 0, "arms": {}, "flow_s": 0.0})
+        e["arms"].setdefault(arm, {"ok": 0, "failed": 0})
+        if r["rc"] == 0:
+            e["ok"] += 1
+            e["arms"][arm]["ok"] += 1
+            e["flow_s"] += float(r.get("flow_s") or 0.0)
+        else:
+            e["failed"] += 1
+            e["arms"][arm]["failed"] += 1
+    for d, e in per.items():
+        m = lib.read_metrics(d, "stock", 1)
+        e["logic_clbs_seed1"] = m.get("logic_clbs") if m else None
+        e["grid"] = m.get("grid") if m else None
+        stock = [lib.read_metrics(d, "stock", s) for s in lib.SEEDS]
+        stock = [x for x in stock if x and x.get("rc") == 0]
+        e["max_rss_mib"] = max((x.get("max_rss_mib") or 0.0) for x in stock) if stock else None
+
+    def du(path: Path) -> int:
+        try:
+            return int(subprocess.run(["du", "-sb", str(path)], capture_output=True, text=True, check=False).stdout.split()[0])
+        except (IndexError, OSError):
+            return 0
+
+    sp = lib.R7 / "scratch_path.txt"
+    scratch = Path(sp.read_text().strip()) if sp.is_file() else None
+    return {"designs": per, "runs_logged": len(rows), "runs_ok": sum(e["ok"] for e in per.values()),
+            "runs_failed": sum(e["failed"] for e in per.values()), "vpr_seconds": sum(e["flow_s"] for e in per.values()),
+            "runs_r7_bytes": du(lib.R7), "scratch_bytes": du(scratch) if scratch else 0}
+
+
 def main() -> int:
+    nl.write_json(lib.DATA7 / "corpus.json", corpus_summary())
     gaps = []
     dups = []
     for d in lib.CALIB + lib.MAIN:

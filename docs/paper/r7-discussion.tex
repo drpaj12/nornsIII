@@ -1,0 +1,22 @@
+\subsection{Round seven: what the data says and what it cannot say}
+\label{sec:r7-discussion}
+\textbf{Hindsight gap.} On 1 of 10 designs the whole 95\% interval of the wirelength gap lies above one; the median gap is 1.000.
+On the known-optimum constructions the procedure recovers a median of 0.52 of the wirelength gap of the designs that have one
+(12 designs), so it reaches a clustering about as good as the construction's; on real designs it is a best-known reference, not an optimum
+(the procedure keeps CLB positions of one placement fixed, uses an approximate capacity, leaves carry-chain CLBs alone, and picks the arm and source run
+by the objective it reports).
+
+\textbf{Duplication.} The median share of duplication candidates within 5\% of the critical-path delay is 0.1\%, and the upper estimate of
+the delay all candidate hops would save is 3.3\% of the critical-path delay (median over designs, stock runs); this is a deliberately optimistic
+bound from the 200 reported paths.
+
+\textbf{Mining (exploratory).} A model with HDL features, tested on held-out designs, changes the hindsight co-location AUC by 0.070
+[0.026, 0.128] over a baseline with net connectivity and criticality, against -0.003 [-0.004, -0.002] when the HDL
+labels are shuffled. Table~\ref{tab:r3status}'s result (same word and same module sit closer than the nets predict) re-measured here holds at the levels
+same instance, depth 1, same instance (full path), same statement, same word (negative median and at most 5\% of the shuffles at or below it). The relations tested are those in
+the provenance names and the word file; module type names are not in the BLIF, so ``module'' means the instance path. Peter's bit-level hint is
+answered by the rows of Table~\ref{tab:r7coef} and the ``bit'' rows of Table~\ref{tab:r7model}.
+
+\textbf{Limits.} Best-known, not optimal. One architecture. VTR designs only; the big VTR designs were not run. The pair universe is a sample (all
+co-located pairs, a sample of connected pairs and a uniform sample), the evaluation set is the two unbiased samples, and the 200 reported timing paths bound
+every criticality used. Nothing here is a hypothesis test with a status; the associations are the data's, with their nulls.

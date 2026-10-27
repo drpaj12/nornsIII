@@ -291,8 +291,9 @@ def mining_tables(d: dict) -> str:
         rows.append(f"{LEVEL_TEX[lv]} & {pct(v['stable_given_related'])} & {pct(v['stable_given_unrelated'])} & {f3(v['diff'])} & "
                     f"[{f3(v['null_lo'])}, {f3(v['null_hi'])}] \\\\")
     cls = st["by_class_stable_share"]
-    out.append("\n".join([r"\begin{table}[t]", rf"\caption{{Round 7 (exploratory), stability across seeds: of the {st['pairs']} pairs that share a CLB in at least one "
-                           rf"stock run, {st['stable_ge8']} ({pct(st['stable_ge8'] / st['pairs'] if st['pairs'] else float('nan'))}) do so in eight or more of ten. "
+    out.append("\n".join([r"\begin{table}[t]", rf"\caption{{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed ({pct(st['co_clb_pairs_seed_invariant_share'])} of the "
+                           rf"universe pairs have the same co-CLB status in all ten stock runs), so stability is read on placement: of the {st['pairs']} pairs of the unbiased samples "
+                           rf"within two CLBs in at least one seed, {st['stable_ge8']} ({pct(st['stable_ge8'] / st['pairs'] if st['pairs'] else float('nan'))}) are within two CLBs in eight or more of ten. "
                            r"Share of stable pairs given the relation and given its absence, their difference, and the label-shuffled range of the difference. By N17 class: "
                            + ", ".join(f"{c} {pct(cls[c])}" for c in CLASSES) + r".}", r"\label{tab:r7stab}", r"\centering\scriptsize",
                            r"\begin{tabular}{@{}lrrrc@{}}", r"\toprule", r"relation & stable $|$ rel. & stable $|$ not & diff. & null range \\", r"\midrule"] + rows +

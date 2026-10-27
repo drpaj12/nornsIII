@@ -1,0 +1,34 @@
+{
+ "arms": [
+  "stock",
+  "h1"
+ ],
+ "atoms": 2439,
+ "carry_pairs": 578,
+ "class_share_pairs": {
+  "FL": 0.8815051100711423,
+  "OR": 0.06234076934377033,
+  "SC": 0.010564311347086104,
+  "SI": 0.039394766111938886,
+  "SN": 0.006195043126062412
+ },
+ "coverage_pcrit_mean": 0.14897498974989748,
+ "design": "raygentop",
+ "pairs": 238255,
+ "pairs_connected_random": 13379,
+ "pairs_connected_sample": 9855,
+ "pairs_cooccur": 31079,
+ "pairs_uniform": 200000,
+ "relation_share": {
+  "carry_nb": 0.002425972172672137,
+  "same_bit": 0.01587794589830224,
+  "same_inst_d1": 0.16748861513924157,
+  "same_inst_d2": 0.0,
+  "same_inst_d3": 0.0,
+  "same_inst_full": 0.16748861513924157,
+  "same_stmt": 0.11526725567144445,
+  "same_word": 0.026887158716501228,
+  "same_word_bit": 0.0
+ },
+ "runs": 20
+}

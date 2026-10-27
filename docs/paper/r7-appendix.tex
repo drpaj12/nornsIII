@@ -1,0 +1,21 @@
+\subsection{Round seven: research log}
+\label{sec:r7-appendix}
+\paragraph{2026-10-26, round seven.} Peter (2026-10-26), verbatim: ``In the Norns questions, I really think we should have a bunch of VTR placements that generate data that we then analyze with the qeustion what might be better clustering and intitialization - every idea we've had is in the other direction - hypothesis, test, not really better - it's like my data mining Journal paper with Gharibian, Shannon and Wilton''. The paper he means is Gharibian, Shannon, Jamieson and Chung, TRETS 2013 \cite{Gharibian2013tret}, with the FPL 2014 paper by Gharibian, Shannon and Jamieson \cite{gharibian2014identifying}; both entries were checked against Crossref on 2026-10-26 and neither lists an author named Wilton. Question N Q1.7 (area, speed, wirelength): how far is the VPR packer from a best-known clustering made with hindsight from good placements, and how much would LUT duplication (after Schabas and Brown \cite{schabas2003duplication}) add? Question N Q2.4: which HDL relations predict which atoms sit together in good placements, and where does stock packing disagree? The answers are Tables~\ref{tab:r7gap} to~\ref{tab:r7coef}. The protocol was committed before any run (\code{docs/plan/round7.md}, commit \code{93c983a}); its timestamp correction entry is in the protocol.
+
+\begin{table}[t]
+\caption{Research questions added in round seven.}
+\label{tab:r7rq}
+\centering\scriptsize
+\begin{tabular}{@{}lp{6.4cm}@{}}
+\toprule
+RQ & question (measures) \\
+\midrule
+N Q1.7 & On real designs, how far is the VPR packer from a best-known clustering made with hindsight from good placements, and how much would LUT duplication add? (area, speed, wirelength) \\
+N Q2.4 & Mined from many placements linked to the HDL: which HDL relations (word, bit index, statement, instance) predict which atoms sit together in good placements, and where does stock packing disagree? (wirelength, speed) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Agent defaults.} The hindsight procedure uses the Norns affinity mechanism at weight 100 instead of writing a \code{.net} by hand (VPR's packer is the legality check); the cost weight $1+4\,\mathrm{pcrit}$, the move radius of two CLBs and the capacity limits are fixed in the protocol; carry-chain CLBs stay as they are; the best hindsight run for mining is the lowest-objective run of any hindsight arm. The raw VPR directories are kept in a scratch directory (9.3~GB) and \code{runs/r7} holds 0.4~GB; nothing was deleted.
+
+Regeneration: \code{python scripts/write\_round7.py} from \code{data/r7/*.json}; the steps that need \code{runs/} are \code{r7.py hind}, \code{r7corpus.py}, \code{r7stats.py} and \code{r7mine.py}.
