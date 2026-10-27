@@ -10,7 +10,11 @@ supplies the atom list (atoms VPR swept are dropped) and the fixed pad positions
 `BEL` attribute `X<x>/Y<y>/IO<sub_tile>` so that HeAP has anchors. Clock nets (latch control) are not
 connected: the DFF CLK pin stays open, like VPR's placer ignores clocks. Constant drivers (a `.names`
 with no inputs) are not emitted; their sinks are left open (counted in the stats). Carry, multiplier and
-memory `.subckt` atoms are not supported: the converter refuses a design that has any (stats `unsupported`).
+memory `.subckt` atoms (models adder, multiply, single_port_ram, dual_port_ram) follow rule H0 (docs/plan/placers.md
+section 10.3): each becomes a fixed ANCHOR cell at the exact (x, y) of its REF line, with one port per net that also touches a
+movable (LUT or DFF) cell; clock pins and constant or unconnected nets are not connected. The tiles holding anchors are written
+to --anchors (lines `x y count`, read by the uarch through `--vopt anchors=FILE`). Any other `.subckt` model is refused.
+A subckt atom is named like VPR names it: the net of its first output pin in line order (vpr/src/base/read_blif.cpp:236-250).
 """
 import argparse
 import json
@@ -58,6 +62,26 @@ def parse(lines):
     return inputs, outputs, names, latches, subckts
 
 
+HARD_MODELS = {"adder", "multiply", "single_port_ram", "dual_port_ram"}
+OUT_PORTS = {"out", "out1", "out2", "sumout", "cout"}  # output ports of those models (arch XML <models>)
+NO_NET = {"unconn", "gnd", "vcc"}
+
+
+def split_pin(pin):
+    base, _, idx = pin.partition("[")
+    return base, idx
+
+
+def parse_subckt(tokens):
+    model = tokens[0]
+    pins = []
+    for t in tokens[1:]:
+        p, _, n = t.partition("=")
+        pins.append((p, n))
+    first_out = next((n for p, n in pins if split_pin(p)[0] in OUT_PORTS), None)
+    return model, first_out, pins
+
+
 def truth_table(ins, cover):
     k = len(ins)
     on_set = True
@@ -99,21 +123,27 @@ def main():
     ap.add_argument("--ref", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--stats")
+    ap.add_argument("--anchors", help="write the ANCHOR tile list (x y count) here; default OUT.anchors.txt")
     a = ap.parse_args()
     inputs, outputs, names, latches, subckts = parse(read_blif(a.blif))
     ref = read_ref(a.ref)
-    stats = {"blif_names": len(names), "blif_latches": len(latches), "unsupported": {}}
-    for s in subckts:
-        stats["unsupported"][s[0]] = stats["unsupported"].get(s[0], 0) + 1
+    stats = {"blif_names": len(names), "blif_latches": len(latches), "unsupported": {}, "hard_models": {}}
+    hard = []
+    for sk in subckts:
+        if sk[0] in HARD_MODELS:
+            stats["hard_models"][sk[0]] = stats["hard_models"].get(sk[0], 0) + 1
+            hard.append(parse_subckt(sk))
+        else:
+            stats["unsupported"][sk[0]] = stats["unsupported"].get(sk[0], 0) + 1
     ref_types = {}
     for _, _, _, typ in ref.values():
         ref_types[typ] = ref_types.get(typ, 0) + 1
     stats["ref_atom_types"] = ref_types
-    if subckts or set(ref_types) - {"lut", "ff", "inpad", "outpad"}:
+    if stats["unsupported"]:
         stats["ok"] = False
         if a.stats:
             Path(a.stats).write_text(json.dumps(stats, indent=1) + "\n")
-        sys.exit("unsupported atoms (carry/mult/memory): " + json.dumps(stats["unsupported"]) + " ref " + json.dumps(ref_types))
+        sys.exit("unsupported .subckt models: " + json.dumps(stats["unsupported"]))
     netid, nets = {}, 2
 
     def net(n):
@@ -164,11 +194,47 @@ def main():
         x, y, z, _ = ref[pad]
         cells[pad] = {"hide_name": 0, "type": "IOB", "parameters": {}, "attributes": {"BEL": f"X{x}/Y{y}/IO{z}"},
                       "port_directions": {"I": "input"}, "connections": {"I": [net(n)]}}
-    missing = sorted(set(ref) - set(cells))
+    movable = set()
+    for c in cells.values():
+        if c["type"] in ("LUT6", "DFF"):
+            for v in c["connections"].values():
+                movable.update(v)
+    tiles, n_anchor, hard_missing, hard_unemitted = {}, 0, 0, 0
+    for model, first_out, pins in hard:
+        if first_out is None or first_out not in ref:
+            hard_missing += 1
+            continue
+        x, y, sub, _typ = ref[first_out]
+        ports, conn, dirs = 0, {}, {}
+        for p, n in pins:
+            base = split_pin(p)[0]
+            if base == "clk" or n in NO_NET or n in const_nets or n in clocks or n not in netid or netid[n] not in movable:
+                continue
+            nm = f"P{ports}"
+            ports += 1
+            conn[nm] = [netid[n]]
+            dirs[nm] = "output" if base in OUT_PORTS else "input"
+        if not ports:
+            hard_unemitted += 1
+            continue
+        i = tiles.get((x, y), 0)
+        tiles[(x, y)] = i + 1
+        cells[first_out] = {"hide_name": 0, "type": "ANCHOR", "parameters": {}, "attributes": {"BEL": f"X{x}/Y{y}/AN{i}"},
+                            "port_directions": dirs, "connections": conn}
+        n_anchor += 1
+    apath = Path(a.anchors or (a.out + ".anchors.txt"))
+    apath.write_text("".join(f"{x} {y} {n}\n" for (x, y), n in sorted(tiles.items())))
+    hard_names = set()
+    for model, first_out, pins in hard:
+        if first_out in ref:
+            hard_names.add(first_out)
+    hard_names |= {n for n in ref if n in NO_NET}  # constant-driver LUT atoms: written verbatim by the readback
+    missing = sorted(set(ref) - set(cells) - hard_names)
     stats.update(ok=True, cells=len(cells), luts=sum(c["type"] == "LUT6" for c in cells.values()),
                  dffs=sum(c["type"] == "DFF" for c in cells.values()), pads=sum(c["type"] == "IOB" for c in cells.values()),
                  constant_drivers_dropped=len(const_nets), swept_by_vpr_dropped=dropped, clock_nets=sorted(clocks),
-                 ref_atoms=len(ref), ref_atoms_without_cell=missing[:20], n_ref_atoms_without_cell=len(missing))
+                 anchors=n_anchor, anchor_tiles=len(tiles), hard_atoms=len(hard), hard_atoms_not_in_ref=hard_missing,
+                 hard_atoms_without_movable_net=hard_unemitted, ref_atoms=len(ref), ref_atoms_without_cell=missing[:20], n_ref_atoms_without_cell=len(missing))
     mod = {"attributes": {"top": 1}, "ports": {}, "cells": cells, "netnames": {}}
     Path(a.out).write_text(json.dumps({"creator": "norns nextpnr_blif2json", "modules": {"top": mod}}) + "\n")
     if a.stats:

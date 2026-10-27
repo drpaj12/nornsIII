@@ -26,12 +26,13 @@
  *   - tile validity: at most 40 distinct nets entering the tile (the 40 "I" pins; own outputs
  *     feed back for free), as in the arch XML.
  *  Not modelled: LUT fracturing (two LUT5 per LUT6), carry chains, mult_36 and memory (their
- *  columns hold no bels: cells of those types are rejected by the converter), clocks (clock nets
+ *  columns hold no placeable bels; under rule H0 the converter emits them as fixed ANCHOR cells, see init_anchors()), clocks (clock nets
  *  are removed by the converter, like VPR's placer ignores them), routing (dummy wires only, run
  *  with --no-route), cell timing (none in the generic arch).
  */
 
 #include <cstdlib>
+#include <fstream>
 
 #include "log.h"
 #include "nextpnr.h"
@@ -58,6 +59,9 @@ struct K6Impl : ViaductAPI
         H = get("height", 12);
         N = get("n", 10);
         Imax = get("inputs", 40);
+        auto an = args.find("anchors");
+        if (an != args.end())
+            anchor_file = an->second;
         if (W < 3 || H < 3)
             log_error("k6 uarch: width and height must be at least 3 (got %d x %d)\n", W, H);
     }
@@ -127,6 +131,7 @@ struct K6Impl : ViaductAPI
   private:
     ViaductHelpers h;
     int W = 12, H = 12, N = 10, Imax = 40;
+    std::string anchor_file; // H0 hard blocks: lines "x y count", see init_anchors()
     std::vector<std::vector<BelId>> tile_ble; // [y * W + x][k]
 
     bool is_io(int x, int y) const { return x == 0 || x == W - 1 || y == 0 || y == H - 1; }
@@ -169,6 +174,29 @@ struct K6Impl : ViaductAPI
             }
         }
         log_info("k6 uarch: %d CLB tiles, %d IOB bels\n", nclb, nio);
+        init_anchors();
+    }
+
+    // H0 hard-block rule (docs/plan/placers.md section 10.3): adders, multipliers and RAMs are fixed anchors. The converter
+    // writes one line "x y count" per tile that holds hard-block atoms; that tile gets `count` ANCHOR bels (z = 100 + i, no
+    // pins, never counted in tile legality). Cells of type ANCHOR carry a BEL attribute naming one of them.
+    void init_anchors()
+    {
+        if (anchor_file.empty())
+            return;
+        std::ifstream in(anchor_file);
+        if (!in)
+            log_error("k6 uarch: cannot read anchors file '%s'\n", anchor_file.c_str());
+        int x, y, n, total = 0;
+        while (in >> x >> y >> n) {
+            if (x < 0 || y < 0 || x >= W || y >= H)
+                log_error("k6 uarch: anchor tile (%d,%d) outside the %d x %d grid\n", x, y, W, H);
+            for (int i = 0; i < n; i++) {
+                ctx->addBel(h.xy_id(x, y, ctx->idf("AN%d", i)), id_ANCHOR, Loc(x, y, 100 + i), false, false);
+                ++total;
+            }
+        }
+        log_info("k6 uarch: %d ANCHOR bels (fixed hard blocks, H0)\n", total);
     }
 
     struct K6CellInfo
