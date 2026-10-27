@@ -486,3 +486,49 @@ n5_chain_ctl_256  grid [21, 21]  converter: 2560 LUT, 2560 FF, 17 pads, 1.43 s
  stop-rule ext_nextpnr_sa s2: WL / vpr_sa_reread = 1.16
  stop-rule ext_nextpnr_sa s3: WL / vpr_sa_reread = 1.71
 ```
+
+## 10. Dispatch 4 pre-registration (2026-10-27, written and pushed BEFORE any run it governs; keeps every rule above)
+
+Peter 2026-10-27 ("I like your decisions") approved: (1) the three LUT/FF-only constructions (`n5_rand_ctl_16`, `n5_mesh_ctl_64`, `n5_chain_ctl_256`) are a PIPELINE gate only, not research
+results; (2) the Section 9.8 stop-rule fire is recorded as a finding, followed by one pre-registered change (`--starttemp`); (3) the hard-block rule is H0 now (H1 comes in a later dispatch).
+No run of this dispatch exists before this commit. Arms are listed by family everywhere (Section 9.1); every table and caption of this dispatch repeats the H0 bias statement of Section 10.3.
+
+### 10.1 The SA finding (recorded, not a result; from Section 9.8)
+`ext_nextpnr_sa` seed 1 on `n5_chain_ctl_256` routed with WL 11492 = 4.03x `vpr_sa_reread` (4.16x `vpr_ap_reread`). nextpnr's SA temperature, which starts at 1 (`placer1.cc:1238`, default of `placer1/startTemp`)
+and is multiplied by 0.5 when the acceptance ratio exceeds 0.96 (`placer1.cc:340`), fell to 6e-4 within 15 iterations in that run: with HPWL deltas of order 1 or more per move the search is a greedy descent. Final nextpnr HPWL on that design:
+3514, 3064, 3465 (SA, seeds 1-3) against 1183, 1193, 1439 (HeAP). This is the likely cause; it is tested only by the one change below. Seeds 4-6 were not run in Dispatch 3.
+
+### 10.2 SA start temperature (the one pre-registered change to `ext_nextpnr_sa`)
+* **Parameter:** nextpnr's existing `--starttemp T` (a float in HPWL cost units; no nextpnr code change). **Grid (5 values, fixed now): T in {1, 3, 10, 30, 100}**; T = 1 is nextpnr's default and is the Dispatch 3 arm.
+* **Set:** the Dispatch 3 substitute set (`n5_rand_ctl_16`, `n5_mesh_ctl_64`, `n5_chain_ctl_256`; no hard blocks, so H0 plays no part). It is a pipeline-calibration set, chosen because no main design is LUT/FF-only; the transfer of the choice to the main designs
+  is a stated assumption, not a finding.
+* **Selection on seeds 1-3 only.** For every T, run `ext_nextpnr_sa` (seeds 1-3, uarch and flags of Section 9, nextpnr seed = VPR seed, mode A) on the three designs, with the matching `vpr_sa_reread` and `vpr_sa` controls (same seeds). Quantity:
+  Q(T) = geometric mean over the 9 (design, seed) pairs of (WL x CPD of `ext_nextpnr_sa` at T) / (WL x CPD of `vpr_sa_reread`). **Choose the T with the smallest Q(T)**; a difference under 1% is a tie, broken to the smaller T. Also reported: the largest
+  WL ratio to `vpr_sa_reread` over the 9 pairs for each T (the 2x rule of Section 9.4).
+* **If no T brings every one of the 9 WL ratios to 2.0 or less,** that is recorded in a dated entry, the arm is kept with the smallest-Q(T) value and carries the label "SA start temperature not sufficient (2x rule not met)" in every table.
+* **Report on seeds 4-6 (held out).** After the choice is committed (dated entry naming T and its SHA), run on the substitute set seeds 4-6: `ext_nextpnr_sa` at the chosen T and at the default T = 1, `vpr_sa`, `vpr_sa_reread`. Report per design the median and the min-max of the three seeds
+  of WL, W, CPD and WL x CPD. Nothing is chosen from seeds 4-6.
+
+### 10.3 Hard-block rule H0 (Section 9.5 H0, now adopted) and its bias statement
+* **Rule.** The converter reads the `vpr_ap` seed-1 `final.flat_place` of the design (as for pads in Section 9.2 item 2). Every atom of the models `adder`, `multiply`, `single_port_ram`, `dual_port_ram` becomes a cell of the type `ANCHOR`, fixed by
+  `BEL` at the exact (x, y) of its reference line, on a dummy `ANCHOR` bel of the uarch (new bel type; the bels at a location are created from a converter-written list `x y count`, passed with `--vopt anchors=FILE`; they carry no pins, do not count against
+  the 10 BLE slots of a tile, and are not part of tile legality). Their nets enter the JSON, so nextpnr's HeAP and SA see the hard blocks as fixed anchors on their nets. A net with no movable cell (only pads and anchors) is not emitted, and an anchor with no emitted net is not emitted.
+  Pins on clock nets and on constant or unconnected nets (`vcc`, `gnd`, `unconn`) are not connected. Readback writes every hard-block atom VERBATIM from the reference line (x, y, layer, sub tile); a hard-block cell reported at another location is counted (must be 0).
+  Movable in nextpnr: only the BLE cells (LUT6, DFF and merged LUT6+DFF). Pads stay fixed as in Section 9.2.
+* **Legality check.** The H0 flat-place file of every one of the 15 main designs must be accepted by VPR: rc 0, no reader warning, "Circuit successfully routed". It is checked by the seed-1 runs of the main comparison (below); a design whose external file VPR refuses is listed as ineligible with the VPR
+  error line for that arm, never silently dropped, and nothing is retuned for it. Fixing a converter bug is allowed and is a dated entry.
+* **Bias statement (printed in every caption of this dispatch, verbatim in meaning):** *"H0: adders, multipliers and RAMs are fixed at the positions of the VPR analytic placer (`vpr_ap`, seed 1), as are the pads, in both external arms and for every seed. nextpnr therefore places only the LUT/flip-flop logic, around
+  hard blocks and pads that VPR's analytic placer chose. The external arms inherit that part of VPR's solution; the annealing-family external arm inherits it from the analytic family. nextpnr has no timing model; both VPR families are timing-driven."*
+  Consequence for reading: the external arms are not independent placements of whole designs. Compare each external arm only with its own family's reread control; the hard-block part of the comparison is deliberately neutral (zero degrees of freedom for externals, seed-1 positions) and the variance across seeds of the external arms is understated for that part.
+
+### 10.4 Main comparison (after the starttemp choice and the H0 build; includes the H0 legality check)
+* **Designs:** the 15 main designs of Section 4, smallest first by logic CLBs (ch_intrinsics, stereovision3, mkPktMerge, diffeq2, diffeq1, boundtop, mkDelayWorker32B, mkSMAdapter4B, sha, raygentop, or1200, blob_merge, stereovision0, stereovision1, stereovision2), every arm and seed of one design
+  before the next design of the same driver. Two drivers run in parallel on alternate positions of that order; they share only the VPR lock; each still goes smallest first.
+* **Arms by family** (all through mode A, `--read_flat_place` into the default flow, flags of Section 9.4): analytic: `vpr_ap`, `vpr_ap_reread`, `ext_nextpnr_heap`; annealing: `vpr_sa`, `vpr_sa_reread`, `ext_nextpnr_sa` (T = the choice of Section 10.2).
+* **Seeds:** 1 to 6 for every arm. Seeds 1-3 are selection data; the reported comparison is seeds 4-6 (held out). The reference of all external arms is `vpr_ap` seed 1 for every seed (Section 9.2); the `vpr_ap` seed-1 run is shared.
+* **Measures:** routed WL, W, CPD, VPR placement time (AP or SA), nextpnr placer time, converter time, nextpnr peak RSS; the summary quantity is WL x CPD (Section 4).
+* **Summaries (written after all seeds finish; no paper section yet):** per design and arm, the median over seeds 4-6 and the min-max; per family, the geometric mean over designs of the ratio (arm median / own-family reread median) and (arm median / own-family VPR median), with the bootstrap of Section 4 (10000 resamples, seed 20261026, percentile 95%).
+  A dated results entry follows in this file. Seeds 1-3 are shown separately and labelled selection data.
+* **Stop rules** are those of Section 5 and Section 9.4 with these precisions: (a) pipeline faults (rc not 0, no legal route, reader warning, an atom without a cell, a moved pad or hard block) stop the affected design for that arm, are listed, and are retried once (Section 5 rule 4); (b) the 2x rule of Section 9.4 is
+  EVALUATED per design on the held-out medians and per run, and a fire is reported and the arm labelled, not a halt, because its cause is already recorded (Section 10.1) and this dispatch keeps the arm labelled; (c) memory: stop if one nextpnr process passes 13 GB (about 56% of the 23 GB VM);
+  (d) Section 5 rule 5 (an arm past 8 h on `stereovision2`: cut the largest designs first, commit the cut); (e) stop if `/mnt/c` has under 30 GB free; (f) no arm, option or parameter is chosen on seeds 4-6.
