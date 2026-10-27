@@ -834,40 +834,74 @@
       "stereovision3": 0.8453369899387473
      }
     },
-    "auc_chg": {
+    "auc_chg_conn": {
      "base": {
-      "blob_merge": 0.49619851892579164,
-      "boundtop": 0.5736689168192848,
-      "ch_intrinsics": 0.4996659471682598,
-      "diffeq1": 0.5149307479224376,
-      "diffeq2": 0.4562622397443826,
-      "mkDelayWorker32B": 0.5483516483516484,
-      "mkPktMerge": 0.5210808292569299,
-      "mkSMAdapter4B": 0.5786999538367105,
-      "or1200": 0.5551538305444554,
-      "raygentop": 0.5683839693086262,
-      "sha": 0.58926740651474,
-      "stereovision0": 0.507867748460451,
-      "stereovision1": 0.5780186888196304,
-      "stereovision2": 0.5316035449698816,
-      "stereovision3": 0.4585534813869522
+      "blob_merge": 0.4830089674893806,
+      "boundtop": 0.5176935596372937,
+      "ch_intrinsics": 0.680952380952381,
+      "diffeq1": 0.37575414781297134,
+      "diffeq2": 0.2641025641025641,
+      "mkDelayWorker32B": 0.53125,
+      "mkSMAdapter4B": 0.5922869391416121,
+      "or1200": 0.5604724074621708,
+      "raygentop": 0.6214855820804713,
+      "sha": 0.38747893495112906,
+      "stereovision0": 0.5003957299505954,
+      "stereovision1": 0.5699655309558531,
+      "stereovision2": 0.5280647929164743,
+      "stereovision3": 0.5181015879150964
      },
      "full": {
-      "blob_merge": 0.4913543152179516,
-      "boundtop": 0.5917589537782068,
-      "ch_intrinsics": 0.509327782917052,
-      "diffeq1": 0.5041056588840522,
-      "diffeq2": 0.4723542826221398,
-      "mkDelayWorker32B": 0.5483516483516484,
+      "blob_merge": 0.4776044124860028,
+      "boundtop": 0.5306440362706347,
+      "ch_intrinsics": 0.6857142857142857,
+      "diffeq1": 0.37952488687782804,
+      "diffeq2": 0.27008547008547007,
+      "mkDelayWorker32B": 0.53125,
+      "mkSMAdapter4B": 0.5931627010191325,
+      "or1200": 0.5579113290667161,
+      "raygentop": 0.6276498230782779,
+      "sha": 0.39913773733288394,
+      "stereovision0": 0.5014939147961922,
+      "stereovision1": 0.5468378124151689,
+      "stereovision2": 0.5159729032071989,
+      "stereovision3": 0.5164106032788998
+     }
+    },
+    "auc_chg_uni": {
+     "base": {
+      "blob_merge": 0.5134099616858238,
+      "boundtop": 0.5534119958463708,
+      "ch_intrinsics": 0.4940796210957501,
+      "diffeq1": 0.5038735212609936,
+      "diffeq2": 0.3410359931123259,
+      "mkDelayWorker32B": 0.5,
+      "mkPktMerge": 0.5210808292569299,
+      "mkSMAdapter4B": 0.5408843743416896,
+      "or1200": 0.5277983691623425,
+      "raygentop": 0.48886455953287633,
+      "sha": 0.5215177373951747,
+      "stereovision0": 0.4912634408602151,
+      "stereovision1": 0.4755469755469755,
+      "stereovision2": 0.42272727272727273,
+      "stereovision3": 0.4075547434015337
+     },
+     "full": {
+      "blob_merge": 0.6216475095785441,
+      "boundtop": 0.5777434133585403,
+      "ch_intrinsics": 0.5060483870967742,
+      "diffeq1": 0.493008230509792,
+      "diffeq2": 0.361857833057492,
+      "mkDelayWorker32B": 0.5,
       "mkPktMerge": 0.5664104355928256,
-      "mkSMAdapter4B": 0.5752216429734569,
-      "or1200": 0.552211948208042,
-      "raygentop": 0.569720397223303,
-      "sha": 0.5837005593827005,
-      "stereovision0": 0.5087774622834293,
-      "stereovision1": 0.5589046244677582,
-      "stereovision2": 0.5203351104341203,
-      "stereovision3": 0.46270095399651395
+      "mkSMAdapter4B": 0.5275996682115021,
+      "or1200": 0.5016441428598583,
+      "raygentop": 0.49086697131251583,
+      "sha": 0.5200476043094427,
+      "stereovision0": 0.5067204301075269,
+      "stereovision1": 0.5527670527670528,
+      "stereovision2": 0.5045454545454545,
+      "stereovision3": 0.41737416460491333
      }
     },
     "auc_uni": {
@@ -1300,22 +1334,38 @@
       "shared_only": 0.20528006553649902
      }
     },
-    "n_chg": {
-     "blob_merge": 1386,
-     "boundtop": 2461,
-     "ch_intrinsics": 279,
-     "diffeq1": 1422,
-     "diffeq2": 788,
-     "mkDelayWorker32B": 283,
+    "n_chg_conn": {
+     "blob_merge": 1339,
+     "boundtop": 302,
+     "ch_intrinsics": 29,
+     "diffeq1": 107,
+     "diffeq2": 93,
+     "mkDelayWorker32B": 45,
+     "mkSMAdapter4B": 760,
+     "or1200": 2436,
+     "raygentop": 1009,
+     "sha": 948,
+     "stereovision0": 2124,
+     "stereovision1": 1193,
+     "stereovision2": 1098,
+     "stereovision3": 499
+    },
+    "n_chg_uni": {
+     "blob_merge": 47,
+     "boundtop": 2159,
+     "ch_intrinsics": 250,
+     "diffeq1": 1315,
+     "diffeq2": 695,
+     "mkDelayWorker32B": 238,
      "mkPktMerge": 294,
-     "mkSMAdapter4B": 1540,
-     "or1200": 2896,
-     "raygentop": 1803,
-     "sha": 1685,
-     "stereovision0": 2179,
-     "stereovision1": 1272,
-     "stereovision2": 1119,
-     "stereovision3": 2028
+     "mkSMAdapter4B": 780,
+     "or1200": 460,
+     "raygentop": 794,
+     "sha": 737,
+     "stereovision0": 55,
+     "stereovision1": 79,
+     "stereovision2": 21,
+     "stereovision3": 1529
     },
     "r2": {
      "base": {
@@ -1401,45 +1451,60 @@
      },
      "shuffles": 200
     },
-    "auc_chg_bit_minus_base": {
-     "ci_hi": NaN,
-     "ci_lo": NaN,
-     "mean": null,
-     "median": null,
-     "n_designs": 0,
-     "n_positive": 0,
-     "null_hi": null,
-     "null_lo": null,
-     "null_mean": null,
-     "per_design": {},
-     "shuffles": 0
-    },
-    "auc_chg_full_minus_base": {
-     "ci_hi": 0.009507690927214724,
-     "ci_lo": -0.0034905162346647754,
-     "mean": 0.0025018869535345712,
-     "median": 0.0,
-     "n_designs": 15,
-     "n_positive": 7,
-     "null_hi": 0.0059613103934272,
-     "null_lo": -0.007895030501119425,
-     "null_mean": -0.0013712585265084583,
+    "auc_chg_conn_full_minus_base": {
+     "ci_hi": 0.006462370571118906,
+     "ci_lo": -0.004691565300205868,
+     "mean": 0.00017048501862130885,
+     "median": 0.000986973361558563,
+     "n_designs": 14,
+     "n_positive": 8,
+     "null_hi": 0.00969884184417654,
+     "null_lo": -0.017362672523838735,
+     "null_mean": -0.0031479809073185496,
      "per_design": {
-      "blob_merge": -0.004844203707840056,
-      "boundtop": 0.018090036958921973,
-      "ch_intrinsics": 0.009661835748792258,
-      "diffeq1": -0.010825089038385416,
-      "diffeq2": 0.016092042877757173,
+      "blob_merge": -0.005404555003377776,
+      "boundtop": 0.012950476633341035,
+      "ch_intrinsics": 0.004761904761904745,
+      "diffeq1": 0.0037707390648566985,
+      "diffeq2": 0.005982905982905962,
+      "mkDelayWorker32B": 0.0,
+      "mkSMAdapter4B": 0.0008757618775203646,
+      "or1200": -0.002561078395454608,
+      "raygentop": 0.006164240997806547,
+      "sha": 0.011658802381754874,
+      "stereovision0": 0.0010981848455967613,
+      "stereovision1": -0.023127718540684183,
+      "stereovision2": -0.012091889709275438,
+      "stereovision3": -0.0016909846361966574
+     },
+     "shuffles": 200
+    },
+    "auc_chg_uni_full_minus_base": {
+     "ci_hi": 0.04199353631669609,
+     "ci_lo": 0.0024011279793518564,
+     "mean": 0.02301546017906403,
+     "median": 0.011968766001024145,
+     "n_designs": 15,
+     "n_positive": 10,
+     "null_hi": 0.01769583557982147,
+     "null_lo": -0.013438345574534714,
+     "null_mean": 0.0014737304794187988,
+     "per_design": {
+      "blob_merge": 0.10823754789272033,
+      "boundtop": 0.024331417512169495,
+      "ch_intrinsics": 0.011968766001024145,
+      "diffeq1": -0.010865290751201628,
+      "diffeq2": 0.020821839945166065,
       "mkDelayWorker32B": 0.0,
       "mkPktMerge": 0.04532960633589567,
-      "mkSMAdapter4B": -0.003478310863253564,
-      "or1200": -0.0029418823364134594,
-      "raygentop": 0.0013364279146768077,
-      "sha": -0.005566847132039476,
-      "stereovision0": 0.0009097138229783308,
-      "stereovision1": -0.01911406435187213,
-      "stereovision2": -0.011268434535761318,
-      "stereovision3": 0.004147472609561775
+      "mkSMAdapter4B": -0.013284706130187507,
+      "or1200": -0.026154226302484207,
+      "raygentop": 0.0020024117796395013,
+      "sha": -0.0014701330857319617,
+      "stereovision0": 0.015456989247311759,
+      "stereovision1": 0.07722007722007734,
+      "stereovision2": 0.08181818181818179,
+      "stereovision3": 0.009819421203379641
      },
      "shuffles": 200
     },
@@ -1753,22 +1818,38 @@
       "stereovision3": 0.8242931810790786
      }
     },
-    "auc_chg": {
+    "auc_chg_conn": {
      "base": {
-      "diffeq2": 0.4085980983302412,
-      "mkDelayWorker32B": 0.5483516483516484,
-      "mkPktMerge": 0.5099464244118332,
-      "stereovision0": 0.47864054235035797,
-      "stereovision1": 0.47169653439269565,
-      "stereovision3": 0.4530919291583665
+      "diffeq2": 0.22222222222222224,
+      "mkDelayWorker32B": 0.53125,
+      "stereovision0": 0.4704832013320626,
+      "stereovision1": 0.4450310284527439,
+      "stereovision3": 0.5100653847392663
      },
      "full": {
-      "diffeq2": 0.4052611574933003,
-      "mkDelayWorker32B": 0.5483516483516484,
+      "diffeq2": 0.2760683760683761,
+      "mkDelayWorker32B": 0.53125,
+      "stereovision0": 0.47932664745984277,
+      "stereovision1": 0.44595904117977564,
+      "stereovision3": 0.5093245724224563
+     }
+    },
+    "auc_chg_uni": {
+     "base": {
+      "diffeq2": 0.3371574970326161,
+      "mkDelayWorker32B": 0.5,
+      "mkPktMerge": 0.5099464244118332,
+      "stereovision0": 0.4926075268817204,
+      "stereovision1": 0.5444015444015444,
+      "stereovision3": 0.4069336508946812
+     },
+     "full": {
+      "diffeq2": 0.35870655499272786,
+      "mkDelayWorker32B": 0.5,
       "mkPktMerge": 0.44868390402981595,
-      "stereovision0": 0.48683185996895806,
-      "stereovision1": 0.47087348009306,
-      "stereovision3": 0.45499642056772904
+      "stereovision0": 0.5376344086021505,
+      "stereovision1": 0.49678249678249675,
+      "stereovision3": 0.4084273527086819
      }
     },
     "auc_uni": {
@@ -1949,13 +2030,20 @@
       "shared_only": -0.15268686413764954
      }
     },
-    "n_chg": {
-     "diffeq2": 788,
-     "mkDelayWorker32B": 283,
+    "n_chg_conn": {
+     "diffeq2": 93,
+     "mkDelayWorker32B": 45,
+     "stereovision0": 2124,
+     "stereovision1": 1193,
+     "stereovision3": 499
+    },
+    "n_chg_uni": {
+     "diffeq2": 695,
+     "mkDelayWorker32B": 238,
      "mkPktMerge": 294,
-     "stereovision0": 2179,
-     "stereovision1": 1272,
-     "stereovision3": 2028
+     "stereovision0": 55,
+     "stereovision1": 79,
+     "stereovision3": 1529
     },
     "r2": {
      "base": {
@@ -2005,36 +2093,42 @@
      },
      "shuffles": 200
     },
-    "auc_chg_bit_minus_base": {
-     "ci_hi": NaN,
-     "ci_lo": NaN,
-     "mean": null,
-     "median": null,
-     "n_designs": 0,
-     "n_positive": 0,
-     "null_hi": null,
-     "null_lo": null,
-     "null_mean": null,
-     "per_design": {},
-     "shuffles": 0
-    },
-    "auc_chg_full_minus_base": {
-     "ci_hi": 0.003090918242775668,
-     "ci_lo": -0.030631260191008647,
-     "mean": -0.009221117748438534,
-     "median": -0.0004115271498178197,
-     "n_designs": 6,
-     "n_positive": 2,
-     "null_hi": 0.011675433852783518,
-     "null_lo": -0.014964461109739402,
-     "null_mean": -0.0015577565665145796,
+    "auc_chg_conn_full_minus_base": {
+     "ci_hi": 0.05384615384615385,
+     "ci_lo": 0.0,
+     "mean": 0.01257536007683115,
+     "median": 0.0009280127270317462,
+     "n_designs": 5,
+     "n_positive": 3,
+     "null_hi": 0.026276016170537396,
+     "null_lo": -0.032412833622533936,
+     "null_mean": -0.0013703447010727135,
      "per_design": {
-      "diffeq2": -0.003336940836940916,
+      "diffeq2": 0.05384615384615385,
+      "mkDelayWorker32B": 0.0,
+      "stereovision0": 0.008843446127780152,
+      "stereovision1": 0.0009280127270317462,
+      "stereovision3": -0.0007408123168100023
+     },
+     "shuffles": 200
+    },
+    "auc_chg_uni_full_minus_base": {
+     "ci_hi": 0.02154905796011175,
+     "ci_lo": -0.030631260191008647,
+     "mean": -0.006801987751087063,
+     "median": 0.0007468509070003571,
+     "n_designs": 6,
+     "n_positive": 3,
+     "null_hi": 0.02621656257356964,
+     "null_lo": -0.018061015204093176,
+     "null_mean": 0.002670424166344942,
+     "per_design": {
+      "diffeq2": 0.02154905796011175,
       "mkDelayWorker32B": 0.0,
       "mkPktMerge": -0.061262520382017294,
-      "stereovision0": 0.008191317618600091,
-      "stereovision1": -0.0008230542996356394,
-      "stereovision3": 0.001904491409362552
+      "stereovision0": 0.04502688172043012,
+      "stereovision1": -0.04761904761904767,
+      "stereovision3": 0.0014937018140007141
      },
      "shuffles": 200
     },
@@ -2314,26 +2408,46 @@
       "stereovision3": 0.8928295309660093
      }
     },
-    "auc_chg": {
+    "auc_chg_conn": {
      "base": {
-      "blob_merge": 0.6165165944053249,
-      "ch_intrinsics": 0.4991552001481293,
-      "diffeq1": 0.49087731243946187,
-      "mkPktMerge": 0.5283520454252162,
-      "mkSMAdapter4B": 0.5607396320351695,
-      "sha": 0.6123063806617088,
-      "stereovision1": 0.5947472692225315,
-      "stereovision3": 0.44455333042235634
+      "blob_merge": 0.6162589814330396,
+      "ch_intrinsics": 0.4693877551020408,
+      "diffeq1": 0.4246913580246913,
+      "mkSMAdapter4B": 0.4893964051137696,
+      "sha": 0.5328323564016973,
+      "stereovision1": 0.5951422029038369,
+      "stereovision3": 0.5243850037598023
      },
      "full": {
-      "blob_merge": 0.5930944561472379,
-      "ch_intrinsics": 0.5177697283910613,
-      "diffeq1": 0.4893644567625368,
+      "blob_merge": 0.5916491962346672,
+      "ch_intrinsics": 0.5612244897959183,
+      "diffeq1": 0.4030864197530864,
+      "mkSMAdapter4B": 0.48096081104855737,
+      "sha": 0.49190681793579044,
+      "stereovision1": 0.6213917342979016,
+      "stereovision3": 0.5252443871522183
+     }
+    },
+    "auc_chg_uni": {
+     "base": {
+      "blob_merge": 0.683641975308642,
+      "ch_intrinsics": 0.5104673998428908,
+      "diffeq1": 0.4571897417197035,
+      "mkPktMerge": 0.5283520454252162,
+      "mkSMAdapter4B": 0.476171703553022,
+      "sha": 0.5065108998144713,
+      "stereovision1": 0.4809027777777778,
+      "stereovision3": 0.3770878540848044
+     },
+     "full": {
+      "blob_merge": 0.6280864197530864,
+      "ch_intrinsics": 0.5307934014139827,
+      "diffeq1": 0.4689043741845055,
       "mkPktMerge": 0.6690669763840495,
-      "mkSMAdapter4B": 0.5599227769010977,
-      "sha": 0.6036499305048073,
-      "stereovision1": 0.626301928400879,
-      "stereovision3": 0.46162885704456436
+      "mkSMAdapter4B": 0.47765661917564844,
+      "sha": 0.4915352504638219,
+      "stereovision1": 0.4613425925925926,
+      "stereovision3": 0.41357545012022756
      }
     },
     "auc_uni": {
@@ -2570,15 +2684,24 @@
       "shared_only": 0.28276675939559937
      }
     },
-    "n_chg": {
-     "blob_merge": 1108,
-     "ch_intrinsics": 588,
-     "diffeq1": 1293,
+    "n_chg_conn": {
+     "blob_merge": 1072,
+     "ch_intrinsics": 35,
+     "diffeq1": 108,
+     "mkSMAdapter4B": 1088,
+     "sha": 1636,
+     "stereovision1": 1516,
+     "stereovision3": 388
+    },
+    "n_chg_uni": {
+     "blob_merge": 36,
+     "ch_intrinsics": 553,
+     "diffeq1": 1185,
      "mkPktMerge": 422,
-     "mkSMAdapter4B": 2322,
-     "sha": 2655,
-     "stereovision1": 1648,
-     "stereovision3": 1556
+     "mkSMAdapter4B": 1234,
+     "sha": 1019,
+     "stereovision1": 132,
+     "stereovision3": 1168
     },
     "r2": {
      "base": {
@@ -2636,38 +2759,46 @@
      },
      "shuffles": 200
     },
-    "auc_chg_bit_minus_base": {
-     "ci_hi": NaN,
-     "ci_lo": NaN,
-     "mean": null,
-     "median": null,
-     "n_designs": 0,
-     "n_positive": 0,
-     "null_hi": null,
-     "null_lo": null,
-     "null_mean": null,
-     "per_design": {},
-     "shuffles": 0
-    },
-    "auc_chg_full_minus_base": {
-     "ci_hi": 0.04757104998704334,
-     "ci_lo": -0.007545600933777541,
-     "mean": 0.02169391822204192,
-     "median": 0.0081293357440681,
-     "n_designs": 8,
-     "n_positive": 4,
-     "null_hi": 0.008428750170914778,
-     "null_lo": -0.013603791587671183,
-     "null_mean": -0.001969355755158899,
+    "auc_chg_conn_full_minus_base": {
+     "ci_hi": 0.037058463189271924,
+     "ci_lo": -0.026351055456434718,
+     "mean": 0.003338541925608824,
+     "median": -0.008435594065212215,
+     "n_designs": 7,
+     "n_positive": 3,
+     "null_hi": 0.010479246549185726,
+     "null_lo": -0.01403863604797445,
+     "null_mean": -0.0017296602128533014,
      "per_design": {
-      "blob_merge": -0.023422138258087033,
-      "ch_intrinsics": 0.01861452824293197,
-      "diffeq1": -0.0015128556769250512,
+      "blob_merge": -0.024609785198372425,
+      "ch_intrinsics": 0.09183673469387754,
+      "diffeq1": -0.021604938271604923,
+      "mkSMAdapter4B": -0.008435594065212215,
+      "sha": -0.04092553846590691,
+      "stereovision1": 0.026249531394064718,
+      "stereovision3": 0.0008593833924159799
+     },
+     "shuffles": 200
+    },
+    "auc_chg_uni_full_minus_base": {
+     "ci_hi": 0.04574399859233417,
+     "ci_lo": -0.020485233360995152,
+     "mean": 0.015079585820173332,
+     "median": 0.006599774043714202,
+     "n_designs": 8,
+     "n_positive": 5,
+     "null_hi": 0.011707182882008572,
+     "null_lo": -0.022125980166340493,
+     "null_mean": -0.004492905088323492,
+     "per_design": {
+      "blob_merge": -0.05555555555555558,
+      "ch_intrinsics": 0.02032600157109188,
+      "diffeq1": 0.011714632464801977,
       "mkPktMerge": 0.14071493095883336,
-      "mkSMAdapter4B": -0.0008168551340718144,
-      "sha": -0.00865645015690153,
-      "stereovision1": 0.03155465917834743,
-      "stereovision3": 0.017075526622208015
+      "mkSMAdapter4B": 0.001484915622626426,
+      "sha": -0.014975649350649378,
+      "stereovision1": -0.019560185185185208,
+      "stereovision3": 0.036487596035423175
      },
      "shuffles": 200
     },

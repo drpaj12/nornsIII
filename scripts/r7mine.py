@@ -452,7 +452,7 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D], only_c
                               "y2tr": r2t[tr] / scale, "y2te": r2t[te] / scale,
                               "chg_tr": (y1[tr] != d.co_stock[tr]), "chg_te": (y1[te] != d.co_stock[te]),
                               "conn": (d.src[te] & 8) > 0, "uni": ((d.src[te] & 8) == 0) & ((d.src[te] & 4) > 0)}
-        res: dict = {"auc": {}, "auc_uni": {}, "auc_chg": {}, "r2": {}, "coef": {}}
+        res: dict = {"auc": {}, "auc_uni": {}, "auc_chg_conn": {}, "auc_chg_uni": {}, "r2": {}, "coef": {}}
         for held in designs:
             train = [data[d.design] for d in designs if family(d.design) != family(held.design)]
             if not train:
@@ -491,21 +491,24 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D], only_c
             ctr = np.concatenate([t["chg_tr"] for t in train])
             ytr_all = np.concatenate([t["y1tr"] for t in train])
             cte = te["chg_te"]
-            if ctr.sum() >= 50 and cte.sum() >= 20 and len(set(ytr_all[ctr])) == 2 and len(set(te["y1te"][cte])) == 2:
+            if ctr.sum() >= 50 and len(set(ytr_all[ctr])) == 2:
+                # fix round 3 (item 12): scored apart on the connected and on the uniform pairs (their inclusion probabilities differ), never on the mixture
                 for name, fx in Xc.items():
                     Xtr = np.vstack([fx(t["ptr"])[t["chg_tr"]] for t in train])
                     sc = StandardScaler().fit(Xtr)
                     lr = LogisticRegression(max_iter=300, C=1.0).fit(sc.transform(Xtr), ytr_all[ctr])
-                    p = lr.predict_proba(sc.transform(fx(te["pte"])[cte]))[:, 1]
-                    res["auc_chg"].setdefault(name, {})[held.design] = float(roc_auc_score(te["y1te"][cte], p))
-                    res.setdefault("n_chg", {})[held.design] = int(cte.sum())
+                    for key, sel in (("auc_chg_conn", cte & te["conn"]), ("auc_chg_uni", cte & te["uni"])):
+                        if sel.sum() >= 20 and len(set(te["y1te"][sel])) == 2:
+                            p = lr.predict_proba(sc.transform(fx(te["pte"])[sel]))[:, 1]
+                            res[key].setdefault(name, {})[held.design] = float(roc_auc_score(te["y1te"][sel], p))
+                            res.setdefault("n_" + key[4:], {})[held.design] = int(sel.sum())
         return res
 
     obs = fit_eval(None, True)
     out["observed"] = obs
     nulls = [fit_eval(k, False) for k in range(shuffles)]
     summ: dict = {}
-    for tgt in (("auc_chg",) if only_chg else ("auc", "auc_uni", "auc_chg", "r2")):
+    for tgt in (("auc_chg_conn", "auc_chg_uni") if only_chg else ("auc", "auc_uni", "auc_chg_conn", "auc_chg_uni", "r2")):
         for name in ("bit", "full"):
             base_t = obs[tgt].get("base", {})
             hs = [h for h in obs[tgt].get(name, {}) if h in base_t and obs[tgt][name][h] == obs[tgt][name][h] and base_t[h] == base_t[h]]
@@ -580,9 +583,14 @@ def refresh_chg(argv: list[str]) -> int:
     res = nl.read_json(lib.DATA7 / "mine.json")
     new = model_variants(ds, N_SHUF_MODEL, only_chg=True)
     for k, v in new.items():
-        res["models"][k]["observed"]["auc_chg"] = v["observed"]["auc_chg"]
-        res["models"][k]["observed"]["n_chg"] = v["observed"].get("n_chg", {})
-        res["models"][k]["summary"]["auc_chg_full_minus_base"] = v["summary"]["auc_chg_full_minus_base"]
+        for key in ("auc_chg_conn", "auc_chg_uni"):
+            res["models"][k]["observed"][key] = v["observed"][key]
+            res["models"][k]["observed"]["n_" + key[4:]] = v["observed"].get("n_" + key[4:], {})
+            res["models"][k]["summary"][key + "_full_minus_base"] = v["summary"][key + "_full_minus_base"]
+        for old in ("auc_chg", "n_chg"):
+            res["models"][k]["observed"].pop(old, None)
+        for old in ("auc_chg_full_minus_base", "auc_chg_bit_minus_base"):
+            res["models"][k]["summary"].pop(old, None)
     nl.write_json(lib.DATA7 / "mine.json", res)
     print("changed-pair AUC refreshed", designs)
     return 0
