@@ -9,9 +9,10 @@
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
 WS_ROOT=${WS_ROOT:-$HOME/odin3-ws}
-SRC=${SRC:-/tmp/claude-1000/nextpnr-k6-src}
-BLD=${BLD:-/tmp/claude-1000/nextpnr-k6-build}
-DEPS=${DEPS:-/tmp/claude-1000/nextpnr-deps}
+NORNS_TMP=${NORNS_TMP:-/tmp/claude-1000}
+SRC=${SRC:-$NORNS_TMP/nextpnr-k6-src}
+BLD=${BLD:-$NORNS_TMP/nextpnr-k6-build}
+DEPS=${DEPS:-$NORNS_TMP/nextpnr-deps}
 JOBS=${JOBS:-4}
 if [ ! -e "$SRC/CMakeLists.txt" ]; then
     mkdir -p "$SRC"
@@ -22,7 +23,7 @@ cp "$HERE/k6.cc" "$HERE/constids.inc" "$SRC/generic/viaduct/k6/"
 if ! grep -q 'viaduct/k6/k6.cc' "$SRC/generic/CMakeLists.txt"; then
     patch -p1 -d "$SRC" < "$HERE/cmake-register.patch"
 fi
-flock -x /tmp/claude-1000/odin3-heavy.lock sh -c "
+flock -x "$NORNS_TMP/odin3-heavy.lock" sh -c "
   cmake -S '$SRC' -B '$BLD' -G Ninja -DCMAKE_BUILD_TYPE=Release -DARCH=generic \
     -DBUILD_GUI=OFF -DBUILD_PYTHON=OFF -DBUILD_RUST=OFF -DBUILD_TESTS=OFF \
     -DBOOST_ROOT='$DEPS/prefix' -DBoost_NO_SYSTEM_PATHS=ON -DEigen3_DIR='$DEPS/prefix/share/eigen3/cmake' &&

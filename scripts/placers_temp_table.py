@@ -53,6 +53,10 @@ if mode == "sel":
     for T in temps:
         Q, mx, nb, rows = res[T]
         print(f"{T:6g} {Q:8.3f} {mx:13.2f} {nb:16d}  " + " ".join(f"{r[0][3:8]}{r[1]}:{r[2]:.2f}" if r[2] else f"{r[0][3:8]}{r[1]}:NA" for r in rows))
+    # missing or illegal (design, seed) pairs per T: a T that loses pairs has a Q(T) over fewer pairs and is not comparable (reported, the choice rule is unchanged)
+    for T in temps:
+        miss = [f"{r[0]} s{r[1]}" for r in res[T][3] if r[2] is None]
+        print(f"T = {T:g}: {len(res[T][3]) - len(miss)} of {len(res[T][3])} pairs used; missing/illegal: {', '.join(miss) if miss else 'none'}")
     best = min(temps, key=lambda T: (res[T][0], T))
     for T in sorted(temps):  # tie rule: smallest T within 1% of the minimum
         if res[T][0] <= res[best][0] * 1.01:

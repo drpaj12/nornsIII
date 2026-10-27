@@ -3,8 +3,8 @@
 Usage: . scripts/env.sh; NORNS_LOCK=/tmp/claude-1000/norns-vpr.lock python3 scripts/placers_gate.py WORKDIR DESIGN [SEEDS e.g. 1,2,3]
 WORKDIR is a fresh `mktemp -d /tmp/claude-1000/npl-XXXX` (raw outputs stay there; nothing is deleted). Every VPR run takes
 the Norns lock; nextpnr runs take none. Writes data/placers/gate_<DESIGN>.json (metrics only).
-Environment: NEXTPNR_K6 (default /tmp/claude-1000/nextpnr-k6-build/nextpnr-generic), NEXTPNR_LIBS (default
-/tmp/claude-1000/nextpnr-deps/prefix/lib).
+Environment: NORNS_TMP (default /tmp/claude-1000), NEXTPNR_K6 (default $NORNS_TMP/nextpnr-k6-build/nextpnr-generic), NEXTPNR_LIBS
+(default $NORNS_TMP/nextpnr-deps/prefix/lib).
 """
 import json
 import os
@@ -21,8 +21,9 @@ DESIGN = sys.argv[2]
 SEEDS = [int(s) for s in (sys.argv[3] if len(sys.argv) > 3 else "1,2,3").split(",")]
 BLIF = nl.runs_dir(DESIGN, "netlist", f"{DESIGN}.blif")
 VPR = Path(os.environ["NORNS_VPR"])
-NPNR = os.environ.get("NEXTPNR_K6", "/tmp/claude-1000/nextpnr-k6-build/nextpnr-generic")
-LIBS = os.environ.get("NEXTPNR_LIBS", "/tmp/claude-1000/nextpnr-deps/prefix/lib")
+TMP = os.environ.get("NORNS_TMP", "/tmp/claude-1000")
+NPNR = os.environ.get("NEXTPNR_K6", f"{TMP}/nextpnr-k6-build/nextpnr-generic")
+LIBS = os.environ.get("NEXTPNR_LIBS", f"{TMP}/nextpnr-deps/prefix/lib")
 HERE = Path(__file__).resolve().parent
 RX = {
     "pack_s": re.compile(r"#+ Packing took ([0-9.]+) seconds"),

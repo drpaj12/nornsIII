@@ -35,8 +35,8 @@ def chains(blif):
     for ln in _lines(blif):
         t = ln.split()
         if t[0] == ".subckt" and t[1] == "adder":
-            pins = dict(x.split("=", 1) for x in t[2:])
-            first_out = next(x.split("=", 1)[1] for x in t[2:] if x.split("=", 1)[0] in OUT_PORTS)
+            pins = dict(x.split("=", 1) for x in t[2:] if "=" in x)  # a token without "=" is not a pin connection: skipped
+            first_out = next(v for k, v in pins.items() if k in OUT_PORTS)
             adders.append((first_out, pins.get("cin"), pins.get("cout"), pins.get("sumout")))
         elif t[0] == ".latch":
             latches.append((t[1], t[2]))
@@ -81,7 +81,7 @@ def collapse(blif, lines):
             moved += 1
             ln = " ".join(t) + (" #" + comment if sep else "")
         out.append(ln)
-    return out, {"chain_atoms": len(head_of), "chain_ffs": len(ffs), "moved": moved}
+    return out, {"adders_plus_chain_ffs": len(head_of), "chain_ffs": len(ffs), "moved": moved}  # head_of holds every adder and every chain flip-flop
 
 
 if __name__ == "__main__":

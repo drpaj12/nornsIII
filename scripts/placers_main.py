@@ -4,13 +4,15 @@ Usage: . scripts/env.sh; NORNS_LOCK=/tmp/claude-1000/norns-vpr.lock python3 scri
          --work WORKDIR --tag TAG --designs d1,d2 [--seeds 1,2,3] [--arms vpr_ap,vpr_ap_reread,vpr_sa,vpr_sa_reread,ext_nextpnr_heap,ext_nextpnr_sa] \
          [--temps 1,3,10] [--sa-temp T]
 WORKDIR is a fresh `mktemp -d /tmp/claude-1000/npl-XXXX` (raw outputs stay there; nothing is deleted). Every VPR run takes the Norns
-lock; nextpnr runs take none. Metrics go to data/placers/<TAG>_<design>.json (no absolute paths, no atom names). The file is rewritten
+lock; a nextpnr run takes it too when an earlier run of the same arm and design lasted over 10 min. Metrics go to data/placers/<TAG>_<design>.json (no absolute paths, no atom names). The file is rewritten
 after every run and a re-run with the same WORKDIR and TAG skips the records already present (resume).
 The reference of all external arms (pads, hard-block positions, atom list) is the `vpr_ap` seed-1 final.flat_place of the same design
 (run first and always, whether or not `vpr_ap` is among the arms). `ext_nextpnr_sa` runs once per value of --temps (default: --sa-temp,
-default 1; nextpnr's default), the others once. Environment: NEXTPNR_K6, NEXTPNR_LIBS as in placers_gate.py.
+default 1; nextpnr's default), the others once. Environment: NEXTPNR_K6, NEXTPNR_LIBS as in placers_gate.py; NORNS_TMP (default /tmp/claude-1000) is the base of their defaults.
+Dedicated fix round (section 10.10): use --tag fix1 and --work runs-fix1 (a path under the checkout, not committed).
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -38,8 +40,10 @@ SEEDS = [int(s) for s in args.seeds.split(",")]
 ARMS = args.arms.split(",")
 TEMPS = [float(t) for t in (args.temps or str(args.sa_temp)).split(",")]
 VPR = Path(os.environ["NORNS_VPR"])
-NPNR = os.environ.get("NEXTPNR_K6", "/tmp/claude-1000/nextpnr-k6-build/nextpnr-generic")
-LIBS = os.environ.get("NEXTPNR_LIBS", "/tmp/claude-1000/nextpnr-deps/prefix/lib")
+TMP = os.environ.get("NORNS_TMP", "/tmp/claude-1000")  # base of the third-party build trees and the locks (default: the value used so far)
+NPNR = os.environ.get("NEXTPNR_K6", f"{TMP}/nextpnr-k6-build/nextpnr-generic")
+LIBS = os.environ.get("NEXTPNR_LIBS", f"{TMP}/nextpnr-deps/prefix/lib")
+NP_LOCK_AFTER_S = 600.0  # a nextpnr run expected to exceed this (an earlier run of the same arm and design did) takes the Norns lock, like VPR
 HERE = Path(__file__).resolve().parent
 RX = {
     "pack_s": re.compile(r"#+ Packing took ([0-9.]+) seconds"),
@@ -76,8 +80,15 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     m = re.search(r"FPGA sized to (\d+) x (\d+)", text)
     rec["grid"] = [int(m.group(1)), int(m.group(2))] if m else None
     if rc or not rec["routed_ok"]:
-        errs = [ln for ln in text.splitlines() if "Error" in ln or "error" in ln][:3]
-        rec["error"] = " | ".join(e.strip()[:300] for e in errs)
+        # the lines matching analytical_placement|conflicts|Error, each with the line that follows (section 10.10)
+        ls = text.splitlines()
+        keep = []
+        for i, ln in enumerate(ls):
+            if re.search(r"analytical_placement|conflicts|Error", ln):
+                keep.append(ln.strip()[:400])
+                if i + 1 < len(ls) and ls[i + 1].strip():
+                    keep.append(ls[i + 1].strip()[:400])
+        rec["error"] = " | ".join(keep[:8])
     return rec
 
 
@@ -89,9 +100,9 @@ def run_py(script, *a):
     return p.returncode, time.time() - t
 
 
-def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10):
+def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10, locked=False):
     nl.ensure_dir(cwd)
-    cmd = ["/usr/bin/time", "-v", NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}", "--vopt", f"n={n}"]
+    cmd = (["flock", "-x", str(nl.LOCK)] if locked else []) + ["/usr/bin/time", "-v", NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}", "--vopt", f"n={n}"]
     if anchors.exists() and anchors.stat().st_size:
         cmd += ["--vopt", f"anchors={anchors}"]
     cmd += ["--json", str(js), "--no-route", "--placer", placer, "--seed", str(seed), "--write", str(cwd / "placed.json")]
@@ -118,8 +129,13 @@ def process(design):
         old_conv = "chain_ffs" not in out.get("converter", {})
         bad = [r for r in out["runs"] if r["rc"] != 0 or not r.get("routed_ok") or (old_conv and r["arm"].startswith("ext_"))]
         if bad:
-            out.setdefault("first_attempt_failures", []).extend(
-                {k: r.get(k) for k in ("arm", "seed", "starttemp", "rc", "error")} | {"reason": "failed" if (r["rc"] != 0 or not r.get("routed_ok")) else "converter predates 10.7"} for r in bad)
+            ff = out.setdefault("first_attempt_failures", [])
+            for r in bad:
+                e = {k: r.get(k) for k in ("arm", "seed", "starttemp", "rc", "error")} | {"reason": "failed" if (r["rc"] != 0 or not r.get("routed_ok")) else "converter predates 10.7"}
+                if (r.get("nextpnr") or {}).get("no_bels"):
+                    e["no_bels"] = True
+                if e not in ff:  # no duplicate entries (a repeated --redo-failed pass must not add the same failure twice)
+                    ff.append(e)
             out["runs"] = [r for r in out["runs"] if r not in bad]
         if old_conv:
             out["converter"] = {}
@@ -167,11 +183,13 @@ def process(design):
     out["chain_collapse_ref"] = json.loads((wd / "ref.collapse.json").read_text())
     ext = nl.ensure_dir(wd / "ext")
     js, anchors = ext / f"{design}.json", ext / f"{design}.json.anchors.txt"
-    if not out["converter"].get("ok") or not js.exists():
+    ref_sha = hashlib.sha256(refc.read_bytes()).hexdigest()
+    # the converter output is valid only for the reference file it was built from (a stale JSON gave anchor_moved 1404 on stereovision2, section 10.10)
+    if not out["converter"].get("ok") or not js.exists() or out["converter"].get("ref_sha256") != ref_sha:
         rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(refc), "--out", str(js),
                          "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors))
         st = json.loads((ext / "convert_stats.json").read_text()) if (ext / "convert_stats.json").exists() else {}
-        out["converter"] = {"rc": rc, "seconds": sec, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
+        out["converter"] = {"rc": rc, "seconds": sec, "ref_sha256": ref_sha, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
         save()
         if rc:
             out["error"] = "converter failed"
@@ -182,6 +200,7 @@ def process(design):
     probe = nextpnr(wd / "probe_n10", js, anchors, grid, "heap", 1, None, n=10)
     n_ble = 20 if (probe["rc"] and probe["no_bels"]) else 10
     out["ble_per_tile"] = n_ble
+    out["probe"] = {k: probe[k] for k in ("rc", "no_bels", "wall_s")}
     save()
     for s in SEEDS:
         for arm in ARMS:
@@ -203,9 +222,10 @@ def process(design):
                         continue
                     tag = f"{arm}.s{s}" + (f".t{T:g}" if T is not None else "")
                     cwd = wd / tag
-                    np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble)
+                    slow = any((r.get("nextpnr") or {}).get("wall_s", 0) > NP_LOCK_AFTER_S for r in out["runs"] if r["arm"] == arm)
+                    np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble, locked=slow)
                     if np_rec["rc"]:
-                        np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble) | {"retried": True}
+                        np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble, locked=slow) | {"retried": True}
                     rec = {"arm": arm, "seed": s, "nextpnr": np_rec} | extra
                     if np_rec["max_rss_kb"] and np_rec["max_rss_kb"] > args.max_rss_gb * 1e6:
                         rec |= {"rc": -1, "routed_ok": False, "error": "nextpnr memory over the stop limit"}
@@ -219,6 +239,11 @@ def process(design):
                                        "--out", str(cwd / "ext.flat_place"), "--stats", str(cwd / "rb.json"))
                     rec["readback"] = json.loads((cwd / "rb.json").read_text()) if (cwd / "rb.json").exists() else {}
                     rec["readback_s"] = sec2
+                    bad_rb = {k: rec["readback"].get(k) for k in ("fallback_ref", "const_verbatim", "anchor_moved", "pad_moved") if rec["readback"].get(k)}
+                    if bad_rb:  # section 10.4(a): a pipeline fault stops the arm for this seed; VPR does not see the file
+                        rec |= {"rc": -2, "routed_ok": False, "error": f"readback fault {bad_rb}"}
+                        record(rec)
+                        continue
                     if rc2:
                         rec |= {"rc": rc2, "routed_ok": False, "error": "readback failed"}
                         record(rec)
