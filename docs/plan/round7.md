@@ -260,3 +260,35 @@ default flow). A research-log entry with Peter's quote; the RQ table rows for N 
       plus the 12 calibration designs. No design was cut for time or memory by choice.
   (8) A disk guard (stop before a new design when /mnt/c has < 30 GB free) and `runs/r7/scratch_done.txt` (scratch subdirectories whose kept files are in runs/r7)
       were added on the controller's request; no run was affected.
+* 2026-10-27, fix round (amendments; nothing above is changed, the earlier rules stay as recorded).
+  (1) Timestamp facts. The correction entry dated "13:56 EDT" was committed at 13:53:40 EDT (ba6b7eb): its own time was wrong. The Stage-0 commit
+  93c983a (13:45:36 EDT) froze the protocol TEXT only. The run code (`scripts/r7.py`, `scripts/r7lib.py`) was committed as 94827f5 at 13:48:12 EDT, after
+  the first run (n5_mesh_dp_16, stock, seed 1) finished at 13:46:50 EDT; the first runs therefore used an uncommitted working tree. From the GitHub event
+  log of the remote: the branch exp/round7 was created (CreateEvent) at 17:45:38 UTC = 13:45:38 EDT with 93c983a, before the first run finished; the next push
+  (94827f5) was at 17:48:14 UTC. So 93c983a was on the remote before the first run finished; the code was not.
+  (2) The `.net` arm replaces the affinity file as the hindsight method of N Q1.7. Reason: the affinity file at weight 100 on the stock packer rebuilt
+  only 32% to 65% of the requested groups on the real designs, so stock could win as an arm. The earlier arm is kept and renamed "affinity-bias arm"; its
+  gap is the gap reachable via affinity bias, not a lower bound on packer against best-known. The new arm (`scripts/r7net.py`): units are the logic elements (fle)
+  of the stock `.net` (the stock clustering of the analytical-placement flow, the same in every seed); a cluster is legal at <= 10 fle, <= 40 distinct external
+  input nets, one clock (the crossbar is complete: arch `crossbar`, `clbouts1/2`); CLBs with carry chains are copied unchanged; the greedy move/swap search, radius, net
+  weight and sweep rule are the Stage-2 ones. VPR runs with `--place --route --analysis --net_file` (packing off, annealing placement from a random start; the
+  analytical placer is off in this flow, log line "Analytical Placer: DISABLED"), `--timing_report_npaths 200 --route_file /dev/null`, same router. `net0` = the stock
+  clustering written by the same code and run the same way (the control); the gap is net0 over the arm, so only the clustering differs. Fidelity is asserted
+  from the placed CLBs for every run and must be 1.0. The writer reproduces the stock `.net` element for element for the stock clustering (tested).
+  (3) Peter's decision 2026-10-26: Norns VPR runs take `flock -x /tmp/claude-1000/norns-vpr.lock`; the new `.net` runs use 5 seeds (1-5), cut from 10 by his decision before the
+  `.net` runs ("seeded runs are needed to filter out noise" but the questions are experimental). Existing 10-seed data stay. Selection rule, stated before the `.net` runs:
+  H = the round (net0, h1, ..., h5) with the lowest median objective over seeds 1-5; the gap is reported IN SAMPLE (winner's-curse risk), with the bootstrap interval over the 5 seeds.
+  Stop rule: a round whose median objective is not 1% below the best earlier arm ends the search. Where H = net0 the design reports "no gain found" with the per-round gaps and enters no median
+  or interval. For the affinity-bias data (10 seeds) an out-of-sample check is added: choose the arm on seeds 1-5, evaluate on seeds 6-10. (A probe run of `r7net.py run n5_mesh_dp_16`
+  started before this decision, with 10 seeds and the heavy lock, was already queued and could not be stopped; its runs are extra data of that one calibration design and the 5-seed summaries use seeds 1-5 of it.)
+  (4) Calibration recovery is computed from the aggregated geometric means over seeds, defined only where the known clustering is >= 5% better (ln ratio >= 0.05), and reported by B (16/64/256).
+  Why stock/known is 1.25 to 2.08 here against round 5's ~22%: round 5's 1.220 is the geometric mean over all 72 designs, whose chain and random topologies have no gap; mesh and tree (the only ones
+  used here) were 1.423 and 1.522 in round 5; the flow and the known arm are the same (r5.py arm_run and r7.py run_arm); data/r7/r5check.json compares the two rounds design by design.
+  (5) Duplication candidates now count only logic-CLB sinks (pad and hard-block sinks are counted apart); the near-critical share is the median of per-run ratios and is a lower bound
+  (criticality from 200 paths), the saving an upper bound per hop. nshared is clipped at 255. Mining: leave-out by design family (stereovision0-3; diffeq1-2; mk*; each n5 topology/style),
+  AUC per sample (connected, uniform), baseline adds the stock co-CLB flag and stock mean distance, the target is restricted to designs where hindsight beat stock (affinity) or net0 (`.net`)
+  with the unrestricted variant labelled, 200 shuffles for the model nulls, the carry flag shuffled too, the distance target normalised by the design mean (R2 across designs of different grid
+  size mixed scales; this is the suspected reason the null R2 exceeded the observed), enrichment baseline = the universe (the earlier agree-baseline kept as `enrichment_vs_agree`, a logged deviation).
+  Table XI: same_inst_d1 equals same_inst_full because the instance chain has depth 1 in every design; the identical level is marked, not re-tested.
+  (6) Atlas `crit` (pack-time criticality) is filled only for stock runs (the census runs only in the stock arm); it is null in affinity-bias and `.net` arms, whose atoms have no pack-time census.
+  The format note above is amended: `crit` is null where no census was run; `pcrit` is always filled.

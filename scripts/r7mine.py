@@ -23,13 +23,32 @@ BIT_FEATS = ("same_bit", "same_word_bit", "bit_close", "carry_nb")
 HDL_FEATS = ("same_word", "same_bit", "same_word_bit", "same_stmt", "same_inst_d1", "same_inst_d2", "same_inst_d3",
              "same_inst_full", "bit_close", "carry_nb")
 BASE_FEATS = ("log_nshared", "series", "scrit", "shared_only", "log_minfan", "pcrit_min", "pcrit_max", "kind_ll", "kind_lf",
-              "kind_ff", "kind_adder")
+              "kind_ff", "kind_adder", "co_stock", "log_dist_stock")
 TRAIN_CAP = 40_000
 EVAL_CAP = 300_000
 N_SHUF = 200
-N_SHUF_MODEL = 20
+N_SHUF_MODEL = 200
 BOOT = 10000
 STRATA = ((0, 0), (1, 1), (2, 3), (4, 255))
+NEAR_DIST = 2    # stability: near in a seed = Manhattan CLB distance <= this
+STABLE_MIN = 8   # stable = near in at least this many seeds
+R7F = nl.RUNS / "r7f"
+
+
+def family(design: str) -> str:
+    """Design family for the leave-out: designs of one family share code, so a model must not train on a sibling of the
+    held-out design. stereovision0-3, diffeq1-2 and the mk* modules (mkPktMerge, mkSMAdapter4B, mkDelayWorker32B) are families;
+    every other design, and every calibration construction, is its own family (the n5_ constructions of one topology and style
+    but another size are one family)."""
+    if design.startswith("stereovision"):
+        return "stereovision"
+    if design.startswith("diffeq"):
+        return "diffeq"
+    if design.startswith("mk"):
+        return "mk"
+    if design.startswith("n5_"):
+        return design.rsplit("_", 1)[0]
+    return design
 
 
 class D:
@@ -53,11 +72,12 @@ class D:
         stock_idx = [i for i, r in enumerate(runs) if r.startswith("stock.")]
         self.pcrit = ra["pcrit"][stock_idx].mean(axis=0) if stock_idx else np.zeros(ra["pcrit"].shape[1])
         self.n = len(self.pcrit)
-        words, bits, stmts, insts, kinds = [], [], [], [], []
+        words, bits, stmts, insts, kinds, names = [], [], [], [], [], []
         with gzip.open(out / "atoms.tsv.gz", "rt") as fh:
             next(fh)
             for line in fh:
                 f = line.rstrip("\n").split("\t")
+                names.append(f[1])
                 kinds.append(f[2])
                 stmts.append(f[3])
                 insts.append(tuple(c for c in f[4].split("/") if c))
@@ -72,6 +92,37 @@ class D:
         self.E = np.flatnonzero((self.src & (4 | 8)) > 0)  # pairs unbiased by co-location (uniform or connected-uniform)
         self.dist5 = self.dist[:, [s - 1 for s in self.best_stock[:5]]].mean(axis=1) if self.best_stock else self.dist.mean(axis=1)
         self.dist10 = self.dist.mean(axis=1)
+        # the stock clustering is seed-invariant; its co-CLB flag and mean distance are baseline features (B5)
+        sb = (self.best_stock[0] if self.best_stock else 1) - 1
+        self.co_stock = ((self.co["stock"] >> sb) & 1).astype(np.float32)
+        self.max_inst_depth = max((len(i) for i in insts), default=0)
+        self.names = names
+        rp = lib.R7 / design / "rounds.json"
+        self.aff_gain = bool(rp.is_file() and nl.read_json(rp).get("hindsight_arm", "stock") != "stock")
+        self.co_net = self._co_net()
+
+    def _co_net(self) -> np.ndarray | None:
+        """Pairs that share a CLB in the .net hindsight clustering H (runs/r7f; identical in every seed), for designs where H beat net0."""
+        rp = R7F / self.design / "rounds.json"
+        if not rp.is_file():
+            return None
+        r = nl.read_json(rp)
+        harm = r.get("hindsight_arm")
+        if not harm or harm == "net0":
+            return None
+        fp = R7F / self.design / f"{harm}.s{1}" / "final.flat_place"
+        if not fp.is_file():
+            return None
+        idx = {n: i for i, n in enumerate(self.names)}
+        clb = np.full(self.n, -1, dtype=np.int64)
+        for a, row in nl.Flat(fp).atoms.items():
+            i = idx.get(lib.base_name(a))
+            if i is not None:
+                clb[i] = int(str(row[4]).lstrip("#"))
+        return ((clb[self.a] == clb[self.b]) & (clb[self.a] >= 0)).astype(np.uint8)
+
+    def target(self, name: str) -> np.ndarray | None:
+        return {"aff": self.co_best, "net": self.co_net}[name]
 
     @staticmethod
     def _ids(vals: list) -> np.ndarray:
@@ -84,13 +135,16 @@ class D:
         L = self.labels if perm is None else {k: v[perm] for k, v in self.labels.items()}
         sw = (L["word"][a] >= 0) & (L["word"][a] == L["word"][b])
         sb = (L["bit"][a] >= 0) & (L["bit"][a] == L["bit"][b])
+        carry = ((self.rel[idx] >> REL_BITS["carry_nb"]) & 1).astype(bool)
+        if perm is not None:  # the null shuffles the carry flag over the pairs as well (it is a structural label, not an atom label)
+            carry = carry[np.random.default_rng(int(perm[:16].sum()) * 7919 + len(idx)).permutation(len(idx))]
         out = {"same_word": sw, "same_bit": sb, "same_word_bit": sw & sb,
                "same_stmt": (L["stmt"][a] >= 0) & (L["stmt"][a] == L["stmt"][b]),
                "same_inst_d1": (L["inst1"][a] >= 0) & (L["inst1"][a] == L["inst1"][b]),
                "same_inst_d2": (L["inst2"][a] >= 0) & (L["inst2"][a] == L["inst2"][b]),
                "same_inst_d3": (L["inst3"][a] >= 0) & (L["inst3"][a] == L["inst3"][b]),
                "same_inst_full": (L["inst"][a] >= 0) & (L["inst"][a] == L["inst"][b]),
-               "carry_nb": ((self.rel[idx] >> REL_BITS["carry_nb"]) & 1).astype(bool)}
+               "carry_nb": carry}
         both = sw & (L["bit"][a] >= 0) & (L["bit"][b] >= 0)
         out["bit_close"] = np.where(both, 1.0 / (1.0 + np.abs(L["bit"][a].astype(np.int32) - L["bit"][b])), 0.0)
         return out
@@ -105,7 +159,8 @@ class D:
         cols = [np.log1p(ns), ser, self.scrit[idx], ((ns > 0) & (ser == 0)).astype(np.float32),
                 np.where(mf > 0, np.log1p(mf), 0.0), np.minimum(self.pcrit[a], self.pcrit[b]),
                 np.maximum(self.pcrit[a], self.pcrit[b]), ((lo == 0) & (hi == 0)).astype(np.float32),
-                ((lo == 0) & (hi == 1)).astype(np.float32), ((lo == 1) & (hi == 1)).astype(np.float32), (hi == 2).astype(np.float32)]
+                ((lo == 0) & (hi == 1)).astype(np.float32), ((lo == 1) & (hi == 1)).astype(np.float32), (hi == 2).astype(np.float32),
+                self.co_stock[idx], np.log1p(self.dist10[idx])]
         return np.stack(cols, axis=1).astype(np.float32)
 
 
@@ -143,11 +198,17 @@ def table_xi(ds: list[D], shuffles: int) -> dict:
     res: dict = {}
     obs = {lv: {} for lv in LEVELS}
     nul = {lv: {d.design: [] for d in ds} for lv in LEVELS}
+    same_ok: dict[tuple[str, str], bool] = {}
+    nonempty = {lv: False for lv in LEVELS}
     for d in ds:
         E = d.E
         dist = d.dist10[E]
         rels = d.rel_from(None, E)
         ns = d.nshared[E]
+        for i, lv in enumerate(LEVELS):
+            nonempty[lv] |= bool(rels[lv].any())
+            for earlier in LEVELS[:i]:
+                same_ok[(lv, earlier)] = same_ok.get((lv, earlier), True) and bool(np.array_equal(rels[lv], rels[earlier]))
         for lv in LEVELS:
             r = rels[lv]
             obs[lv][d.design] = float("nan") if r.mean() >= 0.95 or not r.any() else d_r(dist, r, ns)
@@ -171,7 +232,9 @@ def table_xi(ds: list[D], shuffles: int) -> dict:
                    "null_lo": float(np.percentile(null_meds, 2.5)) if null_meds else None,
                    "null_hi": float(np.percentile(null_meds, 97.5)) if null_meds else None,
                    "null_le_obs": float((np.sum(np.array(null_meds) <= med) + 1) / (len(null_meds) + 1)) if null_meds else None,
-                   "holds_negative_median": bool(med < 0), "shuffles": len(null_meds)}
+                   "holds_negative_median": bool(med < 0), "shuffles": len(null_meds),
+                   "same_as": next((e for e in LEVELS if (lv, e) in same_ok and same_ok[(lv, e)] and nonempty[lv]), None),
+                   "max_inst_depth": {d.design: d.max_inst_depth for d in ds}}
     return res
 
 
@@ -180,7 +243,7 @@ def table_xi(ds: list[D], shuffles: int) -> dict:
 
 def disagreement(ds: list[D], shuffles: int) -> dict:
     """D+ = pairs co-CLB in the best hindsight run and not in the stock run of the same seed; D- the reverse; agree = both."""
-    cnt = {"dplus": 0, "dminus": 0, "agree": 0}
+    cnt = {"dplus": 0, "dminus": 0, "agree": 0, "univ": 0}
     null_rows: list[dict[str, dict[str, int]]] = [{k: {lv: 0 for lv in LEVELS} for k in cnt} for _ in range(shuffles)]
     obs = {k: {lv: 0 for lv in LEVELS} for k in cnt}
     for d in ds:
@@ -191,7 +254,7 @@ def disagreement(ds: list[D], shuffles: int) -> dict:
         h = (d.co[arm] >> bit) & 1
         s = (d.co["stock"] >> bit) & 1
         groups = {"dplus": np.flatnonzero((h == 1) & (s == 0)), "dminus": np.flatnonzero((h == 0) & (s == 1)),
-                  "agree": np.flatnonzero((h == 1) & (s == 1))}
+                  "agree": np.flatnonzero((h == 1) & (s == 1)), "univ": d.E}
         for k, idx in groups.items():
             cnt[k] += len(idx)
             rels = d.rel_from(None, idx)
@@ -209,9 +272,13 @@ def disagreement(ds: list[D], shuffles: int) -> dict:
             return c[k][lv] / cnt[k] if cnt[k] else float("nan")
         row: dict = {}
         for k in ("dplus", "dminus"):
-            o = share(obs, k) / share(obs, "agree") if share(obs, "agree") else float("nan")
-            nulls = [share(r, k) / share(r, "agree") for r in null_rows if share(r, "agree")]
-            row[k] = {"share": share(obs, k), "agree_share": share(obs, "agree"), "enrichment": o,
+            # baseline = the relation's share among the pairs of the universe (unbiased samples), as the protocol says;
+            # the share among the pairs both clusterings join is kept as `enrichment_vs_agree` (the earlier, deviating baseline)
+            o = share(obs, k) / share(obs, "univ") if share(obs, "univ") else float("nan")
+            nulls = [share(r, k) / share(r, "univ") for r in null_rows if share(r, "univ")]
+            oa = share(obs, k) / share(obs, "agree") if share(obs, "agree") else float("nan")
+            row[k] = {"share": share(obs, k), "universe_share": share(obs, "univ"), "agree_share": share(obs, "agree"), "enrichment": o,
+                      "enrichment_vs_agree": oa,
                       "null_mean": float(np.mean(nulls)) if nulls else None,
                       "null_lo": float(np.percentile(nulls, 2.5)) if nulls else None,
                       "null_hi": float(np.percentile(nulls, 97.5)) if nulls else None}
@@ -232,9 +299,9 @@ def stability(ds: list[D], shuffles: int) -> dict:
         inv_n[1] += len(cm)
         # near in a seed = Manhattan CLB distance <= 2 (co-located included); evaluated on the unbiased pairs
         k = np.zeros(len(cm), dtype=np.uint8)
-        k[d.E] = (d.dist[d.E] <= 2).sum(axis=1)
+        k[d.E] = (d.dist[d.E] <= NEAR_DIST).sum(axis=1)
         idx = np.flatnonzero(k >= 1)
-        stable = k[idx] >= 8
+        stable = k[idx] >= STABLE_MIN
         hist += np.bincount(k[idx], minlength=11)
         for c in range(5):
             m = d.cls[idx] == c
@@ -263,8 +330,8 @@ def stability(ds: list[D], shuffles: int) -> dict:
                       "null_lo": float(np.percentile(nd, 2.5)) if nd else None, "null_hi": float(np.percentile(nd, 97.5)) if nd else None,
                       "related_pairs": int(o[1])}
     return {"co_clb_pairs_seed_invariant_share": inv_n[0] / inv_n[1] if inv_n[1] else None,
-            "definition": "near = Manhattan CLB distance <= 2 in a seed; pairs of the unbiased samples near in >= 1 seed; stable = near in >= 8 of 10",
-            "hist_seeds_co_stock": hist.tolist(), "pairs": int(hist.sum()), "stable_ge8": int(hist[8:].sum()),
+            "definition": f"near = Manhattan CLB distance <= {NEAR_DIST} in a seed; pairs of the unbiased samples near in >= 1 seed; stable = near in >= {STABLE_MIN} of {len(lib.SEEDS)}",
+            "hist_seeds_co_stock": hist.tolist(), "pairs": int(hist.sum()), "stable_ge8": int(hist[STABLE_MIN:].sum()), "stable_min": STABLE_MIN, "near_dist": NEAR_DIST, "n_seeds": len(lib.SEEDS),
             "by_class_stable_share": {c: (float(cls_stable[i, 0] / cls_stable[i, 1]) if cls_stable[i, 1] else None)
                                       for i, c in enumerate(("SC", "SN", "SI", "OR", "FL"))},
             "by_class_pairs": {c: int(cls_stable[i, 1]) for i, c in enumerate(("SC", "SN", "SI", "OR", "FL"))}, "levels": levels}
@@ -273,12 +340,13 @@ def stability(ds: list[D], shuffles: int) -> dict:
 # ---------------------------------------------------------------------------------------
 # (a), (d) models, leave one design out
 
-def model_loop(ds: list[D], shuffles: int) -> dict:
+def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dict:
+    """Held-out-FAMILY models for `target` ('aff': co-CLB in the best affinity-bias run; 'net': co-CLB in the .net hindsight
+    clustering) on `designs`. AUC is reported per sample (connected pairs, uniform pairs), never on the mixture, because the two
+    samples have different inclusion probabilities. The distance target is normalised by the design's mean distance."""
     from sklearn.linear_model import LogisticRegression, Ridge
     from sklearn.metrics import roc_auc_score, r2_score
     from sklearn.preprocessing import StandardScaler
-    rng0 = np.random.default_rng(lib.RNG_SEED)
-    cache: dict[str, dict] = {}
 
     def prep(d: D, perm: np.ndarray | None, sub: np.ndarray) -> dict:
         rel = d.rel_from(perm, sub)
@@ -292,8 +360,11 @@ def model_loop(ds: list[D], shuffles: int) -> dict:
             E = np.sort(np.random.default_rng(seed).choice(E, cap, replace=False))
         return E
 
-    designs = [d for d in ds if d.co_best.any() and d.co_best[d.E].any()]
-    out: dict = {"designs": [d.design for d in designs]}
+    def auc(y: np.ndarray, p: np.ndarray, m: np.ndarray) -> float:
+        return float(roc_auc_score(y[m], p[m])) if m.any() and y[m].min() != y[m].max() else float("nan")
+
+    designs = [d for d in designs if d.target(target) is not None and d.target(target)[d.E].any()]
+    out: dict = {"target": target, "designs": [d.design for d in designs], "families": sorted({family(d.design) for d in designs})}
     bit_cols = [HDL_FEATS.index(f) for f in BIT_FEATS]
 
     def fit_eval(perm_seed: int | None, want_coef: bool) -> dict:
@@ -302,11 +373,16 @@ def model_loop(ds: list[D], shuffles: int) -> dict:
             perm = None if perm_seed is None else np.random.default_rng(lib.RNG_SEED + 1000 + perm_seed).permutation(d.n)
             tr = subset(d, TRAIN_CAP, 1)
             te = subset(d, EVAL_CAP, 2)
-            data[d.design] = {"tr": tr, "te": te, "ptr": prep(d, perm, tr), "pte": prep(d, perm, te),
-                              "y1tr": d.co_best[tr], "y1te": d.co_best[te], "y2tr": d.dist5[tr], "y2te": d.dist5[te]}
-        res = {"auc": {}, "r2": {}, "coef": {}}
+            y1 = d.target(target)
+            scale = float(d.dist5[d.E].mean()) or 1.0
+            data[d.design] = {"ptr": prep(d, perm, tr), "pte": prep(d, perm, te), "y1tr": y1[tr], "y1te": y1[te],
+                              "y2tr": d.dist5[tr] / scale, "y2te": d.dist5[te] / scale,
+                              "conn": (d.src[te] & 8) > 0, "uni": ((d.src[te] & 8) == 0) & ((d.src[te] & 4) > 0)}
+        res: dict = {"auc": {}, "auc_uni": {}, "r2": {}, "coef": {}}
         for held in designs:
-            train = [data[d.design] for d in designs if d is not held]
+            train = [data[d.design] for d in designs if family(d.design) != family(held.design)]
+            if not train:
+                continue
             te = data[held.design]
             Xs = {"base": lambda p: p["base"], "bit": lambda p: np.hstack([p["base"], p["hdl"][:, bit_cols]]),
                   "full": lambda p: np.hstack([p["base"], p["hdl"]])}
@@ -320,7 +396,8 @@ def model_loop(ds: list[D], shuffles: int) -> dict:
                 sc = StandardScaler().fit(Xtr)
                 lr = LogisticRegression(max_iter=300, C=1.0).fit(sc.transform(Xtr), ytr)
                 p = lr.predict_proba(sc.transform(fx(te["pte"])))[:, 1]
-                res["auc"].setdefault(name, {})[held.design] = float(roc_auc_score(te["y1te"], p))
+                res["auc"].setdefault(name, {})[held.design] = auc(te["y1te"], p, te["conn"])
+                res["auc_uni"].setdefault(name, {})[held.design] = auc(te["y1te"], p, te["uni"])
                 if want_coef and name == "full":
                     names = list(BASE_FEATS) + list(HDL_FEATS)
                     res["coef"][held.design] = {n: float(c) for n, c in zip(names, lr.coef_[0])}
@@ -333,30 +410,44 @@ def model_loop(ds: list[D], shuffles: int) -> dict:
     out["observed"] = obs
     nulls = [fit_eval(k, False) for k in range(shuffles)]
     summ: dict = {}
-    for tgt in ("auc", "r2"):
+    for tgt in ("auc", "auc_uni", "r2"):
         for name in ("bit", "full"):
-            dd = [obs[tgt][name][h] - obs[tgt]["base"][h] for h in obs[tgt][name] if h in obs[tgt]["base"]]
+            dd = [obs[tgt][name][h] - obs[tgt]["base"][h] for h in obs[tgt].get(name, {}) if h in obs[tgt]["base"]
+                  and obs[tgt][name][h] == obs[tgt][name][h] and obs[tgt]["base"][h] == obs[tgt]["base"][h]]
             nd = []
             for nres in nulls:
-                v = [nres[tgt][name][h] - obs[tgt]["base"][h] for h in nres[tgt].get(name, {}) if h in obs[tgt]["base"]]
+                v = [nres[tgt][name][h] - obs[tgt]["base"][h] for h in nres[tgt].get(name, {}) if h in obs[tgt]["base"]
+                     and nres[tgt][name][h] == nres[tgt][name][h] and obs[tgt]["base"][h] == obs[tgt]["base"][h]]
                 if v:
                     nd.append(float(np.mean(v)))
             lo, hi = boot_mean_ci(dd)
-            summ[f"{tgt}_{name}_minus_base"] = {"mean": float(np.mean(dd)) if dd else None, "ci_lo": lo, "ci_hi": hi,
+            summ[f"{tgt}_{name}_minus_base"] = {"mean": float(np.mean(dd)) if dd else None, "median": float(np.median(dd)) if dd else None,
+                                                "per_design": dict(zip([h for h in obs[tgt].get(name, {}) if h in obs[tgt]["base"]], dd)),
+                                                "ci_lo": lo, "ci_hi": hi,
                                                 "n_designs": len(dd), "n_positive": int(sum(1 for x in dd if x > 0)),
                                                 "null_mean": float(np.mean(nd)) if nd else None,
                                                 "null_lo": float(np.percentile(nd, 2.5)) if nd else None,
                                                 "null_hi": float(np.percentile(nd, 97.5)) if nd else None, "shuffles": len(nd)}
     coefs: dict = {}
-    for f in HDL_FEATS:
+    for f in list(BASE_FEATS) + list(HDL_FEATS):
         v = [c[f] for c in obs["coef"].values()]
         lo, hi = boot_mean_ci(v)
         coefs[f] = {"mean": float(np.mean(v)) if v else None, "ci_lo": lo, "ci_hi": hi}
     out["summary"] = summ
     out["coef_full"] = coefs
-    out["auc_base_mean"] = float(np.mean(list(obs["auc"]["base"].values()))) if obs["auc"].get("base") else None
-    del cache, rng0
+    for key in ("auc", "auc_uni"):
+        vals = [x for x in obs[key].get("base", {}).values() if x == x]
+        out[f"{key}_base_mean"] = float(np.mean(vals)) if vals else None
+        out[f"{key}_base_median"] = float(np.median(vals)) if vals else None
     return out
+
+
+def model_variants(ds: list[D], shuffles: int) -> dict:
+    """The primary model run restricts the 'good placement' target to designs where hindsight beat stock (B5); the variant that
+    keeps every design is labelled as such."""
+    return {"net_gain": model_loop(ds, shuffles, "net", [d for d in ds if d.co_net is not None]),
+            "aff_gain": model_loop(ds, shuffles, "aff", [d for d in ds if d.aff_gain]),
+            "aff_all": model_loop(ds, shuffles, "aff", ds)}
 
 
 def figure_data(ds: list[D]) -> dict:
@@ -390,9 +481,9 @@ def main(argv: list[str]) -> int:
     designs = [a for a in argv if not a.startswith("--")] or [d for d in lib.MAIN if (lib.R7 / d / "pairs.npz").is_file()]
     ds = [D(d) for d in designs]
     ns, nm = (5, 3) if quick else (N_SHUF, N_SHUF_MODEL)
-    res = {"designs": designs, "date": "2026-10-26", "exploratory": True, "shuffles": ns, "model_shuffles": nm,
+    res = {"designs": designs, "date": "2026-10-27", "exploratory": True, "shuffles": ns, "model_shuffles": nm,
            "table_xi": table_xi(ds, ns), "disagreement": disagreement(ds, ns), "stability": stability(ds, ns),
-           "models": model_loop(ds, nm), "figures": figure_data(ds)}
+           "models": model_variants(ds, nm), "families": {d.design: family(d.design) for d in ds}, "figures": figure_data(ds)}
     nl.write_json(lib.DATA7 / "mine.json", res)
     print("mine written", len(designs))
     return 0

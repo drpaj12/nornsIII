@@ -17,6 +17,7 @@ import nornlib as nl
 R7 = nl.RUNS / "r7"
 DATA7 = nl.DATA / "r7"
 SEEDS = tuple(range(1, 11))
+NET_SEEDS = (1, 2, 3, 4, 5)   # new runs (.net arms): Peter 2026-10-26 cut the seeds to 5
 MAX_ROUNDS = 5
 STOP_GAIN = 0.01
 NPATHS = 200
@@ -25,6 +26,11 @@ CRIT_W = 4.0
 RADIUS = 2
 MAX_SWEEPS = 30
 CAP_LUT, CAP_FF, CAP_IN, CAP_OUT = 10, 20, 40, 20
+CAP_FLE = 10   # logic elements per CLB (the .net writer; the architecture has 10 fle per CLB)
+FID_MIN = 0.5  # protocol stop rule: fidelity below this in every round means "not realised"
+# Stage-0 protocol commit (froze the text only) and the commit of the run code, which came after the first run (docs/plan/round7.md, 2026-10-27 entry)
+PROTOCOL_SHA = "93c983a"
+CODE_SHA = "94827f5"
 RNG_SEED = 20261026
 PCRIT_NEAR = (0.95, 0.90)
 AFF_BETA = 100.0
@@ -424,18 +430,59 @@ def fidelity(target: dict[str, int], realised: dict[str, int]) -> dict[str, floa
 # ---------------------------------------------------------------------------------------
 # duplication candidates
 
+def dup_sink_classes(view: NetView, clb_of: dict[str, int], a: str, net: str) -> tuple[set[int], int, int]:
+    """Sinks of `net` (driven by atom `a`) split into the distinct logic CLBs, the number of pad sinks and the number of other
+    sinks (hard blocks: memories, multipliers). `clb_of` holds the atoms that sit in logic CLBs."""
+    clbs: set[int] = set()
+    pads = hard = 0
+    for s in view.sinks.get(net, ()):
+        if s == a:
+            continue
+        if s in clb_of:
+            clbs.add(clb_of[s])
+        elif s.startswith("out:"):
+            pads += 1
+        else:
+            hard += 1
+    return clbs, pads, hard
+
+
 def dup_candidates(view: NetView, clb_of: dict[str, int]) -> list[str]:
-    """LUT atoms whose output net has sinks in >= 2 distinct CLBs (the driver's own CLB counts when it holds a sink)."""
+    """LUT atoms whose output net has sinks in >= 2 distinct LOGIC CLBs (the driver's own CLB counts when it holds a sink).
+    Pad and hard-block sinks do not count (a copy of the LUT cannot sit in them); see dup_other_sinks."""
     out = []
     for a, k in view.kind.items():
         if k != "lut":
             continue
         for n in view.outs.get(a, ()):
-            cl = {clb_of.get(s, ("pad", s)) for s in view.sinks.get(n, ()) if s != a}
-            if len(cl) >= 2:
+            if len(dup_sink_classes(view, clb_of, a, n)[0]) >= 2:
                 out.append(a)
                 break
     return out
+
+
+def dup_other_sinks(view: NetView, clb_of: dict[str, int], cands: set[str]) -> dict[str, int]:
+    """Counted apart from the candidates: candidates whose net also feeds pads or hard blocks, and LUTs that the earlier
+    definition counted only because of pad or hard-block sinks (one logic CLB plus a pad or hard block)."""
+    with_pad = with_hard = other_only = 0
+    for a, k in view.kind.items():
+        if k != "lut":
+            continue
+        pad = hard = False
+        cand = a in cands
+        extra = False
+        for n in view.outs.get(a, ()):
+            clbs, pads, hards = dup_sink_classes(view, clb_of, a, n)
+            pad |= pads > 0
+            hard |= hards > 0
+            if len(clbs) < 2 and len(clbs) + pads + hards >= 2:
+                extra = True
+        if cand:
+            with_pad += pad
+            with_hard += hard
+        elif extra:
+            other_only += 1
+    return {"cand_with_pad_sink": with_pad, "cand_with_hard_sink": with_hard, "other_only": other_only}
 
 
 def dup_saving(paths: list[dict[str, Any]], cands: set[str], clb_of: dict[str, int]) -> dict[str, float]:

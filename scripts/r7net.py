@@ -33,9 +33,10 @@ import nornlib as nl
 import r7lib as lib
 
 R7F = nl.RUNS / "r7f"
-SPLIT_TRAIN = (1, 2, 3, 4, 5)   # the clustering and the arm are chosen on these seeds
-SPLIT_TEST = (6, 7, 8, 9, 10)   # and evaluated on these
-CAP_FLE, CAP_IN = 10, 40
+SEEDS = lib.NET_SEEDS   # Peter 2026-10-26: new runs use 5 seeds; the arm is chosen and evaluated on the same seeds (in-sample)
+MIN_OK = 4   # a design needs at least 4 of the 5 runs of an arm
+NORNS_LOCK = Path(os.environ.get("NORNS_VPR_LOCK", "/tmp/claude-1000/norns-vpr.lock"))   # Peter 2026-10-26: Norns VPR runs use their own lock
+CAP_FLE, CAP_IN = lib.CAP_FLE, lib.CAP_IN
 TIMEOUT = 7200
 NEW_KEY = 10 ** 6               # cluster keys at or above this are new (not in the stock file)
 
@@ -505,7 +506,7 @@ def read_metrics(design: str, arm: str, seed: int) -> dict[str, Any] | None:
 
 
 def vpr_net_run(design: str, arm: str, seed: int, net_path: Path, model: NetModel, assign: dict[int, int]) -> dict[str, Any]:
-    """One VPR run on a written `.net` (packing off). Under the heavy lock; kept files in runs/r7f/<d>/<arm>.s<seed>/."""
+    """One VPR run on a written `.net` (packing off). Under the Norns VPR lock; kept files in runs/r7f/<d>/<arm>.s<seed>/."""
     done = read_metrics(design, arm, seed)
     if done is not None and done.get("rc") == 0:
         return done
@@ -517,11 +518,11 @@ def vpr_net_run(design: str, arm: str, seed: int, net_path: Path, model: NetMode
     sc_net = sc / f"{design}.net"
     shutil.copy(net_path, sc_net) if not str(net_path).endswith(".gz") else _gunzip(net_path, sc_net)
     blif = nl.runs_dir(design, "netlist", f"{design}.blif")
-    flags = ["--place", "--route", "--net_file", str(sc_net), "--seed", str(seed), "--timing_report_npaths", str(lib.NPATHS),
+    flags = ["--place", "--route", "--analysis", "--net_file", str(sc_net), "--seed", str(seed), "--timing_report_npaths", str(lib.NPATHS),
              "--route_file", "/dev/null", "--write_initial_place_file", str(sc / "initial.place"),
              "--write_flat_place", str(sc / "final.flat_place")]
     nornsvpr = os.environ.get("NORNS_VPR", "")
-    cmd = ["flock", "-x", str(nl.LOCK), nornsvpr, str(nl.ARCH), str(blif)] + flags
+    cmd = ["flock", "-x", str(NORNS_LOCK), nornsvpr, str(nl.ARCH), str(blif)] + flags
     rc = nl.run(cmd, cwd=sc, stdout=sc / "vpr.out", timeout=TIMEOUT)
     rec: dict[str, Any] = {"design": design, "arm": arm, "seed": seed, "rc": rc}
     if rc == 0:
@@ -606,11 +607,11 @@ def hindsight(design: str) -> dict[str, Any]:
         netp = R7F / design / f"{arm}.net.gz"
         if not netp.is_file():
             write_net(model, assign, netp)
-        return [vpr_net_run(design, arm, s, netp, model, assign) for s in lib.SEEDS]
+        return [vpr_net_run(design, arm, s, netp, model, assign) for s in SEEDS]
 
     base = run_arm("net0", stock_assign)
-    if sum(1 for m in base if m.get("rc") == 0) < 8:
-        rec["stopped"] = "fewer than 8 net0 runs"
+    if sum(1 for m in base if m.get("rc") == 0) < MIN_OK:
+        rec["stopped"] = "fewer than 4 net0 runs"
         nl.write_json(out_path, rec)
         return rec
     if design.startswith("n5_"):
@@ -627,11 +628,11 @@ def hindsight(design: str) -> dict[str, Any]:
         else:
             run_arm("net_known", ka)
             rec["known"] = {"built": True, "clbs": len(set(ka.values()))}
-    med = {"net0": statistics.median(objective_of(design, "net0", SPLIT_TRAIN))}
+    med = {"net0": statistics.median(objective_of(design, "net0", SEEDS))}
     src_arm, cur = "net0", stock_assign
     for k in range(1, lib.MAX_ROUNDS + 1):
         arm = f"net_h{k}"
-        train = [(m["objective"], m["seed"]) for m in (read_metrics(design, src_arm, s) for s in SPLIT_TRAIN) if m and m.get("rc") == 0]
+        train = [(m["objective"], m["seed"]) for m in (read_metrics(design, src_arm, s) for s in SEEDS) if m and m.get("rc") == 0]
         b_obj, b_seed = min(train)
         rc_path = R7F / design / f"{arm}.recluster.json"
         asg_path = R7F / design / f"{arm}.assign.json"
@@ -655,12 +656,12 @@ def hindsight(design: str) -> dict[str, Any]:
         runs = run_arm(arm, new)
         ok = [m for m in runs if m.get("rc") == 0]
         r: dict[str, Any] = {"arm": arm, "ok": len(ok), "recluster": stats}
-        if len(ok) < 8:
-            r["note"] = "fewer than 8 runs"
+        if len(ok) < MIN_OK:
+            r["note"] = "fewer than 4 runs"
             rec["rounds"].append(r)
-            rec["stopped"] = f"{arm}: fewer than 8 runs"
+            rec["stopped"] = f"{arm}: fewer than 4 runs"
             break
-        tr = objective_of(design, arm, SPLIT_TRAIN)
+        tr = objective_of(design, arm, SEEDS)
         r["median_objective_train"] = statistics.median(tr)
         rec["rounds"].append(r)
         prev = min(med.values())

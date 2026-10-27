@@ -198,7 +198,7 @@ def build(design: str) -> dict:
     pos = np.searchsorted(uk, keys)
     pos = np.minimum(pos, max(len(uk) - 1, 0))
     hit = (uk[pos] == keys) if len(uk) else np.zeros(len(keys), dtype=bool)
-    nshared = np.where(hit, cnt[pos] if len(uk) else 0, 0).astype(np.uint8)
+    nshared = np.minimum(np.where(hit, cnt[pos] if len(uk) else 0, 0), 255).astype(np.uint8)  # clipped: a count above 255 would wrap in uint8
     series = np.where(hit, ser[pos] if len(uk) else 0, 0).astype(np.uint8)
     scrit = np.where(hit, scr[pos] if len(uk) else 0.0, 0.0).astype(np.float32)
     minfan = np.where(hit, fan[pos] if len(uk) else 0, 0).astype(np.uint16)
@@ -263,6 +263,7 @@ def build(design: str) -> dict:
         sav = lib.dup_saving([{"arrival": p["arrival"], "nodes": p["nodes"]} for p in ri["paths"]], set(cands), clb_of)
         pcs = [ri["pcrit"][aid[a]] for a in cands]
         dup[f"{arm}.s{s}"] = {"candidates": len(cands), "luts": int(np.sum(kind == 0)),
+                              **lib.dup_other_sinks(view, clb_of, set(cands)),
                               "near5": int(sum(1 for c in pcs if c >= lib.PCRIT_NEAR[0])),
                               "near10": int(sum(1 for c in pcs if c >= lib.PCRIT_NEAR[1])), **sav}
     nl.write_json(out / "dup.json", dup)
