@@ -22,6 +22,7 @@
  *   - IO ring: perimeter tiles except the four corners, 8 IOB bels per tile (z = sub tile);
  *   - CLB tiles: every interior column except x % 8 == 2 (memory columns) and x % 8 == 6
  *     (mult_36 columns); 10 BLEs per tile, each a LUT6 bel (z = 2k) and a DFF bel (z = 2k + 1);
+ *   - option pair=1 constrains each LUT with its single-sink DFF into one BLE (off by default, see pack());
  *   - tile validity: at most 40 distinct nets entering the tile (the 40 "I" pins; own outputs
  *     feed back for free), as in the arch XML.
  *  Not modelled: LUT fracturing (two LUT5 per LUT6), carry chains, mult_36 and memory (their
@@ -57,6 +58,7 @@ struct K6Impl : ViaductAPI
         H = get("height", 12);
         N = get("n", 10);
         Imax = get("inputs", 40);
+        pair = get("pair", 0) != 0;
         if (W < 3 || H < 3)
             log_error("k6 uarch: width and height must be at least 3 (got %d x %d)\n", W, H);
     }
@@ -73,7 +75,13 @@ struct K6Impl : ViaductAPI
 
     void pack() override
     {
-        // Constrain a LUT whose only sink is a DFF D pin into one BLE (VPR pack pattern lut -> ff).
+        // pair=0 (default): LUT6 and DFF are independent cells. nextpnr's SA legaliser
+        // (common/place/place_common.cc, ConstraintLegaliseWorker::valid_loc_for) refuses a tile that already holds
+        // a locked relative-constraint chain, so one LUT-DFF chain per tile at most: SA cannot start on a design with
+        // more chains than tiles. VPR repacks LUTs and FFs into BLEs itself from the flat placement.
+        // pair=1: constrain a LUT whose only sink is a DFF D pin into one BLE (VPR pack pattern lut -> ff).
+        if (!pair)
+            return;
         int pairs = h.constrain_cell_pairs(pool<CellTypePort>{{id_LUT6, id_F}}, pool<CellTypePort>{{id_DFF, id_D}}, 1);
         log_info("Constrained %d LUT6-DFF pairs.\n", pairs);
     }
@@ -97,6 +105,7 @@ struct K6Impl : ViaductAPI
   private:
     ViaductHelpers h;
     int W = 12, H = 12, N = 10, Imax = 40;
+    bool pair = false;
     std::vector<std::vector<BelId>> tile_lut, tile_ff; // [y * W + x][k]
 
     bool is_io(int x, int y) const { return x == 0 || x == W - 1 || y == 0 || y == H - 1; }
