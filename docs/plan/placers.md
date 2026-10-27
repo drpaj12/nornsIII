@@ -295,3 +295,83 @@ schema is accepted; a mapped netlist (LUT cells with `INIT`, `DFF`, `INBUF`/`OUT
 4. A converter from the BLIF/atom netlist to Yosys JSON (Odin's `write_json` after a LUT mapping may do part of this), fixed IO positions so HeAP is
    used (otherwise nextpnr falls back to SA, `generic/arch.cc:610-625`), and a reader for the `--write` JSON's `NEXTPNR_BEL` attribute.
 5. Routing is not needed; a placement-only run uses `--no-route` (option present in `common/kernel/command.cc`).
+
+## 9. Dispatch 3 pre-registration (2026-10-27, written and pushed BEFORE any gate run; keeps every rule above)
+
+Peter 2026-10-27: decision 3 (own viaduct uarch in C++, held in Norns), decision 4 parks OpenPARF and DREAMPlaceFPGA. Work so far, before this entry:
+the uarch and its build were written and smoke-tested on one construction (`n5_rand_ctl_64`, seed 1, three or four nextpnr runs of both placers). Those
+are development runs, not arm results, and no VPR comparison data exist yet except the one `vpr_ap` seed-1 reference run (below).
+
+### 9.1 Families (Peter 2026-10-27: use different analytic and annealing placers; report per family)
+| family | arm | what it is |
+|---|---|---|
+| analytic | `vpr_ap` | VPR default flow (AP: SimPL-style global placer, doi 10.1145/2461256.2461279, then VPR legalisation, anneal refinement) |
+| analytic | `ext_nextpnr_heap` | nextpnr `--placer heap` (HeAP, Gort and Anderson FPL 2012; nextpnr's HeAP is followed by its own temperature-zero SA refinement pass, which is part of the arm) |
+| analytic | `vpr_ap_reread` (control) | `vpr_ap` seed s, then its own `final.flat_place` read back by the default flow |
+| annealing | `vpr_sa` | `--pack --place --route --analysis` |
+| annealing | `ext_nextpnr_sa` | nextpnr `--placer sa` (placer1.cc, "based on arachne-pnr") |
+| annealing | `vpr_sa_reread` (control, NEW) | `vpr_sa` seed s, then its own `final.flat_place` read back by the default flow |
+`norns_ap` (own placer) is not briefed and not in this experiment. nextpnr offers only `sa` and `heap` on the generic arch (`generic/arch.cc:754`).
+
+**Per-family reporting rule.** Every table, ratio, geometric mean and sentence is per family. An external arm is compared with its own family's VPR arm and
+its own family's reread control (heap with `vpr_ap` and `vpr_ap_reread`; sa with `vpr_sa` and `vpr_sa_reread`). No headline compares across families
+(heap against `vpr_sa`, or sa against `vpr_ap`); a cross-family number may appear only in a labelled appendix row. Both external arms enter VPR the same way
+(mode A, the default flow with `--read_flat_place`), so the reread control that matches the entry path is the same refinement count for both families; the SA
+family's second control exists to show how much of the SA arm's result is VPR's own re-legalisation.
+
+### 9.2 The uarch (what the external placers see; fixed before the gate, choices were made on the development construction only)
+Source `placers/nextpnr_k6/` (ISC header, derived in structure from nextpnr `generic/viaduct/example`, credit in the file), overlay plus a two-line CMake patch,
+built by `placers/nextpnr_k6/build.sh` (Section 9.6). Grid from the VPR reference run (`FPGA sized to W x H`): IO ring, corners empty, 8 IOB bels per IO tile
+(z = VPR sub tile); CLB tiles at every interior x with x mod 8 not 2 and not 6 (the memory columns start at x = 2 and mult_36 columns at x = 6, repeat 8, arch XML
+lines 227-239), 10 BLE slots per tile, each a LUT6 bel and a DFF bel; tile legality = at most 40 distinct external input nets (the 40 `I` pins; own outputs feed
+back). Not modelled: LUT fracturing (n2_lut5 mode), carry, mult_36, memory, clocks (clock nets are not connected, as VPR's placer ignores them), routing (dummy wires,
+`--no-route`), cell timing (the generic arch has none, so neither external arm is timing-driven; both VPR arms are: a fairness caveat that is stated in every table).
+Two development findings that fix uarch choices before the gate:
+1. `pair=0`: LUT6 and DFF are independent cells. With the LUT-to-DFF relative constraint (`pair=1`) nextpnr's SA fails on `n5_rand_ctl_64` for every
+   seed tried (1 to 4): "failed to place chain starting at cell", because the constraint legaliser refuses any tile that already holds a locked chain
+   (`common/place/place_common.cc`, `valid_loc_for`, "Don't place at tiles where any strongly bound Bels exist"), so SA needs at least as many tiles as chains. HeAP works either
+   way. Both arms therefore run with `pair=0`; VPR re-forms the BLEs when it legalises.
+2. IO is fixed: every pad is given the `BEL` of its position in the `vpr_ap` seed-1 `final.flat_place` of the same design. HeAP then has anchors (log line "Placed 17 cells
+   based on constraints"); with a viaduct uarch nextpnr uses HeAP regardless (`generic/arch.cc:610-625`: the fall-back to SA applies only without a uarch). The same pad
+   positions are used for every seed and both arms. Caveat stated with every result: the externals get the pad positions that VPR's analytic placer chose (seed 1); `vpr_ap`
+   and `vpr_sa` choose their own for each seed.
+
+### 9.3 Converter coverage and the hard-block census (measured 2026-10-27 from `runs/<d>/netlist/<d>.blif`)
+Cells of the BLIF to nextpnr JSON (`scripts/nextpnr_blif2json.py`): `.names` to LUT6 (64-bit INIT from the cover), `.latch` to DFF, pads to IOB; atom names are the VPR atom
+names. Readback (`scripts/nextpnr_readback.py`): the `NEXTPNR_BEL` of each cell to a flat-place line `atom x y 0 sub_tile`; sub tile 0 for logic (the flat-place format has no
+in-CLB slot: `base/load_flat_place.cpp:140-213` reads sub_tile as an integer, the IO sub tile slot), the pad's own slot for pads.
+Census of the 15 main designs (`.subckt` counts): ch_intrinsics 8 single_port_ram; stereovision3 31 adder; mkPktMerge 51 adder + 459 dual_port_ram; diffeq2 136 adder + 5 multiply;
+diffeq1 136 adder + 5 multiply; boundtop 166 adder + 32 single_port_ram; mkDelayWorker32B 833 adder + 1336 dual_port_ram; mkSMAdapter4B 370 adder + 153 dual_port_ram; sha 320 adder;
+raygentop 453 adder + 15 multiply + 21 single_port_ram; or1200 563 adder + 64 dual_port_ram + 1 multiply; blob_merge 3815 adder; stereovision0 2741 adder; stereovision1 2482 adder +
+152 multiply; stereovision2 12175 adder + 468 multiply. **None of the 15 main designs is LUT/FF-only**, so no main design qualifies for the first gate and the gate named in Section 4
+(ch_intrinsics, stereovision3, mkPktMerge) cannot run: ch_intrinsics has memory, stereovision3 carry, mkPktMerge both.
+
+### 9.4 First gate, as run in this dispatch (substitute set; the controller may rule otherwise)
+Because no main design qualifies, the gate runs on three LUT/FF-only designs of the round-5 netlist-level calibration constructions (`runs/n5_*`, LUT feeding one flip-flop by construction),
+smallest first: `n5_rand_ctl_16`, `n5_mesh_ctl_64`, `n5_chain_ctl_256`. They are pipeline-validation data for the converter, the uarch and the readback, labelled "Dispatch 3 gate substitute";
+they are not part of the 15-design corpus, and no conclusion about main designs is drawn from them. Arms: `vpr_ap`, `vpr_ap_reread`, `vpr_sa`, `vpr_sa_reread`, `ext_nextpnr_heap`,
+`ext_nextpnr_sa`; VPR `--seed` 1 to 3 for every arm (the external placer seed equals the VPR seed); the reference for pads and the atom list is `vpr_ap` seed 1. Seeds 4 to 6 are not run.
+Flags as Section 4 (`--timing_report_npaths 200 --route_file /dev/null`, minimum channel width search on, `--analysis` for the stage-flag arms). nextpnr: `--uarch k6 --vopt width=W --vopt height=H
+--no-route --placer {heap,sa} --seed s`, no lock (small), wall time and nextpnr's own placer times recorded.
+**Pass criteria (all must hold):** every run rc 0 and routes legally (VPR prints "Circuit successfully routed"); the reader accepts every atom (0 warnings of the form "Flat placement file, line"); the converter
+and readback report 0 atoms without a cell and 0 moved pads. **Stop rule (Dispatch 3):** if any external arm's routed WL is more than 2x the same family's reread control on the same design and seed, stop
+and report the likely cause before changing anything. No arm, option or parameter is chosen on seeds 4 to 6.
+Measures: WL, W, CPD, VPR AP time or SA time, nextpnr placer time (HeAP time plus its SA refinement time; SA time plus initial placement), converter wall time; the summary quantity is WL x CPD as in Section 4.
+
+### 9.5 Hard-block rule (a proposal only; nothing of it is built or run in this dispatch)
+Needed because every main design has carry (adder) atoms or memory/multiplier atoms. Proposal, in cost order:
+* **H0 (cheapest, bias-aware): fixed anchors.** `adder`, `multiply`, `single_port_ram` and `dual_port_ram` atoms are written to the flat-place file at their `vpr_ap` seed-1 positions (as pads are) and
+  excluded from the placer; the externals place only LUTs, FFs and pads' neighbours. Bias: the externals inherit VPR's analytic placement of the hard blocks; mark every result "H0" and compare only with
+  `vpr_ap_reread`. Cost: a converter change of about a day; no uarch change except that nets to fixed cells need anchor cells (fixed cells of an `ANCHOR` type on dummy bels).
+* **H1: carry as plain cells.** An `ADD` cell type (one adder bit, ports a b cin sumout cout) on an `ADD` bel type with two bels per BLE slot (the arch has the adder in the `arithmetic` mode of the `fle`, arch XML
+  lines 448-484, to be read exactly before coding), carry nets as ordinary nets, no chain constraint (VPR rebuilds chains when it legalises and the SA legaliser cannot hold more chains than tiles). Mult and
+  memory as H0. Cost: about 2 to 3 agent-days; the open question is whether unconstrained carry bits give VPR a placement it can still chain.
+* **H2: full.** `MULT36` and `MEM` bel types in the x mod 8 = 6 and 2 columns (heights 4 and 6 rows), cell widths mapped to the fracturing modes (`multiply` 9x9 to 36x36, memory aspect modes of arch XML
+  lines 874-1250), chain constraints for carry under HeAP only. Cost: 5 or more agent-days; recommended only if H1 shows the carry model matters.
+Recommendation: H0 first (it exercises all 15 designs and isolates the effect of the LUT/FF placer), then H1 on the designs where H0 and `vpr_ap_reread` differ most.
+
+### 9.6 Overlay layout and build recipe (reproducible)
+`placers/nextpnr_k6/{k6.cc, constids.inc, cmake-register.patch, build.sh}`. `build.sh` (1) exports `external/nextpnr` HEAD (9691ce8c) with `git archive` to
+`/tmp/claude-1000/nextpnr-k6-src` (the clone is not touched), (2) copies `k6.cc` and `constids.inc` to `generic/viaduct/k6/`, (3) applies `cmake-register.patch` (two lines in `generic/CMakeLists.txt`), (4) runs
+cmake and ninja into `/tmp/claude-1000/nextpnr-k6-build` under `flock -x /tmp/claude-1000/odin3-heavy.lock`, with the Section 8 dependency prefix. Run with `LD_LIBRARY_PATH=/tmp/claude-1000/nextpnr-deps/prefix/lib`.
+No GitHub fork; the licence of the added files is ISC (nextpnr's), credit to gatecat in the header. Licences of the dependencies are in Section 8.
