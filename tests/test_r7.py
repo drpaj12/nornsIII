@@ -17,6 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import r7lib as lib  # noqa: E402
 import r7mine as mine  # noqa: E402
+import r7net as rnet  # noqa: E402
+import r7stats as rstats  # noqa: E402
+import r7fstats as rfstats  # noqa: E402
 
 REPORT = """#Timing report of worst 2 path(s)
 # Unit scale: 1e-09 seconds
@@ -167,6 +170,94 @@ class T(unittest.TestCase):
             back = lib.read_aff(p)
         self.assertEqual(back["x"], back["y"])
         self.assertNotEqual(back["x"], back["z"])
+
+    def test_dup_candidates_logic_sinks_only(self):
+        view = Stub(1)
+        view.kind = {"d": "lut"}
+        view.outs = {"d": ["n"]}
+        view.sinks = {"n": ["s1", "out:n", "hard"]}
+        # one logic CLB plus a pad and a hard block: not a candidate; counted apart
+        clb = {"s1": 1, "d": 1}
+        self.assertEqual(lib.dup_candidates(view, clb), [])
+        self.assertEqual(lib.dup_other_sinks(view, clb, set())["other_only"], 1)
+        clb = {"s1": 1, "d": 1, "s2": 2}
+        view.sinks = {"n": ["s1", "s2", "out:n"]}
+        self.assertEqual(lib.dup_candidates(view, clb), ["d"])
+        self.assertEqual(lib.dup_other_sinks(view, clb, {"d"})["cand_with_pad_sink"], 1)
+
+    def test_family_leave_out(self):
+        self.assertEqual(mine.family("diffeq1"), mine.family("diffeq2"))
+        self.assertEqual(mine.family("stereovision0"), mine.family("stereovision3"))
+        self.assertNotEqual(mine.family("sha"), mine.family("boundtop"))
+        self.assertEqual(mine.family("n5_mesh_dp_16"), mine.family("n5_mesh_dp_256"))
+        self.assertNotEqual(mine.family("n5_mesh_dp_16"), mine.family("n5_tree_dp_16"))
+
+    def test_recovery_threshold_and_no_forced_one(self):
+        import math
+        vals = {("d", "stock"): 100.0, ("d", "h"): 99.0, ("d", "known"): 98.0}
+
+        def rd(design, arm, seed):
+            return {"rc": 0, "wirelength": vals[(design, arm)]}
+        r = rstats.recovery("d", "stock", "h", "known", "wirelength", (1, 2, 3), rd)
+        self.assertIsNone(r["value"])  # known only 2% better: nothing to recover
+        vals[("d", "known")] = 50.0
+        r = rstats.recovery("d", "stock", "h", "known", "wirelength", (1, 2, 3), rd)
+        self.assertAlmostEqual(r["value"], math.log(100 / 99) / math.log(2))
+        # a design with no gain never enters the pooled medians
+        recs = [{"design": "n5_x_16", "recovery": {"WL": {"value": None, "note": "no gain found"}, "CLB": {"value": 0.5}, "CPD": {"value": 0.5}}}]
+        p = rfstats.pooled_recovery(recs)["all"]["WL"]
+        self.assertIsNone(p["median"])
+        self.assertEqual(p["n_nogain"], 1)
+
+    def test_net_legality_rules(self):
+        class U:
+            def __init__(self, ins, outs, clk=None):
+                self.in_nets, self.out_nets, self.clk = ins, outs, clk
+
+        class M:
+            units = {i: U([f"x{i}"], [f"y{i}"], "clk") for i in range(12)}
+        m = M()
+        self.assertTrue(rnet.legal(m, set(range(10))))
+        self.assertFalse(rnet.legal(m, set(range(11))))  # 11 > 10 logic elements
+        m.units[0].clk = "other"
+        self.assertFalse(rnet.legal(m, {0, 1}))  # two clocks
+        m.units[0].clk = "clk"
+        m.units[0].in_nets = [f"e{k}" for k in range(41)]
+        self.assertFalse(rnet.legal(m, {0}))  # 41 external input nets
+        m.units[1].out_nets = [f"e{k}" for k in range(5)]
+        self.assertTrue(rnet.legal(m, {0, 1}))  # five nets now come from unit 1: 36 + 1 external input nets
+        m.units[0].in_nets = [f"e{k}" for k in range(41)][:40]
+        self.assertTrue(rnet.legal(m, {0}))
+
+    def test_net_writer_identity_and_legality(self):
+        for d in ("ch_intrinsics", "n5_mesh_dp_16", "diffeq1"):
+            p = rnet.stock_net_path(d)
+            if not p.is_file():
+                self.skipTest("runs/r7 not present")
+            import gzip
+            import xml.etree.ElementTree as ET
+            m = rnet.load_model(p)
+            for key in set(m.stock.values()):
+                if key not in m.frozen_keys:
+                    self.assertTrue(rnet.legal(m, {u for u, k in m.stock.items() if k == key}), (d, key))
+
+            def canon(e):
+                return (e.tag, tuple(sorted(e.attrib.items())), (e.text or "").strip(), tuple(canon(c) for c in e))
+            with gzip.open(p) as fh:
+                orig = ET.parse(fh).getroot()
+            self.assertEqual(canon(orig), canon(rnet.build_tree(m, dict(m.stock)).getroot()))
+            # a swap of two logic elements between CLBs still writes a tree with the same elements and legal CLBs
+            keys = sorted(k for k in set(m.stock.values()) if k not in m.frozen_keys)
+            if len(keys) >= 2:
+                a = next(u for u, k in m.stock.items() if k == keys[0])
+                b = next(u for u, k in m.stock.items() if k == keys[1])
+                asg = dict(m.stock)
+                asg[a], asg[b] = keys[1], keys[0]
+                if all(rnet.legal(m, {u for u, k in asg.items() if k == kk}) for kk in keys[:2]):
+                    t = rnet.build_tree(m, asg).getroot()
+                    names = sorted(x.get("name") for x in t.iter("block") if x.get("instance", "").startswith("fle[") and x.get("name") != "open")
+                    onames = sorted(x.get("name") for x in orig.iter("block") if x.get("instance", "").startswith("fle[") and x.get("name") != "open")
+                    self.assertEqual(names, onames)
 
 
 if __name__ == "__main__":
