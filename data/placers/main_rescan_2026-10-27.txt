@@ -1,0 +1,19 @@
+rescan of data/placers/main_*.json: 180 ext records, 18 rejected
+  REJECT stereovision1    ext_nextpnr_heap  seed 1  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision1    ext_nextpnr_heap  seed 2  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision1    ext_nextpnr_heap  seed 3  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision1    ext_nextpnr_heap  seed 4  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision1    ext_nextpnr_heap  seed 5  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision1    ext_nextpnr_heap  seed 6  rc 0  {'fallback_ref': 12, 'const_verbatim': 2}
+  REJECT stereovision2    ext_nextpnr_heap  seed 1  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_heap  seed 2  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_heap  seed 3  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_heap  seed 4  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_heap  seed 5  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_heap  seed 6  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 1  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 2  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 3  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 4  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 5  rc 1  {'anchor_moved': 1404}
+  REJECT stereovision2    ext_nextpnr_sa    seed 6  rc 1  {'anchor_moved': 1404}

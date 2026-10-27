@@ -1,0 +1,209 @@
+{
+ "design": "ch_intrinsics",
+ "tag": "main",
+ "runs": [
+  {
+   "rc": 0,
+   "pack_s": 0.05,
+   "ap_s": 0.24,
+   "sa_place_s": null,
+   "route_s": 0.24,
+   "flow_s": 0.53,
+   "wl": 1461.0,
+   "cpd_ns": 2.09041,
+   "W": 38.0,
+   "clbs": 13.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ],
+   "arm": "vpr_ap",
+   "seed": 1
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.05,
+   "ap_s": 0.16,
+   "sa_place_s": null,
+   "route_s": 0.25,
+   "flow_s": 0.46,
+   "wl": 1359.0,
+   "cpd_ns": 1.96491,
+   "W": 40.0,
+   "clbs": 13.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ],
+   "arm": "vpr_ap_reread",
+   "seed": 1
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.06,
+   "ap_s": null,
+   "sa_place_s": 0.07,
+   "route_s": 0.22,
+   "flow_s": 0.51,
+   "wl": 1484.0,
+   "cpd_ns": 2.12094,
+   "W": 38.0,
+   "clbs": 12.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ],
+   "arm": "vpr_sa",
+   "seed": 1
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.05,
+   "ap_s": 0.15,
+   "sa_place_s": null,
+   "route_s": 0.22,
+   "flow_s": 0.42,
+   "wl": 1483.0,
+   "cpd_ns": 1.99267,
+   "W": 38.0,
+   "clbs": 12.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ],
+   "arm": "vpr_sa_reread",
+   "seed": 1
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 1,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 0.04094219207763672,
+    "heap_s": 0.01,
+    "sa_s": 0.02,
+    "init_s": null,
+    "max_rss_kb": 10508.0,
+    "hpwl_final": 304
+   },
+   "readback": {
+    "atoms": 416,
+    "from_nextpnr": 406,
+    "fallback_ref": 2,
+    "pad_moved": 0,
+    "hard_verbatim": 8,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.022429704666137695,
+   "rc": 0,
+   "pack_s": 0.06,
+   "ap_s": 0.17,
+   "sa_place_s": null,
+   "route_s": 0.26,
+   "flow_s": 0.48,
+   "wl": 1411.0,
+   "cpd_ns": 2.14365,
+   "W": 40.0,
+   "clbs": 13.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 1,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 0.31496334075927734,
+    "heap_s": null,
+    "sa_s": 0.3,
+    "init_s": 0.0,
+    "max_rss_kb": 10212.0,
+    "hpwl_final": 295
+   },
+   "starttemp": 1.0,
+   "readback": {
+    "atoms": 416,
+    "from_nextpnr": 406,
+    "fallback_ref": 2,
+    "pad_moved": 0,
+    "hard_verbatim": 8,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.022150278091430664,
+   "rc": 0,
+   "pack_s": 0.06,
+   "ap_s": 0.17,
+   "sa_place_s": null,
+   "route_s": 0.27,
+   "flow_s": 0.49,
+   "wl": 1177.0,
+   "cpd_ns": 1.96189,
+   "W": 48.0,
+   "clbs": 13.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    10,
+    10
+   ]
+  }
+ ],
+ "converter": {
+  "rc": 0,
+  "seconds": 0.025832414627075195,
+  "blif_names": 195,
+  "blif_latches": 82,
+  "unsupported": {},
+  "hard_models": {
+   "single_port_ram": 8
+  },
+  "ref_atom_types": {
+   "memory_slice": 8,
+   "ff": 82,
+   "lut": 97,
+   "outpad": 130,
+   "inpad": 99
+  },
+  "ok": true,
+  "cells": 406,
+  "luts": 95,
+  "dffs": 82,
+  "pads": 229,
+  "constant_drivers_dropped": 3,
+  "swept_by_vpr_dropped": {
+   "lut": 97,
+   "ff": 0,
+   "pad": 18
+  },
+  "clock_nets": [
+   "clk"
+  ],
+  "anchors": 0,
+  "anchor_tiles": 0,
+  "hard_atoms": 8,
+  "hard_atoms_not_in_ref": 0,
+  "hard_atoms_without_movable_net": 8,
+  "ref_atoms": 416,
+  "n_ref_atoms_without_cell": 2
+ },
+ "reference": {
+  "arm": "vpr_ap",
+  "seed": 1,
+  "grid": [
+   10,
+   10
+  ]
+ }
+}

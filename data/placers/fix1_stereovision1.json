@@ -1,0 +1,333 @@
+{
+ "design": "stereovision1",
+ "tag": "fix1",
+ "runs": [
+  {
+   "rc": 0,
+   "pack_s": 4.27,
+   "ap_s": 10.84,
+   "sa_place_s": null,
+   "route_s": 24.53,
+   "flow_s": 36.61,
+   "wl": 124224.0,
+   "cpd_ns": 6.45691,
+   "W": 68.0,
+   "clbs": 788.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ],
+   "arm": "vpr_ap",
+   "seed": 1
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 1,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 20.032762050628662,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.43,
+    "sa_s": 18.04,
+    "init_s": null,
+    "max_rss_kb": 159528.0,
+    "hpwl_final": 41798
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.17734980583190918,
+   "rc": 0,
+   "pack_s": 4.24,
+   "ap_s": 9.5,
+   "sa_place_s": null,
+   "route_s": 25.99,
+   "flow_s": 36.73,
+   "wl": 118421.0,
+   "cpd_ns": 5.43537,
+   "W": 74.0,
+   "clbs": 789.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 2,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 16.952007293701172,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.42,
+    "sa_s": 14.94,
+    "init_s": null,
+    "max_rss_kb": 159500.0,
+    "hpwl_final": 41741
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.17211294174194336,
+   "rc": 0,
+   "pack_s": 3.98,
+   "ap_s": 9.01,
+   "sa_place_s": null,
+   "route_s": 23.17,
+   "flow_s": 33.39,
+   "wl": 119059.0,
+   "cpd_ns": 5.70693,
+   "W": 70.0,
+   "clbs": 786.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 3,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 17.498438358306885,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.38,
+    "sa_s": 15.57,
+    "init_s": null,
+    "max_rss_kb": 159624.0,
+    "hpwl_final": 41667
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.16979074478149414,
+   "rc": 0,
+   "pack_s": 3.98,
+   "ap_s": 9.07,
+   "sa_place_s": null,
+   "route_s": 22.62,
+   "flow_s": 32.91,
+   "wl": 120220.0,
+   "cpd_ns": 5.73499,
+   "W": 72.0,
+   "clbs": 782.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 4,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 16.30332851409912,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.41,
+    "sa_s": 14.34,
+    "init_s": null,
+    "max_rss_kb": 159276.0,
+    "hpwl_final": 41732
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.16837191581726074,
+   "rc": 0,
+   "pack_s": 4.01,
+   "ap_s": 8.78,
+   "sa_place_s": null,
+   "route_s": 22.24,
+   "flow_s": 32.22,
+   "wl": 120625.0,
+   "cpd_ns": 5.88712,
+   "W": 70.0,
+   "clbs": 779.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 5,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 19.880752563476562,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.47,
+    "sa_s": 17.85,
+    "init_s": null,
+    "max_rss_kb": 159436.0,
+    "hpwl_final": 41686
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.1656053066253662,
+   "rc": 0,
+   "pack_s": 4.15,
+   "ap_s": 8.9,
+   "sa_place_s": null,
+   "route_s": 24.15,
+   "flow_s": 34.32,
+   "wl": 118395.0,
+   "cpd_ns": 5.88601,
+   "W": 74.0,
+   "clbs": 778.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 6,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 19.267256498336792,
+    "ble_per_tile": 10,
+    "no_bels": false,
+    "heap_s": 1.31,
+    "sa_s": 17.37,
+    "init_s": null,
+    "max_rss_kb": 159536.0,
+    "hpwl_final": 41828
+   },
+   "readback": {
+    "atoms": 19256,
+    "from_nextpnr": 15688,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 3568,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.16703224182128906,
+   "rc": 0,
+   "pack_s": 4.06,
+   "ap_s": 9.37,
+   "sa_place_s": null,
+   "route_s": 27.24,
+   "flow_s": 37.85,
+   "wl": 122859.0,
+   "cpd_ns": 5.3118,
+   "W": 72.0,
+   "clbs": 783.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    40,
+    40
+   ]
+  }
+ ],
+ "converter": {
+  "rc": 0,
+  "seconds": 1.1322813034057617,
+  "ref_sha256": "7b87c8b2a5a83cf0c07e05e428ca615b01ab42bf748c9b8876ea471d106b8bfb",
+  "blif_names": 6465,
+  "blif_latches": 10315,
+  "unsupported": {},
+  "hard_models": {
+   "multiply": 152,
+   "adder": 2482
+  },
+  "ref_atom_types": {
+   "ff": 10315,
+   "adder": 2174,
+   "mult_9x9": 152,
+   "lut": 6355,
+   "outpad": 145,
+   "inpad": 115
+  },
+  "ok": true,
+  "cells": 19040,
+  "luts": 6353,
+  "dffs": 9075,
+  "pads": 260,
+  "constant_drivers_dropped": 3,
+  "swept_by_vpr_dropped": {
+   "lut": 109,
+   "ff": 0,
+   "pad": 167
+  },
+  "clock_nets": [
+   "tm3_clk_v0"
+  ],
+  "anchors": 3352,
+  "anchor_tiles": 221,
+  "hard_atoms": 3874,
+  "chain_ffs": 1240,
+  "hard_atoms_not_in_ref": 308,
+  "hard_atoms_without_movable_net": 214,
+  "ref_atoms": 19256,
+  "n_ref_atoms_without_cell": 0
+ },
+ "reference": {
+  "arm": "vpr_ap",
+  "seed": 1,
+  "grid": [
+   40,
+   40
+  ]
+ },
+ "chain_collapse_ref": {
+  "adders_plus_chain_ffs": 3722,
+  "chain_ffs": 1240,
+  "moved": 0
+ },
+ "ble_per_tile": 10,
+ "probe": {
+  "rc": 0,
+  "no_bels": false,
+  "wall_s": 18.31607413291931
+ }
+}

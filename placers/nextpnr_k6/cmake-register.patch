@@ -1,0 +1,11 @@
+--- a/generic/CMakeLists.txt
++++ b/generic/CMakeLists.txt
+@@ -31,6 +31,8 @@
+     viaduct/fabulous/validity_check.h
+     viaduct/fabulous/pcf.cc
+     viaduct/fabulous/pcf.h
++    viaduct/k6/constids.inc
++    viaduct/k6/k6.cc
+ )
+ 
+ add_nextpnr_architecture(${family}
