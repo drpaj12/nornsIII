@@ -680,6 +680,67 @@ def hindsight(design: str) -> dict[str, Any]:
     return rec
 
 
+def _arm_assign(design: str, model: NetModel, arm: str) -> dict[int, int]:
+    """The clustering behind an arm, as written before: net0 = stock, net_h<k> = its assign file, net_known = the construction."""
+    if arm == "net0":
+        return dict(model.stock)
+    if arm == "net_known":
+        import r5lib as rl
+        spec = rl.read_spec(design)
+        lab = {}
+        for a in {a for un in model.units.values() for a in un.atoms}:
+            k, _ = rl.label_of(a, spec)
+            if k is not None:
+                lab[a] = int(k)
+        ka, why = known_assign(model, lib.NetView(design), lab)
+        assert ka is not None, why
+        return ka
+    return {int(u): int(c) for u, c in nl.read_json(R7F / design / f"{arm}.assign.json").items()}
+
+
+def heldout_arms(design: str) -> list[str]:
+    """Arms to run on the held-out seeds: net0 and H (where H != net0); calibration designs also net_known."""
+    rec = nl.read_json(R7F / design / "rounds.json")
+    harm = rec.get("hindsight_arm")
+    if harm is None:
+        return []
+    arms = []
+    if harm != "net0" or design.startswith("n5_"):
+        arms.append("net0")
+    if harm != "net0":
+        arms.append(harm)
+    if design.startswith("n5_") and rec.get("known", {}).get("built"):
+        arms.append("net_known")
+    return arms
+
+
+def heldout(design: str) -> int:
+    """Seeds 6-10 for the arms fixed on seeds 1-5 (rounds.json is read, never changed). Resumable: finished runs are skipped."""
+    arms = heldout_arms(design)
+    if not arms:
+        print(f"{design}: H = net0, no held-out run needed", flush=True)
+        return 0
+    model = load_model(stock_net_path(design))
+    for arm in arms:
+        assign = _arm_assign(design, model, arm)
+        netp = R7F / design / f"{arm}.net.gz"
+        if not netp.is_file():
+            write_net(model, assign, netp)
+        for s in lib.HELD_SEEDS:
+            vpr_net_run(design, arm, s, netp, model, assign)
+    return 0
+
+
+def heldout_order() -> list[str]:
+    """Designs with held-out arms, smallest first (unit count of the stock .net)."""
+    ds = []
+    for d in list(lib.CALIB) + list(lib.MAIN):
+        rp = R7F / d / "rounds.json"
+        if rp.is_file() and heldout_arms(d):
+            ds.append((nl.read_json(rp)["units"], d))
+    return [d for _, d in sorted(ds)]
+
+
 def status() -> int:
     p = R7F / "runs.jsonl"
     rows = [json.loads(x) for x in p.read_text().splitlines()] if p.is_file() else []
@@ -696,6 +757,10 @@ def main(argv: list[str]) -> int:
     mode, designs = argv[0], argv[1:]
     if mode == "status":
         return status()
+    if mode == "heldout":
+        for d in designs or heldout_order():
+            heldout(d)
+        return 0
     if mode == "run":
         for d in designs:
             hindsight(d)

@@ -17,7 +17,8 @@ import nornlib as nl
 R7 = nl.RUNS / "r7"
 DATA7 = nl.DATA / "r7"
 SEEDS = tuple(range(1, 11))
-NET_SEEDS = (1, 2, 3, 4, 5)   # new runs (.net arms): Peter 2026-10-26 cut the seeds to 5
+NET_SEEDS = (1, 2, 3, 4, 5)   # new runs (.net arms): Peter 2026-10-26 cut the seeds to 5; the selection seeds
+HELD_SEEDS = (6, 7, 8, 9, 10)   # held-out seeds of the .net arms (protocol amendment 2026-10-27, fix round 2)
 MAX_ROUNDS = 5
 STOP_GAIN = 0.01
 NPATHS = 200
