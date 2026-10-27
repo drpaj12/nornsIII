@@ -600,6 +600,7 @@ Underfull \hbox (badness 4084) in paragraph at lines 72--74
 LaTeX Font Warning: Font shape `TU/ptm/m/sc' undefined
 (Font)              using `TU/ptm/m/n' instead on input line 77.
 
+[2]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 161.
@@ -608,7 +609,6 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 LaTeX Font Warning: Font shape `TU/pcr/m/n' undefined
 (Font)              using `TU/lmr/m/n' instead on input line 162.
 
-[2]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 174.
@@ -638,11 +638,11 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 LaTeX Font Warning: Font shape `TU/pcr/m/sc' undefined
 (Font)              using `TU/pcr/m/n' instead on input line 318.
 
-(IMAGE/fig_norns) (r2-method
-Underfull \vbox (badness 1394) has occurred while \output is active []
-
- [4]
+(IMAGE/fig_norns) (r2-method [4]
 Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 1097) has occurred while \output is active []
 
  [5])
 (r3-method [6]
@@ -670,25 +670,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 6--364
 \TU/pcr/m/n/10 r5_chain_ctl_64, r5_mesh_ctl_1024,
  []
 
-(r6-method) (r7-method [8]
+[8] (r6-method) (r7-method
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/bx/n' instead on input line 8.
+(Font)              using `TU/ptm/bx/n' instead on input line 9.
+
+[9]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 16.
 
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/bx/n' instead on input line 15.
+(Font)              using `TU/ptm/bx/n' instead on input line 27.
 
 )
 Overfull \hbox (12.0401pt too wide) in paragraph at lines 380--392
  [][] 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [9]
-(r2-results
+[10] (r2-results
 Overfull \hbox (4.92813pt too wide) in paragraph at lines 13--28
  [][] 
  []
@@ -698,13 +699,10 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 30.
 
 
-Underfull \vbox (badness 1924) has occurred while \output is active []
-
- [10]
-
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 78.
 
+[11]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 85.
@@ -718,7 +716,6 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 4.
 
-[11]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 10.
@@ -735,6 +732,7 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 44.
 
+[12]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 46.
@@ -775,13 +773,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 86--86
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 156.
 
-[12]
+) (r4-results [13]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-)
-(r4-results [13]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [14]
 Underfull \hbox (badness 5147) in paragraph at lines 24--26
-\TU/pcr/m/n/10 molecules added: stock connectivity_timing 67.0%,
+\TU/pcr/bx/n/10 molecules added: stock connectivity_timing 67.0%,
  []
 
 
@@ -819,80 +819,110 @@ Overfull \hbox (17.62231pt too wide) in paragraph at lines 147--168
  [][] 
  []
 
-[14])
+) (r5-results
+Underfull \hbox (badness 1571) in paragraph at lines 63--64
+\TU/pcr/bx/n/10 ogy (geometric mean over designs): NL_stock_WL:
+ []
+
+
+Underfull \hbox (badness 3861) in paragraph at lines 63--64
+\TU/pcr/bx/n/10 chain 1.004, mesh 1.423, rand 1.019, tree 1.522;
+ []
+
+
+Underfull \hbox (badness 3861) in paragraph at lines 63--64
+\TU/pcr/bx/n/10 chain 1.003, mesh 1.178, rand 1.007, tree 1.128;
+ []
+
+[15]
+Underfull \vbox (badness 7047) has occurred while \output is active []
+
+) [16]
+(r6-results) (r7-results [17]
+Overfull \hbox (17.78403pt too wide) in paragraph at lines 11--26
+ [][] 
+ []
+
+
+Overfull \hbox (29.9161pt too wide) in paragraph at lines 32--65
+ [][] 
+ []
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/sc' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 68.
+
+
+Overfull \hbox (6.18832pt too wide) in paragraph at lines 153--154
+ [][] 
+ []
+
+
+Overfull \hbox (51.73914pt too wide) in paragraph at lines 162--185
+ [][] 
+ []
+
+
+Overfull \hbox (84.3125pt too wide) in paragraph at lines 581--582
+ [][] 
+ []
+
+) (r2-discussion
+Underfull \vbox (badness 1796) has occurred while \output is active []
+
+ [18]
+[19]) (r3-discussion [20] [21])
+Underfull \vbox (badness 1043) has occurred while \output is active []
+
+ [22]
+(r4-discussion) (r5-discussion [23]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [15]
-(r5-results
-Underfull \hbox (badness 1571) in paragraph at lines 63--64
-\TU/pcr/m/n/10 ogy (geometric mean over designs): NL_stock_WL:
- []
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [24]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 3861) in paragraph at lines 63--64
-\TU/pcr/m/n/10 chain 1.004, mesh 1.423, rand 1.019, tree 1.522;
- []
+(r6-discussion) (r7-discussion [25]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 3861) in paragraph at lines 63--64
-\TU/pcr/m/n/10 chain 1.003, mesh 1.178, rand 1.007, tree 1.128;
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-) (r6-results) (r7-results [16]
-Overfull \hbox (28.9041pt too wide) in paragraph at lines 149--165
- [][] 
- []
-
-
-Overfull \hbox (21.69673pt too wide) in paragraph at lines 171--185
- [][] 
- []
-
-
-Overfull \hbox (64.8071pt too wide) in paragraph at lines 191--201
- [][] 
- []
-
-
-Overfull \hbox (31.61009pt too wide) in paragraph at lines 207--221
- [][] 
- []
-
-
-Overfull \hbox (44.15012pt too wide) in paragraph at lines 227--241
- [][] 
- []
-
-
-Overfull \hbox (75.2615pt too wide) in paragraph at lines 379--380
- [][] 
- []
-
-) [17] (r2-discussion [18]) (r3-discussion [19] [20]) (r4-discussion) [21]
-[22] (r5-discussion)
-Underfull \vbox (badness 2285) has occurred while \output is active []
-
- [23]
-(r6-discussion) (r7-discussion
+ [26]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 3.
 
 
-LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/bx/n' instead on input line 9.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/bx/n' instead on input line 13.
-
+ [27]
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/bx/n' instead on input line 20.
+(Font)              using `TU/ptm/bx/n' instead on input line 14.
 
-) [24] (r2-conclusion) (r2-appendix
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 16.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 19.
+
+
+Underfull \vbox (badness 3240) has occurred while \output is active []
+
+ [28]
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 25.
+
+) (r2-conclusion) (r2-appendix
 ** WARNING: Ignoring useless \section in Appendix (line 2).
-[25]
+[29]
 Overfull \hbox (32.87611pt too wide) in paragraph at lines 68--89
  [][] 
  []
@@ -969,10 +999,10 @@ Overfull \hbox (1.73688pt too wide) in paragraph at lines 109--109
 
 ) (r3-appendix
 Underfull \hbox (badness 1762) in paragraph at lines 17--18
- \TU/pcr/m/n/10 l) 2026-10-24, round three: outcomes.: [][] H8 sup-
+ \TU/pcr/bx/n/10 l) 2026-10-24, round three: outcomes.: [][] H8 sup-
  []
 
-[26]
+[30]
 Underfull \hbox (badness 4291) in paragraph at lines 41--42
 \TU/pcr/m/sc/8 rity 0.63, split
  []
@@ -1335,7 +1365,7 @@ LaTeX Warning: Float too large for page by 2.65092pt on input line 58.
 
 ) (r4-appendix
 Underfull \hbox (badness 3482) in paragraph at lines 2--8
- \TU/pcr/m/n/10 o) 2026-10-25, round four.: [][] Peter (2026-10-24):
+ \TU/pcr/bx/n/10 o) 2026-10-25, round four.: [][] Peter (2026-10-24):
  []
 
 
@@ -1360,30 +1390,30 @@ Underfull \hbox (badness 10000) in paragraph at lines 31--31
 
 ) (r5-appendix)
 Underfull \hbox (badness 1360) in paragraph at lines 19--493
-[]\TU/pcr/m/n/10 Regeneration: python scripts/write_round5.py from
+[]\TU/pcr/bx/n/10 Regeneration: python scripts/write_round5.py from
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 19--493
-\TU/pcr/m/n/10 data/analysis/r5-results.json (scripts/r5stats.py); the
+\TU/pcr/bx/n/10 data/analysis/r5-results.json (scripts/r5stats.py); the
  []
 
-(r6-appendix [27]) (r7-appendix
+[31] (r6-appendix) (r7-appendix
 Underfull \hbox (badness 1360) in paragraph at lines 20--1
-[]\TU/pcr/m/n/10 Regeneration: python scripts/write_round6.py from
+[]\TU/pcr/bx/n/10 Regeneration: python scripts/write_round6.py from
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 20--1
-\TU/pcr/m/n/10 data/analysis/r6-results.json (scripts/r6stats.py); the
+\TU/pcr/bx/n/10 data/analysis/r6-results.json (scripts/r6stats.py); the
  []
 
 )
-Underfull \hbox (badness 1360) in paragraph at lines 21--496
-[]\TU/pcr/m/n/10 Regeneration: python scripts/write_round7.py from
+Underfull \hbox (badness 1360) in paragraph at lines 23--496
+[]\TU/pcr/bx/n/10 Regeneration: python scripts/write_round7.py from
  []
 
-(norns.bbl)
+(norns.bbl [32])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -1395,13 +1425,11 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[28] [29
-
-] [30
+[33] [34
 
 ] (norns.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  )
-Output written on norns.xdv (30 pages, 1683708 bytes).
+Output written on norns.xdv (34 pages, 1944584 bytes).

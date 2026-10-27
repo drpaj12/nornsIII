@@ -412,7 +412,7 @@ def stability(ds: list[D], shuffles: int) -> dict:
 # ---------------------------------------------------------------------------------------
 # (a), (d) models, leave one design out
 
-def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dict:
+def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D], only_chg: bool = False) -> dict:
     """Held-out-FAMILY models for `target` ('aff': co-CLB in the best affinity-bias run; 'net': co-CLB in the .net hindsight
     clustering) on `designs`. AUC is reported per sample (connected pairs, uniform pairs), never on the mixture, because the two
     samples have different inclusion probabilities. The distance target is normalised by the design's mean distance."""
@@ -462,6 +462,8 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
                   "full": lambda p: np.hstack([p["base"], p["hdl"]])}
             if perm_seed is not None:
                 Xs = {k: v for k, v in Xs.items() if k != "base"}
+            if only_chg:
+                Xs = {}
             for name, fx in Xs.items():
                 Xtr = np.vstack([fx(t["ptr"]) for t in train])
                 ytr = np.concatenate([t["y1tr"] for t in train])
@@ -479,9 +481,10 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
                 rg = Ridge(alpha=1.0).fit(sc.transform(Xtr), ytr2)
                 res["r2"].setdefault(name, {})[held.design] = float(r2_score(te["y2te"], rg.predict(sc.transform(fx(te["pte"])))))
             # Item 10 (fix round 2): the pairs whose co-CLB status CHANGED between the stock clustering and the target clustering
-            # (D+ joined, D- split). The stock co-CLB flag is dropped (on these pairs it equals 1 - target), so the model must rank the
-            # joined against the split pairs from the other features alone; trained on the changed pairs of the other families.
-            keep = [i for i, f in enumerate(BASE_FEATS) if f != "co_stock"]
+            # (D+ joined, D- split). The stock co-CLB flag AND the stock distance are dropped: on these pairs the flag equals 1 - target
+            # and the distance is 0 for every split pair (a first run with the distance kept scored AUC 1.0, pure leakage), so the model
+            # must rank the joined against the split pairs from the other features alone; trained on the changed pairs of the other families.
+            keep = [i for i, f in enumerate(BASE_FEATS) if f not in ("co_stock", "log_dist_stock")]
             Xc = {"base": lambda p: p["base"][:, keep], "full": lambda p: np.hstack([p["base"][:, keep], p["hdl"]])}
             if perm_seed is not None:
                 Xc = {k: v for k, v in Xc.items() if k != "base"}
@@ -502,7 +505,7 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
     out["observed"] = obs
     nulls = [fit_eval(k, False) for k in range(shuffles)]
     summ: dict = {}
-    for tgt in ("auc", "auc_uni", "auc_chg", "r2"):
+    for tgt in (("auc_chg",) if only_chg else ("auc", "auc_uni", "auc_chg", "r2")):
         for name in ("bit", "full"):
             base_t = obs[tgt].get("base", {})
             hs = [h for h in obs[tgt].get(name, {}) if h in base_t and obs[tgt][name][h] == obs[tgt][name][h] and base_t[h] == base_t[h]]
@@ -535,12 +538,12 @@ def model_loop(ds: list[D], shuffles: int, target: str, designs: list[D]) -> dic
     return out
 
 
-def model_variants(ds: list[D], shuffles: int) -> dict:
+def model_variants(ds: list[D], shuffles: int, only_chg: bool = False) -> dict:
     """The primary model run restricts the 'good placement' target to designs where hindsight beat stock (B5); the variant that
     keeps every design is labelled as such."""
-    return {"net_gain": model_loop(ds, shuffles, "net", [d for d in ds if d.co_net is not None]),
-            "aff_gain": model_loop(ds, shuffles, "aff", [d for d in ds if d.aff_gain]),
-            "aff_all": model_loop(ds, shuffles, "aff", ds)}
+    return {"net_gain": model_loop(ds, shuffles, "net", [d for d in ds if d.co_net is not None], only_chg),
+            "aff_gain": model_loop(ds, shuffles, "aff", [d for d in ds if d.aff_gain], only_chg),
+            "aff_all": model_loop(ds, shuffles, "aff", ds, only_chg)}
 
 
 def figure_data(ds: list[D]) -> dict:
@@ -569,7 +572,25 @@ def figure_data(ds: list[D]) -> dict:
     return {"class_shares": shares, "dist_bins": bins, "dist_by_relation": dist_rel, "classes": ["SC", "SN", "SI", "OR", "FL"]}
 
 
+def refresh_chg(argv: list[str]) -> int:
+    """--chg-only: recompute only the changed-pair AUC of each model variant and patch it into data/r7/mine.json (the rest of the file
+    is kept). Same code path, seeds and shuffles as a full run; used after the changed-pair feature set was corrected."""
+    designs = [a for a in argv if not a.startswith("--")] or [d for d in lib.MAIN if (lib.R7 / d / "pairs.npz").is_file()]
+    ds = [D(d) for d in designs]
+    res = nl.read_json(lib.DATA7 / "mine.json")
+    new = model_variants(ds, N_SHUF_MODEL, only_chg=True)
+    for k, v in new.items():
+        res["models"][k]["observed"]["auc_chg"] = v["observed"]["auc_chg"]
+        res["models"][k]["observed"]["n_chg"] = v["observed"].get("n_chg", {})
+        res["models"][k]["summary"]["auc_chg_full_minus_base"] = v["summary"]["auc_chg_full_minus_base"]
+    nl.write_json(lib.DATA7 / "mine.json", res)
+    print("changed-pair AUC refreshed", designs)
+    return 0
+
+
 def main(argv: list[str]) -> int:
+    if "--chg-only" in argv:
+        return refresh_chg(argv)
     quick = "--quick" in argv
     designs = [a for a in argv if not a.startswith("--")] or [d for d in lib.MAIN if (lib.R7 / d / "pairs.npz").is_file()]
     ds = [D(d) for d in designs]

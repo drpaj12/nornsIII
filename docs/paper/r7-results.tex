@@ -2,7 +2,7 @@
 
 \label{sec:r7-results}
 
-All VPR runs of this round use VTR~\cite{rose2012vtr} and VTR~9~\cite{elgammal2025vtr9} at commit \code{3c9a4d23b2}. The corpus has 980 completed analytical-placement VPR runs (0 failed) in 1.73~h of VPR time and 680 runs of the \code{.net} arms (0 failed, 435 on the selection seeds, 245 on the held-out seeds) in 1.06~h; Table~\ref{tab:r7runs} counts the runs per arm and seeds and Table~\ref{tab:r7corpus} lists the designs. Table~\ref{tab:r7gap} and Figure~\ref{fig:r7gap} give the hindsight gap of the \code{.net} arm on the held-out seeds (the headline) next to the selection seeds: the arm has a held-out gain on 1 of 15 designs (blob\_merge), is borderline on 7 and worse on 0, and no arm beat the stock clustering on 7. The median held-out wirelength gap is 1.000 over all designs (no gain found = 1), 0.987 over the designs with an arm and 1.050 over the designs with a held-out gain only (the last is selected on the held-out result and is the most optimistic); on the selection seeds, in sample, the median over the designs with an arm was 1.040. Channel width: median channel-width ratio (net0 over the arm; below 1 means the arm needs a wider channel) 0.995 held out, about 0.5\% more width, and 0.917 on the selection seeds, in sample, about 9.0\% more. The equivalence check (\code{scripts/r7netcheck.py}) ran on all 9 written \code{.net} files (4350 atoms; the stock files are included): 0 of 9 files pass; 0 atoms differ from the BLIF in their input nets, 0 from the stock \code{.net}, 0 nets read outside their CLB lack an output pin, 0 CLB input pins carry an undriven net. Table~\ref{tab:r7gapaff} gives the affinity-bias arm, Tables~\ref{tab:r7calib} and~\ref{tab:r7calibB} the calibration against the known clustering, Table~\ref{tab:r7dup} the duplication counts, and Tables~\ref{tab:r7xi} to~\ref{tab:r7coef} with Figures~\ref{fig:r7classes} and~\ref{fig:r7dist} the first mining. All mining is exploratory.
+All VPR runs of this round use VTR~\cite{rose2012vtr} and VTR~9~\cite{elgammal2025vtr9} at commit \code{3c9a4d23b2}. The corpus has 980 completed analytical-placement VPR runs (0 failed) in 1.73~h of VPR time and 680 runs of the \code{.net} arms (0 failed, 435 on the selection seeds, 245 on the held-out seeds) in 1.06~h; Table~\ref{tab:r7runs} counts the runs per arm and seeds and Table~\ref{tab:r7corpus} lists the designs. Table~\ref{tab:r7gap} and Figure~\ref{fig:r7gap} give the hindsight gap of the \code{.net} arm on the held-out seeds (the headline) next to the selection seeds: the arm has a held-out gain on 1 of 15 designs (blob\_merge), is borderline on 7 and worse on 0, and no arm beat the stock clustering on 7. The median held-out wirelength gap is 1.000 over all designs (no gain found = 1), 0.987 over the designs with an arm and 1.050 over the designs with a held-out gain only (the last is selected on the held-out result and is the most optimistic); on the selection seeds, in sample, the median over the designs with an arm was 1.040. Channel width: median channel-width ratio (net0 over the arm; below 1 means the arm needs a wider channel) 0.995 held out, about 0.5\% more width, and 0.917 on the selection seeds, in sample, about 9.0\% more. The equivalence check (\code{scripts/r7netcheck.py}) ran on all 114 written \code{.net} files (388883 atoms; the stock files are included): 114 of 114 files pass; 0 atoms differ from the BLIF in their input nets, 0 from the stock \code{.net}, 0 nets read outside their CLB lack an output pin, 0 CLB input pins carry an undriven net. Table~\ref{tab:r7gapaff} gives the affinity-bias arm, Tables~\ref{tab:r7calib} and~\ref{tab:r7calibB} the calibration against the known clustering, Table~\ref{tab:r7dup} the duplication counts, and Tables~\ref{tab:r7xi} to~\ref{tab:r7coef} with Figures~\ref{fig:r7classes} and~\ref{fig:r7dist} the first mining. All mining is exploratory.
 
 \begin{table}[t]
 \caption{Round 7, completed VPR runs per arm kind and the seeds they cover (failed runs: 0). The \code{.net} hindsight rounds are run on the held-out seeds only for the arm chosen on the selection seeds, and \code{net0} only where an arm was chosen or the design is a construction. The seeds 6 to 10 of the construction n5\_mesh\_dp\_16 were run earlier as a queued 10-seed probe (before the amendment that introduced the held-out seeds; its chosen arm is \code{net0}, so it decides nothing); they are used as held-out runs of that design and counted here. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
@@ -68,31 +68,38 @@ n5\_tree\_ctl\_256 & 296 & 40 & 0 & 2 & h1 & net\_h2 \\
 \caption{Round 7, the hindsight gap of the \code{.net} arm, \textbf{held-out seeds 6 to 10}: \code{net0} (the stock clustering, same placer) over the arm chosen on the selection seeds 1 to 5 (geometric mean over five seeds, 95\% bootstrap interval over those seeds; above 1 means the stock clustering is worse). Class: gain = the interval of the objective ratio (WL$\times$CPD) lies above 1, worse = below 1, borderline = it contains 1. The last two columns are the gap on the selection seeds (in sample: the arm is chosen on them, winner's-curse risk). A W below 1 means the arm needs a wider channel. Fidelity is 1.0 by construction in 560 of 560 runs. Stock packing is the same in every seed, so the CLB interval has no clustering variance. Where no arm beat \code{net0} on the selection seeds the row says so and the design counts as gap 1 in the first median. Best-known, not optimal. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
 \label{tab:r7gap}
 \centering\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lllllllll@{}}
 \toprule
 design & arm & WL & CPD & CLB & W & class & WL sel. & CPD sel. \\
 \midrule
-ch\_intrinsics & net\_h2 & 0.894 [0.857, 0.937] & 1.061 [0.995, 1.117] & 1.083 [1.083, 1.083] & 1.056 & borderline & 1.011 & 1.003 \\
-stereovision3 & net\_h3 & 1.029 [0.972, 1.089] & 0.934 [0.900, 0.982] & 1.000 [1.000, 1.000] & 1.061 & borderline & 1.119 & 1.111 \\
+ch\_intrinsics & net\_h2 & 0.894 [0.857, 0.937] & 1.061 [0.995, 1.117] & 1.083 & 1.056 & borderline & 1.011 & 1.003 \\
+stereovision3 & net\_h3 & 1.029 [0.972, 1.089] & 0.934 [0.900, 0.982] & 1.000 & 1.061 & borderline & 1.119 & 1.111 \\
 diffeq2 & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.921); not run on seeds 6 to 10} \\
-diffeq1 & net\_h1 & 0.987 [0.922, 1.058] & 0.997 [0.952, 1.049] & 1.088 [1.088, 1.088] & 0.985 & borderline & 1.086 & 1.048 \\
-mkPktMerge & net\_h1 & 0.975 [0.920, 1.032] & 0.999 [0.974, 1.025] & 1.105 [1.105, 1.105] & 1.061 & borderline & 1.060 & 1.084 \\
+diffeq1 & net\_h1 & 0.987 [0.922, 1.058] & 0.997 [0.952, 1.049] & 1.088 & 0.985 & borderline & 1.086 & 1.048 \\
+mkPktMerge & net\_h1 & 0.975 [0.920, 1.032] & 0.999 [0.974, 1.025] & 1.105 & 1.061 & borderline & 1.060 & 1.084 \\
 raygentop & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.971); not run on seeds 6 to 10} \\
-sha & net\_h1 & 0.986 [0.910, 1.068] & 0.985 [0.930, 1.038] & 1.000 [1.000, 1.000] & 1.006 & borderline & 1.038 & 1.033 \\
+sha & net\_h1 & 0.986 [0.910, 1.068] & 0.985 [0.930, 1.038] & 1.000 & 1.006 & borderline & 1.038 & 1.033 \\
 boundtop & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 1.000); not run on seeds 6 to 10} \\
-mkSMAdapter4B & net\_h1 & 1.025 [1.014, 1.037] & 0.976 [0.908, 1.022] & 1.000 [1.000, 1.000] & 0.916 & borderline & 0.991 & 0.998 \\
+mkSMAdapter4B & net\_h1 & 1.025 [1.014, 1.037] & 0.976 [0.908, 1.022] & 1.000 & 0.916 & borderline & 0.991 & 0.998 \\
 or1200 & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.966); not run on seeds 6 to 10} \\
 stereovision0 & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.952); not run on seeds 6 to 10} \\
-stereovision1 & net\_h1 & 0.979 [0.958, 1.002] & 1.005 [0.949, 1.057] & 1.033 [1.033, 1.033] & 0.959 & borderline & 0.986 & 1.058 \\
+stereovision1 & net\_h1 & 0.979 [0.958, 1.002] & 1.005 [0.949, 1.057] & 1.033 & 0.959 & borderline & 0.986 & 1.058 \\
 mkDelayWorker32B & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.974); not run on seeds 6 to 10} \\
 stereovision2 & net0 & \multicolumn{7}{l}{no gain found on the selection seeds (WL gap of the rounds: h1 0.976); not run on seeds 6 to 10} \\
-blob\_merge & net\_h1 & 1.050 [1.022, 1.082] & 0.991 [0.983, 0.998] & 1.019 [1.019, 1.019] & 0.919 & gain & 1.041 & 0.981 \\
+blob\_merge & net\_h1 & 1.050 [1.022, 1.082] & 0.991 [0.983, 0.998] & 1.019 & 0.919 & gain & 1.041 & 0.981 \\
+\bottomrule
+\end{tabular}
+\medskip
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+median over & WL & CPD & CLB & W \\
 \midrule
-median, all 15 designs (no gain found = 1) & & 1.000 & 1.000 & 1.000 & 1.000 & & & \\
-median, the 8 designs with an arm & & 0.987 & 0.994 & 1.026 & 0.995 & & & \\
-median, the 1 designs with a held-out gain & & 1.050 & 0.991 & 1.019 & 0.919 & & & \\
-median, arm chosen, borderline left out (1) & & 1.050 & 0.991 & 1.019 & 0.919 & & & \\
-selection seeds, in sample: median over the 8 designs with an arm & & 1.040 & 1.041 & 1.026 & 0.917 & & & \\
+held out: all 15 designs (no gain found = 1) & 1.000 & 1.000 & 1.000 & 1.000 \\
+held out: the 8 designs with an arm & 0.987 & 0.994 & 1.026 & 0.995 \\
+held out: the 1 with a held-out gain & 1.050 & 0.991 & 1.019 & 0.919 \\
+held out: arm chosen, borderline left out (1) & 1.050 & 0.991 & 1.019 & 0.919 \\
+selection seeds (in sample): the 8 designs with an arm & 1.040 & 1.041 & 1.026 & 0.917 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -178,9 +185,9 @@ median over the 3 designs with a gain and fidelity $\ge$ 0.5 & & 0.997 & 1.033 &
 \end{table*}
 
 \begin{table*}[t]
-\caption{Round 7, calibration on the round-5 constructions, \code{.net} arm, held-out seeds 6 to 10: \code{net0} over the known clustering (known; the clustering the construction was built with, a known clustering and not an optimum) and over the hindsight arm (H) for wirelength and CLB count, and the recovery $(\ln \mathrm{net0}-\ln H)/(\ln \mathrm{net0}-\ln \mathrm{known})$ from the geometric means over the seeds (``none'': the known clustering is less than 5\% better, nothing to recover; a star: no arm beat \code{net0}, recovery counted as 0). ``WL rec. sel.'' is the wirelength recovery on the selection seeds (in sample). A recovery above 1 means the arm placed better than the known clustering did (n5\_tree\_dp\_16 has such a value: the known clustering is by construction, not optimal, so it can be beaten). The last column is the recovery of the critical-path delay. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
+\caption{Round 7, calibration on the round-5 constructions, \code{.net} arm, held-out seeds 6 to 10: \code{net0} over the known clustering (known; the clustering the construction was built with, a known clustering and not an optimum) and over the hindsight arm (H) for wirelength and CLB count, and the recovery $(\ln \mathrm{net0}-\ln H)/(\ln \mathrm{net0}-\ln \mathrm{known})$ from the geometric means over the seeds (``none'': the known clustering is less than 5\% better, nothing to recover; a star: no arm beat \code{net0}, recovery counted as 0). ``WL rec. sel.'' is the wirelength recovery on the selection seeds (in sample). A recovery above 1 means the arm placed better than the known clustering did (wirelength: n5\_tree\_dp\_16: 1.94 held out, 1.10 on the selection seeds; the known clustering is by construction, not optimal, so it can be beaten). The last column is the recovery of the critical-path delay. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
 \label{tab:r7calib}
-\centering\scriptsize
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lrrrrrrrr@{}}
 \toprule
 design & WL known & WL H & WL rec. & WL rec. sel. & CLB known & CLB H & CLB rec. & CPD rec. \\
@@ -204,7 +211,7 @@ n5\_tree\_ctl\_256 & 1.598 & 1.189 & 0.37 & 0.35 & 1.156 & 1.072 & 0.48 & -0.15 
 \begin{table*}[t]
 \caption{Round 7, recovery of the known-clustering gap, median over the designs of a size where the known clustering is at least 5\% better. Per metric two medians: the pooled one (the headline), where a design with no gain found counts as recovery 0 (pooled designs / designs of that size in brackets), and the one over the designs where an arm other than the stock was chosen (their number in brackets). Recovery is computed from the aggregated geometric means over seeds. A median of 1 would mean the procedure reaches the known clustering. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
 \label{tab:r7calibB}
-\centering\scriptsize
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llrrrrrr@{}}
 \toprule
  & & \multicolumn{2}{c}{WL} & \multicolumn{2}{c}{CLB} & \multicolumn{2}{c}{CPD} \\
@@ -226,7 +233,7 @@ affinity-bias & all & 0.52 (12/12) & 0.52 (12) & 0.70 (12/12) & 0.70 (12) & 0.72
 \end{tabular}
 \end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round 7, LUT duplication candidates (single-LUT drivers with sinks in two or more logic CLBs; pad and hard-block sinks do not count), median over the ten stock seeds of per-run values: count, share of all LUTs, share within 5\% and 10\% of the critical-path delay (a lower bound: criticality comes from the 200 reported paths, so a candidate on an unreported path counts as not critical), and the upper estimate of the delay saved if every candidate hop were free (share of CPD; stock, then the affinity-bias arm where it found a gain, `--' otherwise). Last column: LUTs that count only through one logic CLB plus a pad or hard block. Nothing is built. VPR runs: VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}.}
 \label{tab:r7dup}
 \centering\scriptsize
@@ -251,9 +258,9 @@ stereovision2 & 23.00 & 0.3\% & 0.0\% & 0.0\% & 0.0\% & -- & 0.00 \\
 blob\_merge & 274.00 & 4.6\% & 3.5\% & 3.6\% & 9.6\% & -- & 0.00 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round 7 (exploratory), Table~\ref{tab:r3status} re-measured at each level of the HDL chain: the stratified distance difference $d_r$ (related minus unrelated pairs within net-connectivity strata, as a fraction of the unrelated mean; negative means closer than the nets predict), median over designs, designs with $d_r<0$, the range of the same statistic on label-shuffled data, and the share of the shuffles at or below the observed median. Levels that exist in the data are tested; a level identical to a shallower one is not tested again.}
 \label{tab:r7xi}
 \centering\scriptsize
@@ -271,60 +278,63 @@ same word & -0.414 & 14/15 & [-0.015, 0.014] & 0.005 \\
 same word and bit & -0.276 & 2/2 & [-0.418, 0.521] & 0.100 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
-\caption{Round 7 (exploratory), held-out-family models, target co-location in the \code{.net} hindsight clustering, designs where it beat \code{net0}: 8 designs in 6 families (blob\_merge, ch\_intrinsics, diffeq, mk, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.948, median 0.963; on uniform pairs mean 0.949. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
+\begin{table*}[t]
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the \code{.net} hindsight clustering, designs where it beat \code{net0}: 8 designs in 6 families (blob\_merge, ch\_intrinsics, diffeq, mk, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.949, median 0.965; on uniform pairs mean 0.952. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
 \label{tab:r7modelnet}
 \centering\scriptsize
 \begin{tabular}{@{}lrrcrc@{}}
 \toprule
 change & mean & median & 95\% CI & better & shuffled null \\
 \midrule
-AUC (connected pairs), bit features & 0.000 & 0.000 & [-0.001, 0.002] & 5/8 & 0.000 [-0.000, 0.001] \\
-AUC (connected pairs), all HDL & 0.003 & 0.002 & [-0.000, 0.006] & 6/8 & -0.000 [-0.001, 0.001] \\
-AUC (uniform pairs), all HDL & 0.004 & 0.003 & [0.001, 0.007] & 7/8 & -0.000 [-0.001, -0.000] \\
-$R^2$ of normalised distance, bit features & 0.004 & 0.001 & [-0.000, 0.010] & 6/8 & -0.004 [-0.005, -0.003] \\
-$R^2$ of normalised distance, all HDL & -0.048 & -0.047 & [-0.091, -0.008] & 1/8 & -0.055 [-0.065, -0.045] \\
+AUC (connected pairs), bit features & -0.000 & -0.000 & [-0.002, 0.000] & 3/8 & -0.000 [-0.001, 0.000] \\
+AUC (connected pairs), all HDL & 0.002 & 0.001 & [-0.000, 0.005] & 6/8 & -0.000 [-0.002, 0.001] \\
+AUC (uniform pairs), all HDL & 0.004 & 0.004 & [0.001, 0.007] & 7/8 & -0.000 [-0.000, 0.000] \\
+AUC (pairs whose co-location changed), all HDL & 0.022 & 0.008 & [-0.008, 0.048] & 4/8 & -0.002 [-0.014, 0.008] \\
+$R^2$ of normalised distance, bit features & -0.005 & -0.000 & [-0.010, 0.000] & 3/8 & -0.002 [-0.004, -0.000] \\
+$R^2$ of normalised distance, all HDL & -0.349 & -0.041 & [-0.857, -0.012] & 1/8 & -0.193 [-0.339, -0.136] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
-\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, designs where it beat stock: 6 designs in 3 families (diffeq, mk, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.944, median 0.965; on uniform pairs mean 0.965. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
+\begin{table*}[t]
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, designs where it beat stock: 6 designs in 3 families (diffeq, mk, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.942, median 0.964; on uniform pairs mean 0.964. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
 \label{tab:r7modelaff}
 \centering\scriptsize
 \begin{tabular}{@{}lrrcrc@{}}
 \toprule
 change & mean & median & 95\% CI & better & shuffled null \\
 \midrule
-AUC (connected pairs), bit features & -0.001 & -0.001 & [-0.006, 0.003] & 1/6 & -0.001 [-0.002, 0.000] \\
-AUC (connected pairs), all HDL & 0.006 & -0.000 & [-0.001, 0.018] & 2/6 & -0.000 [-0.001, 0.000] \\
-AUC (uniform pairs), all HDL & 0.005 & 0.004 & [0.002, 0.009] & 6/6 & -0.000 [-0.000, 0.000] \\
-$R^2$ of normalised distance, bit features & -0.000 & -0.001 & [-0.004, 0.005] & 3/6 & -0.007 [-0.009, -0.005] \\
-$R^2$ of normalised distance, all HDL & -0.048 & -0.070 & [-0.131, 0.051] & 1/6 & -0.095 [-0.115, -0.077] \\
+AUC (connected pairs), bit features & -0.000 & -0.000 & [-0.003, 0.009] & 3/6 & 0.001 [-0.001, 0.001] \\
+AUC (connected pairs), all HDL & 0.008 & 0.003 & [-0.001, 0.037] & 5/6 & 0.001 [0.000, 0.001] \\
+AUC (uniform pairs), all HDL & 0.005 & 0.004 & [0.005, 0.005] & 6/6 & -0.000 [-0.001, 0.000] \\
+AUC (pairs whose co-location changed), all HDL & -0.009 & -0.000 & [-0.031, 0.003] & 2/6 & -0.002 [-0.015, 0.012] \\
+$R^2$ of normalised distance, bit features & 0.001 & -0.001 & [-0.006, 0.009] & 3/6 & -0.006 [-0.008, -0.004] \\
+$R^2$ of normalised distance, all HDL & -0.031 & -0.062 & [-0.130, 0.038] & 1/6 & -0.086 [-0.106, -0.069] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
-\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, all designs (variant: includes designs where hindsight equals stock): 15 designs in 9 families (blob\_merge, boundtop, ch\_intrinsics, diffeq, mk, or1200, raygentop, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.949, median 0.959; on uniform pairs mean 0.964. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
+\begin{table*}[t]
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, all designs (variant: includes designs where hindsight equals stock): 15 designs in 9 families (blob\_merge, boundtop, ch\_intrinsics, diffeq, mk, or1200, raygentop, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.949, median 0.960; on uniform pairs mean 0.963. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}
 \label{tab:r7modelaffall}
 \centering\scriptsize
 \begin{tabular}{@{}lrrcrc@{}}
 \toprule
 change & mean & median & 95\% CI & better & shuffled null \\
 \midrule
-AUC (connected pairs), bit features & 0.001 & 0.001 & [-0.001, 0.003] & 10/15 & -0.000 [-0.000, 0.000] \\
+AUC (connected pairs), bit features & 0.001 & 0.001 & [-0.001, 0.002] & 10/15 & -0.000 [-0.000, 0.000] \\
 AUC (connected pairs), all HDL & 0.004 & 0.002 & [0.000, 0.008] & 10/15 & -0.000 [-0.001, 0.000] \\
-AUC (uniform pairs), all HDL & 0.003 & 0.002 & [0.001, 0.005] & 14/15 & -0.000 [-0.000, 0.000] \\
-$R^2$ of normalised distance, bit features & -0.001 & 0.000 & [-0.004, 0.001] & 8/15 & -0.002 [-0.002, -0.002] \\
-$R^2$ of normalised distance, all HDL & -0.027 & -0.022 & [-0.048, -0.006] & 2/15 & -0.044 [-0.047, -0.041] \\
+AUC (uniform pairs), all HDL & 0.003 & 0.003 & [0.002, 0.004] & 14/15 & -0.000 [-0.000, 0.000] \\
+AUC (pairs whose co-location changed), all HDL & 0.003 & 0.000 & [-0.003, 0.010] & 7/15 & -0.001 [-0.008, 0.006] \\
+$R^2$ of normalised distance, bit features & -0.001 & 0.000 & [-0.003, 0.000] & 8/15 & -0.002 [-0.002, -0.002] \\
+$R^2$ of normalised distance, all HDL & -0.023 & -0.017 & [-0.049, 0.006] & 2/15 & -0.040 [-0.043, -0.037] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed (100.0\% of the universe pairs have the same co-CLB status in all ten stock runs), so stability is read on placement: of the 625919 pairs of the unbiased samples within two CLBs in at least one seed, 196982 (31.5\%) are within two CLBs in eight or more of ten. Share of stable pairs given the relation and given its absence, their difference, and the label-shuffled range of the difference. By N17 class: SC 77.4\%, SN 80.2\%, SI 43.9\%, OR 30.4\%, FL 11.7\%.}
 \label{tab:r7stab}
 \centering\scriptsize
@@ -342,9 +352,9 @@ same word & 84.4\% & 27.1\% & 0.573 & [-0.036, -0.011] \\
 same word and bit & n/a & 31.5\% & n/a & [-0.315, 0.685] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round 7 (exploratory), where stock packing and the best affinity-bias hindsight run disagree (against the stock run of the same seed; 132189 pairs joined by hindsight only, 129313 by stock only, 1116107 by both). Enrichment of each relation among the disagreement pairs over its share among the pairs of the universe (the unbiased samples; protocol baseline), with the label-shuffled range; the earlier baseline, the pairs both clusterings join, is kept in the data file as a logged deviation.}
 \label{tab:r7disagree}
 \centering\scriptsize
@@ -362,9 +372,9 @@ same word & 3.14 & [0.50, 0.58] & 3.45 & [0.50, 0.59] \\
 same word and bit & 0.00 & [0.00, 7.04] & 0.00 & [0.00, 6.74] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Round 7 (exploratory), coefficients of the features in the full logistic model for hindsight co-location in the first model variant with designs (standardised features; mean over the held-out folds with a bootstrap interval over folds). The bit-level hint question (Peter 2026-10-26) is the rows ``same bit index'', ``same word and bit'', ``bit close'' and ``carry nb''.}
 \label{tab:r7coef}
 \centering\scriptsize
@@ -372,32 +382,32 @@ same word and bit & 0.00 & [0.00, 7.04] & 0.00 & [0.00, 6.74] \\
 \toprule
 feature & coefficient & 95\% CI \\
 \midrule
-bit close & 0.005 & [-0.013, 0.024] \\
-carry nb & 0.081 & [0.062, 0.108] \\
-co stock & 0.207 & [0.183, 0.231] \\
-kind adder & -0.130 & [-0.143, -0.115] \\
-kind ff & -0.040 & [-0.059, -0.022] \\
-kind lf & 0.117 & [0.108, 0.127] \\
-kind ll & 0.040 & [0.025, 0.054] \\
-log dist stock & -2.214 & [-2.418, -1.982] \\
-log minfan & -0.490 & [-0.511, -0.470] \\
-log nshared & 0.248 & [0.219, 0.276] \\
-pcrit max & -0.203 & [-0.244, -0.166] \\
-pcrit min & 0.241 & [0.209, 0.277] \\
-same bit index & 0.023 & [0.005, 0.038] \\
-same instance, depth 1 & -0.052 & [-0.060, -0.044] \\
+bit close & -0.002 & [-0.026, 0.023] \\
+carry nb & 0.080 & [0.060, 0.108] \\
+co stock & 0.240 & [0.220, 0.260] \\
+kind adder & -0.128 & [-0.142, -0.114] \\
+kind ff & -0.035 & [-0.056, -0.015] \\
+kind lf & 0.119 & [0.113, 0.125] \\
+kind ll & 0.033 & [0.016, 0.052] \\
+log dist stock & -2.107 & [-2.265, -1.930] \\
+log minfan & -0.498 & [-0.532, -0.465] \\
+log nshared & 0.251 & [0.231, 0.267] \\
+pcrit max & -0.220 & [-0.255, -0.179] \\
+pcrit min & 0.241 & [0.208, 0.281] \\
+same bit index & 0.019 & [-0.001, 0.040] \\
+same instance, depth 1 & -0.051 & [-0.059, -0.045] \\
 same instance, depth 2 & 0.000 & [0.000, 0.000] \\
 same instance, depth 3 & 0.000 & [0.000, 0.000] \\
-same instance (full path) & -0.052 & [-0.060, -0.044] \\
-same statement & 0.044 & [0.033, 0.055] \\
-same word & 0.264 & [0.214, 0.309] \\
+same instance (full path) & -0.051 & [-0.059, -0.045] \\
+same statement & 0.040 & [0.033, 0.049] \\
+same word & 0.269 & [0.207, 0.323] \\
 same word and bit & 0.000 & [0.000, 0.000] \\
-scrit & -0.080 & [-0.105, -0.053] \\
-series & 0.362 & [0.317, 0.404] \\
-shared only & 0.328 & [0.296, 0.350] \\
+scrit & -0.064 & [-0.091, -0.036] \\
+series & 0.350 & [0.276, 0.415] \\
+shared only & 0.331 & [0.293, 0.367] \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{figure}[t]
 \centering

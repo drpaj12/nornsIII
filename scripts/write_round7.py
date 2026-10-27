@@ -178,6 +178,21 @@ def oos_stats(d: dict) -> tuple[int, int, float]:
     return sum(1 for o in oos if o["no_gain"]), len(oos), med([o["WL"]["gm"] for o in oos if not o["no_gain"]])
 
 
+def over_one(d: dict) -> str:
+    """Constructions whose wirelength recovery exceeds 1 (the arm beat the known clustering): name, held-out value, selection value."""
+    out = []
+    for g in calib(d["net_gap"]["designs"]):
+        v = (g.get("recovery_heldout") or {}).get("WL") or {}
+        sv = (g.get("recovery") or {}).get("WL") or {}
+        if v.get("value") is not None and v["value"] > 1.0:
+            out.append(f"{tex(g['design'])}: {f2(v['value'])} held out, {f2(sv.get('value'))} on the selection seeds")
+    return "; ".join(out) if out else "none"
+
+
+def n_designs(n: int) -> str:
+    return f"{n} design" + ("" if n == 1 else "s")
+
+
 def w_more(ratio) -> str:
     """The W gap is net0 over the arm (below 1 means the arm needs a wider channel): the width the arm needs in excess of net0, in percent."""
     return "n/a" if nan(ratio) else f"{100 * (1 / ratio - 1):.1f}"
@@ -217,8 +232,10 @@ def abstract(d: dict) -> str:
     mine_txt = ""
     if prim is not None:
         a = prim["summary"]["auc_full_minus_base"]
-        mine_txt = (f"On held-out design families, HDL features change the AUC of predicting which pairs hindsight co-locates by {f3(a['mean'])} "
-                    f"(shuffled-label null {f3(a['null_mean'])}), so in this data they add almost nothing beyond net structure and the stock clustering. ")
+        u = prim["summary"]["auc_uni_full_minus_base"]
+        mine_txt = (f"On held-out design families, HDL features change the AUC of predicting which pairs hindsight co-locates by {f3(a['mean'])} on connected pairs "
+                    f"(shuffled-label null {f3(a['null_mean'])}) and {f3(u['mean'])} on uniform pairs (null {f3(u['null_mean'])}), "
+                    "so in this data they add little beyond net structure and the stock clustering. ")
     return (r"\paragraph{Round seven (data first).} Rounds one to six each tested an idea. Round seven tests none: it runs " +
             f"{runs} VPR placements ({n_real} VTR designs and {len(calib(nd))} constructions whose block clustering is known by construction) and reports what the data shows. "
             f"All runs use {VPRCITE}. "
@@ -302,17 +319,18 @@ def gap_table_net(d: dict) -> str:
             rows.append(f"{tex(g['design'])} & net0 & \\multicolumn{{7}}{{l}}{{no gain found on the selection seeds (WL gap of the rounds: {rounds}); not run on seeds 6 to 10}} \\\\")
             continue
         X, H = g["heldout"], g["H"]
-        rows.append(f"{tex(g['design'])} & {tex(g['hindsight_arm'])} & {cint(X['WL'])} & {cint(X['CPD'])} & {cint(X['CLB'])} & {f3(X['W']['gm'])} & "
+        rows.append(f"{tex(g['design'])} & {tex(g['hindsight_arm'])} & {cint(X['WL'])} & {cint(X['CPD'])} & {f3(X['CLB']['gm'])} & {f3(X['W']['gm'])} & "
                     f"{CLASS_TEX[g['heldout_class']]} & {f3(H['WL']['gm'])} & {f3(H['CPD']['gm'])} \\\\")
-    rows.append(r"\midrule")
-    for key, lab in (("pooled_all", f"median, all {h['pooled_all']['n']} designs (no gain found = 1)"),
-                     ("h_not_net0", f"median, the {h['h_not_net0']['n']} designs with an arm"),
-                     ("heldout_gain", f"median, the {h['heldout_gain']['n']} designs with a held-out gain"),
-                     ("without_borderline", f"median, arm chosen, borderline left out ({h['without_borderline']['n']})")):
+    srows = []
+    for key, lab in (("pooled_all", f"all {h['pooled_all']['n']} designs (no gain found = 1)"),
+                     ("h_not_net0", f"the {h['h_not_net0']['n']} designs with an arm"),
+                     ("heldout_gain", f"the {h['heldout_gain']['n']} with a held-out gain"),
+                     ("without_borderline", f"arm chosen, borderline left out ({h['without_borderline']['n']})")):
         r = h[key]
-        rows.append(f"{lab} & & {f3(r['WL'])} & {f3(r['CPD'])} & {f3(r['CLB'])} & {f3(r['W'])} & & & \\\\")
+        srows.append(f"held out: {lab} & {f3(r['WL'])} & {f3(r['CPD'])} & {f3(r['CLB'])} & {f3(r['W'])} \\\\")
     sel = h["selection_h_not_net0"]
-    rows.append(f"selection seeds, in sample: median over the {sel['n']} designs with an arm & & {f3(sel['WL'])} & {f3(sel['CPD'])} & {f3(sel['CLB'])} & {f3(sel['W'])} & & & \\\\")
+    srows.append(f"selection seeds (in sample): the {sel['n']} designs with an arm & {f3(sel['WL'])} & {f3(sel['CPD'])} & {f3(sel['CLB'])} & {f3(sel['W'])} \\\\")
+    summary_tab = "\n".join([r"\medskip", r"\begin{tabular}{@{}lrrrr@{}}", r"\toprule", r"median over & WL & CPD & CLB & W \\", r"\midrule"] + srows + [r"\bottomrule", r"\end{tabular}"])
     return "\n".join([r"\begin{table*}[t]", rf"\caption{{Round 7, the hindsight gap of the \code{{.net}} arm, \textbf{{held-out seeds {lib.HELD_SEEDS[0]} to {lib.HELD_SEEDS[-1]}}}: \code{{net0}} (the stock clustering, same placer) over the arm chosen on the selection seeds "
                       rf"{lib.NET_SEEDS[0]} to {lib.NET_SEEDS[-1]} (geometric mean over {w(len(lib.HELD_SEEDS))} seeds, 95\% bootstrap interval over those seeds; above 1 means the stock clustering is worse). "
                       r"Class: gain = the interval of the objective ratio (WL$\times$CPD) lies above 1, worse = below 1, borderline = it contains 1. The last two columns are the gap on the selection seeds (in sample: "
@@ -321,8 +339,8 @@ def gap_table_net(d: dict) -> str:
                       r"Where no arm beat \code{net0} on the selection seeds the row says so and the design counts as gap 1 in the first median. "
                       rf"Best-known, not optimal. VPR runs: {VPRCITE}.}}",
                       r"\label{tab:r7gap}", r"\centering\scriptsize",
-                      r"\begin{tabular}{@{}lllllllll@{}}", r"\toprule", r"design & arm & WL & CPD & CLB & W & class & WL sel. & CPD sel. \\", r"\midrule"] + rows +
-                     [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+                      r"\setlength{\tabcolsep}{3pt}", r"\begin{tabular}{@{}lllllllll@{}}", r"\toprule", r"design & arm & WL & CPD & CLB & W & class & WL sel. & CPD sel. \\", r"\midrule"] + rows +
+                     [r"\bottomrule", r"\end{tabular}", summary_tab, r"\end{table*}"])
 
 
 def gap_table_aff(d: dict) -> str:
@@ -374,9 +392,9 @@ def calib_table(d: dict) -> str:
                       r"clustering the construction was built with, a known clustering and not an optimum) and over the hindsight arm (H) for wirelength and CLB count, and the recovery $(\ln \mathrm{net0}-\ln H)/(\ln \mathrm{net0}-\ln \mathrm{known})$ from the geometric means over the seeds "
                       rf"(``none'': the known clustering is less than {math.exp(0.05) * 100 - 100:.0f}\% better, nothing to recover; a star: no arm beat \code{{net0}}, recovery counted as 0). "
                       r"``WL rec. sel.'' is the wirelength recovery on the selection seeds (in sample). A recovery above 1 means the arm placed better than the known clustering did "
-                      r"(n5\_tree\_dp\_16 has such a value: the known clustering is by construction, not optimal, so it can be beaten). The last column is the recovery of the critical-path delay. "
+                      rf"(wirelength: {over_one(d)}; the known clustering is by construction, not optimal, so it can be beaten). The last column is the recovery of the critical-path delay. "
                       rf"VPR runs: {VPRCITE}.}}",
-                      r"\label{tab:r7calib}", r"\centering\scriptsize",
+                      r"\label{tab:r7calib}", r"\centering\scriptsize\setlength{\tabcolsep}{3pt}",
                       r"\begin{tabular}{@{}lrrrrrrrr@{}}", r"\toprule", r"design & WL known & WL H & WL rec. & WL rec. sel. & CLB known & CLB H & CLB rec. & CPD rec. \\", r"\midrule"] +
                      rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
     prows = []
@@ -390,7 +408,7 @@ def calib_table(d: dict) -> str:
     tab2 = "\n".join([r"\begin{table*}[t]", r"\caption{Round 7, recovery of the known-clustering gap, median over the designs of a size where the known clustering is at least 5\% better. "
                       r"Per metric two medians: the pooled one (the headline), where a design with no gain found counts as recovery 0 (pooled designs / designs of that size in brackets), "
                       r"and the one over the designs where an arm other than the stock was chosen (their number in brackets). Recovery is computed from the aggregated geometric means over seeds. "
-                      rf"A median of 1 would mean the procedure reaches the known clustering. VPR runs: {VPRCITE}.}}", r"\label{tab:r7calibB}", r"\centering\scriptsize",
+                      rf"A median of 1 would mean the procedure reaches the known clustering. VPR runs: {VPRCITE}.}}", r"\label{tab:r7calibB}", r"\centering\scriptsize\setlength{\tabcolsep}{3pt}",
                       r"\begin{tabular}{@{}llrrrrrr@{}}", r"\toprule", r" & & \multicolumn{2}{c}{WL} & \multicolumn{2}{c}{CLB} & \multicolumn{2}{c}{CPD} \\",
                       r"arm & $B$ & pooled & defined only & pooled & defined only & pooled & defined only \\", r"\midrule"] + prows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
     return tab1 + "\n\n" + tab2
@@ -404,13 +422,13 @@ def dup_table(d: dict) -> str:
         s, h = e["stock"], e.get("H")
         rows.append(f"{tex(e['design'])} & {f2(s['candidates'])} & {pct(s['share_of_luts'])} & {pct(s['near5_share'])} & {pct(s['near10_share'])} & "
                     f"{pct(s['saved_share_of_cpd'])} & {pct(h['saved_share_of_cpd']) if h else '--'} & {f2(s.get('other_only'))} \\\\")
-    return "\n".join([r"\begin{table}[t]", r"\caption{Round 7, LUT duplication candidates (single-LUT drivers with sinks in two or more logic CLBs; pad and hard-block sinks do not count), median over the "
+    return "\n".join([r"\begin{table*}[t]", r"\caption{Round 7, LUT duplication candidates (single-LUT drivers with sinks in two or more logic CLBs; pad and hard-block sinks do not count), median over the "
                       rf"{w(len(lib.SEEDS))} stock seeds of per-run values: count, share of all LUTs, share within {100 * (1 - lib.PCRIT_NEAR[0]):.0f}\% and {100 * (1 - lib.PCRIT_NEAR[1]):.0f}\% of the critical-path delay "
                       r"(a lower bound: criticality comes from the 200 reported paths, so a candidate on an unreported path counts as not critical), and the upper estimate of the delay "
                       r"saved if every candidate hop were free (share of CPD; stock, then the affinity-bias arm where it found a gain, `--' otherwise). Last column: LUTs that "
                       r"count only through one logic CLB plus a pad or hard block. Nothing is built. VPR runs: " + VPRCITE + r".}", r"\label{tab:r7dup}",
                       r"\centering\scriptsize", r"\begin{tabular}{@{}lrrrrrrr@{}}", r"\toprule",
-                      r"design & cand. & of LUTs & near 5\% & near 10\% & saved & saved (H) & other \\", r"\midrule"] + rows + [r"\bottomrule", r"\end{tabular}", r"\end{table}"])
+                      r"design & cand. & of LUTs & near 5\% & near 10\% & saved & saved (H) & other \\", r"\midrule"] + rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
 
 
 def model_table(m: dict, label: str, name: str, tag: str) -> str:
@@ -425,13 +443,13 @@ def model_table(m: dict, label: str, name: str, tag: str) -> str:
             continue
         rows.append(f"{lab} & {f3(v['mean'])} & {f3(v['median'])} & [{f3(v['ci_lo'])}, {f3(v['ci_hi'])}] & {v['n_positive']}/{v['n_designs']} & "
                     f"{f3(v['null_mean'])} [{f3(v['null_lo'])}, {f3(v['null_hi'])}] \\\\")
-    return "\n".join([r"\begin{table}[t]", rf"\caption{{Round 7 (exploratory), held-out-family models, target {label}: {len(m['designs'])} designs in {len(m['families'])} families "
+    return "\n".join([r"\begin{table*}[t]", rf"\caption{{Round 7 (exploratory), held-out-family models, target {label}: {len(m['designs'])} designs in {len(m['families'])} families "
                       rf"({', '.join(tex(x) for x in m['families'])}). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): "
                       rf"AUC on connected pairs mean {f3(m['auc_base_mean'])}, median {f3(m['auc_base_median'])}; on uniform pairs mean {f3(m['auc_uni_base_mean'])}. "
                       rf"Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels "
                       rf"(and the carry flag) shuffled, {m['summary']['auc_full_minus_base']['shuffles']} shuffles. The interval resamples design families. ``Pairs whose co-location changed'' are the pairs the stock and the target clustering treat differently (joined against split); there the stock co-CLB flag is dropped from the features, and the AUC ranks joined against split pairs. The $R^2$ rows use a distance regression target disjoint in seeds from the baseline distance feature.}}", rf"\label{{tab:r7model{tag}}}", r"\centering\scriptsize",
                       r"\begin{tabular}{@{}lrrcrc@{}}", r"\toprule", r"change & mean & median & 95\% CI & better & shuffled null \\", r"\midrule"] +
-                     rows + [r"\bottomrule", r"\end{tabular}", r"\end{table}"])
+                     rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
 
 
 def mining_tables(d: dict) -> str:
@@ -444,13 +462,13 @@ def mining_tables(d: dict) -> str:
             continue
         rows.append(f"{LEVEL_TEX[lv]} & {f3(v['median'])} & {v['n_negative']}/{v['n_designs']} & "
                     f"[{f3(v['null_lo'])}, {f3(v['null_hi'])}] & {f3(v['null_le_obs'])} \\\\")
-    out.append("\n".join([r"\begin{table}[t]", r"\caption{Round 7 (exploratory), Table~\ref{tab:r3status} re-measured at each level of the HDL chain: the stratified "
+    out.append("\n".join([r"\begin{table*}[t]", r"\caption{Round 7 (exploratory), Table~\ref{tab:r3status} re-measured at each level of the HDL chain: the stratified "
                            r"distance difference $d_r$ (related minus unrelated pairs within net-connectivity strata, as a fraction of the unrelated mean; "
                            r"negative means closer than the nets predict), median over designs, designs with $d_r<0$, the range of the same statistic on "
                            r"label-shuffled data, and the share of the shuffles at or below the observed median. Levels that exist in the data are tested; a level "
                            r"identical to a shallower one is not tested again.}", r"\label{tab:r7xi}", r"\centering\scriptsize",
                            r"\begin{tabular}{@{}lrrcr@{}}", r"\toprule", r"relation & median $d_r$ & $d_r<0$ & null range & null$\le$obs \\", r"\midrule"] + rows +
-                          [r"\bottomrule", r"\end{tabular}", r"\end{table}"]))
+                          [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]))
     for tag, name, label in (("net", "net_gain", r"co-location in the \code{.net} hindsight clustering, designs where it beat \code{net0}"),
                              ("aff", "aff_gain", "co-location in the best affinity-bias run, designs where it beat stock"),
                              ("affall", "aff_all", "co-location in the best affinity-bias run, all designs (variant: includes designs where hindsight equals stock)")):
@@ -465,13 +483,13 @@ def mining_tables(d: dict) -> str:
         rows.append(f"{LEVEL_TEX[lv]} & {pct(v['stable_given_related'])} & {pct(v['stable_given_unrelated'])} & {f3(v['diff'])} & "
                     f"[{f3(v['null_lo'])}, {f3(v['null_hi'])}] \\\\")
     cls = st["by_class_stable_share"]
-    out.append("\n".join([r"\begin{table}[t]", rf"\caption{{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed ({pct(st['co_clb_pairs_seed_invariant_share'])} of the "
+    out.append("\n".join([r"\begin{table*}[t]", rf"\caption{{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed ({pct(st['co_clb_pairs_seed_invariant_share'])} of the "
                            rf"universe pairs have the same co-CLB status in all {w(st['n_seeds'])} stock runs), so stability is read on placement: of the {st['pairs']} pairs of the unbiased samples "
                            rf"within {w(st['near_dist'])} CLBs in at least one seed, {st['stable_ge8']} ({pct(st['stable_ge8'] / st['pairs'] if st['pairs'] else float('nan'))}) are within {w(st['near_dist'])} CLBs in {w(st['stable_min'])} or more of {w(st['n_seeds'])}. "
                            r"Share of stable pairs given the relation and given its absence, their difference, and the label-shuffled range of the difference. By N17 class: "
                            + ", ".join(f"{c} {pct(cls[c])}" for c in CLASSES) + r".}", r"\label{tab:r7stab}", r"\centering\scriptsize",
                            r"\begin{tabular}{@{}lrrrc@{}}", r"\toprule", r"relation & stable $|$ rel. & stable $|$ not & diff. & null range \\", r"\midrule"] + rows +
-                          [r"\bottomrule", r"\end{tabular}", r"\end{table}"]))
+                          [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]))
     dg = m["disagreement"]
     rows = []
     for lv, v in dg["levels"].items():
@@ -479,22 +497,22 @@ def mining_tables(d: dict) -> str:
         rows.append(f"{LEVEL_TEX[lv]} & {f2(a['enrichment'])} & [{f2(a['null_lo'])}, {f2(a['null_hi'])}] & {f2(b['enrichment'])} & "
                     f"[{f2(b['null_lo'])}, {f2(b['null_hi'])}] \\\\")
     c = dg["counts"]
-    out.append("\n".join([r"\begin{table}[t]", rf"\caption{{Round 7 (exploratory), where stock packing and the best affinity-bias hindsight run disagree (against the stock run of the same seed; "
+    out.append("\n".join([r"\begin{table*}[t]", rf"\caption{{Round 7 (exploratory), where stock packing and the best affinity-bias hindsight run disagree (against the stock run of the same seed; "
                            rf"{c['dplus']} pairs joined by hindsight only, {c['dminus']} by stock only, {c['agree']} by both). "
                            r"Enrichment of each relation among the disagreement pairs over its share among the pairs of the universe (the unbiased samples; protocol baseline), "
                            r"with the label-shuffled range; the earlier baseline, the pairs both clusterings join, is kept in the data file as a logged deviation.}",
                            r"\label{tab:r7disagree}", r"\centering\scriptsize", r"\begin{tabular}{@{}lrcrc@{}}", r"\toprule",
-                           r"relation & hindsight only & null & stock only & null \\", r"\midrule"] + rows + [r"\bottomrule", r"\end{tabular}", r"\end{table}"]))
+                           r"relation & hindsight only & null & stock only & null \\", r"\midrule"] + rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]))
     prim = next((m["models"][k] for k in ("net_gain", "aff_gain") if m["models"][k]["designs"]), None)
     if prim is not None:
         coefs = prim["coef_full"]
         rows = [f"{LEVEL_TEX.get(f, f.replace('_', ' '))} & {f3(v['mean'])} & [{f3(v['ci_lo'])}, {f3(v['ci_hi'])}] \\\\" for f, v in coefs.items()]
-        out.append("\n".join([r"\begin{table}[t]", r"\caption{Round 7 (exploratory), coefficients of the features in the full logistic model for hindsight "
+        out.append("\n".join([r"\begin{table*}[t]", r"\caption{Round 7 (exploratory), coefficients of the features in the full logistic model for hindsight "
                                r"co-location in the first model variant with designs (standardised features; mean over the held-out folds with a bootstrap interval over folds). "
                                r"The bit-level hint question "
                                r"(Peter 2026-10-26) is the rows ``same bit index'', ``same word and bit'', ``bit close'' and ``carry nb''.}", r"\label{tab:r7coef}",
                                r"\centering\scriptsize", r"\begin{tabular}{@{}lrc@{}}", r"\toprule", r"feature & coefficient & 95\% CI \\", r"\midrule"] + rows +
-                              [r"\bottomrule", r"\end{tabular}", r"\end{table}"]))
+                              [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]))
     return "\n\n".join(out)
 
 
@@ -592,11 +610,11 @@ def discussion(d: dict) -> str:
     return rf"""\subsection{{Round seven: what the data says and what it cannot say}}
 \label{{sec:r7-discussion}}
 \textbf{{Hindsight gap.}} The arm chosen on seeds 1 to 5 is measured on seeds 6 to 10. It has a held-out gain on {len(h['classes']['gain'])} of {h['n_real']} VTR designs, is borderline on {len(h['classes']['borderline'])} and worse on {len(h['classes']['worse'])}; on {len(h['no_gain_designs'])} no arm beat the stock clustering on the selection seeds. The median held-out wirelength gap (net0 over the arm) is {f3(h['pooled_all']['WL'])} over all designs (no gain = 1),
-{f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs with an arm, {f3(h['without_borderline']['WL'])} when the borderline designs are left out ({h['without_borderline']['n']}) and {f3(h['heldout_gain']['WL'])} over the {h['heldout_gain']['n']} designs with a held-out gain; critical-path-delay gap {f3(h['pooled_all']['CPD'])}, {f3(h['h_not_net0']['CPD'])}, {f3(h['without_borderline']['CPD'])}, {f3(h['heldout_gain']['CPD'])} and CLB-count gap {f3(h['pooled_all']['CLB'])}, {f3(h['h_not_net0']['CLB'])}, {f3(h['without_borderline']['CLB'])}, {f3(h['heldout_gain']['CLB'])} in the same order. The in-sample medians on the selection seeds were {f3(h['selection_h_not_net0']['WL'])}, {f3(h['selection_h_not_net0']['CPD'])} and {f3(h['selection_h_not_net0']['CLB'])}: the difference to the held-out numbers is the selection bias.
+{f3(h['h_not_net0']['WL'])} over the {h['n_h_not_net0']} designs with an arm, {f3(h['without_borderline']['WL'])} when the borderline designs are left out ({n_designs(h['without_borderline']['n'])}) and {f3(h['heldout_gain']['WL'])} over the {n_designs(h['heldout_gain']['n'])} with a held-out gain; critical-path-delay gap {f3(h['pooled_all']['CPD'])}, {f3(h['h_not_net0']['CPD'])}, {f3(h['without_borderline']['CPD'])}, {f3(h['heldout_gain']['CPD'])} and CLB-count gap {f3(h['pooled_all']['CLB'])}, {f3(h['h_not_net0']['CLB'])}, {f3(h['without_borderline']['CLB'])}, {f3(h['heldout_gain']['CLB'])} in the same order. The in-sample medians on the selection seeds were {f3(h['selection_h_not_net0']['WL'])}, {f3(h['selection_h_not_net0']['CPD'])} and {f3(h['selection_h_not_net0']['CLB'])}: the difference to the held-out numbers is the selection bias.
 Channel width: median {w_txt(d)}. On the designs without an arm the statement is about this procedure (a greedy move or swap of logic elements within
 distance {w(lib.RADIUS)} from one placement), not about the packer. On the known constructions the procedure recovers a median of {f2(rn['WL']['median'])} of the wirelength gap on the held-out seeds, counting the {rn['WL']['n_nogain']} constructions with no gain found as 0 ({rn['WL']['n_pooled']} constructions with a gap to recover; Table~\ref{{tab:r7calibB}} by size); over the {rn['WL']['n_defined']} constructions where an arm was chosen the median is {f2(rn['WL']['median_defined_only'])}
 (selection seeds, in sample: {f2(rsel['WL']['median'])} pooled, {f2(rsel['WL']['median_defined_only'])} defined only). So it falls well short of the known clustering on most constructions and the real-design gap is a best-known reference, not an optimum
-(the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports). A recovery above 1 (n5\_tree\_dp\_16, wirelength) means the arm beat the known clustering, which is known by construction and not optimal.
+(the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports). A recovery above 1 means the arm beat the known clustering, which is known by construction and not optimal (wirelength: {over_one(d)}).
 Why stock over known is {f2(min(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} to {f2(max(g['known']['WL']['gm'] for g in calib(nd) if g.get('known')))} here against round five's headline of
 about 1.22: round five's geometric mean is over all 72 designs, whose chain and random topologies have no gap (chain 1.004, random 1.019) while mesh and tree sit at 1.423 and 1.522
 (\code{{r5-results.tex}}, topology paragraph); this round uses only mesh and tree, and the flow and the known arm are the same (\code{{scripts/r5.py}} \code{{arm\_run}} and \code{{scripts/r7.py}} \code{{run\_arm}} both use VPR's default flow and weight {lib.AFF_BETA:g}):
