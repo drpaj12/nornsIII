@@ -1,0 +1,37 @@
+{
+ "arms": [
+  "stock",
+  "h1",
+  "h2",
+  "h3",
+  "h4"
+ ],
+ "atoms": 319,
+ "carry_pairs": 25,
+ "class_share_pairs": {
+  "FL": 0.8633755474824296,
+  "OR": 0.04556411910501477,
+  "SC": 0.015753913013954436,
+  "SI": 0.06848198825247004,
+  "SN": 0.006824432146131124
+ },
+ "coverage_pcrit_mean": 0.814921630094044,
+ "design": "stereovision3",
+ "pairs": 29453,
+ "pairs_connected_random": 2682,
+ "pairs_connected_sample": 1426,
+ "pairs_cooccur": 6821,
+ "pairs_uniform": 25360,
+ "relation_share": {
+  "carry_nb": 0.0008488099684242692,
+  "same_bit": 0.013003768716259804,
+  "same_inst_d1": 0.8193053339218416,
+  "same_inst_d2": 0.0,
+  "same_inst_d3": 0.0,
+  "same_inst_full": 0.8193053339218416,
+  "same_stmt": 0.18066071367942146,
+  "same_word": 0.03952059212983397,
+  "same_word_bit": 0.0
+ },
+ "runs": 50
+}

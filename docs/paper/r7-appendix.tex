@@ -1,0 +1,25 @@
+\subsection{Round seven: research log}
+\label{sec:r7-appendix}
+\paragraph{2026-10-26, round seven.} Peter (2026-10-26), verbatim: ``In the Norns questions, I really think we should have a bunch of VTR placements that generate data that we then analyze with the qeustion what might be better clustering and intitialization - every idea we've had is in the other direction - hypothesis, test, not really better - it's like my data mining Journal paper with Gharibian, Shannon and Wilton''. I take the paper he means to be Gharibian, Shannon, Jamieson and Chung, TRETS 2013 \cite{Gharibian2013tret}, with the FPL 2014 paper by Gharibian, Shannon and Jamieson \cite{gharibian2014identifying}; this identification is an assumption of mine (his list names Wilton, and the Crossref entries of both papers, checked on 2026-10-26, do not list an author of that name). Question N Q1.7 (area, speed, wirelength): how far is the VPR packer from a best-known clustering made with hindsight from good placements, and how much would LUT duplication (after Schabas and Brown \cite{schabas2003duplication}) add? Question N Q2.4: which HDL relations predict which atoms sit together in good placements, and where does stock packing disagree? The answers are Tables~\ref{tab:r7gap} to~\ref{tab:r7coef}. The protocol text was committed before the first run (\code{docs/plan/round7.md}, commit \code{93c983a}); the run code was not (it was committed as \code{94827f5} after the first run), so the commit froze the text only. The remote records the creation of the branch with that commit before the first run finished (GitHub event log); the protocol's timestamp entries give the details.
+
+\begin{table}[t]
+\caption{Research questions added in round seven.}
+\label{tab:r7rq}
+\centering\scriptsize
+\begin{tabular}{@{}lp{6.4cm}@{}}
+\toprule
+RQ & question (measures) \\
+\midrule
+N Q1.7 & On real designs, how far is the VPR packer from a best-known clustering made with hindsight from good placements, and how much would LUT duplication add? (area, speed, wirelength) \\
+N Q2.4 & Mined from many placements linked to the HDL: which HDL relations (word, bit index, statement, instance) predict which atoms sit together in good placements, and where does stock packing disagree? (wirelength, speed) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Agent defaults.} The hindsight clustering is written as a \code{.net} (logic elements as units, exact CLB legality of the architecture) and run with packing off, from the best run of the previous round, arm chosen and evaluated on seeds 1 to 5 (in sample); the cost weight $1+4\,\mathrm{pcrit}$, the move radius of two CLBs are fixed in the protocol; carry-chain CLBs stay as they are; the affinity-bias arm of the first batch is kept and renamed. The best affinity-bias run is used for the disagreement table and the figures; the \code{.net} clustering is used as a mining target. The raw VPR directories are kept in scratch directories (15.7~GB for the first batch) and \code{runs/r7} holds 0.8~GB; nothing was deleted.
+
+\paragraph{Fix round two (2026-10-27).} A review of the first fix round found that the arm was chosen and reported on the same seeds and that the recovery medians dropped the designs where no arm was chosen. A protocol amendment, written and pushed before the first held-out run (\code{docs/plan/round7.md}), fixes the arm from \code{rounds.json} and runs \code{net0}, the arm and (constructions) the known clustering on seeds 6 to 10 under the Norns lock; the held-out gap is the headline, the gap on seeds 1 to 5 is labelled selection seeds, and the recovery headline counts a design with no gain found as 0 beside the median over the designs where an arm was chosen. The null arm of the review (net0 with permuted legal slots through the same selection) was optional and was not run. The queued 10-seed probe of n5\_mesh\_dp\_16 did run (its seeds 6 to 10 are the held-out runs of that design). The mining baseline now uses a distance feature disjoint in seeds from the distance target, the confidence intervals resample design families, and the held-out models are also scored on the pairs whose co-location changed.
+
+\paragraph{Fix round three (2026-10-27).} Text, labels and the checker only; no VPR run. The abstract leads with the designs measured held out and labels the other designs as imputed, the affinity-bias recovery is labelled in sample on ten seeds, the mining text names the baseline features and its AUC ceiling, the changed-pair AUC is split into connected and uniform pairs, and the equivalence checker has its own parser and compares pin lists and per-pin undriven sets with the stock file.
+
+Regeneration: \code{python scripts/write\_round7.py} from \code{data/r7/*.json}; the steps that need \code{runs/} are \code{r7.py hind}, \code{r7net.py run}, \code{r7corpus.py}, \code{r7stats.py}, \code{r7fstats.py} and \code{r7mine.py}.
