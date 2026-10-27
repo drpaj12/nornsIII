@@ -551,3 +551,26 @@ choice (smallest Q, ties under 1% to the smaller T): T = 100; max WL ratio there
 in the main comparison; the T = 1 arm is kept as a labelled secondary row on the substitute set only. The held-out substitute-set run (seeds 4-6: `ext_nextpnr_sa` at T = 100 and T = 1, `vpr_sa`, `vpr_sa_reread`) follows this commit.
 **Scheduling deviation (stated, not a selection leak):** to use idle time, the main-comparison drivers were started before this choice with the arms that have no tunable parameter (`vpr_ap`, `vpr_ap_reread`, `vpr_sa`, `vpr_sa_reread`, `ext_nextpnr_heap`), seeds 1 to 6 per design in one pass, so their seeds 4-6 were
 run before this entry. Nothing is chosen from them: the only parameter of the dispatch (T) was fixed above from the substitute set seeds 1-3. `ext_nextpnr_sa` on the main designs runs after this commit.
+
+### 10.6 Dated entry 2026-10-27: substitute-set held-out report (seeds 4-6), `ext_nextpnr_sa` T = 100 against the default T = 1
+Nothing was chosen from these rows (the choice is Section 10.5). Per design, median [min-max] over seeds 4-6; all 36 runs rc 0 and legal. Substitute set: pipeline calibration constructions, not research results.
+Caption (H0 not involved here: no hard blocks): annealing family only; `ext_nextpnr_sa` has no timing model, the VPR arms are timing-driven; pads fixed at the `vpr_ap` seed-1 positions for the external arm.
+```
+seeds 4-6: median [min-max] over the 3 seeds
+design             arm                                      WL              W               CPD ns                 WLxCPD  routed
+n5_rand_ctl_16     vpr_sa                        398 [394-584]     22 [16-22]  1.091 [1.065-1.657]          430 [424-968]  3/3
+n5_rand_ctl_16     vpr_sa_reread                 390 [370-616]     22 [16-22]  1.176 [0.996-1.329]          459 [368-818]  3/3
+n5_rand_ctl_16     ext_nextpnr_sa T=1            424 [423-513]     22 [22-26]  1.129 [1.021-1.161]          491 [433-579]  3/3
+n5_rand_ctl_16     ext_nextpnr_sa T=100          446 [404-452]     22 [18-26]  1.251 [1.015-1.286]          566 [410-574]  3/3
+n5_mesh_ctl_64     vpr_sa                     3003 [2968-3107]     24 [22-24]  1.488 [1.346-2.145]       4416 [4042-6665]  3/3
+n5_mesh_ctl_64     vpr_sa_reread              3088 [2930-3542]     22 [22-24]  1.658 [1.351-1.795]       5120 [3960-6356]  3/3
+n5_mesh_ctl_64     ext_nextpnr_sa T=1         3749 [3684-3844]     24 [24-26]  1.771 [1.461-2.323]       6524 [5479-8929]  3/3
+n5_mesh_ctl_64     ext_nextpnr_sa T=100       3828 [3575-3933]     26 [24-26]  2.216 [1.805-2.402]       8481 [6452-9449]  3/3
+n5_chain_ctl_256   vpr_sa                     2874 [2855-3086]     26 [16-26]  1.235 [1.093-1.237]       3554 [3121-3813]  3/3
+n5_chain_ctl_256   vpr_sa_reread              2877 [2791-3110]     26 [16-34]  1.093 [1.091-1.235]       3145 [3045-3842]  3/3
+n5_chain_ctl_256   ext_nextpnr_sa T=1        3305 [3135-11704]     26 [16-28]  1.237 [1.102-1.374]      3877 [3643-16085]  3/3
+n5_chain_ctl_256   ext_nextpnr_sa T=100       3418 [3246-3511]     34 [22-34]  1.142 [1.090-1.209]       3902 [3538-4246]  3/3
+```
+WL ratio to `vpr_sa_reread` per seed (4, 5, 6): rand_16 T=1 0.69 1.39 1.08, T=100 0.72 1.22 1.04; mesh_64 T=1 1.24 1.06 1.26, T=100 1.27 1.08 1.22; chain_256 T=1 1.01 **4.19** 1.15, T=100 1.10 1.26 1.13.
+Reading: the 2x rule fires again at the default T = 1 on a held-out seed (chain_256 seed 5, WL 11704) and does not fire at T = 100 on any of the 9 held-out runs (largest 1.27). T = 100 removes the heavy-tail failure; it does not make the median better than the
+default on the other two designs (WL x CPD medians 566 vs 491 and 8481 vs 6524 against the control 459 and 5120: worse on CPD, which nextpnr cannot see). Conclusion for the arm: T = 100 is the more reliable setting; against `vpr_sa_reread` it costs 1.1 to 1.3x in WL on these three designs.

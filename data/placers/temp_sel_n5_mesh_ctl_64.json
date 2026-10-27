@@ -741,6 +741,366 @@
     12,
     12
    ]
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.18,
+   "ap_s": null,
+   "sa_place_s": 0.08,
+   "route_s": 0.4,
+   "flow_s": 0.96,
+   "wl": 3107.0,
+   "cpd_ns": 2.14506,
+   "W": 22.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa",
+   "seed": 4
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.1,
+   "ap_s": 0.29,
+   "sa_place_s": null,
+   "route_s": 0.35,
+   "flow_s": 0.73,
+   "wl": 3088.0,
+   "cpd_ns": 1.65799,
+   "W": 22.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa_reread",
+   "seed": 4
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 4,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.814618349075317,
+    "heap_s": null,
+    "sa_s": 5.79,
+    "init_s": 0.0,
+    "max_rss_kb": 18712.0,
+    "hpwl_final": 970
+   },
+   "starttemp": 1.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.02578425407409668,
+   "rc": 0,
+   "pack_s": 0.1,
+   "ap_s": 0.31,
+   "sa_place_s": null,
+   "route_s": 0.43,
+   "flow_s": 0.84,
+   "wl": 3844.0,
+   "cpd_ns": 2.32297,
+   "W": 24.0,
+   "clbs": 65.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 4,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.517642974853516,
+    "heap_s": null,
+    "sa_s": 5.49,
+    "init_s": 0.0,
+    "max_rss_kb": 18704.0,
+    "hpwl_final": 980
+   },
+   "starttemp": 100.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.028224706649780273,
+   "rc": 0,
+   "pack_s": 0.11,
+   "ap_s": 0.3,
+   "sa_place_s": null,
+   "route_s": 0.42,
+   "flow_s": 0.81,
+   "wl": 3933.0,
+   "cpd_ns": 2.40238,
+   "W": 24.0,
+   "clbs": 65.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.15,
+   "ap_s": null,
+   "sa_place_s": 0.08,
+   "route_s": 0.42,
+   "flow_s": 0.93,
+   "wl": 3003.0,
+   "cpd_ns": 1.34584,
+   "W": 24.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa",
+   "seed": 5
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.1,
+   "ap_s": 0.3,
+   "sa_place_s": null,
+   "route_s": 0.41,
+   "flow_s": 0.8,
+   "wl": 3542.0,
+   "cpd_ns": 1.79455,
+   "W": 22.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa_reread",
+   "seed": 5
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 5,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.267810821533203,
+    "heap_s": null,
+    "sa_s": 5.24,
+    "init_s": 0.0,
+    "max_rss_kb": 18512.0,
+    "hpwl_final": 1062
+   },
+   "starttemp": 1.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.027124404907226562,
+   "rc": 0,
+   "pack_s": 0.11,
+   "ap_s": 0.32,
+   "sa_place_s": null,
+   "route_s": 0.39,
+   "flow_s": 0.81,
+   "wl": 3749.0,
+   "cpd_ns": 1.46134,
+   "W": 26.0,
+   "clbs": 67.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 5,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.531111717224121,
+    "heap_s": null,
+    "sa_s": 5.5,
+    "init_s": 0.0,
+    "max_rss_kb": 18680.0,
+    "hpwl_final": 1099
+   },
+   "starttemp": 100.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.025499343872070312,
+   "rc": 0,
+   "pack_s": 0.11,
+   "ap_s": 0.35,
+   "sa_place_s": null,
+   "route_s": 0.38,
+   "flow_s": 0.82,
+   "wl": 3828.0,
+   "cpd_ns": 2.2156,
+   "W": 26.0,
+   "clbs": 67.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.15,
+   "ap_s": null,
+   "sa_place_s": 0.08,
+   "route_s": 0.38,
+   "flow_s": 0.89,
+   "wl": 2968.0,
+   "cpd_ns": 1.48801,
+   "W": 24.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa",
+   "seed": 6
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.1,
+   "ap_s": 0.29,
+   "sa_place_s": null,
+   "route_s": 0.39,
+   "flow_s": 0.77,
+   "wl": 2930.0,
+   "cpd_ns": 1.35145,
+   "W": 24.0,
+   "clbs": 64.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ],
+   "arm": "vpr_sa_reread",
+   "seed": 6
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 6,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.467788219451904,
+    "heap_s": null,
+    "sa_s": 5.44,
+    "init_s": 0.0,
+    "max_rss_kb": 18616.0,
+    "hpwl_final": 1081
+   },
+   "starttemp": 1.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.02542257308959961,
+   "rc": 0,
+   "pack_s": 0.11,
+   "ap_s": 0.34,
+   "sa_place_s": null,
+   "route_s": 0.41,
+   "flow_s": 0.84,
+   "wl": 3684.0,
+   "cpd_ns": 1.77088,
+   "W": 24.0,
+   "clbs": 66.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
+  },
+  {
+   "arm": "ext_nextpnr_sa",
+   "seed": 6,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 5.559948682785034,
+    "heap_s": null,
+    "sa_s": 5.53,
+    "init_s": 0.0,
+    "max_rss_kb": 18616.0,
+    "hpwl_final": 1135
+   },
+   "starttemp": 100.0,
+   "readback": {
+    "atoms": 1297,
+    "from_nextpnr": 1297,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 0,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.025638103485107422,
+   "rc": 0,
+   "pack_s": 0.11,
+   "ap_s": 0.33,
+   "sa_place_s": null,
+   "route_s": 0.39,
+   "flow_s": 0.82,
+   "wl": 3575.0,
+   "cpd_ns": 1.80481,
+   "W": 26.0,
+   "clbs": 65.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    12,
+    12
+   ]
   }
  ],
  "converter": {
