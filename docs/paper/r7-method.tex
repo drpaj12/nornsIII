@@ -6,10 +6,10 @@ placements). Its protocol, committed before any run, is \code{docs/plan/round7.m
 committed later, as \code{94827f5}); the one quantity defined in
 advance is the \emph{hindsight gap} per design, and every other analysis is exploratory.
 
-\textbf{Corpus.} 11 VTR designs of rounds one to four and 12 round-five netlist-level constructions
+\textbf{Corpus.} 15 VTR designs of rounds one to four and 12 round-five netlist-level constructions
 (mesh and tree, $B\in\{16,64,256\}$, whose block clustering is optimal by construction), each with VPR seeds 1 to 10 (stock and affinity-bias runs) or 1 to 5 (\code{.net} arms), the architecture of rounds one
 to six, VPR's default analytical-placement flow for the stock runs (VTR~\cite{rose2012vtr} and VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}, version 9.0.0-dev; the flow already clusters with APPack from atom positions; there is no separate analytical hindsight
-start), and routing at the minimum channel width. The main set is incomplete: stereovision1, mkDelayWorker32B, stereovision2, blob\_merge (4 of 15 designs) have no results here; the cut is lock availability (another job held the heavy lock for hours, so the driver reached them last), not a choice of designs. Each run records, per atom, the construct chain from the provenance names, the word and bit
+start), and routing at the minimum channel width. All designs of the main set are included. Each run records, per atom, the construct chain from the provenance names, the word and bit
 index, the CLB, its coordinates, the pack-time (stock arm only) and post-route criticality and slack; per pair, the N17 class, the HDL relations and the distance in
 each run; per net, fanout and CLBs spanned. Post-route criticality is path based, from the 200 worst reported paths.
 

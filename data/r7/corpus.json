@@ -1,5 +1,26 @@
 {
  "designs": {
+  "blob_merge": {
+   "arms": {
+    "h1": {
+     "failed": 0,
+     "ok": 10
+    },
+    "stock": {
+     "failed": 0,
+     "ok": 10
+    }
+   },
+   "failed": 0,
+   "flow_s": 301.23999999999995,
+   "grid": [
+    28,
+    28
+   ],
+   "logic_clbs_seed1": 494,
+   "max_rss_mib": 213.4,
+   "ok": 20
+  },
   "boundtop": {
    "arms": {
     "h1": {
@@ -86,6 +107,31 @@
    ],
    "logic_clbs_seed1": 22,
    "max_rss_mib": 75.9,
+   "ok": 30
+  },
+  "mkDelayWorker32B": {
+   "arms": {
+    "h1": {
+     "failed": 0,
+     "ok": 10
+    },
+    "h2": {
+     "failed": 0,
+     "ok": 10
+    },
+    "stock": {
+     "failed": 0,
+     "ok": 10
+    }
+   },
+   "failed": 0,
+   "flow_s": 454.94000000000005,
+   "grid": [
+    50,
+    50
+   ],
+   "logic_clbs_seed1": 74,
+   "max_rss_mib": 338.4,
    "ok": 30
   },
   "mkPktMerge": {
@@ -624,20 +670,45 @@
   },
   "stereovision1": {
    "arms": {
+    "h1": {
+     "failed": 0,
+     "ok": 10
+    },
     "stock": {
      "failed": 0,
-     "ok": 1
+     "ok": 10
     }
    },
    "failed": 0,
-   "flow_s": 28.4,
+   "flow_s": 616.2500000000001,
    "grid": [
     40,
     40
    ],
    "logic_clbs_seed1": 788,
-   "max_rss_mib": 378.2,
-   "ok": 1
+   "max_rss_mib": 378.4,
+   "ok": 20
+  },
+  "stereovision2": {
+   "arms": {
+    "h1": {
+     "failed": 0,
+     "ok": 10
+    },
+    "stock": {
+     "failed": 0,
+     "ok": 10
+    }
+   },
+   "failed": 0,
+   "flow_s": 2460.7199999999993,
+   "grid": [
+    82,
+    82
+   ],
+   "logic_clbs_seed1": 1956,
+   "max_rss_mib": 1267.3,
+   "ok": 20
   },
   "stereovision3": {
    "arms": {
@@ -674,9 +745,9 @@
   }
  },
  "runs_failed": 0,
- "runs_logged": 891,
- "runs_ok": 891,
- "runs_r7_bytes": 422475771,
- "scratch_bytes": 7140612094,
- "vpr_seconds": 2411.6
+ "runs_logged": 980,
+ "runs_ok": 980,
+ "runs_r7_bytes": 762750953,
+ "scratch_bytes": 15734732364,
+ "vpr_seconds": 6216.349999999999
 }
