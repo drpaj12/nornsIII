@@ -388,8 +388,8 @@ that sink a flip-flop D pin); where VPR forms a molecule differently, VPR's erro
 2x stop rule) is unchanged and is run now with this uarch. A development run of `n5_rand_ctl_64` seed 1 on the new uarch (SA 958 HPWL, HeAP 961 HPWL, both legal readbacks) is the only look at the new rule.
 
 ### 9.8 Gate result (2026-10-27, uarch of Section 9.7, substitute set of Section 9.4; metrics `data/placers/gate_<design>.json`, table by `scripts/placers_gate_table.py`)
-Pass criteria met on all 54 external-arm and VPR-arm runs of the three designs: rc 0, "Circuit successfully routed", 0 reader warnings, 0 atoms without a cell, 0 moved pads. nextpnr peak RSS at most 0.3 GB
-(rand_ctl_16, mesh_ctl_64) and chain_ctl_256 below 1 GB (see JSON `max_rss_kb`). **Stop rule fired:** `ext_nextpnr_sa` seed 1 on `n5_chain_ctl_256` has WL 11492 = 4.03x `vpr_sa_reread` (4.16x `vpr_ap_reread`, 2.762 k).
+Pass criteria met on all 54 external-arm and VPR-arm runs of the three designs: rc 0, "Circuit successfully routed", 0 reader warnings, 0 atoms without a cell, 0 moved pads. nextpnr peak RSS 10 MB
+(rand_ctl_16), 20 MB (mesh_ctl_64) and 57 MB (chain_ctl_256) (JSON `max_rss_kb`). **Stop rule fired:** `ext_nextpnr_sa` seed 1 on `n5_chain_ctl_256` has WL 11492 = 4.03x `vpr_sa_reread` (4.16x `vpr_ap_reread`, 2.762 k).
 Nothing was tuned. Likely cause (from the logs, not yet tested by any change): nextpnr's SA collapses to a greedy descent (its temperature falls from 1 to 6e-4 within 15 iterations, no timing term) and ends at an HPWL of
 3514, 3064 and 3465 for seeds 1 to 3 against 1183, 1193 and 1439 for HeAP on the same design. VPR's full legaliser then starts from that placement: seed 1 gave 257 CLBs instead of the 256 the construction
 needs and an initial bb_cost of 140.1 (seed 2: 39.8; HeAP seed 1: 21.6; `vpr_sa_reread` seed 1: 21.2) that VPR's low-temperature anneal only brought to 73.8. The result is a poor start for
