@@ -1,0 +1,73 @@
+{
+ "design": "stereovision0",
+ "tag": "main",
+ "runs": [
+  {
+   "rc": 0,
+   "pack_s": 3.07,
+   "ap_s": 7.84,
+   "sa_place_s": null,
+   "route_s": 6.97,
+   "flow_s": 15.74,
+   "wl": 61311.0,
+   "cpd_ns": 4.71225,
+   "W": 46.0,
+   "clbs": 707.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    33,
+    33
+   ],
+   "arm": "vpr_ap",
+   "seed": 1
+  }
+ ],
+ "converter": {
+  "rc": 0,
+  "seconds": 0.3479611873626709,
+  "blif_names": 6890,
+  "blif_latches": 11458,
+  "unsupported": {},
+  "hard_models": {
+   "adder": 2741
+  },
+  "ref_atom_types": {
+   "ff": 11458,
+   "adder": 2688,
+   "lut": 6855,
+   "outpad": 197,
+   "inpad": 169
+  },
+  "ok": true,
+  "cells": 19588,
+  "luts": 6853,
+  "dffs": 9231,
+  "pads": 366,
+  "constant_drivers_dropped": 3,
+  "swept_by_vpr_dropped": {
+   "lut": 34,
+   "ff": 0,
+   "pad": 5
+  },
+  "clock_nets": [
+   "tm3_clk_v0"
+  ],
+  "anchors": 3138,
+  "anchor_tiles": 245,
+  "hard_atoms": 4968,
+  "chain_ffs": 2227,
+  "hard_atoms_not_in_ref": 53,
+  "hard_atoms_without_movable_net": 1777,
+  "ref_atoms": 21367,
+  "n_ref_atoms_without_cell": 0
+ },
+ "reference": {
+  "arm": "vpr_ap",
+  "seed": 1,
+  "grid": [
+   33,
+   33
+  ]
+ }
+}

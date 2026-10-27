@@ -21,6 +21,7 @@ ap.add_argument("--json", required=True)
 ap.add_argument("--ref", required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--stats")
+ap.add_argument("--fixed", help="file of atom names written verbatim from REF (hard blocks, chain flip-flops, constants)")
 a = ap.parse_args()
 cells = json.loads(Path(a.json).read_text())["modules"]["top"]["cells"]
 # pack() of the k6 uarch merges a LUT and its single-sink FF into one BLE cell named after the LUT, with the FF name in
@@ -34,6 +35,7 @@ out = ["# Flat placement written from a nextpnr placement (Norns scripts/nextpnr
        "# <atom_name> <x> <y> <layer> <sub_tile>"]
 st = {"atoms": 0, "from_nextpnr": 0, "fallback_ref": 0, "pad_moved": 0, "hard_verbatim": 0, "const_verbatim": 0, "anchor_moved": 0}
 BASIC = {"lut", "ff", "inpad", "outpad"}
+FIXED = set(Path(a.fixed).read_text().split("\n")) if a.fixed else set()
 for line in Path(a.ref).read_text().splitlines():
     if not line.strip() or line.startswith("#"):
         continue
@@ -44,7 +46,7 @@ for line in Path(a.ref).read_text().splitlines():
     st["atoms"] += 1
     attr = cells.get(name, {}).get("attributes", {}).get("NEXTPNR_BEL")
     m = rx.match(attr) if attr else None
-    if typ not in BASIC:
+    if typ not in BASIC or name in FIXED:
         st["hard_verbatim"] += 1
         if m and (int(m.group(1)), int(m.group(2))) != (rx_, ry_):
             st["anchor_moved"] += 1

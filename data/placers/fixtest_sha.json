@@ -1,0 +1,174 @@
+{
+ "design": "sha",
+ "tag": "fixtest",
+ "runs": [
+  {
+   "rc": 0,
+   "pack_s": 0.83,
+   "ap_s": 2.03,
+   "sa_place_s": null,
+   "route_s": 1.8,
+   "flow_s": 4.02,
+   "wl": 13679.0,
+   "cpd_ns": 10.3425,
+   "W": 66.0,
+   "clbs": 142.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    17,
+    17
+   ],
+   "arm": "vpr_ap",
+   "seed": 1
+  },
+  {
+   "rc": 1,
+   "pack_s": null,
+   "ap_s": 0.17,
+   "sa_place_s": null,
+   "route_s": null,
+   "flow_s": 0.24,
+   "wl": null,
+   "cpd_ns": null,
+   "W": null,
+   "clbs": null,
+   "routed_ok": false,
+   "reader_warnings": 0,
+   "grid": null,
+   "error": "Error 1:",
+   "retried": true,
+   "arm": "vpr_ap_reread",
+   "seed": 1
+  },
+  {
+   "rc": 0,
+   "pack_s": 0.86,
+   "ap_s": null,
+   "sa_place_s": 0.43,
+   "route_s": 2.72,
+   "flow_s": 4.6,
+   "wl": 13596.0,
+   "cpd_ns": 9.86096,
+   "W": 64.0,
+   "clbs": 142.0,
+   "routed_ok": true,
+   "reader_warnings": 0,
+   "grid": [
+    17,
+    17
+   ],
+   "arm": "vpr_sa",
+   "seed": 1
+  },
+  {
+   "rc": 1,
+   "pack_s": null,
+   "ap_s": 0.17,
+   "sa_place_s": null,
+   "route_s": null,
+   "flow_s": 0.24,
+   "wl": null,
+   "cpd_ns": null,
+   "W": null,
+   "clbs": null,
+   "routed_ok": false,
+   "reader_warnings": 0,
+   "grid": null,
+   "error": "Error 1:",
+   "retried": true,
+   "arm": "vpr_sa_reread",
+   "seed": 1
+  },
+  {
+   "arm": "ext_nextpnr_heap",
+   "seed": 1,
+   "nextpnr": {
+    "rc": 0,
+    "wall_s": 1.6438136100769043,
+    "heap_s": 0.21,
+    "sa_s": 1.37,
+    "init_s": null,
+    "max_rss_kb": 34016.0,
+    "hpwl_final": 4002
+   },
+   "readback": {
+    "atoms": 2568,
+    "from_nextpnr": 2257,
+    "fallback_ref": 0,
+    "pad_moved": 0,
+    "hard_verbatim": 311,
+    "const_verbatim": 0,
+    "anchor_moved": 0
+   },
+   "readback_s": 0.03832840919494629,
+   "rc": 1,
+   "pack_s": null,
+   "ap_s": 0.19,
+   "sa_place_s": null,
+   "route_s": null,
+   "flow_s": 0.26,
+   "wl": null,
+   "cpd_ns": null,
+   "W": null,
+   "clbs": null,
+   "routed_ok": false,
+   "reader_warnings": 0,
+   "grid": null,
+   "error": "Error 1:",
+   "retried": true
+  }
+ ],
+ "converter": {
+  "rc": 0,
+  "seconds": 0.13959908485412598,
+  "blif_names": 1293,
+  "blif_latches": 893,
+  "unsupported": {},
+  "hard_models": {
+   "adder": 320
+  },
+  "ref_atom_types": {
+   "adder": 309,
+   "lut": 1292,
+   "ff": 893,
+   "outpad": 36,
+   "inpad": 38
+  },
+  "ok": true,
+  "cells": 2554,
+  "luts": 1290,
+  "dffs": 893,
+  "pads": 74,
+  "constant_drivers_dropped": 3,
+  "swept_by_vpr_dropped": {
+   "lut": 0,
+   "ff": 0,
+   "pad": 5
+  },
+  "clock_nets": [
+   "clk_i"
+  ],
+  "anchors": 297,
+  "anchor_tiles": 11,
+  "hard_atoms": 320,
+  "chain_ffs": 0,
+  "hard_atoms_not_in_ref": 11,
+  "hard_atoms_without_movable_net": 12,
+  "ref_atoms": 2568,
+  "n_ref_atoms_without_cell": 0
+ },
+ "reference": {
+  "arm": "vpr_ap",
+  "seed": 1,
+  "grid": [
+   17,
+   17
+  ]
+ },
+ "chain_collapse_ref": {
+  "chain_atoms": 320,
+  "chain_ffs": 0,
+  "moved": 117
+ }
+}

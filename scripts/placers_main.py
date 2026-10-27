@@ -29,6 +29,7 @@ ap.add_argument("--seeds", default="1,2,3")
 ap.add_argument("--arms", default="vpr_ap,vpr_ap_reread,vpr_sa,vpr_sa_reread,ext_nextpnr_heap,ext_nextpnr_sa")
 ap.add_argument("--temps", default=None, help="comma list of --starttemp values for ext_nextpnr_sa (default: --sa-temp)")
 ap.add_argument("--sa-temp", type=float, default=1.0)
+ap.add_argument("--redo-failed", action="store_true", help="drop failed records (kept under first_attempt_failures) and, for a converter older than section 10.7, all ext_* records")
 ap.add_argument("--max-rss-gb", type=float, default=13.0)
 args = ap.parse_args()
 
@@ -113,6 +114,15 @@ def process(design):
     blif = nl.runs_dir(design, "netlist", f"{design}.blif")
     dst = nl.DATA / "placers" / f"{args.tag}_{design}.json"
     out = json.loads(dst.read_text()) if dst.exists() else {"design": design, "tag": args.tag, "runs": [], "converter": {}}
+    if args.redo_failed:
+        old_conv = "chain_ffs" not in out.get("converter", {})
+        bad = [r for r in out["runs"] if r["rc"] != 0 or not r.get("routed_ok") or (old_conv and r["arm"].startswith("ext_"))]
+        if bad:
+            out.setdefault("first_attempt_failures", []).extend(
+                {k: r.get(k) for k in ("arm", "seed", "starttemp", "rc", "error")} | {"reason": "failed" if (r["rc"] != 0 or not r.get("routed_ok")) else "converter predates 10.7"} for r in bad)
+            out["runs"] = [r for r in out["runs"] if r not in bad]
+        if old_conv:
+            out["converter"] = {}
     done = {(r["arm"], r["seed"], r.get("starttemp")): r for r in out["runs"]}
     wd = nl.ensure_dir(WORK / design)
 
@@ -138,6 +148,11 @@ def process(design):
         record(rec)
         return rec
 
+    def collapsed(p):
+        q = p.with_name("final.collapsed.flat_place")
+        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q))
+        return q
+
     # reference run (also the shared vpr_ap seed-1 run)
     r1 = vrun("vpr_ap", 1, [], write="final.flat_place")
     ref = wd / "vpr_ap.s1" / "final.flat_place"
@@ -147,10 +162,13 @@ def process(design):
         out["error"] = "reference run failed"
         save()
         return
+    refc = wd / "ref.collapsed.flat_place"
+    run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(ref), "--out", str(refc), "--stats", str(wd / "ref.collapse.json"))
+    out["chain_collapse_ref"] = json.loads((wd / "ref.collapse.json").read_text())
     ext = nl.ensure_dir(wd / "ext")
     js, anchors = ext / f"{design}.json", ext / f"{design}.json.anchors.txt"
     if not out["converter"].get("ok") or not js.exists():
-        rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(ref), "--out", str(js),
+        rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(refc), "--out", str(js),
                          "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors))
         st = json.loads((ext / "convert_stats.json").read_text()) if (ext / "convert_stats.json").exists() else {}
         out["converter"] = {"rc": rc, "seconds": sec, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
@@ -165,12 +183,12 @@ def process(design):
                 vrun("vpr_ap", s, [], write="final.flat_place")
             elif arm == "vpr_ap_reread":
                 vrun("vpr_ap", s, [], write="final.flat_place")
-                vrun("vpr_ap_reread", s, [], read=wd / f"vpr_ap.s{s}" / "final.flat_place")
+                vrun("vpr_ap_reread", s, [], read=collapsed(wd / f"vpr_ap.s{s}" / "final.flat_place"))
             elif arm == "vpr_sa":
                 vrun("vpr_sa", s, SA, write="final.flat_place")
             elif arm == "vpr_sa_reread":
                 vrun("vpr_sa", s, SA, write="final.flat_place")
-                vrun("vpr_sa_reread", s, [], read=wd / f"vpr_sa.s{s}" / "final.flat_place")
+                vrun("vpr_sa_reread", s, [], read=collapsed(wd / f"vpr_sa.s{s}" / "final.flat_place"))
             elif arm in ("ext_nextpnr_heap", "ext_nextpnr_sa"):
                 placer = arm.rsplit("_", 1)[1]
                 for T in (TEMPS if placer == "sa" else [None]):
@@ -191,7 +209,7 @@ def process(design):
                         rec |= {"rc": np_rec["rc"], "routed_ok": False, "error": "nextpnr failed"}
                         record(rec)
                         continue
-                    rc2, sec2 = run_py("nextpnr_readback.py", "--json", str(cwd / "placed.json"), "--ref", str(ref),
+                    rc2, sec2 = run_py("nextpnr_readback.py", "--json", str(cwd / "placed.json"), "--ref", str(refc), "--fixed", str(js) + ".fixed.txt",
                                        "--out", str(cwd / "ext.flat_place"), "--stats", str(cwd / "rb.json"))
                     rec["readback"] = json.loads((cwd / "rb.json").read_text()) if (cwd / "rb.json").exists() else {}
                     rec["readback_s"] = sec2

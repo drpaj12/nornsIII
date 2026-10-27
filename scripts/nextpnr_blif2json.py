@@ -22,6 +22,8 @@ import re
 import sys
 from pathlib import Path
 
+import flatplace_chains
+
 
 def read_blif(path):
     lines, cur = [], ""
@@ -169,8 +171,13 @@ def main():
         conn["F"], dirs["F"] = [net(out)], "output"
         cells[out] = {"hide_name": 0, "type": "LUT6", "parameters": {"INIT": truth_table(ins, cover)},
                       "attributes": {}, "port_directions": dirs, "connections": conn}
+    _head, chain_ffs = flatplace_chains.chains(a.blif)
+    chain_ff_d = {}
     for l in latches:
         d, q = l[0], l[1]
+        if q in chain_ffs and q in ref:
+            chain_ff_d[q] = d  # flip-flop fed by an adder sumout: part of the carry-chain molecule, fixed with it (section 10.7)
+            continue
         if q not in ref:
             dropped["ff"] += 1
             continue
@@ -200,6 +207,7 @@ def main():
             for v in c["connections"].values():
                 movable.update(v)
     tiles, n_anchor, hard_missing, hard_unemitted = {}, 0, 0, 0
+    hard = hard + [("dff", q, [("D", d), ("Q", q)]) for q, d in chain_ff_d.items()]
     for model, first_out, pins in hard:
         if first_out is None or first_out not in ref:
             hard_missing += 1
@@ -213,7 +221,7 @@ def main():
             nm = f"P{ports}"
             ports += 1
             conn[nm] = [netid[n]]
-            dirs[nm] = "output" if base in OUT_PORTS else "input"
+            dirs[nm] = "output" if (base in OUT_PORTS or (model == "dff" and base == "Q")) else "input"
         if not ports:
             hard_unemitted += 1
             continue
@@ -228,12 +236,13 @@ def main():
     for model, first_out, pins in hard:
         if first_out in ref:
             hard_names.add(first_out)
-    hard_names |= {n for n in ref if n in NO_NET}  # constant-driver LUT atoms: written verbatim by the readback
+    hard_names |= {n for n in ref if n in NO_NET}
+    Path(a.out + ".fixed.txt").write_text("".join(n + "\n" for n in sorted(hard_names)))  # constant-driver LUT atoms: written verbatim by the readback
     missing = sorted(set(ref) - set(cells) - hard_names)
     stats.update(ok=True, cells=len(cells), luts=sum(c["type"] == "LUT6" for c in cells.values()),
                  dffs=sum(c["type"] == "DFF" for c in cells.values()), pads=sum(c["type"] == "IOB" for c in cells.values()),
                  constant_drivers_dropped=len(const_nets), swept_by_vpr_dropped=dropped, clock_nets=sorted(clocks),
-                 anchors=n_anchor, anchor_tiles=len(tiles), hard_atoms=len(hard), hard_atoms_not_in_ref=hard_missing,
+                 anchors=n_anchor, anchor_tiles=len(tiles), hard_atoms=len(hard), chain_ffs=len(chain_ff_d), hard_atoms_not_in_ref=hard_missing,
                  hard_atoms_without_movable_net=hard_unemitted, ref_atoms=len(ref), ref_atoms_without_cell=missing[:20], n_ref_atoms_without_cell=len(missing))
     mod = {"attributes": {"top": 1}, "ports": {}, "cells": cells, "netnames": {}}
     Path(a.out).write_text(json.dumps({"creator": "norns nextpnr_blif2json", "modules": {"top": mod}}) + "\n")
