@@ -1,0 +1,152 @@
+{
+ "ch_intrinsics": {
+  "clbs": 13,
+  "fles": 87,
+  "lut6": 8,
+  "lut5_pairs": 12,
+  "lut5_singles": 67,
+  "arithmetic": 0,
+  "excess_slots": 12,
+  "excess_pct_of_slots": 9.23
+ },
+ "stereovision3": {
+  "clbs": 15,
+  "fles": 141,
+  "lut6": 23,
+  "lut5_pairs": 49,
+  "lut5_singles": 54,
+  "arithmetic": 15,
+  "excess_slots": 49,
+  "excess_pct_of_slots": 32.67
+ },
+ "mkPktMerge": {
+  "clbs": 21,
+  "fles": 108,
+  "lut6": 4,
+  "lut5_pairs": 81,
+  "lut5_singles": 10,
+  "arithmetic": 13,
+  "excess_slots": 81,
+  "excess_pct_of_slots": 38.57
+ },
+ "diffeq2": {
+  "clbs": 22,
+  "fles": 190,
+  "lut6": 9,
+  "lut5_pairs": 12,
+  "lut5_singles": 101,
+  "arithmetic": 68,
+  "excess_slots": 12,
+  "excess_pct_of_slots": 5.45
+ },
+ "diffeq1": {
+  "clbs": 37,
+  "fles": 288,
+  "lut6": 105,
+  "lut5_pairs": 12,
+  "lut5_singles": 103,
+  "arithmetic": 68,
+  "excess_slots": 12,
+  "excess_pct_of_slots": 3.24
+ },
+ "boundtop": {
+  "clbs": 54,
+  "fles": 370,
+  "lut6": 81,
+  "lut5_pairs": 181,
+  "lut5_singles": 75,
+  "arithmetic": 33,
+  "excess_slots": 181,
+  "excess_pct_of_slots": 33.52
+ },
+ "mkDelayWorker32B": {
+  "clbs": 74,
+  "fles": 457,
+  "lut6": 25,
+  "lut5_pairs": 16,
+  "lut5_singles": 380,
+  "arithmetic": 36,
+  "excess_slots": 16,
+  "excess_pct_of_slots": 2.16
+ },
+ "mkSMAdapter4B": {
+  "clbs": 125,
+  "fles": 1107,
+  "lut6": 345,
+  "lut5_pairs": 105,
+  "lut5_singles": 492,
+  "arithmetic": 165,
+  "excess_slots": 105,
+  "excess_pct_of_slots": 8.4
+ },
+ "sha": {
+  "clbs": 142,
+  "fles": 1393,
+  "lut6": 664,
+  "lut5_pairs": 63,
+  "lut5_singles": 507,
+  "arithmetic": 159,
+  "excess_slots": 63,
+  "excess_pct_of_slots": 4.44
+ },
+ "raygentop": {
+  "clbs": 143,
+  "fles": 1137,
+  "lut6": 279,
+  "lut5_pairs": 379,
+  "lut5_singles": 262,
+  "arithmetic": 217,
+  "excess_slots": 379,
+  "excess_pct_of_slots": 26.5
+ },
+ "or1200": {
+  "clbs": 252,
+  "fles": 2179,
+  "lut6": 732,
+  "lut5_pairs": 285,
+  "lut5_singles": 898,
+  "arithmetic": 264,
+  "excess_slots": 285,
+  "excess_pct_of_slots": 11.31
+ },
+ "blob_merge": {
+  "clbs": 494,
+  "fles": 4474,
+  "lut6": 1182,
+  "lut5_pairs": 607,
+  "lut5_singles": 912,
+  "arithmetic": 1773,
+  "excess_slots": 607,
+  "excess_pct_of_slots": 12.29
+ },
+ "stereovision0": {
+  "clbs": 707,
+  "fles": 6625,
+  "lut6": 220,
+  "lut5_pairs": 4352,
+  "lut5_singles": 673,
+  "arithmetic": 1380,
+  "excess_slots": 4352,
+  "excess_pct_of_slots": 61.56
+ },
+ "stereovision1": {
+  "clbs": 788,
+  "fles": 6305,
+  "lut6": 374,
+  "lut5_pairs": 4071,
+  "lut5_singles": 714,
+  "arithmetic": 1146,
+  "excess_slots": 4071,
+  "excess_pct_of_slots": 51.66
+ },
+ "stereovision2": {
+  "clbs": 1956,
+  "fles": 13546,
+  "lut6": 222,
+  "lut5_pairs": 6640,
+  "lut5_singles": 534,
+  "arithmetic": 6150,
+  "excess_slots": 6640,
+  "excess_pct_of_slots": 33.95
+ }
+}

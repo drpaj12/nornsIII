@@ -1035,7 +1035,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   },
   {
    "arm": "ext_nextpnr_heap",
@@ -1043,7 +1044,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   },
   {
    "arm": "ext_nextpnr_heap",
@@ -1051,7 +1053,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   },
   {
    "arm": "ext_nextpnr_heap",
@@ -1059,7 +1062,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   },
   {
    "arm": "ext_nextpnr_heap",
@@ -1067,7 +1071,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   },
   {
    "arm": "ext_nextpnr_heap",
@@ -1075,15 +1080,8 @@
    "starttemp": null,
    "rc": 125,
    "error": "nextpnr failed",
-   "reason": "failed"
-  },
-  {
-   "arm": "ext_nextpnr_heap",
-   "seed": 1,
-   "starttemp": null,
-   "rc": 125,
-   "error": "nextpnr failed",
-   "reason": "failed"
+   "reason": "failed",
+   "no_bels": true
   }
  ],
  "chain_collapse_ref": {
