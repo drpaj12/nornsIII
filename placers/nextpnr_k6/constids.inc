@@ -1,4 +1,5 @@
 X(LUT6)
+X(BLE)
 X(DFF)
 X(IOB)
 X(CLK)

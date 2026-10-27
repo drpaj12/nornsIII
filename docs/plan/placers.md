@@ -375,3 +375,14 @@ Recommendation: H0 first (it exercises all 15 designs and isolates the effect of
 `/tmp/claude-1000/nextpnr-k6-src` (the clone is not touched), (2) copies `k6.cc` and `constids.inc` to `generic/viaduct/k6/`, (3) applies `cmake-register.patch` (two lines in `generic/CMakeLists.txt`), (4) runs
 cmake and ninja into `/tmp/claude-1000/nextpnr-k6-build` under `flock -x /tmp/claude-1000/odin3-heavy.lock`, with the Section 8 dependency prefix. Run with `LD_LIBRARY_PATH=/tmp/claude-1000/nextpnr-deps/prefix/lib`.
 No GitHub fork; the licence of the added files is ISC (nextpnr's), credit to gatecat in the header. Licences of the dependencies are in Section 8.
+
+### 9.7 Dated entry 2026-10-27 (still before any counted gate run): BLE merge replaces independent LUT and DFF cells (supersedes Section 9.2 item 1; the old text stays)
+First gate attempt (unmerged uarch, `pair=0`, design `n5_rand_ctl_16`, seeds 1 to 3, metrics kept in `data/placers/gate_attempt1_n5_rand_ctl_16.json`): the VPR arms ran (rc 0), the nextpnr runs
+and readbacks were clean (337 of 337 atoms, 0 moved pads), but VPR refused the external flat-place files in 4 of 6 runs (`ext_nextpnr_heap` seeds 1, 2, 3 and `ext_nextpnr_sa` seed 3):
+`analytical_placement_flow.cpp:110`, "AP block b5_l0 contains atom b5_q0 with a location (1, 4, ...) that conflicts the location of other atoms in this block of (1, 5, ...)". VPR's AP flow treats a
+LUT and the flip-flop it alone feeds as one pre-packed molecule that must sit at one location, and independent LUT and DFF cells put them in different tiles. This attempt is not a result. Rule change:
+the uarch has one `BLE` bel per slot (10 per CLB tile, matching "10 BLE slots" of the arch); `pack()` merges a `LUT6` whose only sink is a `DFF` D pin with that `DFF` into one `BLE` cell (named after the LUT,
+the DFF's name in the attribute `FF_ATOM`), and retypes a lone LUT6 or DFF to `BLE`. Readback gives both atoms of a BLE cell the BLE's location. No relative constraint is used, so SA still starts (the chain
+legaliser problem of Section 9.2 item 1 does not arise). Tile legality is unchanged (at most 40 distinct external input nets). The merge rule mirrors VPR's molecule rule (LUT output net with exactly one sink,
+that sink a flip-flop D pin); where VPR forms a molecule differently, VPR's error above would show it, and such a run counts as a failed gate run. The gate of Section 9.4 (substitute set, arms, seeds, pass criteria,
+2x stop rule) is unchanged and is run now with this uarch. A development run of `n5_rand_ctl_64` seed 1 on the new uarch (SA 958 HPWL, HeAP 961 HPWL, both legal readbacks) is the only look at the new rule.

@@ -21,8 +21,8 @@
  *   - grid W x H including the IO ring (VPR "FPGA sized to W x H"), x in [0,W), y in [0,H);
  *   - IO ring: perimeter tiles except the four corners, 8 IOB bels per tile (z = sub tile);
  *   - CLB tiles: every interior column except x % 8 == 2 (memory columns) and x % 8 == 6
- *     (mult_36 columns); 10 BLEs per tile, each a LUT6 bel (z = 2k) and a DFF bel (z = 2k + 1);
- *   - option pair=1 constrains each LUT with its single-sink DFF into one BLE (off by default, see pack());
+ *     (mult_36 columns); 10 BLE bels per tile (z = k). pack() merges a LUT6 whose only sink is a DFF D pin
+ *     with that DFF into one BLE cell (VPR's lut -> ff molecule); a lone LUT6 or a lone DFF is a BLE too;
  *   - tile validity: at most 40 distinct nets entering the tile (the 40 "I" pins; own outputs
  *     feed back for free), as in the arch XML.
  *  Not modelled: LUT fracturing (two LUT5 per LUT6), carry chains, mult_36 and memory (their
@@ -58,7 +58,6 @@ struct K6Impl : ViaductAPI
         H = get("height", 12);
         N = get("n", 10);
         Imax = get("inputs", 40);
-        pair = get("pair", 0) != 0;
         if (W < 3 || H < 3)
             log_error("k6 uarch: width and height must be at least 3 (got %d x %d)\n", W, H);
     }
@@ -75,15 +74,38 @@ struct K6Impl : ViaductAPI
 
     void pack() override
     {
-        // pair=0 (default): LUT6 and DFF are independent cells. nextpnr's SA legaliser
-        // (common/place/place_common.cc, ConstraintLegaliseWorker::valid_loc_for) refuses a tile that already holds
-        // a locked relative-constraint chain, so one LUT-DFF chain per tile at most: SA cannot start on a design with
-        // more chains than tiles. VPR repacks LUTs and FFs into BLEs itself from the flat placement.
-        // pair=1: constrain a LUT whose only sink is a DFF D pin into one BLE (VPR pack pattern lut -> ff).
-        if (!pair)
-            return;
-        int pairs = h.constrain_cell_pairs(pool<CellTypePort>{{id_LUT6, id_F}}, pool<CellTypePort>{{id_DFF, id_D}}, 1);
-        log_info("Constrained %d LUT6-DFF pairs.\n", pairs);
+        // Merge a LUT6 whose only sink is a DFF D pin with that DFF into one BLE cell (VPR's lut -> ff molecule, which
+        // VPR's AP flow requires to sit at one location). The BLE cell keeps the LUT's name and records the DFF's
+        // name in the string attribute FF_ATOM; a lone LUT6 or DFF is retyped to BLE. A relative-constraint chain
+        // is not used: nextpnr's SA legaliser (common/place/place_common.cc, valid_loc_for) refuses a tile that
+        // already holds a locked chain, so SA could not start on a design with more chains than tiles.
+        std::vector<IdString> trim_cells, trim_nets;
+        int merged = 0;
+        for (auto &cell : ctx->cells) {
+            CellInfo *ff = cell.second.get();
+            if (ff->type != id_DFF)
+                continue;
+            NetInfo *d = ff->getPort(id_D);
+            if (!d || !d->driver.cell || d->driver.cell->type != id_LUT6 || d->driver.port != id_F ||
+                d->users.entries() != 1)
+                continue;
+            CellInfo *lut = d->driver.cell;
+            ff->movePortTo(id_Q, lut, id_Q);
+            lut->attrs[ctx->id("FF_ATOM")] = ff->name.str(ctx);
+            lut->disconnectPort(id_F);
+            ff->disconnectPort(id_D);
+            trim_cells.push_back(ff->name);
+            trim_nets.push_back(d->name);
+            ++merged;
+        }
+        for (auto c : trim_cells)
+            ctx->cells.erase(c);
+        for (auto n : trim_nets)
+            ctx->nets.erase(n);
+        for (auto &cell : ctx->cells)
+            if (cell.second->type == id_LUT6 || cell.second->type == id_DFF)
+                cell.second->type = id_BLE;
+        log_info("Merged %d LUT6-DFF pairs into BLE cells.\n", merged);
     }
 
     void prePlace() override { assign_cell_info(); }
@@ -105,8 +127,7 @@ struct K6Impl : ViaductAPI
   private:
     ViaductHelpers h;
     int W = 12, H = 12, N = 10, Imax = 40;
-    bool pair = false;
-    std::vector<std::vector<BelId>> tile_lut, tile_ff; // [y * W + x][k]
+    std::vector<std::vector<BelId>> tile_ble; // [y * W + x][k]
 
     bool is_io(int x, int y) const { return x == 0 || x == W - 1 || y == 0 || y == H - 1; }
     bool is_corner(int x, int y) const { return (x == 0 || x == W - 1) && (y == 0 || y == H - 1); }
@@ -119,8 +140,7 @@ struct K6Impl : ViaductAPI
 
     void init_bels()
     {
-        tile_lut.resize(W * H);
-        tile_ff.resize(W * H);
+        tile_ble.resize(W * H);
         int nclb = 0, nio = 0;
         for (int y = 0; y < H; y++) {
             for (int x = 0; x < W; x++) {
@@ -135,18 +155,14 @@ struct K6Impl : ViaductAPI
                     }
                 } else if (is_clb_col(x)) {
                     for (int k = 0; k < N; k++) {
-                        BelId lut = ctx->addBel(h.xy_id(x, y, ctx->idf("BLE%d_LUT", k)), id_LUT6, Loc(x, y, 2 * k),
-                                                false, false);
+                        BelId ble = ctx->addBel(h.xy_id(x, y, ctx->idf("BLE%d", k)), id_BLE, Loc(x, y, k), false, false);
                         for (int i = 0; i < 6; i++)
-                            ctx->addBelInput(lut, ctx->idf("I%d", i), dummy_wire(x, y, stringf("B%d_L%d", k, i)));
-                        ctx->addBelOutput(lut, id_F, dummy_wire(x, y, stringf("B%d_F", k)));
-                        BelId ff = ctx->addBel(h.xy_id(x, y, ctx->idf("BLE%d_FF", k)), id_DFF, Loc(x, y, 2 * k + 1),
-                                               false, false);
-                        ctx->addBelInput(ff, id_D, dummy_wire(x, y, stringf("B%d_D", k)));
-                        ctx->addBelInput(ff, id_CLK, dummy_wire(x, y, stringf("B%d_CLK", k)));
-                        ctx->addBelOutput(ff, id_Q, dummy_wire(x, y, stringf("B%d_Q", k)));
-                        tile_lut[y * W + x].push_back(lut);
-                        tile_ff[y * W + x].push_back(ff);
+                            ctx->addBelInput(ble, ctx->idf("I%d", i), dummy_wire(x, y, stringf("B%d_L%d", k, i)));
+                        ctx->addBelInput(ble, id_D, dummy_wire(x, y, stringf("B%d_D", k)));
+                        ctx->addBelInput(ble, id_CLK, dummy_wire(x, y, stringf("B%d_CLK", k)));
+                        ctx->addBelOutput(ble, id_F, dummy_wire(x, y, stringf("B%d_F", k)));
+                        ctx->addBelOutput(ble, id_Q, dummy_wire(x, y, stringf("B%d_Q", k)));
+                        tile_ble[y * W + x].push_back(ble);
                     }
                     ++nclb;
                 }
@@ -157,55 +173,45 @@ struct K6Impl : ViaductAPI
 
     struct K6CellInfo
     {
-        std::vector<const NetInfo *> in; // input nets (LUT: I0..I5, DFF: D)
-        const NetInfo *out = nullptr;    // output net (LUT: F, DFF: Q)
-        bool is_lut = false;
+        std::vector<const NetInfo *> in;  // input nets (I0..I5, D)
+        std::vector<const NetInfo *> out; // output nets (F, Q)
     };
     std::vector<K6CellInfo> fast_cell_info;
     void assign_cell_info()
     {
+        fast_cell_info.clear();
         fast_cell_info.resize(ctx->cells.size());
         for (auto &cell : ctx->cells) {
             CellInfo *ci = cell.second.get();
+            if (ci->type != id_BLE)
+                continue;
             auto &fc = fast_cell_info.at(ci->flat_index);
-            if (ci->type == id_LUT6) {
-                fc.is_lut = true;
-                for (int i = 0; i < 6; i++) {
-                    const NetInfo *n = ci->getPort(ctx->idf("I%d", i));
-                    if (n)
-                        fc.in.push_back(n);
-                }
-                fc.out = ci->getPort(id_F);
-            } else if (ci->type == id_DFF) {
-                const NetInfo *n = ci->getPort(id_D);
-                if (n)
+            for (int i = 0; i < 6; i++)
+                if (const NetInfo *n = ci->getPort(ctx->idf("I%d", i)))
                     fc.in.push_back(n);
-                fc.out = ci->getPort(id_Q);
-            }
+            if (const NetInfo *n = ci->getPort(id_D))
+                fc.in.push_back(n);
+            if (const NetInfo *n = ci->getPort(id_F))
+                fc.out.push_back(n);
+            if (const NetInfo *n = ci->getPort(id_Q))
+                fc.out.push_back(n);
         }
     }
 
     // A tile is legal when the number of distinct nets that enter it from outside is at most Imax.
     bool tile_valid(int x, int y, bool explain) const
     {
-        const auto &luts = tile_lut[y * W + x];
-        const auto &ffs = tile_ff[y * W + x];
         std::vector<const NetInfo *> driven, ins;
-        driven.reserve(2 * N);
-        ins.reserve(6 * N + N);
-        auto add_cell = [&](const CellInfo *ci) {
+        for (const BelId b : tile_ble[y * W + x]) {
+            const CellInfo *ci = ctx->getBoundBelCell(b);
             if (!ci)
-                return;
+                continue;
             const auto &fc = fast_cell_info.at(ci->flat_index);
-            if (fc.out)
-                driven.push_back(fc.out);
+            for (const NetInfo *n : fc.out)
+                driven.push_back(n);
             for (const NetInfo *n : fc.in)
                 ins.push_back(n);
-        };
-        for (const BelId b : luts)
-            add_cell(ctx->getBoundBelCell(b));
-        for (const BelId b : ffs)
-            add_cell(ctx->getBoundBelCell(b));
+        }
         std::sort(ins.begin(), ins.end());
         ins.erase(std::unique(ins.begin(), ins.end()), ins.end());
         int ext = 0;

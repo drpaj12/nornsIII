@@ -3,7 +3,7 @@
 Usage: python3 scripts/nextpnr_readback.py --json PLACED.json --ref REF.flat_place --out EXT.flat_place [--stats S.json]
 
 Every atom of REF gets one line `<atom> <x> <y> 0 <sub_tile>`: x and y from the `NEXTPNR_BEL` attribute
-(`X<x>/Y<y>/BLE<k>_LUT|BLE<k>_FF|IO<z>`), layer 0, sub tile 0 for logic (the flat-place format has no in-CLB
+(`X<x>/Y<y>/BLE<k>|IO<z>`), layer 0, sub tile 0 for logic (the flat-place format has no in-CLB
 slot; VPR's reader parses sub_tile as an integer and the AP legaliser repacks, base/load_flat_place.cpp:140-213)
 and the pad's own sub tile for pads. Pads must come back at their REF position (they are fixed anchors): a
 mismatch is counted. An atom without a placed cell is written at its REF position and counted.
@@ -20,6 +20,12 @@ ap.add_argument("--out", required=True)
 ap.add_argument("--stats")
 a = ap.parse_args()
 cells = json.loads(Path(a.json).read_text())["modules"]["top"]["cells"]
+# pack() of the k6 uarch merges a LUT and its single-sink FF into one BLE cell named after the LUT, with the FF name in
+# the attribute FF_ATOM: both atoms get the BLE's location (a VPR molecule must sit at one location).
+for _name, _c in list(cells.items()):
+    _ff = _c.get("attributes", {}).get("FF_ATOM")
+    if _ff:
+        cells[_ff] = _c
 rx = re.compile(r"^X(\d+)/Y(\d+)/(\w+)$")
 out = ["# Flat placement written from a nextpnr placement (Norns scripts/nextpnr_readback.py)",
        "# <atom_name> <x> <y> <layer> <sub_tile>"]
