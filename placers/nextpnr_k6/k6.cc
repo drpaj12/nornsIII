@@ -136,6 +136,9 @@ struct K6Impl : ViaductAPI
 
     bool is_io(int x, int y) const { return x == 0 || x == W - 1 || y == 0 || y == H - 1; }
     bool is_corner(int x, int y) const { return (x == 0 || x == W - 1) && (y == 0 || y == H - 1); }
+    // Checked 2026-10-27 against vtr_flow/arch/timing/k6_frac_N10_frac_chain_mem32K_40nm.xml: <fill type="clb"> (line 232) with
+    // <col type="mult_36" startx="6" repeatx="8"> (line 234) and <col type="memory" startx="2" repeatx="8"> (line 237), each with an EMPTY
+    // column of the same startx and repeatx (lines 235 and 238): columns x = 2, 10, 18, ... (x % 8 == 2) and x = 6, 14, ... (x % 8 == 6) are not CLB.
     bool is_clb_col(int x) const { return (x % 8) != 2 && (x % 8) != 6; }
 
     WireId dummy_wire(int x, int y, const std::string &name)

@@ -14,7 +14,11 @@ memory `.subckt` atoms (models adder, multiply, single_port_ram, dual_port_ram) 
 section 10.3): each becomes a fixed ANCHOR cell at the exact (x, y) of its REF line, with one port per net that also touches a
 movable (LUT or DFF) cell; clock pins and constant or unconnected nets are not connected. The tiles holding anchors are written
 to --anchors (lines `x y count`, read by the uarch through `--vopt anchors=FILE`). Any other `.subckt` model is refused.
-A subckt atom is named like VPR names it: the net of its first output pin in line order (vpr/src/base/read_blif.cpp:236-250).
+A subckt atom is named like VPR names it: the net of its first output pin in line order (checked 2026-10-27 against $VTR_ROOT
+vpr/src/base/read_blif.cpp:247-254, comment "We name the subckt based on the net its first output pin drives", loop over the pins in
+line order, first pin whose model port is an OUT_PORT). Output ports of the four hard models: arch XML
+vtr_flow/arch/timing/k6_frac_N10_frac_chain_mem32K_40nm.xml lines 99-106 (multiply: out), 108-122 (single_port_ram: out), 124-146
+(dual_port_ram: out1, out2), 148-157 (adder: cout, sumout); they are the set OUT_PORTS below.
 """
 import argparse
 import json
