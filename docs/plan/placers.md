@@ -589,3 +589,49 @@ its `vpr_ap` and `vpr_sa` rows are kept; nothing is tuned for it (Section 10.3 l
 Finding: on `blob_merge` the uarch of Section 9.2 (10 BLE slots per CLB tile) is over-full: 5977 BLE cells for 4940 slots (120%). HeAP stops with "no BELs remaining"; nextpnr's SA does not stop, it loops in initial placement (one run was stopped by the controller after 71 CPU minutes with no output; that run is not data).
 VPR packs two LUT5 into one fracturable LE (n2_lut5 mode), so 10 slots is a conservative capacity, not the arch limit. **Rule:** per design, a HeAP probe (seed 1, `n=10`) decides once: if it fails with "no BELs remaining", both external arms of that design use `--vopt n=20` for every seed, otherwise `n=10`. The value is stored per design in the metrics (`ble_per_tile`).
 Designs with `n=20` are marked in every table; their external rows are not comparable with `n=10` rows in absolute terms (more slack for nextpnr, tile legality still at most 40 external nets). The H0 anchors are unaffected. Reading rule unchanged. Dated before the re-runs of `or1200`, `blob_merge`, `stereovision0`, `stereovision1` and `stereovision2`.
+
+### 10.9 Results entry 2026-10-27: main comparison, 15 designs, seeds 1-6, six arms (held-out report = seeds 4-6)
+Data: `data/placers/main_<design>.json` (every run; failed first attempts under `first_attempt_failures`), tables `data/placers/main_tables_heldout_seeds456.txt` (per design and arm, median [min-max] of WL, W, CPD, WL x CPD, VPR and nextpnr seconds) and
+`data/placers/main_tables_selection_seeds123.txt` (selection seeds, labelled as such), summary JSON `data/placers/main_summary.json`, scripts `placers_main.py`, `placers_summary.py`, `flatplace_chains.py`. `ext_nextpnr_sa` = `--placer sa --starttemp 100` (Section 10.5).
+**Caption for every number below (H0 bias statement):** H0: adders, multipliers and RAMs are fixed at the positions of the VPR analytic placer (`vpr_ap`, seed 1), as are the pads, in both external arms and for every seed. nextpnr therefore places only the LUT/flip-flop logic, around hard blocks and pads that VPR's analytic placer chose.
+The external arms inherit that part of VPR's solution; the annealing-family external arm inherits it from the analytic family. nextpnr has no timing model; both VPR families are timing-driven. Designs marked n=20 used 20 BLE slots per tile (Section 10.8).
+
+**H0 legality (all 15 designs).** 13 of 15 designs: every external run of both arms, all six seeds, read by VPR (rc 0, 0 reader warnings, legal route, 0 moved pads or hard blocks, 0 atoms without a cell). **Ineligible, not tuned (Section 10.7 residual): `sha` and `stereovision2`.** VPR's AP flow refuses the file with
+`analytical_placement_flow.cpp:110` ("AP block ... contains atom ... with a location ... that conflicts the location of other atoms in this block"); the same error stops `vpr_ap_reread` (sha 0/6 and stereovision2 2/6 legal) and `vpr_sa_reread` on sha (stereovision2: 6/6), i.e. VPR cannot read its own flat-place file on these designs, so
+there is no valid reread control either. Their `vpr_ap` and `vpr_sa` rows are valid and are in the tables. The molecule that triggers the error is a LUT and the flip-flop it feeds plus a third atom at another location; the rule behind it is not identified (checked: not a chain adder, not a chain flip-flop), so it is not normalised.
+
+**Per family, geometric mean over designs of the held-out median ratio, bootstrap 95% interval over designs (WL, CPD, WL x CPD):**
+```
+analytic
+  vpr_ap           / vpr_ap_reread : wl 0.977 [0.922, 1.020]; cpd 0.979 [0.937, 1.016]; wlcpd 0.941 [0.862, 1.002]  n=13
+  ext_nextpnr_heap / vpr_ap_reread : wl 1.005 [0.987, 1.022]; cpd 1.020 [0.997, 1.043]; wlcpd 1.023 [0.990, 1.059]  n=13
+  ext_nextpnr_heap / vpr_ap        : wl 1.028 [0.980, 1.093]; cpd 1.043 [1.006, 1.089]; wlcpd 1.087 [1.006, 1.208]  n=13
+annealing
+  vpr_sa           / vpr_sa_reread : wl 0.992 [0.960, 1.017]; cpd 0.986 [0.930, 1.027]; wlcpd 0.983 [0.906, 1.042]  n=14
+  ext_nextpnr_sa   / vpr_sa_reread : wl 0.947 [0.919, 0.977]; cpd 1.003 [0.974, 1.039]; wlcpd 0.952 [0.907, 1.004]  n=13
+  ext_nextpnr_sa   / vpr_sa        : wl 0.956 [0.921, 0.994]; cpd 1.019 [0.961, 1.090]; wlcpd 0.970 [0.895, 1.071]  n=13
+```
+Selection seeds 1-3 (labelled, not the result): heap / vpr_ap_reread wl 0.996, wlcpd 1.009; sa / vpr_sa_reread wl 0.965, wlcpd 0.959; the direction and size agree with the held-out seeds.
+Per design, ext / own-family reread control, held-out median (WL, WL x CPD), `n` = BLE slots per tile:
+```
+design             n_ble  heap/ap_reread: WL  WLxCPD   |  sa/sa_reread: WL  WLxCPD   (held-out medians, seeds 4-6; - = no legal file-reading control or external run)
+ch_intrinsics         10          1.05 1.11   |          0.88 0.86
+stereovision3         10          1.01 1.13   |          0.88 0.97
+mkPktMerge            10          0.97 1.00   |          0.95 0.92
+diffeq2               10          1.02 0.98   |          0.98 0.94
+diffeq1               10          0.98 0.95   |          1.01 1.00
+boundtop              10          0.95 0.95   |          0.96 0.87
+mkDelayWorker32B      10          1.02 1.09   |          0.91 0.97
+mkSMAdapter4B         10          1.00 1.02   |          0.91 1.04
+sha                   10             -    -   |             -    -
+raygentop             10          1.06 1.03   |          1.00 0.89
+or1200                10          0.99 0.96   |          0.87 0.82
+blob_merge            20          0.97 0.95   |          0.98 0.97
+stereovision0         20          1.04 1.11   |          1.05 1.21
+stereovision1         10          0.99 1.02   |          0.94 0.98
+stereovision2         10             -    -   |             -    -
+```
+**Reading (each within its family, H0 caption applies).** Analytic family: with hard blocks and pads taken from VPR's analytic placer, nextpnr HeAP lands within about 0.5% of `vpr_ap_reread` in WL and 2% in CPD on 13 designs; the interval of WL x CPD includes 1 (0.990-1.059). Annealing family: nextpnr SA at T = 100 has about 5% less routed WL than `vpr_sa_reread` (interval excludes 1)
+with CPD equal within noise; the annealing-family external arm gets its pads and hard blocks from the analytic family, which is part of this difference and cannot be separated here. Neither external arm is timing-driven and neither shows a CPD advantage. The pre-registered 2x rule: no run of any external arm exceeds 2x its family's reread control on WL (all designs, all seeds), so it did not fire in the main comparison.
+**Stop rules and costs.** Memory: nextpnr peak RSS 363 MB (stereovision2), limit 13 GB. nextpnr seconds (mean per run): HeAP 0.1 s (small) to 28 s (stereovision2); SA at T = 100 from 0.5 s to 249 s (stereovision2 SA ran, but VPR refused the files: ineligible). Disk: `/mnt/c` 47 GB free at start. No arm exceeded the 8 h rule. VPR placement seconds are in the tables (the reread controls repeat a full AP or SA pass, so `vpr_*_reread` placement seconds are not comparable with `vpr_*`).
+**Deviations, all dated above:** seeds 4-6 of the parameter-free arms were run before the T choice (Section 10.5); chain normalisation (10.7); 20 BLE slots for blob_merge and stereovision0 (10.8); one hung SA run stopped by the controller (10.8); the first main pass used the converter before 10.7, its ext records were re-run (the `first_attempt_failures` lists). A scheduling note: `ext_nextpnr_sa` ran after the T choice for every design, but not in the same pass as the other arms.

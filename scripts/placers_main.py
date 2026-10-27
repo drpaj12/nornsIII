@@ -89,9 +89,9 @@ def run_py(script, *a):
     return p.returncode, time.time() - t
 
 
-def nextpnr(cwd, js, anchors, grid, placer, seed, temp):
+def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10):
     nl.ensure_dir(cwd)
-    cmd = ["/usr/bin/time", "-v", NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}"]
+    cmd = ["/usr/bin/time", "-v", NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}", "--vopt", f"n={n}"]
     if anchors.exists() and anchors.stat().st_size:
         cmd += ["--vopt", f"anchors={anchors}"]
     cmd += ["--json", str(js), "--no-route", "--placer", placer, "--seed", str(seed), "--write", str(cwd / "placed.json")]
@@ -103,7 +103,7 @@ def nextpnr(cwd, js, anchors, grid, placer, seed, temp):
     txt = p.stdout + p.stderr
     (cwd / "nextpnr.log").write_text(txt)
     g = lambda rx: (float(m.group(1)) if (m := re.search(rx, txt)) else None)
-    rec = {"rc": p.returncode, "wall_s": wall, "heap_s": g(r"HeAP Placer Time: ([0-9.]+)s"), "sa_s": g(r"SA placement time ([0-9.]+)s"),
+    rec = {"rc": p.returncode, "wall_s": wall, "ble_per_tile": n, "no_bels": "no BELs remaining" in txt, "heap_s": g(r"HeAP Placer Time: ([0-9.]+)s"), "sa_s": g(r"SA placement time ([0-9.]+)s"),
            "init_s": g(r"Initial placement time ([0-9.]+)s"), "max_rss_kb": g(r"Maximum resident set size \(kbytes\): (\d+)")}
     m = re.findall(r"wirelen = (\d+)", txt)
     rec["hpwl_final"] = int(m[-1]) if m else None
@@ -177,6 +177,12 @@ def process(design):
             out["error"] = "converter failed"
             save()
             return
+    # BLE slots per tile (section 10.8): 10 (Section 9.2) unless the design has more BLE cells than slots, then 20 (two LUT5 per fle).
+    # Decided once per design by a quick HeAP probe, because nextpnr's SA does not stop on an over-full device.
+    probe = nextpnr(wd / "probe_n10", js, anchors, grid, "heap", 1, None, n=10)
+    n_ble = 20 if (probe["rc"] and probe["no_bels"]) else 10
+    out["ble_per_tile"] = n_ble
+    save()
     for s in SEEDS:
         for arm in ARMS:
             if arm == "vpr_ap":
@@ -197,9 +203,9 @@ def process(design):
                         continue
                     tag = f"{arm}.s{s}" + (f".t{T:g}" if T is not None else "")
                     cwd = wd / tag
-                    np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T)
+                    np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble)
                     if np_rec["rc"]:
-                        np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T) | {"retried": True}
+                        np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble) | {"retried": True}
                     rec = {"arm": arm, "seed": s, "nextpnr": np_rec} | extra
                     if np_rec["max_rss_kb"] and np_rec["max_rss_kb"] > args.max_rss_gb * 1e6:
                         rec |= {"rc": -1, "routed_ok": False, "error": "nextpnr memory over the stop limit"}
