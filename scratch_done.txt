@@ -1,0 +1,16 @@
+/tmp/claude-1000/nr7-xnwyex7s
+/tmp/claude-1000/nr7f-gcd5cm_t
+/tmp/claude-1000/nr7f-vbw3
+/tmp/claude-1000/nr7f-cmp
+/tmp/claude-1000/r7-abstract.tex
+/tmp/claude-1000/r7-appendix.tex
+/tmp/claude-1000/r7-discussion.tex
+/tmp/claude-1000/r7-method.tex
+/tmp/claude-1000/r7-results.tex
+/tmp/claude-1000/nr7f-mkDW.log
+/tmp/claude-1000/nr7f-blob_merge.log
+/tmp/claude-1000/nr7f-stereovision1.log
+/tmp/claude-1000/nr7f-stereovision2.log
+/tmp/claude-1000/nr7f-final.log
+/tmp/claude-1000/nr7f-tex.log
+/home/jamiespa/odin3-ws/work/norns-exp/vpr_stdout.log
