@@ -225,3 +225,73 @@ VTR is cited as `rose2012vtr` (FPGA 2012, DOI present) AND `elgammal2025vtr9` (V
 `rajarathnam2024better` (the VPR analytical-plus-annealing paper, relevant to the AP arm) already exists in `joined.bib`.
 Nothing is credited from memory: authors, titles, venues, pages and DOIs were taken from the Crossref record, the arXiv record and the project
 files named in each `% Checked:` line.
+
+## 8. nextpnr build recipe (Dispatch 2, 2026-10-27; Peter approved nextpnr plus local Eigen and Boost; own uarch, OpenPARF and DREAMPlaceFPGA still not approved)
+
+Scratch lives under `/tmp/claude-1000` (nothing deleted). `$WS` is the odin3-ws checkout; `$D=/tmp/claude-1000/nextpnr-deps`. Every build ran
+under `flock -x /tmp/claude-1000/odin3-heavy.lock`, `-j4`. The VM had Python 3.12.3, CMake 3.28.3, Ninja, g++ 13.3, zlib and bzip2 dev headers.
+
+**Licences.** nextpnr: ISC (`COPYING`). Boost: Boost Software License 1.0 (`LICENSE_1_0.txt`). Eigen: MPL-2.0 (`COPYING.MPL2`; header-only, used
+unmodified). None is vendored into a Norns repository; the binaries live only under `/tmp`.
+
+**Dependencies (official release tarballs, sha256 computed here after download).**
+
+| Package | Version | URL | sha256 |
+|---|---|---|---|
+| Boost | 1.86.0 | `https://archives.boost.io/release/1.86.0/source/boost_1_86_0.tar.bz2` | `1bed88e40401b2cb7a1f76d4bab499e352fa4d0c5f31c0dbae64e24d34d7513b` |
+| Eigen | 3.4.0 | `https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.bz2` | `b4c198460eba6f28d34894e3a5710998818515104d6e74e5cc331ce31e46e626` |
+
+**Recipe (exact commands).**
+
+```
+D=/tmp/claude-1000/nextpnr-deps
+mkdir -p $D/dl $D/src-boost $D/src-eigen $D/prefix
+cd $D/dl && curl -fsSLO https://archives.boost.io/release/1.86.0/source/boost_1_86_0.tar.bz2
+cd $D/dl && curl -fsSLO https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.bz2
+sha256sum $D/dl/*            # compare with the table
+tar -xjf $D/dl/boost_1_86_0.tar.bz2 -C $D/src-boost
+tar -xjf $D/dl/eigen-3.4.0.tar.bz2  -C $D/src-eigen
+# Boost: its own documented bootstrap and b2 only
+cd $D/src-boost/boost_1_86_0
+./bootstrap.sh --prefix=$D/prefix --with-libraries=program_options,iostreams,thread,filesystem,system
+./b2 -j4 install
+# Eigen: header-only, CMake install
+cmake -S $D/src-eigen/eigen-3.4.0 -B $D/build-eigen -DCMAKE_INSTALL_PREFIX=$D/prefix -DCMAKE_BUILD_TYPE=Release
+cmake --install $D/build-eigen
+# nextpnr (external/nextpnr at 9691ce8c, read only, out-of-tree build)
+cmake -S $WS/external/nextpnr -B /tmp/claude-1000/nextpnr-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DARCH=generic \
+  -DBUILD_GUI=OFF -DBUILD_PYTHON=OFF -DBUILD_RUST=OFF -DBUILD_TESTS=OFF \
+  -DBOOST_ROOT=$D/prefix -DBoost_NO_SYSTEM_PATHS=ON -DEigen3_DIR=$D/prefix/share/eigen3/cmake
+cmake --build /tmp/claude-1000/nextpnr-build -j4
+export LD_LIBRARY_PATH=$D/prefix/lib      # Boost shared libraries
+```
+
+No git submodule was fetched: with GUI, Python, Rust and tests off, CMake used only the tracked `3rdparty/json11` and `3rdparty/oourafft`.
+Nothing else was downloaded. The `generic` arch includes the viaduct uarchs `example` and `fabulous`.
+
+**Cost.** Dependency step wall time 22 min 18 s, but this includes waiting for the heavy lock behind another lane, so it is an upper bound (peak
+RSS of one process 0.28 GB). nextpnr: configure plus 56 build steps took 50 s of lock-held wall time (peak RSS of one process 0.73 GB, `time -v`;
+well under 60% of the 23 GB VM). Disk: nextpnr build 256 MB, dependency prefix 193 MB, whole `nextpnr-deps` 1.2 GB (sources and tarballs
+included); `/mnt/c` had 64 GB free before the build.
+
+**Smoke test.** `nextpnr-generic --version` prints "Next Generation Place and Route (Version 9691ce8)". The bundled example was run as its
+`viaduct_example.sh` does: the repo's built Yosys with `synth_viaduct_example.tcl` on `generic/examples/blinky.v`, then
+`nextpnr-generic --uarch example --json blinky.json`. Result: rc 0, 14 LUT4, 8 DFF, 10 IOB placed on a 7200-LUT device, HeAP placer time 0.01 s,
+SA refinement 0.00 s, routing complete (72 arcs). Total wall time 3.09 s (mostly device creation), peak RSS 1.03 GB (the example device).
+
+**Odin III JSON.** `odin3 --top top -p "read_verilog blinky.v; proc; flatten; opt; write_json out.json"` (installed release build, 1.1.1 ABI 7),
+with and without `--odin3`, is read by nextpnr's JSON frontend: it parses and the failure comes later at packing ("Top-level port 'rst'
+driving illegal port $c10.SRST", rc 125), because the netlist still holds coarse `$sdff`-type cells instead of LUT4/DFF/IOB. So the
+schema is accepted; a mapped netlist (LUT cells with `INIT`, `DFF`, `INBUF`/`OUTBUF` per the uarch) is still to be tested and needs the uarch.
+
+**What decision 3 (own viaduct uarch for k6_frac_N10) would need.**
+1. A new uarch directory next to `generic/viaduct/example` (about 330 lines for the example). It must be registered in `generic/CMakeLists.txt`
+   and the viaduct list, so the uarch cannot live outside the nextpnr tree: it needs either a patched copy of nextpnr (the clone stays read only) or
+   an out-of-tree fork. Decision for Peter: patched copy under `/tmp` or a Norns `placers/` directory holding only our files plus a build-time patch.
+2. Per-design grid: width, height, IO perimeter (capacity 8), CLB columns, mult and memory columns, read from the VPR `.place` header or the
+   architecture file; `init()` creates bels (10 LUT+FF pairs per CLB, 8 IOB per IO tile, mult and memory bels), minimal dummy wires and pips.
+3. Cell types: LUT6 with INIT, DFF, IOB, and either carry/adder, mult and memory cells or a rule that they are fixed or excluded. Fracturable LUT
+   pairs and input sharing are legality code (`isBelLocationValid`) or ignored, as the earlier fairness notes say.
+4. A converter from the BLIF/atom netlist to Yosys JSON (Odin's `write_json` after a LUT mapping may do part of this), fixed IO positions so HeAP is
+   used (otherwise nextpnr falls back to SA, `generic/arch.cc:610-625`), and a reader for the `--write` JSON's `NEXTPNR_BEL` attribute.
+5. Routing is not needed; a placement-only run uses `--no-route` (option present in `common/kernel/command.cc`).
