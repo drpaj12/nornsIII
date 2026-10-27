@@ -191,7 +191,7 @@ the 15 designs, so about 25 min per arm; the external placer time is measured at
 third-party tools and long external-placer runs take the heavy lock `/tmp/claude-1000/odin3-heavy.lock`. Third-party builds go to
 `/tmp/claude-1000/<tag>-build` or a `work/` directory, never into this repository, never into `external/` or `$VTR_ROOT`. Raw VPR working
 directories go to a fresh `mktemp -d /tmp/claude-1000/npl-XXXX`; the repository receives only metrics JSON and scripts. No deletes of any
-kind in any script. No `/home/...` paths in committed files.
+kind in any script. No absolute home-directory paths in committed files.
 
 ## 5. Stop rules
 

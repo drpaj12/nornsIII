@@ -12013,12 +12013,14 @@ Limits:
 }
 
 
+% Checked: 2026-10-27, https://doi.org/10.1109/FPL64840.2024.00016 (Crossref record: FPL 2024, pages 43-52, authors Rajarathnam, Thurmer, Betz, Iyer, Pan); DOI added to the existing entry.
 @inproceedings{rajarathnam2024better,
   title={Better together: combining analytical and annealing methods for FPGA placement},
   author={Rajarathnam, Rachel Selina and Thurmer, Kate and Betz, Vaughn and Iyer, Mahesh A and Pan, David Z},
   booktitle={2024 34th International Conference on Field-Programmable Logic and Applications (FPL)},
   pages={43--52},
   year={2024},
+  doi={10.1109/FPL64840.2024.00016},
   organization={IEEE}
 }
 
@@ -13234,4 +13236,102 @@ doi={10.1145/800139.804528}}
   pages   = {1--53},
   year    = {2025},
   doi     = {10.1145/3734798}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1109/FCCM.2019.00010 (Crossref record: 2019 IEEE 27th Annual International Symposium on Field-Programmable Custom Computing Machines (FCCM), April 2019, pages 1-4) and https://arxiv.org/abs/1903.10407 (author list David Shah, Eddie Hung, Clifford Wolf, Serge Bazanski, Dan Gisselquist, Miodrag Milanovi\'c; comment "4 page short paper to appear at IEEE FCCM 2019"). The venue is FCCM, not FPL. nextpnr README names this paper.
+@inproceedings{shah2019nextpnr,
+  author    = {David Shah and Eddie Hung and Clifford Wolf and Serge Bazanski and Dan Gisselquist and Miodrag Milanovi{\'c}},
+  title     = {{Yosys+nextpnr}: An Open Source Framework from {Verilog} to Bitstream for Commercial {FPGAs}},
+  booktitle = {Proc. IEEE Int. Symp. Field-Programmable Custom Computing Machines (FCCM)},
+  year      = {2019},
+  pages     = {1--4},
+  doi       = {10.1109/FCCM.2019.00010}
+}
+
+% Checked: 2026-10-27, https://github.com/YosysHQ/nextpnr (GitHub API: ISC licence, repository created 2018-08-01) and the local read-only clone external/nextpnr at commit 9691ce8c43fa (2026-10-26; COPYING is the ISC text; README names no other citation). Author/title wording of this software entry is ours, not a project-preferred citation; year is the commit year studied.
+@misc{nextpnr,
+  author       = {{YosysHQ and contributors}},
+  title        = {nextpnr: portable {FPGA} place and route tool},
+  year         = {2026},
+  howpublished = {\url{https://github.com/YosysHQ/nextpnr}},
+  note         = {ISC licence. Commit 9691ce8c43fa (2026-10-26) read; not built or run in dispatch 1.}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1109/FPL.2012.6339278 (Crossref record: 22nd International Conference on Field Programmable Logic and Applications (FPL), August 2012, pages 143-150, authors Marcel Gort and Jason H. Anderson) and the nextpnr source common/place/placer_heap.cc header ("[[cite]] HeAP").
+@inproceedings{gort2012heap,
+  author    = {Marcel Gort and Jason H. Anderson},
+  title     = {Analytical Placement for Heterogeneous {FPGAs}},
+  booktitle = {Proc. Int. Conf. Field Programmable Logic and Applications (FPL)},
+  year      = {2012},
+  pages     = {143--150},
+  doi       = {10.1109/FPL.2012.6339278}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1109/ASP-DAC52403.2022.9712562 (Crossref record: 2022 27th Asia and South Pacific Design Automation Conference (ASP-DAC), 17 Jan 2022, pages 300-306, authors Rachel Selina Rajarathnam, Mohamed Baker Alawieh, Zixuan Jiang, Mahesh Iyer, David Z. Pan; Crossref gives "Mahesh Iyer", the project README prints "Mahesh A. Iyer") and the DREAMPlaceFPGA README publications list.
+@inproceedings{rajarathnam2022dreamplacefpga,
+  author    = {Rachel Selina Rajarathnam and Mohamed Baker Alawieh and Zixuan Jiang and Mahesh A. Iyer and David Z. Pan},
+  title     = {{DREAMPlaceFPGA}: An Open-Source Analytical Placer for Large Scale Heterogeneous {FPGAs} using Deep-Learning Toolkit},
+  booktitle = {Proc. Asia and South Pacific Design Automation Conf. (ASP-DAC)},
+  year      = {2022},
+  pages     = {300--306},
+  doi       = {10.1109/ASP-DAC52403.2022.9712562}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1145/3569052.3571881 (Crossref record: Proceedings of the 2023 International Symposium on Physical Design, 26 Mar 2023, pages 175-184, authors Rachel Selina Rajarathnam, Zixuan Jiang, Mahesh A. Iyer, David Z. Pan; Crossref title is truncated to "DREAMPlaceFPGA-PL", the subtitle is from the DREAMPlaceFPGA README publications list). Cite only if its packer-legalizer is used.
+@inproceedings{rajarathnam2023dreamplacefpga_pl,
+  author    = {Rachel Selina Rajarathnam and Zixuan Jiang and Mahesh A. Iyer and David Z. Pan},
+  title     = {{DREAMPlaceFPGA-PL}: An Open-Source {GPU}-Accelerated Packer-Legalizer for Heterogeneous {FPGAs}},
+  booktitle = {Proc. ACM Int. Symp. Physical Design (ISPD)},
+  year      = {2023},
+  pages     = {175--184},
+  doi       = {10.1145/3569052.3571881}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1109/ICCAD45719.2019.8942075 (Crossref record: 2019 IEEE/ACM International Conference on Computer-Aided Design (ICCAD), November 2019, pages 1-8, authors Wuxi Li, Yibo Lin, David Z. Pan); the algorithm the DREAMPlaceFPGA README says it is based on.
+@inproceedings{li2019elfplace,
+  author    = {Wuxi Li and Yibo Lin and David Z. Pan},
+  title     = {{elfPlace}: Electrostatics-based Placement for Large-Scale Heterogeneous {FPGAs}},
+  booktitle = {Proc. IEEE/ACM Int. Conf. Computer-Aided Design (ICCAD)},
+  year      = {2019},
+  pages     = {1--8},
+  doi       = {10.1109/ICCAD45719.2019.8942075}
+}
+
+% Checked: 2026-10-27, local read-only clone external/DREAMPlaceFPGA at commit 0044943 (2025-04-30; LICENSE "BSD 3-Clause License") and GitHub API (rachelselinar/DREAMPlaceFPGA, BSD-3-Clause, pushed 2025-04-30). No CITATION file; the README asks to cite the publications list (rajarathnam2022dreamplacefpga). Author wording of this software entry is ours. README developers: Rachel Selina Rajarathnam, Zhili Xiong, Zhixing (Ethan) Jiang, Zixuan Jiang.
+@misc{dreamplacefpga,
+  author       = {Rachel Selina Rajarathnam and Zhili Xiong and Zixuan Jiang and others},
+  title        = {{DREAMPlaceFPGA}: GPU-accelerated placer for large scale heterogeneous {FPGAs}},
+  year         = {2025},
+  howpublished = {\url{https://github.com/rachelselinar/DREAMPlaceFPGA}},
+  note         = {BSD-3-Clause. Commit 0044943 (2025-04-30) read; not built or run in dispatch 1.}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1109/ASICON58565.2023.10396248 (Crossref record: 2023 IEEE 15th International Conference on ASIC (ASICON), 24 Oct 2023, pages 1-4, authors Jing Mai, Jiarui Wang, Zhixiong Di, Guojie Luo, Yun Liang, Yibo Lin), https://arxiv.org/abs/2306.16665 (title matches) and the OpenPARF PUBLICATIONS.md in the local clone (same author list, venue ASICON 2023).
+@inproceedings{mai2023openparf,
+  author    = {Jing Mai and Jiarui Wang and Zhixiong Di and Guojie Luo and Yun Liang and Yibo Lin},
+  title     = {{OpenPARF}: An Open-Source Placement and Routing Framework for Large-Scale Heterogeneous {FPGAs} with Deep Learning Toolkit},
+  booktitle = {Proc. IEEE Int. Conf. ASIC (ASICON)},
+  year      = {2023},
+  pages     = {1--4},
+  doi       = {10.1109/ASICON58565.2023.10396248},
+  note      = {arXiv:2306.16665}
+}
+
+% Checked: 2026-10-27, https://doi.org/10.1145/3489517.3530568 (Crossref record: Proceedings of the 59th ACM/IEEE Design Automation Conference, 10 Jul 2022, pages 649-654, authors Jing Mai, Yibai Meng, Zhixiong Di, Yibo Lin) and OpenPARF PUBLICATIONS.md.
+@inproceedings{mai2022multielectrostatic,
+  author    = {Jing Mai and Yibai Meng and Zhixiong Di and Yibo Lin},
+  title     = {Multi-electrostatic {FPGA} placement considering {SLICEL-SLICEM} heterogeneity and clock feasibility},
+  booktitle = {Proc. ACM/IEEE Design Automation Conf. (DAC)},
+  year      = {2022},
+  pages     = {649--654},
+  doi       = {10.1145/3489517.3530568}
+}
+
+% Checked: 2026-10-27, local read-only clone external/OpenPARF at commit 793cac2 (2025-04-25; LICENSE "BSD 3-Clause License, Copyright (c) 2023, PKU-IDEA Lab") and GitHub API (PKU-IDEA/OpenPARF, BSD-3-Clause). No CITATION file; the project's own request is the papers in PUBLICATIONS.md. Author wording of this software entry is ours.
+@misc{openparf,
+  author       = {{PKU-IDEA Lab}},
+  title        = {{OpenPARF}: open-source placement and routing framework for heterogeneous {FPGAs}},
+  year         = {2025},
+  howpublished = {\url{https://github.com/PKU-IDEA/OpenPARF}},
+  note         = {BSD-3-Clause. Commit 793cac2 (2025-04-25) read; not built or run in dispatch 1.}
 }

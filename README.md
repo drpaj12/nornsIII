@@ -15,6 +15,13 @@ hot can the anneal start before it destroys the seed?
 - `docs/index.md` — the index of the documentation.
 - `patches/` — the VTR patch-set; empty of changes, because the pinned build already provides
   the checkpointing the experiment needs.
+- `docs/plan/placers.md` — other placers in the VTR flow without changing VTR (pre-registration,
+  verified `--read_flat_place` / `.place` interfaces, feasibility notes). Third-party placers are
+  read and, after approval, run as separate tools, never vendored here: nextpnr (ISC; Shah et al.,
+  FCCM 2019; HeAP, Gort and Anderson, FPL 2012), DREAMPlaceFPGA (BSD-3-Clause; Rajarathnam et al.,
+  ASP-DAC 2022; elfPlace, Li et al., ICCAD 2019) and OpenPARF (BSD-3-Clause; Mai et al., ASICON 2023).
+  VTR is cited as the first VTR paper (Rose et al., FPGA 2012) and VTR 9 (Elgammal et al., TRETS 2025),
+  commit 3c9a4d23b2. Keys and `% Checked:` lines are in `docs/paper/joined.bib`.
 
 Urd uses what the design was (the provenance hierarchy), Verdandi what is recovered now
 (Loki III clusters), and Skuld what shall be (the placement they constrain).
