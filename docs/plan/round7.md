@@ -292,3 +292,14 @@ default flow). A research-log entry with Peter's quote; the RQ table rows for N 
   Table XI: same_inst_d1 equals same_inst_full because the instance chain has depth 1 in every design; the identical level is marked, not re-tested.
   (6) Atlas `crit` (pack-time criticality) is filled only for stock runs (the census runs only in the stock arm); it is null in affinity-bias and `.net` arms, whose atoms have no pack-time census.
   The format note above is amended: `crit` is null where no census was run; `pcrit` is always filled.
+
+* 2026-10-27 (dispatch 2, finish round 7). The `.net` arm was run for mkDelayWorker32B, blob_merge, stereovision1 and stereovision2 (seeds 1-5, norns-vpr.lock, 0 failed,
+  fidelity 1.0 asserted on every run; 375 of 375 over the corpus). All 15 real designs are now in. r7stats, r7fstats, r7corpus (the four new designs), r7mine and write_round7 were rerun on the
+  full set; r7-*.tex regenerate byte-identical on rerun. The `.net` arm VPR run now cites rose2012vtr, VTR 9 (doi 10.1145/3734798) and commit 3c9a4d23b2.
+  Gap per real design (net0/H, in sample, 5 seeds; WL / CPD / CLB): ch_intrinsics 1.011/1.003/1.083; stereovision3 1.119/1.111/1.000; diffeq1 1.086/1.048/1.088; mkPktMerge 1.060/1.084/1.105;
+  sha 1.038/1.033/1.000; mkSMAdapter4B 0.991/0.998/1.000; stereovision1 0.986/1.058/1.033; blob_merge 1.041/0.981/1.019. No gain found (no gap printed): diffeq2, raygentop, boundtop,
+  or1200, stereovision0, mkDelayWorker32B, stereovision2 (7 of 15). Median over the 8 designs with a gain: WL 1.040, CPD 1.041, CLB 1.026, W 0.917.
+  Calibration recovery (.net arm, aggregated geomeans, 8/7/8 of 12 defined, 4 no gain): median WL 0.35, CLB 0.38, CPD 0.70 (unchanged: the calibration set did not change).
+  Affinity-bias arm: WL 0.52, CLB 0.70, CPD 0.72 (12 designs). Out-of-sample (affinity-bias, select 1-5, evaluate 6-10): no gain on 10 of 15; on the other 5 median WL gap 0.989.
+  Mining (held-out by family, stock baseline): HDL features add connected-pair AUC 0.003 (net_gain, 8 designs, interval [-0.000, 0.006], shuffled null -0.000), 0.006 (aff_gain, 6 designs),
+  0.004 (aff_all, 15 designs). Table XI median d_r: same word -0.41 (14 of 15 negative), same statement -0.17 (14 of 15), same instance depth 1 / full -0.14 (11 of 14), same bit +0.01 (7 of 15 negative).
