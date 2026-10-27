@@ -2,63 +2,64 @@
 
 \label{sec:r7-results}
 
-The corpus has 889 completed VPR runs (0 failed) in 0.66~h of VPR time; Table~\ref{tab:r7corpus} lists them. Table~\ref{tab:r7gap} and Figure~\ref{fig:r7gap} give the hindsight gap, Table~\ref{tab:r7calib} the calibration against the known optimum, Table~\ref{tab:r7dup} the duplication counts, and Tables~\ref{tab:r7xi} to~\ref{tab:r7coef} with Figures~\ref{fig:r7classes} and~\ref{fig:r7dist} the first mining. All mining is exploratory.
+The corpus has 891 completed analytical-placement VPR runs (0 failed) in 0.67~h of VPR time and 385 runs of the \code{.net} arms (0 failed) in 0.23~h; Table~\ref{tab:r7corpus} lists the designs. Table~\ref{tab:r7gap} and Figure~\ref{fig:r7gap} give the hindsight gap of the \code{.net} arm, Table~\ref{tab:r7gapaff} the affinity-bias arm, Tables~\ref{tab:r7calib} and~\ref{tab:r7calibB} the calibration against the known optimum, Table~\ref{tab:r7dup} the duplication counts, and Tables~\ref{tab:r7xi} to~\ref{tab:r7coef} with Figures~\ref{fig:r7classes} and~\ref{fig:r7dist} the first mining. All mining is exploratory.
 
 \begin{table}[t]
-\caption{Round 7 corpus: logic CLBs of the stock seed-1 run, VPR runs completed and failed, hindsight rounds run, and the fixed-point arm.}
+\caption{Round 7 corpus: logic CLBs of the stock seed-1 run, analytical-placement VPR runs completed and failed, affinity-bias rounds run, and the fixed-point arm of the affinity-bias and of the \code{.net} procedure.}
 \label{tab:r7corpus}
 \centering\scriptsize
-\begin{tabular}{@{}lrrrrl@{}}
+\begin{tabular}{@{}lrrrrll@{}}
 \toprule
-design & CLBs & ok & failed & rounds & arm \\
+design & CLBs & ok & failed & rounds & affinity arm & \code{.net} arm \\
 \midrule
-ch\_intrinsics & 13 & 20 & 0 & 1 & stock \\
-stereovision3 & 15 & 50 & 0 & 4 & h3 \\
-diffeq2 & 22 & 30 & 0 & 2 & h2 \\
-diffeq1 & 37 & 20 & 0 & 1 & stock \\
-mkPktMerge & 21 & 40 & 0 & 3 & h2 \\
-raygentop & 143 & 20 & 0 & 1 & stock \\
-sha & 142 & 20 & 0 & 1 & stock \\
-boundtop & 54 & 20 & 0 & 1 & stock \\
-mkSMAdapter4B & 125 & 20 & 0 & 1 & stock \\
-or1200 & 252 & 20 & 0 & 1 & stock \\
-n5\_mesh\_dp\_16 & 18 & 40 & 0 & 2 & h1 \\
-n5\_mesh\_ctl\_16 & 18 & 50 & 0 & 3 & h2 \\
-n5\_tree\_dp\_16 & 18 & 40 & 0 & 2 & h1 \\
-n5\_tree\_ctl\_16 & 18 & 60 & 0 & 4 & h3 \\
-n5\_mesh\_dp\_64 & 74 & 70 & 0 & 5 & h4 \\
-n5\_mesh\_ctl\_64 & 75 & 50 & 0 & 3 & h2 \\
-n5\_tree\_dp\_64 & 76 & 70 & 0 & 5 & h5 \\
-n5\_tree\_ctl\_64 & 73 & 70 & 0 & 5 & h4 \\
-n5\_mesh\_dp\_256 & 294 & 40 & 0 & 2 & h1 \\
-n5\_mesh\_ctl\_256 & 289 & 30 & 0 & 1 & h1 \\
-n5\_tree\_dp\_256 & 299 & 40 & 0 & 2 & h1 \\
-n5\_tree\_ctl\_256 & 296 & 40 & 0 & 2 & h1 \\
+ch\_intrinsics & 13 & 20 & 0 & 1 & stock & net\_h2 \\
+stereovision3 & 15 & 50 & 0 & 4 & h3 & net\_h3 \\
+diffeq2 & 22 & 30 & 0 & 2 & h2 & net0 \\
+diffeq1 & 37 & 20 & 0 & 1 & stock & net\_h1 \\
+mkPktMerge & 21 & 40 & 0 & 3 & h2 & net\_h1 \\
+raygentop & 143 & 20 & 0 & 1 & stock & net0 \\
+sha & 142 & 20 & 0 & 1 & stock & net\_h1 \\
+boundtop & 54 & 20 & 0 & 1 & stock & net0 \\
+mkSMAdapter4B & 125 & 20 & 0 & 1 & stock & net\_h1 \\
+or1200 & 252 & 20 & 0 & 1 & stock & net0 \\
+stereovision0 & 707 & 30 & 0 & 2 & h1 & net0 \\
+n5\_mesh\_dp\_16 & 18 & 40 & 0 & 2 & h1 & net0 \\
+n5\_mesh\_ctl\_16 & 18 & 50 & 0 & 3 & h2 & net\_h1 \\
+n5\_tree\_dp\_16 & 18 & 40 & 0 & 2 & h1 & net\_h1 \\
+n5\_tree\_ctl\_16 & 18 & 60 & 0 & 4 & h3 & net\_h2 \\
+n5\_mesh\_dp\_64 & 74 & 70 & 0 & 5 & h4 & net0 \\
+n5\_mesh\_ctl\_64 & 75 & 50 & 0 & 3 & h2 & net\_h1 \\
+n5\_tree\_dp\_64 & 76 & 70 & 0 & 5 & h5 & net\_h1 \\
+n5\_tree\_ctl\_64 & 73 & 70 & 0 & 5 & h4 & net\_h2 \\
+n5\_mesh\_dp\_256 & 294 & 40 & 0 & 2 & h1 & net0 \\
+n5\_mesh\_ctl\_256 & 289 & 30 & 0 & 1 & h1 & net0 \\
+n5\_tree\_dp\_256 & 299 & 40 & 0 & 2 & h1 & net\_h1 \\
+n5\_tree\_ctl\_256 & 296 & 40 & 0 & 2 & h1 & net\_h2 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table*}[t]
-\caption{Round 7, the hindsight gap (stock over hindsight; geometric mean over 10 seeds, 95\% bootstrap interval over seeds; above 1 means stock is worse). Fidelity: share of the hindsight groups the packer built whole. The last two rows are medians over designs of the point values; ``first round only'' has no round selection. Best-known, not optimal; the arm and the source seed are chosen by the same objective on the same seeds, so the gap is optimistic by selection.}
+\caption{Round 7, the hindsight gap of the \code{.net} arm: \code{net0} (the stock clustering, same placer) over the arm with the best median objective, in sample (geometric mean over five seeds, 95\% bootstrap interval over those seeds; above 1 means the stock clustering is worse). Fidelity is 1.0 by construction in 325 of 325 runs. Stock packing is the same in every seed, so the CLB interval has no clustering variance. Where no arm beat \code{net0} the row says so and no gap enters the median; the median is over the designs with a gain only, which is selected on the seeds it is evaluated on (winner's-curse risk). Best-known, not optimal.}
 \label{tab:r7gap}
 \centering\scriptsize
-\begin{tabular}{@{}llllllr@{}}
+\begin{tabular}{@{}llllll@{}}
 \toprule
-design & arm & WL & CPD & CLB & W & fidelity \\
+design & arm & WL & CPD & CLB & W \\
 \midrule
-ch\_intrinsics & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-stereovision3 & h3 & 1.098 [1.048, 1.148] & 1.050 [0.988, 1.119] & 1.000 [1.000, 1.000] & 0.958 & 0.47 \\
-diffeq2 & h2 & 0.997 [0.928, 1.061] & 1.011 [0.952, 1.061] & 1.000 [1.000, 1.000] & 0.994 & 0.79 \\
-diffeq1 & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-mkPktMerge & h2 & 1.024 [0.989, 1.059] & 1.033 [1.011, 1.054] & 1.000 [1.000, 1.000] & 0.988 & 0.56 \\
-raygentop & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-sha & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-boundtop & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-mkSMAdapter4B & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
-or1200 & stock & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 [1.000, 1.000] & 1.000 & n/a \\
+ch\_intrinsics & net\_h2 & 1.011 [0.959, 1.066] & 1.003 [0.897, 1.066] & 1.083 [1.083, 1.083] & 0.974 \\
+stereovision3 & net\_h3 & 1.119 [1.065, 1.176] & 1.111 [1.028, 1.210] & 1.000 [1.000, 1.000] & 1.040 \\
+diffeq2 & net0 & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.921)} \\
+diffeq1 & net\_h1 & 1.086 [1.054, 1.118] & 1.048 [1.008, 1.113] & 1.088 [1.088, 1.088] & 0.874 \\
+mkPktMerge & net\_h1 & 1.060 [1.039, 1.080] & 1.084 [1.038, 1.131] & 1.105 [1.105, 1.105] & 0.826 \\
+raygentop & net0 & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.971)} \\
+sha & net\_h1 & 1.038 [1.024, 1.049] & 1.033 [1.025, 1.041] & 1.000 [1.000, 1.000] & 0.950 \\
+boundtop & net0 & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 1.000)} \\
+mkSMAdapter4B & net\_h1 & 0.991 [0.954, 1.023] & 0.998 [0.980, 1.017] & 1.000 [1.000, 1.000] & 0.939 \\
+or1200 & net0 & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.966)} \\
+stereovision0 & net0 & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.952)} \\
 \midrule
-median over designs & & 1.000 & 1.000 & 1.000 & 1.000 & 0.56 \\
-first round only & & 0.986 & 0.989 & 1.020 & 0.980 & 0.52 \\
+median over the 6 designs with a gain & & 1.049 & 1.041 & 1.042 & 0.945 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -67,197 +68,277 @@ first round only & & 0.986 & 0.989 & 1.020 & 0.980 & 0.52 \\
 \centering
 \begin{tikzpicture}[x=1cm,y=0.33cm,font=\scriptsize]
 \node[anchor=east] at (-0.1,0) {ch\_intrinsics};
-\draw[line width=1.2pt] (2.00,0) -- (2.00,0);
-\fill (2.00,0) circle (1.6pt);
-\draw[gray] (1.75,-0.3) -- (1.75,0.3);
+\draw[line width=1.2pt] (1.18,0) -- (3.32,0);
+\fill (2.22,0) circle (1.6pt);
 \node[anchor=east] at (-0.1,-1) {stereovision3};
-\draw[line width=1.2pt] (2.96,-1) -- (4.97,-1);
-\fill (3.95,-1) circle (1.6pt);
-\draw[gray] (3.21,-1.3) -- (3.21,-0.7);
+\draw[line width=1.2pt] (3.31,-1) -- (5.52,-1);
+\fill (4.39,-1) circle (1.6pt);
 \node[anchor=east] at (-0.1,-2) {diffeq2};
-\draw[line width=1.2pt] (0.56,-2) -- (3.22,-2);
-\fill (1.95,-2) circle (1.6pt);
-\draw[gray] (2.11,-2.3) -- (2.11,-1.7);
+\node[anchor=west] at (2.20,-2) {no gain found};
 \node[anchor=east] at (-0.1,-3) {diffeq1};
-\draw[line width=1.2pt] (2.00,-3) -- (2.00,-3);
-\fill (2.00,-3) circle (1.6pt);
-\draw[gray] (1.18,-3.3) -- (1.18,-2.7);
+\draw[line width=1.2pt] (3.08,-3) -- (4.36,-3);
+\fill (3.72,-3) circle (1.6pt);
 \node[anchor=east] at (-0.1,-4) {mkPktMerge};
-\draw[line width=1.2pt] (1.78,-4) -- (3.17,-4);
-\fill (2.47,-4) circle (1.6pt);
-\draw[gray] (2.02,-4.3) -- (2.02,-3.7);
+\draw[line width=1.2pt] (2.77,-4) -- (3.61,-4);
+\fill (3.20,-4) circle (1.6pt);
 \node[anchor=east] at (-0.1,-5) {raygentop};
-\draw[line width=1.2pt] (2.00,-5) -- (2.00,-5);
-\fill (2.00,-5) circle (1.6pt);
-\draw[gray] (1.31,-5.3) -- (1.31,-4.7);
+\node[anchor=west] at (2.20,-5) {no gain found};
 \node[anchor=east] at (-0.1,-6) {sha};
-\draw[line width=1.2pt] (2.00,-6) -- (2.00,-6);
-\fill (2.00,-6) circle (1.6pt);
-\draw[gray] (1.39,-6.3) -- (1.39,-5.7);
+\draw[line width=1.2pt] (2.47,-6) -- (2.97,-6);
+\fill (2.76,-6) circle (1.6pt);
 \node[anchor=east] at (-0.1,-7) {boundtop};
-\draw[line width=1.2pt] (2.00,-7) -- (2.00,-7);
-\fill (2.00,-7) circle (1.6pt);
-\draw[gray] (2.49,-7.3) -- (2.49,-6.7);
+\node[anchor=west] at (2.20,-7) {no gain found};
 \node[anchor=east] at (-0.1,-8) {mkSMAdapter4B};
-\draw[line width=1.2pt] (2.00,-8) -- (2.00,-8);
-\fill (2.00,-8) circle (1.6pt);
-\draw[gray] (1.69,-8.3) -- (1.69,-7.7);
+\draw[line width=1.2pt] (1.08,-8) -- (2.45,-8);
+\fill (1.81,-8) circle (1.6pt);
 \node[anchor=east] at (-0.1,-9) {or1200};
-\draw[line width=1.2pt] (2.00,-9) -- (2.00,-9);
-\fill (2.00,-9) circle (1.6pt);
-\draw[gray] (1.69,-9.3) -- (1.69,-8.7);
-\draw[dashed] (2.00,0.8) -- (2.00,-9.8);
-\draw (0,-9.9) -- (6,-9.9);
-\node at (2.00,-10.7) {1};
-\node at (4.00,-10.7) {1.1};
-\node at (6.00,-10.7) {1.2};
+\node[anchor=west] at (2.20,-9) {no gain found};
+\node[anchor=east] at (-0.1,-10) {stereovision0};
+\node[anchor=west] at (2.20,-10) {no gain found};
+\draw[dashed] (2.00,0.8) -- (2.00,-10.8);
+\draw (0,-10.9) -- (6,-10.9);
+\node at (2.00,-11.7) {1};
+\node at (4.00,-11.7) {1.1};
+\node at (6.00,-11.7) {1.2};
 \end{tikzpicture}
-\caption{Round 7: wirelength gap stock$/$hindsight per design (dot: geometric mean over 10 seeds of the fixed-point arm, bar: 95\% bootstrap interval over seeds, gray tick: first hindsight round). Above 1, stock routes longer wires than the best-known clustering.}
+\caption{Round 7: wirelength gap net0$/$hindsight per design for the \code{.net} arm (dot: geometric mean over the five seeds, in sample, bar: 95\% bootstrap interval over those seeds). Designs where the procedure found no gain carry no dot. Above 1, the stock clustering routes longer wires than the best-known one.}
 \label{fig:r7gap}
 \end{figure}
 
 \begin{table*}[t]
-\caption{Round 7, calibration on the round-5 constructions: stock over the known clustering (known) and stock over hindsight (H) for wirelength and CLB count, and the recovery $(\ln \mathrm{stock}-\ln H)/(\ln \mathrm{stock}-\ln \mathrm{known})$ per seed (median over seeds; ``none'': no gap to recover). The last column is the recovery of the critical-path delay.}
+\caption{Round 7, the affinity-bias arm (the Norns packer with an affinity file at weight 100, analytical-placement flow, stock over arm, geometric mean over ten seeds with 95\% bootstrap interval; the arm and its source run were chosen on the same seeds, so the gap is optimistic by selection; the out-of-sample check is in the text). This is the gap reachable via affinity bias, not a lower bound on the gap between the packer and a best-known clustering: the packer rebuilds only part of the requested groups (fidelity: share of the groups built whole). A design whose fidelity stays below 0.5 in every round is marked ``not realised'' (protocol stop rule) and left out of the median; where no arm beat stock the row says so and no gap enters the median.}
+\label{tab:r7gapaff}
+\centering\scriptsize
+\begin{tabular}{@{}llllllr@{}}
+\toprule
+design & arm & WL & CPD & CLB & W & fidelity \\
+\midrule
+ch\_intrinsics & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.987)} & 0.58 \\
+stereovision3 & h3 & 1.098 [1.048, 1.148] & 1.050 [0.988, 1.119] & 1.000 [1.000, 1.000] & 0.958 & 0.47 (not realised) \\
+diffeq2 & h2 & 0.997 [0.928, 1.061] & 1.011 [0.952, 1.061] & 1.000 [1.000, 1.000] & 0.994 & 0.79 \\
+diffeq1 & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.959)} & 0.45 (not realised) \\
+mkPktMerge & h2 & 1.024 [0.989, 1.059] & 1.033 [1.011, 1.054] & 1.000 [1.000, 1.000] & 0.988 & 0.56 \\
+raygentop & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.965)} & 0.40 (not realised) \\
+sha & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.970)} & 0.60 \\
+boundtop & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 1.025)} & 0.58 \\
+mkSMAdapter4B & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.985)} & 0.39 (not realised) \\
+or1200 & stock & \multicolumn{4}{l}{no gain found (WL gap of the rounds: h1 0.985)} & 0.32 (not realised) \\
+stereovision0 & h1 & 0.985 [0.959, 1.015] & 1.038 [0.980, 1.114] & 1.017 [1.017, 1.017] & 0.971 & 0.75 \\
+\midrule
+median over the 3 designs with a gain and fidelity $\ge$ 0.5 & & 0.997 & 1.033 & 1.000 & 0.988 & 0.75 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\caption{Round 7, calibration on the round-5 constructions, \code{.net} arm (in sample): \code{net0} over the known clustering (known) and over the hindsight arm (H) for wirelength and CLB count, and the recovery $(\ln \mathrm{net0}-\ln H)/(\ln \mathrm{net0}-\ln \mathrm{known})$ from the geometric means over the seeds (``none'': the known clustering is less than 5\% better, nothing to recover). The last column is the recovery of the critical-path delay.}
 \label{tab:r7calib}
 \centering\scriptsize
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
 design & WL known & WL H & WL rec. & CLB known & CLB H & CLB rec. & CPD rec. \\
 \midrule
-n5\_mesh\_dp\_16 & 1.604 & 1.604 & 1.00 & 1.125 & 1.125 & 1.00 & 1.00 \\
-n5\_mesh\_ctl\_16 & 1.706 & 1.538 & 0.87 & 1.125 & 1.059 & 0.49 & 0.76 \\
-n5\_tree\_dp\_16 & 1.253 & 1.253 & 1.00 & 1.125 & 1.125 & 1.00 & 1.00 \\
-n5\_tree\_ctl\_16 & 2.078 & 2.078 & 1.00 & 1.125 & 1.125 & 1.00 & 1.00 \\
-n5\_mesh\_dp\_64 & 1.556 & 1.073 & 0.17 & 1.156 & 1.121 & 0.79 & 0.83 \\
-n5\_mesh\_ctl\_64 & 1.562 & 1.089 & 0.18 & 1.172 & 1.087 & 0.53 & -0.68 \\
-n5\_tree\_dp\_64 & 1.895 & 1.765 & 0.89 & 1.188 & 1.188 & 1.00 & 0.96 \\
-n5\_tree\_ctl\_64 & 1.855 & 1.498 & 0.65 & 1.141 & 1.106 & 0.77 & 1.06 \\
-n5\_mesh\_dp\_256 & 1.260 & 1.025 & 0.19 & 1.148 & 1.065 & 0.46 & 0.67 \\
-n5\_mesh\_ctl\_256 & 1.295 & 0.991 & -0.07 & 1.129 & 1.066 & 0.53 & 0.11 \\
-n5\_tree\_dp\_256 & 1.734 & 1.166 & 0.28 & 1.168 & 1.103 & 0.63 & 0.41 \\
-n5\_tree\_ctl\_256 & 1.560 & 1.187 & 0.39 & 1.156 & 1.088 & 0.58 & 0.38 \\
-\midrule
-median recovery (designs with a gap) & & & 0.52 (12) & & & 0.70 (12) & 0.79 (12) \\
+n5\_mesh\_dp\_16 & 1.476 & no gain & none & 1.125 & no gain & none & none \\
+n5\_mesh\_ctl\_16 & 1.457 & 1.068 & 0.18 & 1.125 & 1.000 & 0.00 & -0.05 \\
+n5\_tree\_dp\_16 & 1.200 & 1.222 & 1.10 & 1.125 & 1.125 & 1.00 & none \\
+n5\_tree\_ctl\_16 & 1.953 & 1.688 & 0.78 & 1.125 & 1.059 & 0.49 & 1.21 \\
+n5\_mesh\_dp\_64 & 1.495 & no gain & none & 1.156 & no gain & none & none \\
+n5\_mesh\_ctl\_64 & 1.494 & 1.149 & 0.35 & 1.172 & 1.042 & 0.26 & 1.39 \\
+n5\_tree\_dp\_64 & 1.908 & 1.305 & 0.41 & 1.188 & 1.070 & 0.40 & 0.79 \\
+n5\_tree\_ctl\_64 & 1.798 & 1.090 & 0.15 & 1.141 & 1.028 & 0.21 & 0.70 \\
+n5\_mesh\_dp\_256 & 1.198 & no gain & none & 1.148 & no gain & none & none \\
+n5\_mesh\_ctl\_256 & 1.333 & no gain & none & 1.129 & no gain & none & none \\
+n5\_tree\_dp\_256 & 1.751 & 1.165 & 0.27 & 1.168 & 1.057 & 0.35 & 0.31 \\
+n5\_tree\_ctl\_256 & 1.560 & 1.170 & 0.35 & 1.156 & 1.072 & 0.48 & 0.32 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
 \begin{table}[t]
-\caption{Round 7, LUT duplication candidates (single-LUT drivers with sinks in two or more CLBs), median over the 10 stock seeds: count, share of all LUTs, share within 5\% and 10\% of the critical-path delay, and the upper estimate of the delay saved if every candidate hop were free (share of CPD; stock, then the hindsight arm). Nothing is built.}
-\label{tab:r7dup}
+\caption{Round 7, recovery of the known-clustering gap, median over the designs of a size where the known clustering is at least 5\% better, by block count $B$ (designs with a recovery defined / designs of that size). Recovery is computed from the aggregated geometric means over seeds. A median of 1 would mean the procedure reaches the known clustering.}
+\label{tab:r7calibB}
 \centering\scriptsize
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}llrrr@{}}
 \toprule
-design & cand. & of LUTs & $\le5\%$ & $\le10\%$ & saved & saved (H) \\
+arm & $B$ & WL & CLB & CPD \\
 \midrule
-ch\_intrinsics & 4.00 & 4.1\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
-stereovision3 & 15.00 & 8.8\% & 6.7\% & 6.7\% & 13.6\% & 14.9\% \\
-diffeq2 & 8.00 & 4.0\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
-diffeq1 & 7.00 & 2.4\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
-mkPktMerge & 3.00 & 1.7\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
-raygentop & 59.00 & 5.5\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
-sha & 31.00 & 2.4\% & 6.5\% & 6.5\% & 9.5\% & 9.5\% \\
-boundtop & 31.00 & 6.0\% & 12.9\% & 12.9\% & 6.6\% & 6.6\% \\
-mkSMAdapter4B & 89.00 & 8.4\% & 2.2\% & 6.7\% & 7.7\% & 7.7\% \\
-or1200 & 459.00 & 19.1\% & 0.2\% & 3.5\% & 9.2\% & 9.2\% \\
+\code{.net} & $B$=16 & 0.78 (3/4) & 0.49 (3/4) & 0.58 (2/4) \\
+\code{.net} & $B$=64 & 0.35 (3/4) & 0.26 (3/4) & 0.79 (3/4) \\
+\code{.net} & $B$=256 & 0.31 (2/4) & 0.42 (2/4) & 0.31 (2/4) \\
+\code{.net} & all & 0.35 (8/12) & 0.38 (8/12) & 0.70 (7/12) \\
+affinity-bias & $B$=16 & 1.00 (4/4) & 1.00 (4/4) & 1.00 (3/4) \\
+affinity-bias & $B$=64 & 0.42 (4/4) & 0.78 (4/4) & 0.77 (4/4) \\
+affinity-bias & $B$=256 & 0.19 (4/4) & 0.56 (4/4) & 0.29 (4/4) \\
+affinity-bias & all & 0.52 (12/12) & 0.70 (12/12) & 0.72 (11/12) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Round 7 (exploratory), Table~\ref{tab:r3status} re-measured at each level of the HDL chain: the stratified distance difference $d_r$ (related minus unrelated pairs within net-connectivity strata, as a fraction of the unrelated mean; negative means closer than the nets predict), median over designs, designs with $d_r<0$, the range of the same statistic on label-shuffled data, and the share of the shuffles at or below the observed median.}
+\caption{Round 7, LUT duplication candidates (single-LUT drivers with sinks in two or more logic CLBs; pad and hard-block sinks do not count), median over the ten stock seeds of per-run values: count, share of all LUTs, share within 5\% and 10\% of the critical-path delay (a lower bound: criticality comes from the 200 reported paths, so a candidate on an unreported path counts as not critical), and the upper estimate of the delay saved if every candidate hop were free (share of CPD; stock, then the affinity-bias arm where it found a gain, `--' otherwise). Last column: LUTs that count only through one logic CLB plus a pad or hard block. Nothing is built.}
+\label{tab:r7dup}
+\centering\scriptsize
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+design & cand. & of LUTs & near 5\% & near 10\% & saved & saved (H) & other \\
+\midrule
+ch\_intrinsics & 1.00 & 1.0\% & 0.0\% & 0.0\% & 0.0\% & -- & 3.00 \\
+stereovision3 & 15.00 & 8.8\% & 6.7\% & 6.7\% & 13.6\% & 14.9\% & 0.00 \\
+diffeq2 & 8.00 & 4.0\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% & 0.00 \\
+diffeq1 & 7.00 & 2.4\% & 0.0\% & 0.0\% & 0.0\% & -- & 0.00 \\
+mkPktMerge & 2.00 & 1.1\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% & 1.00 \\
+raygentop & 58.00 & 5.4\% & 0.0\% & 0.0\% & 0.0\% & -- & 2.00 \\
+sha & 31.00 & 2.4\% & 6.5\% & 6.5\% & 9.5\% & -- & 0.00 \\
+boundtop & 18.00 & 3.5\% & 11.1\% & 11.1\% & 6.6\% & -- & 13.00 \\
+mkSMAdapter4B & 86.00 & 8.1\% & 2.3\% & 7.0\% & 7.7\% & -- & 4.00 \\
+or1200 & 336.00 & 14.0\% & 0.0\% & 3.9\% & 0.0\% & -- & 123.00 \\
+stereovision0 & 105.00 & 1.5\% & 2.9\% & 8.6\% & 12.5\% & 12.7\% & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{Round 7 (exploratory), Table~\ref{tab:r3status} re-measured at each level of the HDL chain: the stratified distance difference $d_r$ (related minus unrelated pairs within net-connectivity strata, as a fraction of the unrelated mean; negative means closer than the nets predict), median over designs, designs with $d_r<0$, the range of the same statistic on label-shuffled data, and the share of the shuffles at or below the observed median. Levels that exist in the data are tested; a level identical to a shallower one is not tested again.}
 \label{tab:r7xi}
 \centering\scriptsize
 \begin{tabular}{@{}lrrcr@{}}
 \toprule
 relation & median $d_r$ & $d_r<0$ & null range & null$\le$obs \\
 \midrule
-same bit index & -0.012 & 5/10 & [-0.016, 0.015] & 0.065 \\
-same instance, depth 1 & -0.170 & 7/9 & [-0.012, 0.018] & 0.005 \\
+same bit index & 0.012 & 5/11 & [-0.013, 0.011] & 0.985 \\
+same instance, depth 1 & -0.168 & 8/10 & [-0.011, 0.013] & 0.005 \\
 same instance, depth 2 & n/a & 0/0 & [n/a, n/a] & n/a \\
 same instance, depth 3 & n/a & 0/0 & [n/a, n/a] & n/a \\
-same instance (full path) & -0.170 & 7/9 & [-0.012, 0.018] & 0.005 \\
-same statement & -0.215 & 9/10 & [-0.010, 0.009] & 0.005 \\
-same word & -0.428 & 9/10 & [-0.017, 0.015] & 0.005 \\
+same instance (full path) & \multicolumn{4}{l}{identical to same instance, depth 1: the instance chain has depth 1} \\
+same statement & -0.174 & 10/11 & [-0.009, 0.008] & 0.005 \\
+same word & -0.419 & 10/11 & [-0.017, 0.015] & 0.005 \\
 same word and bit & n/a & 0/0 & [n/a, n/a] & n/a \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Round 7 (exploratory), held-out-design models. Baseline AUC (net connectivity, criticality, kinds, no HDL) mean 0.752. Change from adding HDL features, mean over held-out designs with a bootstrap interval, designs improved, and the same change when the HDL labels are shuffled within each design.}
-\label{tab:r7model}
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the \code{.net} hindsight clustering, designs where it beat \code{net0}: 6 designs in 5 families (ch\_intrinsics, diffeq, mk, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.933, median 0.939; on uniform pairs mean 0.938. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles.}
+\label{tab:r7modelnet}
 \centering\scriptsize
-\begin{tabular}{@{}lrcrc@{}}
+\begin{tabular}{@{}lrrcrc@{}}
 \toprule
-change & mean & 95\% CI & better & shuffled null \\
+change & mean & median & 95\% CI & better & shuffled null \\
 \midrule
-AUC, bit features added & 0.032 & [0.020, 0.047] & 10/10 & -0.001 [-0.001, -0.000] \\
-AUC, all HDL features added & 0.070 & [0.026, 0.128] & 10/10 & -0.003 [-0.004, -0.002] \\
-$R^2$ of distance, bit features & -0.028 & [-0.091, 0.009] & 8/10 & -0.004 [-0.005, -0.004] \\
-$R^2$ of distance, all HDL & 0.020 & [-0.409, 0.538] & 5/10 & 0.069 [0.061, 0.077] \\
+AUC (connected pairs), bit features & 0.002 & 0.001 & [0.001, 0.004] & 5/6 & -0.000 [-0.001, 0.000] \\
+AUC (connected pairs), all HDL & 0.004 & 0.002 & [0.001, 0.009] & 5/6 & -0.000 [-0.002, 0.002] \\
+AUC (uniform pairs), all HDL & 0.005 & 0.005 & [0.002, 0.008] & 5/6 & -0.000 [-0.001, 0.000] \\
+$R^2$ of normalised distance, bit features & 0.008 & 0.002 & [0.001, 0.018] & 6/6 & -0.004 [-0.005, -0.002] \\
+$R^2$ of normalised distance, all HDL & -0.036 & 0.004 & [-0.122, 0.030] & 3/6 & -0.045 [-0.053, -0.036] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed (100.0\% of the universe pairs have the same co-CLB status in all ten stock runs), so stability is read on placement: of the 410451 pairs of the unbiased samples within two CLBs in at least one seed, 80211 (19.5\%) are within two CLBs in eight or more of ten. Share of stable pairs given the relation and given its absence, their difference, and the label-shuffled range of the difference. By N17 class: SC 67.4\%, SN 71.1\%, SI 32.5\%, OR 30.1\%, FL 12.6\%.}
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, designs where it beat stock: 4 designs in 3 families (diffeq, mk, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.937, median 0.962; on uniform pairs mean 0.952. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles.}
+\label{tab:r7modelaff}
+\centering\scriptsize
+\begin{tabular}{@{}lrrcrc@{}}
+\toprule
+change & mean & median & 95\% CI & better & shuffled null \\
+\midrule
+AUC (connected pairs), bit features & -0.010 & -0.004 & [-0.025, -0.001] & 0/4 & 0.001 [-0.000, 0.001] \\
+AUC (connected pairs), all HDL & 0.000 & -0.000 & [-0.002, 0.003] & 1/4 & -0.000 [-0.001, 0.001] \\
+AUC (uniform pairs), all HDL & 0.009 & 0.007 & [0.003, 0.015] & 4/4 & -0.000 [-0.001, 0.000] \\
+$R^2$ of normalised distance, bit features & 0.006 & 0.009 & [-0.003, 0.012] & 3/4 & -0.014 [-0.017, -0.010] \\
+$R^2$ of normalised distance, all HDL & 0.004 & 0.046 & [-0.139, 0.146] & 2/4 & -0.025 [-0.056, 0.004] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{Round 7 (exploratory), held-out-family models, target co-location in the best affinity-bias run, all designs (variant: includes designs where hindsight equals stock): 11 designs in 8 families (boundtop, ch\_intrinsics, diffeq, mk, or1200, raygentop, sha, stereovision). Baseline (net connectivity, criticality, kinds, stock co-CLB and stock distance, no HDL): AUC on connected pairs mean 0.938, median 0.943; on uniform pairs mean 0.953. Change from adding HDL features: mean and median over held-out designs, bootstrap interval of the mean, designs improved, and the same change with the HDL labels (and the carry flag) shuffled, 200 shuffles.}
+\label{tab:r7modelaffall}
+\centering\scriptsize
+\begin{tabular}{@{}lrrcrc@{}}
+\toprule
+change & mean & median & 95\% CI & better & shuffled null \\
+\midrule
+AUC (connected pairs), bit features & 0.001 & 0.001 & [-0.002, 0.003] & 8/11 & -0.000 [-0.000, 0.000] \\
+AUC (connected pairs), all HDL & 0.005 & 0.002 & [0.001, 0.010] & 8/11 & -0.000 [-0.001, 0.000] \\
+AUC (uniform pairs), all HDL & 0.004 & 0.004 & [0.002, 0.007] & 10/11 & -0.000 [-0.000, 0.000] \\
+$R^2$ of normalised distance, bit features & 0.002 & 0.001 & [0.000, 0.004] & 6/11 & -0.003 [-0.004, -0.003] \\
+$R^2$ of normalised distance, all HDL & -0.010 & -0.006 & [-0.024, 0.004] & 4/11 & -0.016 [-0.020, -0.012] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{Round 7 (exploratory), stability across seeds. The stock clustering barely depends on the seed (100.0\% of the universe pairs have the same co-CLB status in all ten stock runs), so stability is read on placement: of the 466929 pairs of the unbiased samples within two CLBs in at least one seed, 114058 (24.4\%) are within two CLBs in eight or more of ten. Share of stable pairs given the relation and given its absence, their difference, and the label-shuffled range of the difference. By N17 class: SC 78.6\%, SN 79.1\%, SI 40.5\%, OR 29.9\%, FL 12.3\%.}
 \label{tab:r7stab}
 \centering\scriptsize
 \begin{tabular}{@{}lrrrc@{}}
 \toprule
 relation & stable $|$ rel. & stable $|$ not & diff. & null range \\
 \midrule
-same bit index & 29.0\% & 19.4\% & 0.095 & [-0.010, 0.016] \\
-same instance, depth 1 & 21.5\% & 16.2\% & 0.053 & [-0.037, -0.031] \\
-same instance, depth 2 & n/a & 19.5\% & n/a & [n/a, n/a] \\
-same instance, depth 3 & n/a & 19.5\% & n/a & [n/a, n/a] \\
-same instance (full path) & 21.5\% & 16.2\% & 0.053 & [-0.037, -0.031] \\
-same statement & 29.4\% & 15.4\% & 0.140 & [-0.017, -0.009] \\
-same word & 65.8\% & 17.2\% & 0.486 & [0.067, 0.093] \\
-same word and bit & n/a & 19.5\% & n/a & [n/a, n/a] \\
+same bit index & 50.6\% & 23.9\% & 0.267 & [0.104, 0.128] \\
+same instance, depth 1 & 27.9\% & 18.1\% & 0.098 & [-0.110, -0.104] \\
+same instance, depth 2 & n/a & 24.4\% & n/a & [n/a, n/a] \\
+same instance, depth 3 & n/a & 24.4\% & n/a & [n/a, n/a] \\
+same instance (full path) & 27.9\% & 18.1\% & 0.098 & [-0.110, -0.104] \\
+same statement & 36.5\% & 18.9\% & 0.176 & [-0.056, -0.048] \\
+same word & 71.0\% & 21.9\% & 0.490 & [0.019, 0.045] \\
+same word and bit & n/a & 24.4\% & n/a & [-0.244, 0.756] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Round 7 (exploratory), where stock packing and the hindsight clustering disagree (best hindsight run against the stock run of the same seed; 33117 pairs joined by hindsight only, 32204 by stock only, 90138 by both). Enrichment of each relation among the disagreement pairs over its share among the agreed pairs, with the label-shuffled range.}
+\caption{Round 7 (exploratory), where stock packing and the best affinity-bias hindsight run disagree (against the stock run of the same seed; 63510 pairs joined by hindsight only, 61512 by stock only, 390434 by both). Enrichment of each relation among the disagreement pairs over its share among the pairs of the universe (the unbiased samples; protocol baseline), with the label-shuffled range; the earlier baseline, the pairs both clusterings join, is kept in the data file as a logged deviation.}
 \label{tab:r7disagree}
 \centering\scriptsize
 \begin{tabular}{@{}lrcrc@{}}
 \toprule
 relation & hindsight only & null & stock only & null \\
 \midrule
-same bit index & 0.36 & [0.87, 1.14] & 0.78 & [0.86, 1.15] \\
-same instance, depth 1 & 0.77 & [0.99, 1.03] & 0.80 & [1.00, 1.05] \\
+same bit index & 1.41 & [1.65, 1.87] & 2.41 & [1.63, 1.85] \\
+same instance, depth 1 & 1.11 & [0.67, 0.69] & 1.16 & [0.68, 0.70] \\
 same instance, depth 2 & n/a & [n/a, n/a] & n/a & [n/a, n/a] \\
 same instance, depth 3 & n/a & [n/a, n/a] & n/a & [n/a, n/a] \\
-same instance (full path) & 0.77 & [0.99, 1.03] & 0.80 & [1.00, 1.05] \\
-same statement & 0.60 & [0.94, 1.06] & 0.64 & [0.95, 1.07] \\
-same word & 0.22 & [0.72, 0.91] & 0.25 & [0.73, 0.94] \\
-same word and bit & n/a & [n/a, n/a] & n/a & [n/a, n/a] \\
+same instance (full path) & 1.11 & [0.67, 0.69] & 1.16 & [0.68, 0.70] \\
+same statement & 1.59 & [0.73, 0.78] & 1.71 & [0.74, 0.79] \\
+same word & 2.34 & [0.52, 0.62] & 2.66 & [0.53, 0.63] \\
+same word and bit & n/a & [0.00, 0.00] & n/a & [0.00, 0.00] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
-\caption{Round 7 (exploratory), coefficients of the HDL features in the full logistic model for hindsight co-location (standardised features; mean over the held-out folds with a bootstrap interval over folds). The bit-level hint question (Peter 2026-10-26) is the rows ``same bit index'', ``same word and bit'', ``bit close'' and ``carry nb''.}
+\caption{Round 7 (exploratory), coefficients of the features in the full logistic model for hindsight co-location in the first model variant with designs (standardised features; mean over the held-out folds with a bootstrap interval over folds). The bit-level hint question (Peter 2026-10-26) is the rows ``same bit index'', ``same word and bit'', ``bit close'' and ``carry nb''.}
 \label{tab:r7coef}
 \centering\scriptsize
 \begin{tabular}{@{}lrc@{}}
 \toprule
 feature & coefficient & 95\% CI \\
 \midrule
-bit close & 0.139 & [0.115, 0.154] \\
-carry nb & -0.093 & [-0.101, -0.085] \\
-same bit index & 0.054 & [0.049, 0.060] \\
-same instance, depth 1 & -0.036 & [-0.060, -0.014] \\
+bit close & 0.019 & [0.001, 0.037] \\
+carry nb & 0.004 & [-0.013, 0.022] \\
+co stock & 0.107 & [0.068, 0.150] \\
+kind adder & -0.113 & [-0.147, -0.085] \\
+kind ff & -0.061 & [-0.076, -0.047] \\
+kind lf & 0.105 & [0.087, 0.126] \\
+kind ll & 0.041 & [0.026, 0.062] \\
+log dist stock & -1.871 & [-1.993, -1.718] \\
+log minfan & -0.389 & [-0.419, -0.357] \\
+log nshared & 0.185 & [0.129, 0.265] \\
+pcrit max & -0.148 & [-0.183, -0.113] \\
+pcrit min & 0.250 & [0.223, 0.280] \\
+same bit index & 0.040 & [0.032, 0.046] \\
+same instance, depth 1 & -0.074 & [-0.080, -0.068] \\
 same instance, depth 2 & 0.000 & [0.000, 0.000] \\
 same instance, depth 3 & 0.000 & [0.000, 0.000] \\
-same instance (full path) & -0.036 & [-0.060, -0.014] \\
-same statement & 0.450 & [0.414, 0.489] \\
-same word & 0.371 & [0.326, 0.408] \\
+same instance (full path) & -0.074 & [-0.080, -0.068] \\
+same statement & 0.122 & [0.112, 0.131] \\
+same word & 0.236 & [0.176, 0.296] \\
 same word and bit & 0.000 & [0.000, 0.000] \\
+scrit & -0.077 & [-0.095, -0.059] \\
+series & 0.245 & [0.176, 0.295] \\
+shared only & 0.249 & [0.179, 0.305] \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -364,20 +445,31 @@ same word and bit & 0.000 & [0.000, 0.000] \\
 \fill[blue!50] (0.484,-17.4) rectangle (0.951,-16.6);
 \fill[green!50!black] (0.951,-17.4) rectangle (2.052,-16.6);
 \fill[gray!40] (2.052,-17.4) rectangle (5.000,-16.6);
-\node[anchor=east] at (-0.1,-18.5) {stereovision3};
-\fill[red!70] (0.000,-18.4) rectangle (0.281,-17.6);
-\fill[orange!70] (0.281,-18.4) rectangle (0.416,-17.6);
-\fill[blue!50] (0.416,-18.4) rectangle (1.022,-17.6);
-\fill[green!50!black] (1.022,-18.4) rectangle (1.593,-17.6);
-\fill[gray!40] (1.593,-18.4) rectangle (5.000,-17.6);
-\fill[red!70] (0.000,-19.4) rectangle (0.255,-18.6);
-\fill[orange!70] (0.255,-19.4) rectangle (0.388,-18.6);
-\fill[blue!50] (0.388,-19.4) rectangle (0.988,-18.6);
-\fill[green!50!black] (0.988,-19.4) rectangle (1.550,-18.6);
-\fill[gray!40] (1.550,-19.4) rectangle (5.000,-18.6);
+\node[anchor=east] at (-0.1,-18.5) {stereovision0};
+\fill[red!70] (0.000,-18.4) rectangle (0.155,-17.6);
+\fill[orange!70] (0.155,-18.4) rectangle (0.296,-17.6);
+\fill[blue!50] (0.296,-18.4) rectangle (0.401,-17.6);
+\fill[green!50!black] (0.401,-18.4) rectangle (1.211,-17.6);
+\fill[gray!40] (1.211,-18.4) rectangle (5.000,-17.6);
+\fill[red!70] (0.000,-19.4) rectangle (0.153,-18.6);
+\fill[orange!70] (0.153,-19.4) rectangle (0.291,-18.6);
+\fill[blue!50] (0.291,-19.4) rectangle (0.395,-18.6);
+\fill[green!50!black] (0.395,-19.4) rectangle (1.198,-18.6);
+\fill[gray!40] (1.198,-19.4) rectangle (5.000,-18.6);
+\node[anchor=east] at (-0.1,-20.5) {stereovision3};
+\fill[red!70] (0.000,-20.4) rectangle (0.281,-19.6);
+\fill[orange!70] (0.281,-20.4) rectangle (0.416,-19.6);
+\fill[blue!50] (0.416,-20.4) rectangle (1.022,-19.6);
+\fill[green!50!black] (1.022,-20.4) rectangle (1.593,-19.6);
+\fill[gray!40] (1.593,-20.4) rectangle (5.000,-19.6);
+\fill[red!70] (0.000,-21.4) rectangle (0.255,-20.6);
+\fill[orange!70] (0.255,-21.4) rectangle (0.388,-20.6);
+\fill[blue!50] (0.388,-21.4) rectangle (0.988,-20.6);
+\fill[green!50!black] (0.988,-21.4) rectangle (1.550,-20.6);
+\fill[gray!40] (1.550,-21.4) rectangle (5.000,-20.6);
 \node[anchor=west] at (5.2,0) {\textcolor{red!70}{\rule{4pt}{4pt}}~SC, \textcolor{orange!70}{\rule{4pt}{4pt}}~SN, \textcolor{blue!50}{\rule{4pt}{4pt}}~SI, \textcolor{green!50!black}{\rule{4pt}{4pt}}~OR, \textcolor{gray!40}{\rule{4pt}{4pt}}~FL};
 \end{tikzpicture}
-\caption{Round 7: N17 class shares of the pairs that share a CLB, per design: upper bar the best stock run, lower bar the best hindsight run.}
+\caption{Round 7: N17 class shares of the pairs that share a CLB, per design: upper bar the best stock run, lower bar the best affinity-bias hindsight run.}
 \label{fig:r7classes}
 \end{figure}
 
@@ -385,120 +477,120 @@ same word and bit & 0.000 & [0.000, 0.000] \\
 \centering
 \begin{tikzpicture}[x=0.21cm,y=2.2cm,font=\tiny]
 \node[anchor=east] at (-0.3,0.3) {same bit index};
-\fill[blue!60] (0.0,0.0) rectangle (0.9,0.052);
-\fill[gray!60] (1.0,0.0) rectangle (1.9,0.026);
-\fill[blue!60] (2.2,0.0) rectangle (3.1,0.044);
-\fill[gray!60] (3.2,0.0) rectangle (4.1,0.029);
-\fill[blue!60] (4.4,0.0) rectangle (5.3,0.068);
-\fill[gray!60] (5.4,0.0) rectangle (6.3,0.042);
-\fill[blue!60] (6.6,0.0) rectangle (7.5,0.062);
-\fill[gray!60] (7.6,0.0) rectangle (8.5,0.057);
-\fill[blue!60] (8.8,0.0) rectangle (9.7,0.164);
-\fill[gray!60] (9.8,0.0) rectangle (10.7,0.158);
-\fill[blue!60] (11.0,0.0) rectangle (11.9,0.134);
-\fill[gray!60] (12.0,0.0) rectangle (12.9,0.151);
-\fill[blue!60] (13.2,0.0) rectangle (14.1,0.221);
-\fill[gray!60] (14.2,0.0) rectangle (15.1,0.236);
-\fill[blue!60] (15.4,0.0) rectangle (16.3,0.109);
-\fill[gray!60] (16.4,0.0) rectangle (17.3,0.130);
-\fill[blue!60] (17.6,0.0) rectangle (18.5,0.042);
-\fill[gray!60] (18.6,0.0) rectangle (19.5,0.065);
-\fill[blue!60] (19.8,0.0) rectangle (20.7,0.002);
-\fill[gray!60] (20.8,0.0) rectangle (21.7,0.006);
-\fill[blue!60] (22.0,0.0) rectangle (22.9,0.000);
-\fill[gray!60] (23.0,0.0) rectangle (23.9,0.000);
+\fill[blue!60] (0.0,0.0) rectangle (0.9,0.114);
+\fill[gray!60] (1.0,0.0) rectangle (1.9,0.036);
+\fill[blue!60] (2.2,0.0) rectangle (3.1,0.049);
+\fill[gray!60] (3.2,0.0) rectangle (4.1,0.028);
+\fill[blue!60] (4.4,0.0) rectangle (5.3,0.043);
+\fill[gray!60] (5.4,0.0) rectangle (6.3,0.038);
+\fill[blue!60] (6.6,0.0) rectangle (7.5,0.035);
+\fill[gray!60] (7.6,0.0) rectangle (8.5,0.050);
+\fill[blue!60] (8.8,0.0) rectangle (9.7,0.093);
+\fill[gray!60] (9.8,0.0) rectangle (10.7,0.137);
+\fill[blue!60] (11.0,0.0) rectangle (11.9,0.082);
+\fill[gray!60] (12.0,0.0) rectangle (12.9,0.133);
+\fill[blue!60] (13.2,0.0) rectangle (14.1,0.152);
+\fill[gray!60] (14.2,0.0) rectangle (15.1,0.215);
+\fill[blue!60] (15.4,0.0) rectangle (16.3,0.111);
+\fill[gray!60] (16.4,0.0) rectangle (17.3,0.127);
+\fill[blue!60] (17.6,0.0) rectangle (18.5,0.119);
+\fill[gray!60] (18.6,0.0) rectangle (19.5,0.090);
+\fill[blue!60] (19.8,0.0) rectangle (20.7,0.070);
+\fill[gray!60] (20.8,0.0) rectangle (21.7,0.032);
+\fill[blue!60] (22.0,0.0) rectangle (22.9,0.033);
+\fill[gray!60] (23.0,0.0) rectangle (23.9,0.014);
 \node[anchor=east] at (-0.3,-0.8) {same instance, depth 1};
-\fill[blue!60] (0.0,-1.1) rectangle (0.9,-1.063);
-\fill[gray!60] (1.0,-1.1) rectangle (1.9,-1.085);
-\fill[blue!60] (2.2,-1.1) rectangle (3.1,-1.061);
-\fill[gray!60] (3.2,-1.1) rectangle (4.1,-1.082);
+\fill[blue!60] (0.0,-1.1) rectangle (0.9,-1.037);
+\fill[gray!60] (1.0,-1.1) rectangle (1.9,-1.084);
+\fill[blue!60] (2.2,-1.1) rectangle (3.1,-1.058);
+\fill[gray!60] (3.2,-1.1) rectangle (4.1,-1.084);
 \fill[blue!60] (4.4,-1.1) rectangle (5.3,-1.046);
-\fill[gray!60] (5.4,-1.1) rectangle (6.3,-1.070);
-\fill[blue!60] (6.6,-1.1) rectangle (7.5,-1.025);
-\fill[gray!60] (7.6,-1.1) rectangle (8.5,-1.061);
-\fill[blue!60] (8.8,-1.1) rectangle (9.7,-0.921);
-\fill[gray!60] (9.8,-1.1) rectangle (10.7,-0.962);
-\fill[blue!60] (11.0,-1.1) rectangle (11.9,-0.945);
-\fill[gray!60] (12.0,-1.1) rectangle (12.9,-0.953);
-\fill[blue!60] (13.2,-1.1) rectangle (14.1,-0.874);
-\fill[gray!60] (14.2,-1.1) rectangle (15.1,-0.853);
-\fill[blue!60] (15.4,-1.1) rectangle (16.3,-0.987);
-\fill[gray!60] (16.4,-1.1) rectangle (17.3,-0.953);
-\fill[blue!60] (17.6,-1.1) rectangle (18.5,-1.078);
-\fill[gray!60] (18.6,-1.1) rectangle (19.5,-0.992);
-\fill[blue!60] (19.8,-1.1) rectangle (20.7,-1.099);
-\fill[gray!60] (20.8,-1.1) rectangle (21.7,-1.089);
-\fill[blue!60] (22.0,-1.1) rectangle (22.9,-1.100);
-\fill[gray!60] (23.0,-1.1) rectangle (23.9,-1.099);
+\fill[gray!60] (5.4,-1.1) rectangle (6.3,-1.076);
+\fill[blue!60] (6.6,-1.1) rectangle (7.5,-1.028);
+\fill[gray!60] (7.6,-1.1) rectangle (8.5,-1.069);
+\fill[blue!60] (8.8,-1.1) rectangle (9.7,-0.931);
+\fill[gray!60] (9.8,-1.1) rectangle (10.7,-0.992);
+\fill[blue!60] (11.0,-1.1) rectangle (11.9,-0.954);
+\fill[gray!60] (12.0,-1.1) rectangle (12.9,-0.980);
+\fill[blue!60] (13.2,-1.1) rectangle (14.1,-0.887);
+\fill[gray!60] (14.2,-1.1) rectangle (15.1,-0.885);
+\fill[blue!60] (15.4,-1.1) rectangle (16.3,-0.992);
+\fill[gray!60] (16.4,-1.1) rectangle (17.3,-0.957);
+\fill[blue!60] (17.6,-1.1) rectangle (18.5,-1.073);
+\fill[gray!60] (18.6,-1.1) rectangle (19.5,-0.956);
+\fill[blue!60] (19.8,-1.1) rectangle (20.7,-1.096);
+\fill[gray!60] (20.8,-1.1) rectangle (21.7,-1.043);
+\fill[blue!60] (22.0,-1.1) rectangle (22.9,-1.099);
+\fill[gray!60] (23.0,-1.1) rectangle (23.9,-1.074);
 \node[anchor=east] at (-0.3,-1.9000000000000001) {same instance (full path)};
-\fill[blue!60] (0.0,-2.2) rectangle (0.9,-2.163);
-\fill[gray!60] (1.0,-2.2) rectangle (1.9,-2.185);
-\fill[blue!60] (2.2,-2.2) rectangle (3.1,-2.161);
-\fill[gray!60] (3.2,-2.2) rectangle (4.1,-2.182);
+\fill[blue!60] (0.0,-2.2) rectangle (0.9,-2.137);
+\fill[gray!60] (1.0,-2.2) rectangle (1.9,-2.184);
+\fill[blue!60] (2.2,-2.2) rectangle (3.1,-2.158);
+\fill[gray!60] (3.2,-2.2) rectangle (4.1,-2.184);
 \fill[blue!60] (4.4,-2.2) rectangle (5.3,-2.146);
-\fill[gray!60] (5.4,-2.2) rectangle (6.3,-2.170);
-\fill[blue!60] (6.6,-2.2) rectangle (7.5,-2.125);
-\fill[gray!60] (7.6,-2.2) rectangle (8.5,-2.161);
-\fill[blue!60] (8.8,-2.2) rectangle (9.7,-2.021);
-\fill[gray!60] (9.8,-2.2) rectangle (10.7,-2.062);
-\fill[blue!60] (11.0,-2.2) rectangle (11.9,-2.045);
-\fill[gray!60] (12.0,-2.2) rectangle (12.9,-2.053);
-\fill[blue!60] (13.2,-2.2) rectangle (14.1,-1.974);
-\fill[gray!60] (14.2,-2.2) rectangle (15.1,-1.953);
-\fill[blue!60] (15.4,-2.2) rectangle (16.3,-2.087);
-\fill[gray!60] (16.4,-2.2) rectangle (17.3,-2.053);
-\fill[blue!60] (17.6,-2.2) rectangle (18.5,-2.178);
-\fill[gray!60] (18.6,-2.2) rectangle (19.5,-2.092);
-\fill[blue!60] (19.8,-2.2) rectangle (20.7,-2.199);
-\fill[gray!60] (20.8,-2.2) rectangle (21.7,-2.189);
-\fill[blue!60] (22.0,-2.2) rectangle (22.9,-2.200);
-\fill[gray!60] (23.0,-2.2) rectangle (23.9,-2.199);
+\fill[gray!60] (5.4,-2.2) rectangle (6.3,-2.176);
+\fill[blue!60] (6.6,-2.2) rectangle (7.5,-2.128);
+\fill[gray!60] (7.6,-2.2) rectangle (8.5,-2.169);
+\fill[blue!60] (8.8,-2.2) rectangle (9.7,-2.031);
+\fill[gray!60] (9.8,-2.2) rectangle (10.7,-2.092);
+\fill[blue!60] (11.0,-2.2) rectangle (11.9,-2.054);
+\fill[gray!60] (12.0,-2.2) rectangle (12.9,-2.080);
+\fill[blue!60] (13.2,-2.2) rectangle (14.1,-1.987);
+\fill[gray!60] (14.2,-2.2) rectangle (15.1,-1.985);
+\fill[blue!60] (15.4,-2.2) rectangle (16.3,-2.092);
+\fill[gray!60] (16.4,-2.2) rectangle (17.3,-2.057);
+\fill[blue!60] (17.6,-2.2) rectangle (18.5,-2.173);
+\fill[gray!60] (18.6,-2.2) rectangle (19.5,-2.056);
+\fill[blue!60] (19.8,-2.2) rectangle (20.7,-2.196);
+\fill[gray!60] (20.8,-2.2) rectangle (21.7,-2.143);
+\fill[blue!60] (22.0,-2.2) rectangle (22.9,-2.199);
+\fill[gray!60] (23.0,-2.2) rectangle (23.9,-2.174);
 \node[anchor=east] at (-0.3,-3.0000000000000004) {same statement};
-\fill[blue!60] (0.0,-3.3000000000000003) rectangle (0.9,-3.232);
-\fill[gray!60] (1.0,-3.3000000000000003) rectangle (1.9,-3.285);
-\fill[blue!60] (2.2,-3.3000000000000003) rectangle (3.1,-3.245);
+\fill[blue!60] (0.0,-3.3000000000000003) rectangle (0.9,-3.193);
+\fill[gray!60] (1.0,-3.3000000000000003) rectangle (1.9,-3.279);
+\fill[blue!60] (2.2,-3.3000000000000003) rectangle (3.1,-3.246);
 \fill[gray!60] (3.2,-3.3000000000000003) rectangle (4.1,-3.278);
-\fill[blue!60] (4.4,-3.3000000000000003) rectangle (5.3,-3.238);
-\fill[gray!60] (5.4,-3.3000000000000003) rectangle (6.3,-3.263);
-\fill[blue!60] (6.6,-3.3000000000000003) rectangle (7.5,-3.229);
-\fill[gray!60] (7.6,-3.3000000000000003) rectangle (8.5,-3.246);
-\fill[blue!60] (8.8,-3.3000000000000003) rectangle (9.7,-3.142);
-\fill[gray!60] (9.8,-3.3000000000000003) rectangle (10.7,-3.141);
-\fill[blue!60] (11.0,-3.3000000000000003) rectangle (11.9,-3.147);
-\fill[gray!60] (12.0,-3.3000000000000003) rectangle (12.9,-3.150);
-\fill[blue!60] (13.2,-3.3000000000000003) rectangle (14.1,-3.085);
-\fill[gray!60] (14.2,-3.3000000000000003) rectangle (15.1,-3.058);
-\fill[blue!60] (15.4,-3.3000000000000003) rectangle (16.3,-3.199);
-\fill[gray!60] (16.4,-3.3000000000000003) rectangle (17.3,-3.163);
-\fill[blue!60] (17.6,-3.3000000000000003) rectangle (18.5,-3.285);
-\fill[gray!60] (18.6,-3.3000000000000003) rectangle (19.5,-3.223);
-\fill[blue!60] (19.8,-3.3000000000000003) rectangle (20.7,-3.298);
-\fill[gray!60] (20.8,-3.3000000000000003) rectangle (21.7,-3.293);
-\fill[blue!60] (22.0,-3.3000000000000003) rectangle (22.9,-3.300);
-\fill[gray!60] (23.0,-3.3000000000000003) rectangle (23.9,-3.300);
+\fill[blue!60] (4.4,-3.3000000000000003) rectangle (5.3,-3.240);
+\fill[gray!60] (5.4,-3.3000000000000003) rectangle (6.3,-3.267);
+\fill[blue!60] (6.6,-3.3000000000000003) rectangle (7.5,-3.233);
+\fill[gray!60] (7.6,-3.3000000000000003) rectangle (8.5,-3.254);
+\fill[blue!60] (8.8,-3.3000000000000003) rectangle (9.7,-3.154);
+\fill[gray!60] (9.8,-3.3000000000000003) rectangle (10.7,-3.166);
+\fill[blue!60] (11.0,-3.3000000000000003) rectangle (11.9,-3.160);
+\fill[gray!60] (12.0,-3.3000000000000003) rectangle (12.9,-3.170);
+\fill[blue!60] (13.2,-3.3000000000000003) rectangle (14.1,-3.103);
+\fill[gray!60] (14.2,-3.3000000000000003) rectangle (15.1,-3.082);
+\fill[blue!60] (15.4,-3.3000000000000003) rectangle (16.3,-3.204);
+\fill[gray!60] (16.4,-3.3000000000000003) rectangle (17.3,-3.166);
+\fill[blue!60] (17.6,-3.3000000000000003) rectangle (18.5,-3.276);
+\fill[gray!60] (18.6,-3.3000000000000003) rectangle (19.5,-3.194);
+\fill[blue!60] (19.8,-3.3000000000000003) rectangle (20.7,-3.293);
+\fill[gray!60] (20.8,-3.3000000000000003) rectangle (21.7,-3.261);
+\fill[blue!60] (22.0,-3.3000000000000003) rectangle (22.9,-3.298);
+\fill[gray!60] (23.0,-3.3000000000000003) rectangle (23.9,-3.283);
 \node[anchor=east] at (-0.3,-4.1000000000000005) {same word};
-\fill[blue!60] (0.0,-4.4) rectangle (0.9,-4.145);
-\fill[gray!60] (1.0,-4.4) rectangle (1.9,-4.379);
-\fill[blue!60] (2.2,-4.4) rectangle (3.1,-4.234);
-\fill[gray!60] (3.2,-4.4) rectangle (4.1,-4.374);
-\fill[blue!60] (4.4,-4.4) rectangle (5.3,-4.310);
-\fill[gray!60] (5.4,-4.4) rectangle (6.3,-4.359);
-\fill[blue!60] (6.6,-4.4) rectangle (7.5,-4.341);
-\fill[gray!60] (7.6,-4.4) rectangle (8.5,-4.343);
-\fill[blue!60] (8.8,-4.4) rectangle (9.7,-4.328);
-\fill[gray!60] (9.8,-4.4) rectangle (10.7,-4.240);
-\fill[blue!60] (11.0,-4.4) rectangle (11.9,-4.349);
-\fill[gray!60] (12.0,-4.4) rectangle (12.9,-4.247);
-\fill[blue!60] (13.2,-4.4) rectangle (14.1,-4.350);
-\fill[gray!60] (14.2,-4.4) rectangle (15.1,-4.160);
-\fill[blue!60] (15.4,-4.4) rectangle (16.3,-4.338);
-\fill[gray!60] (16.4,-4.4) rectangle (17.3,-4.269);
-\fill[blue!60] (17.6,-4.4) rectangle (18.5,-4.321);
-\fill[gray!60] (18.6,-4.4) rectangle (19.5,-4.336);
-\fill[blue!60] (19.8,-4.4) rectangle (20.7,-4.383);
-\fill[gray!60] (20.8,-4.4) rectangle (21.7,-4.394);
-\fill[blue!60] (22.0,-4.4) rectangle (22.9,-4.400);
-\fill[gray!60] (23.0,-4.4) rectangle (23.9,-4.400);
+\fill[blue!60] (0.0,-4.4) rectangle (0.9,-4.071);
+\fill[gray!60] (1.0,-4.4) rectangle (1.9,-4.369);
+\fill[blue!60] (2.2,-4.4) rectangle (3.1,-4.254);
+\fill[gray!60] (3.2,-4.4) rectangle (4.1,-4.375);
+\fill[blue!60] (4.4,-4.4) rectangle (5.3,-4.321);
+\fill[gray!60] (5.4,-4.4) rectangle (6.3,-4.363);
+\fill[blue!60] (6.6,-4.4) rectangle (7.5,-4.349);
+\fill[gray!60] (7.6,-4.4) rectangle (8.5,-4.350);
+\fill[blue!60] (8.8,-4.4) rectangle (9.7,-4.336);
+\fill[gray!60] (9.8,-4.4) rectangle (10.7,-4.262);
+\fill[blue!60] (11.0,-4.4) rectangle (11.9,-4.355);
+\fill[gray!60] (12.0,-4.4) rectangle (12.9,-4.266);
+\fill[blue!60] (13.2,-4.4) rectangle (14.1,-4.355);
+\fill[gray!60] (14.2,-4.4) rectangle (15.1,-4.182);
+\fill[blue!60] (15.4,-4.4) rectangle (16.3,-4.345);
+\fill[gray!60] (16.4,-4.4) rectangle (17.3,-4.272);
+\fill[blue!60] (17.6,-4.4) rectangle (18.5,-4.330);
+\fill[gray!60] (18.6,-4.4) rectangle (19.5,-4.309);
+\fill[blue!60] (19.8,-4.4) rectangle (20.7,-4.384);
+\fill[gray!60] (20.8,-4.4) rectangle (21.7,-4.367);
+\fill[blue!60] (22.0,-4.4) rectangle (22.9,-4.399);
+\fill[gray!60] (23.0,-4.4) rectangle (23.9,-4.385);
 \node at (1.0,-4.6499999999999995) {0};
 \node at (3.2,-4.6499999999999995) {1};
 \node at (5.4,-4.6499999999999995) {2};
@@ -511,6 +603,6 @@ same word and bit & 0.000 & [0.000, 0.000] \\
 \node at (20.8,-4.6499999999999995) {24-31};
 \node at (23.0,-4.6499999999999995) {32-254};
 \end{tikzpicture}
-\caption{Round 7 (exploratory): distribution of the placed Manhattan distance (CLB units, mean over 10 stock seeds) of pairs with the HDL relation (blue) and without it (gray), per relation, pooled over designs; bars are shares of each group.}
+\caption{Round 7 (exploratory): distribution of the placed Manhattan distance (CLB units, mean over ten stock seeds) of pairs with the HDL relation (blue) and without it (gray), per relation, pooled over designs; bars are shares of each group.}
 \label{fig:r7dist}
 \end{figure}

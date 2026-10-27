@@ -1,21 +1,25 @@
 \subsection{Round seven: what the data says and what it cannot say}
 \label{sec:r7-discussion}
-\textbf{Hindsight gap.} On 1 of 10 designs the whole 95\% interval of the wirelength gap lies above one; the median gap is 1.000.
-On the known-optimum constructions the procedure recovers a median of 0.52 of the wirelength gap of the designs that have one
-(12 designs), so it reaches a clustering about as good as the construction's; on real designs it is a best-known reference, not an optimum
-(the procedure keeps CLB positions of one placement fixed, uses an approximate capacity, leaves carry-chain CLBs alone, and picks the arm and source run
-by the objective it reports).
+\textbf{Hindsight gap.} The \code{.net} procedure finds a gain on 6 of 11 VTR designs; on those the median wirelength gap (net0 over the arm, in sample) is 1.049,
+critical-path-delay gap 1.041, CLB-count gap 1.042. On the other designs it found no gain, which is a statement about this procedure (a greedy move or swap of logic elements within
+distance two from one placement), not about the packer. On the known-optimum constructions the procedure recovers a median of 0.35 of the wirelength gap (8 designs with a gap to recover; Table~\ref{tab:r7calibB} by size),
+so it falls well short of the construction's clustering and the real-design gap is a best-known reference, not an optimum
+(the procedure keeps CLB positions of one placement fixed, leaves carry-chain CLBs alone, and picks the arm and source run by the objective it reports).
+Why stock over known is 1.20 to 1.95 here against round five's headline of
+about 1.22: round five's geometric mean is over all 72 designs, whose chain and random topologies have no gap (chain 1.004, random 1.019) while mesh and tree sit at 1.423 and 1.522
+(\code{r5-results.tex}, topology paragraph); this round uses only mesh and tree, and the flow and the known arm are the same (\code{scripts/r5.py} \code{arm\_run} and \code{scripts/r7.py} \code{run\_arm} both use VPR's default flow and weight 100):
+the stock-over-known wirelength agrees with round five's on the same designs within a factor of 0.973 to 1.078 (12 designs).
 
-\textbf{Duplication.} The median share of duplication candidates within 5\% of the critical-path delay is 0.1\%, and the upper estimate of
-the delay all candidate hops would save is 3.3\% of the critical-path delay (median over designs, stock runs); this is a deliberately optimistic
-bound from the 200 reported paths.
+\textbf{Out-of-sample check (affinity-bias arm).} Choosing the arm on seeds 1 to 5 and evaluating stock over arm on seeds 6 to 10 finds no gain on 7 of 11 designs; on the other 4 the median wirelength gap is 0.980 (in-sample median on the same designs 0.997).
 
-\textbf{Mining (exploratory).} A model with HDL features, tested on held-out designs, changes the hindsight co-location AUC by 0.070
-[0.026, 0.128] over a baseline with net connectivity and criticality, against -0.003 [-0.004, -0.002] when the HDL
-labels are shuffled. Table~\ref{tab:r3status}'s result (same word and same module sit closer than the nets predict) re-measured here holds at the levels
-same instance, depth 1, same instance (full path), same statement, same word (negative median and at most 5\% of the shuffles at or below it). The relations tested are those in
+\textbf{Duplication.} The share of duplication candidates within 5\% of the critical-path delay is zero on 6 of 11 designs and the median over designs is 0.0\%; since criticality comes from the 200 reported
+paths this share is a lower bound. The upper estimate of the delay all candidate hops would save is 0.0\% of the critical-path delay (median over designs, stock runs); it is an upper bound per hop, because it makes every candidate hop free.
+
+\textbf{Mining (exploratory).} A model with HDL features, tested on held-out families (variant net\_gain, 6 designs), changes the hindsight co-location AUC on connected pairs by 0.004 (median 0.002) [0.001, 0.009] over a baseline with net connectivity, criticality and the stock clustering's own co-location and distance, against -0.000 [-0.002, 0.002] when the HDL labels are shuffled. Table~\ref{tab:r3status}'s result (same word and same module sit closer than the nets predict) re-measured here holds at the levels
+same instance, depth 1, same statement, same word (negative median and at most 5\% of the shuffles at or below it); the instance chain has depth 1 in every design, so the instance levels of depth 1 and of the full path are the same relation and deeper levels do not exist. The relations tested are those in
 the provenance names and the word file; module type names are not in the BLIF, so ``module'' means the instance path. Peter's bit-level hint is
-answered by the rows of Table~\ref{tab:r7coef} and the ``bit'' rows of Table~\ref{tab:r7model}.
+answered by the rows of Table~\ref{tab:r7coef} and the ``bit'' rows of the model tables. Models are held out by design family (stereovision0 to 3, diffeq1 and 2, and the mk* modules each form a family), so a
+sibling never trains the model that is tested on it.
 
 \textbf{Limits.} Best-known, not optimal. One architecture. VTR designs only; the big VTR designs were not run. The pair universe is a sample (all
 co-located pairs, a sample of connected pairs and a uniform sample), the evaluation set is the two unbiased samples, and the 200 reported timing paths bound
