@@ -35,6 +35,8 @@ ap.add_argument("--sa-temp", type=float, default=1.0)
 ap.add_argument("--redo-failed", action="store_true", help="drop failed records (kept under first_attempt_failures) and, for a converter older than section 10.7, all ext_* records")
 ap.add_argument("--max-rss-gb", type=float, default=13.0)
 args = ap.parse_args()
+if not Path("/usr/bin/time").is_file():
+    sys.exit("placers_main.py: /usr/bin/time (GNU time, package 'time') is required: every step's time and peak RSS come from `/usr/bin/time -v`")
 
 WORK = Path(args.work)
 SEEDS = [int(s) for s in args.seeds.split(",")]
@@ -46,9 +48,13 @@ NPNR = os.environ.get("NEXTPNR_K6", f"{TMP}/nextpnr-k6-build/nextpnr-generic")
 LIBS = os.environ.get("NEXTPNR_LIBS", f"{TMP}/nextpnr-deps/prefix/lib")
 NP_LOCK_AFTER_S = 600.0  # a nextpnr run expected to exceed this (an earlier run of the same arm and design did) takes the Norns lock, like VPR
 HERE = Path(__file__).resolve().parent
+NPNR_COPY = Path(NPNR).resolve().parent.parent / "nextpnr-k6-src"  # the git-archive copy of the nextpnr clone that nextpnr-generic was built from
 NEXTPNR_SRC = Path(os.environ.get("NEXTPNR_SRC", str(nl.WS_ROOT / "external" / "nextpnr")))  # the clone nextpnr-k6 was exported from (read only)
 VPR_TREE = Path(os.environ.get("NORNS_VTR", str(VPR.parents[2])))  # source tree of the VPR binary
-STEPS: list[dict] = []  # tool steps since the last record was written (see write_record)
+STEPS: list[dict] = []  # tool steps of the run being recorded (see write_record)
+PRE: dict[Path, list[dict]] = {}  # steps that made an input file (the collapsed flat placement), added to the record of the run that reads it
+NEXTPNR_OVERLAY = ("generic/viaduct/k6/constids.inc", "generic/viaduct/k6/k6.cc", "generic/CMakeLists.txt.orig")  # files build.sh adds to the build copy
+NEXTPNR_PATCHED = {"generic/CMakeLists.txt": ("viaduct/k6/constids.inc", "viaduct/k6/k6.cc")}  # the tracked file build.sh patches: the lines it may add
 TOOLS: dict[str, dict] = {}  # tool entries, computed once per process
 RX = {
     "pack_s": re.compile(r"#+ Packing took ([0-9.]+) seconds"),
@@ -79,7 +85,7 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + argv
     rc = nl.run(cmd, cwd=cwd, stdout=log, timeout=7200)
     secs, rss = rr.parse_time_v(tfile.read_text(errors="replace")) if tfile.exists() else (0.0, 0.0)
-    STEPS.append({"kind": "vpr", "argv": argv, "rc": rc, "secs": secs, "rss": rss, "log": log})
+    STEPS.append({"kind": "vpr", "argv": argv, "rc": rc, "secs": secs, "rss": rss, "log": log, "locked": True})
     text = log.read_text(errors="replace")
     rec = {"rc": rc}
     for k, rx in RX.items():
@@ -108,50 +114,78 @@ def tool(name):
         if name == "vpr":
             TOOLS[name] = rr.tool_entry(VPR_TREE, VPR)
         elif name == "nextpnr":
-            TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS}, copy=Path(NPNR).resolve().parent.parent / "nextpnr-k6-src",
-                                        copy_allowed=("generic/CMakeLists.txt",))  # build.sh patches this file (two lines); the k6 overlay dir is added, not tracked
+            TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS}, copy=NPNR_COPY, copy_allowed_extra=NEXTPNR_OVERLAY, copy_exempt=NEXTPNR_PATCHED)  # build.sh patches one tracked file (two lines) and adds the k6 overlay
         else:  # the Norns scripts, run from this checkout
             TOOLS[name] = rr.tool_entry(nl.WS, Path(__file__), version_args=None)
     return TOOLS[name]
 
 
-def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, artifacts=None, placer=None):
-    """Write <cwd>/mimir-run.json from the tool steps run since the last record (docs/specs/2026-10-28-mimir-run-record.md in mimirIII)."""
-    steps, STEPS[:] = list(STEPS), []
-    r = rr.RunRecorder(f"norns-placers-{args.tag}", design, arm, seed, family, nl.ARCH.stem,
-                       roots={"run": cwd, "work": WORK, "norns_vtr": VPR_TREE, "vtr": nl.VTR_ROOT, "runs": nl.RUNS, "tmp": Path(TMP)},
-                       roles={Path(NPNR): "<nextpnr>", VPR: "<vpr>", nl.ARCH: "<arch>", blif: "<blif>"} | {Path(k): v for k, v in (roles or {}).items()})
-    for s in steps:
-        r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], locked=True)
+def required_roles(steps):
+    """Input and artifact roles the steps of a record need; one that is missing is recorded as unknown (never dropped)."""
     kinds = {s["kind"] for s in steps}
-    for k in ("vpr", "nextpnr"):
-        if k in kinds:
-            r.add_tool(k, tool(k))
-    r.add_tool("norns", tool("norns"))
-    vsteps = [s for s in steps if s["kind"] == "vpr"]
-    if vsteps:
-        r.add_vpr_params(vsteps[-1]["argv"], vsteps[-1]["log"], VPR_TREE / "vpr/src/base/read_options.cpp", "vtr-tree")
-    nsteps = [s for s in steps if s["kind"] == "nextpnr"]
-    if nsteps:
-        r.add_nextpnr_params(nsteps[-1]["argv"], NEXTPNR_SRC, "nextpnr", placer)
-    ovl = (inputs or {}).get("overlay_k6cc_built")
-    if nsteps and ovl and Path(ovl).is_file():
-        r.param("nextpnr.overlay_k6cc_sha256", rr.file_sha256(Path(ovl)), "given", "sha256 of generic/viaduct/k6/k6.cc in the build's source copy")
-    r.add_input("netlist", blif)
-    r.add_input("arch", nl.ARCH)
-    for role, path in (inputs or {}).items():
-        r.add_input(role, path)
-    for role, path in (artifacts or {}).items():
-        r.add_artifact(role, path)
-    r.write(cwd / "mimir-run.json")
+    ins, outs = ["netlist", "arch"], []
+    for s in steps:
+        if s["kind"] == "nextpnr":
+            ins += ["nextpnr_json", "reference_flat_place", "overlay_k6cc_built", "overlay_k6cc_repo"] + (["anchors"] if any("anchors=" in a for a in s["argv"]) else [])
+            outs += ["nextpnr_log"] + (["placed_json"] if s["rc"] == 0 else [])
+        if s["kind"] == "vpr":
+            outs += ["vpr_out"] + (["flat_place"] if "--write_flat_place" in s["argv"] else [])
+            ins += ["read_flat_place"] if "--read_flat_place" in s["argv"] else []
+    return tuple(dict.fromkeys(ins)), tuple(dict.fromkeys(outs))
 
 
-def run_py(script, *a):
+def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, artifacts=None, placer=None):
+    """Write <cwd>/mimir-run.json from the tool steps of this run (docs/specs/2026-10-28-mimir-run-record.md in mimirIII).
+    Never raises for a record that cannot be written: no host map, or a privacy rule hit, is logged (run id, rule, key path;
+    never a value) and the record is skipped, so the sweep goes on."""
+    steps, STEPS[:] = list(STEPS), []
+    run_id = f"norns-placers-{args.tag}/{design}/{arm}/s{seed}"
+    try:
+        r = rr.RunRecorder(f"norns-placers-{args.tag}", design, arm, seed, family, nl.ARCH.stem,
+                           roots={"run": cwd, "work": WORK, "norns_vtr": VPR_TREE, "vtr": nl.VTR_ROOT, "runs": nl.RUNS, "tmp": Path(TMP)},
+                           roles={Path(NPNR): "<nextpnr>", VPR: "<vpr>", nl.ARCH: "<arch>", blif: "<blif>"} | {Path(k): v for k, v in (roles or {}).items()})
+        for s in steps:
+            r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], s["locked"], script=s.get("script"), shared=s.get("shared", False))
+        kinds = {s["kind"] for s in steps}
+        for k in ("vpr", "nextpnr"):
+            if k in kinds:
+                r.add_tool(k, tool(k))
+        r.add_tool("norns", tool("norns"))
+        vsteps = [s for s in steps if s["kind"] == "vpr"]
+        if vsteps:
+            r.add_vpr_params(vsteps[-1]["argv"], vsteps[-1]["log"], VPR_TREE, str(tool("vpr")["commit"]))
+        nsteps = [s for s in steps if s["kind"] == "nextpnr"]
+        if nsteps:
+            ovl = {"generic/viaduct/k6/k6.cc": NPNR_COPY / "generic/viaduct/k6/k6.cc"}  # the overlay as compiled
+            r.add_nextpnr_params(nsteps[-1]["argv"], NEXTPNR_SRC, str(tool("nextpnr")["commit"]), "nextpnr", placer, ovl)
+        ovl_built = (inputs or {}).get("overlay_k6cc_built")
+        if nsteps and ovl_built and Path(ovl_built).is_file():
+            r.param("nextpnr.overlay_k6cc_sha256", rr.file_sha256(Path(ovl_built)), "given", "sha256 of generic/viaduct/k6/k6.cc in the build's source copy")
+        r.add_input("netlist", blif)
+        r.add_input("arch", nl.ARCH)
+        for role, path in (inputs or {}).items():
+            r.add_input(role, path)
+        for role, path in (artifacts or {}).items():
+            r.add_artifact(role, path)
+        req_in, req_out = required_roles(steps)
+        r.write(cwd / "mimir-run.json", required_inputs=req_in, required_artifacts=req_out)
+    except rr.HostMapError as exc:
+        print(f"run record NOT written for {run_id}: {exc}", file=sys.stderr, flush=True)
+    except rr.RecordRefused as exc:
+        print(f"run record NOT written for {run_id}: privacy rule(s) hit: {'; '.join(exc.hits)}", file=sys.stderr, flush=True)
+
+
+def run_py(script, *a, sink=None, shared=False):
+    """Run a Norns script; the step (argv, script, wall time, exit code) is appended to `sink` when given."""
+    argv = [sys.executable, str(HERE / script), *a]
     t = time.time()
-    p = subprocess.run([sys.executable, str(HERE / script), *a], capture_output=True, text=True)
+    p = subprocess.run(argv, capture_output=True, text=True)
+    secs = time.time() - t
     if p.returncode:
         print(p.stdout, p.stderr, file=sys.stderr)
-    return p.returncode, time.time() - t
+    if sink is not None:
+        sink.append({"kind": Path(script).stem, "argv": argv, "rc": p.returncode, "secs": secs, "rss": None, "locked": False, "script": HERE / script, "shared": shared})
+    return p.returncode, secs
 
 
 def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10, locked=False):
@@ -169,7 +203,7 @@ def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10, locked=False):
     txt = p.stdout + p.stderr
     (cwd / "nextpnr.log").write_text(txt)
     secs, rss = rr.parse_time_v(txt)
-    STEPS.append({"kind": "nextpnr", "argv": argv, "rc": p.returncode, "secs": secs, "rss": rss, "log": cwd / "nextpnr.log"})
+    STEPS.append({"kind": "nextpnr", "argv": argv, "rc": p.returncode, "secs": secs, "rss": rss, "log": cwd / "nextpnr.log", "locked": bool(locked)})
     g = lambda rx: (float(m.group(1)) if (m := re.search(rx, txt)) else None)
     rec = {"rc": p.returncode, "wall_s": wall, "ble_per_tile": n, "no_bels": "no BELs remaining" in txt, "heap_s": g(r"HeAP Placer Time: ([0-9.]+)s"), "sa_s": g(r"SA placement time ([0-9.]+)s"),
            "init_s": g(r"Initial placement time ([0-9.]+)s"), "max_rss_kb": g(r"Maximum resident set size \(kbytes\): (\d+)")}
@@ -215,6 +249,7 @@ def process(design):
             return done[key]
         cwd = wd / (tdir or f"{arm}.s{seed}")
         STEPS.clear()
+        STEPS.extend(PRE.get(read, []) if read else [])
         rec = vpr(cwd, flags, seed, blif, write=write, read=read)
         if rec["rc"]:  # a failed run is retried once (Section 5 rule 4)
             rec = vpr(cwd, flags, seed, blif, write=write, read=read) | {"retried": True}
@@ -227,7 +262,8 @@ def process(design):
 
     def collapsed(p):
         q = p.with_name("final.collapsed.flat_place")
-        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q))
+        PRE[q] = []
+        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q), sink=PRE[q])
         return q
 
     # reference run (also the shared vpr_ap seed-1 run)
@@ -240,7 +276,8 @@ def process(design):
         save()
         return
     refc = wd / "ref.collapsed.flat_place"
-    run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(ref), "--out", str(refc), "--stats", str(wd / "ref.collapse.json"))
+    ref_steps = []  # steps run once per design that every external arm of the design reads (marked shared in the records)
+    run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(ref), "--out", str(refc), "--stats", str(wd / "ref.collapse.json"), sink=ref_steps, shared=True)
     out["chain_collapse_ref"] = json.loads((wd / "ref.collapse.json").read_text())
     ext = nl.ensure_dir(wd / "ext")
     js, anchors = ext / f"{design}.json", ext / f"{design}.json.anchors.txt"
@@ -248,7 +285,7 @@ def process(design):
     # the converter output is valid only for the reference file it was built from (a stale JSON gave anchor_moved 1404 on stereovision2, section 10.10)
     if not out["converter"].get("ok") or not js.exists() or out["converter"].get("ref_sha256") != ref_sha:
         rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(refc), "--out", str(js),
-                         "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors))
+                         "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors), sink=ref_steps, shared=True)
         st = json.loads((ext / "convert_stats.json").read_text()) if (ext / "convert_stats.json").exists() else {}
         out["converter"] = {"rc": rc, "seconds": sec, "ref_sha256": ref_sha, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
         save()
@@ -284,6 +321,7 @@ def process(design):
                     tag = f"{arm}.s{s}" + (f".t{T:g}" if T is not None else "")
                     cwd = wd / tag
                     STEPS.clear()
+                    STEPS.extend(ref_steps)
                     slow = any((r.get("nextpnr") or {}).get("wall_s", 0) > NP_LOCK_AFTER_S for r in out["runs"] if r["arm"] == arm)
                     def npr(T=T, s=s, arm=arm, placer=placer, cwd=cwd):
                         ovl = Path(NPNR).resolve().parent.parent / "nextpnr-k6-src/generic/viaduct/k6/k6.cc"  # the overlay copy that was compiled
@@ -307,7 +345,7 @@ def process(design):
                         record(rec)
                         continue
                     rc2, sec2 = run_py("nextpnr_readback.py", "--json", str(cwd / "placed.json"), "--ref", str(refc), "--fixed", str(js) + ".fixed.txt",
-                                       "--out", str(cwd / "ext.flat_place"), "--stats", str(cwd / "rb.json"))
+                                       "--out", str(cwd / "ext.flat_place"), "--stats", str(cwd / "rb.json"), sink=STEPS)
                     rec["readback"] = json.loads((cwd / "rb.json").read_text()) if (cwd / "rb.json").exists() else {}
                     rec["readback_s"] = sec2
                     bad_rb = {k: rec["readback"].get(k) for k in ("fallback_ref", "const_verbatim", "anchor_moved", "pad_moved") if rec["readback"].get(k)}

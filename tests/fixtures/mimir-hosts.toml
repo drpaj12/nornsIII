@@ -1,0 +1,4 @@
+# Private map of real host names to aliases. Never commit this file.
+[hosts]
+"alpha-box" = "host-1"
+"we\"ird\\name" = "host-2"

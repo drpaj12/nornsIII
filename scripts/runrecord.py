@@ -6,15 +6,21 @@ sha256 and `--version` text, the exact command lines (paths replaced by placehol
 The format is specified in mimirIII, docs/specs/2026-10-28-mimir-run-record.md (record_version 1); the
 importer is `mimir import-runrecords`. Nothing here deletes a file.
 
-    rec = RunRecorder(source, design, arm, seed, family, arch, roots={"run": cwd, ...})
-    rec.add_step(name, argv, rc, time_s, rss_mib)         # one per tool run (vpr, nextpnr)
-    rec.add_tool("vpr", tree, binary, ...)                # commit, clean flag, binary sha256 and version text
-    rec.add_vpr_params(argv, log) / rec.add_nextpnr_params(argv, tree)
+    rec = RunRecorder(source, design, arm, seed, family, arch, roots={"run": cwd, ...})   # HostMapError: no host map
+    rec.add_step(name, argv, rc, time_s, rss_mib, locked=...)   # one per tool run (vpr, nextpnr, scripts)
+    rec.add_tool("vpr", tool_entry(tree, binary, ...))          # commit, clean flag, binary sha256 and version text
+    rec.add_vpr_params(argv, log, tree, commit) / rec.add_nextpnr_params(argv, tree, commit, label, placer, ...)
     rec.add_input(role, path) / rec.add_artifact(role, path)
-    rec.write(cwd / "mimir-run.json")
+    rec.write(cwd / "mimir-run.json", required_inputs=..., required_artifacts=...)   # RecordRefused: privacy rule hit
+
+Conf values are those of the Mimir schema: given, default (cited file:line at a named commit), default-unrecorded,
+unknown. A value only inferred (for example a commit of a source tree that was dirty when the binary was built)
+is recorded `unknown` with the source starting `inferred at record time`.
 """
 from __future__ import annotations
 
+import difflib
+import fcntl
 import getpass
 import hashlib
 import json
@@ -22,8 +28,8 @@ import os
 import platform
 import re
 import subprocess
-import time
 import tempfile
+import time
 import tomllib
 from pathlib import Path
 
@@ -31,31 +37,93 @@ RECORD_VERSION = 1
 SHA40 = re.compile(r"[0-9a-f]{40}")
 OPT_LINE = re.compile(r"^([A-Za-z_]\w*\.[\w.]+)\s*[:=]\s*(.*)$")
 VPR_OPTIONS_HEAD = "VPR was run with the following options:"
-UNMAPPED = "host-unmapped"
+ALIAS_RE = re.compile(r"host-\d+")
+# an absolute path in a value (spec section 6): a slash that starts the string or follows a blank, `=`, `,`, `;`,
+# `:`, a quote or a bracket and is followed by a path character; /dev/null is allowed
+ABS_PATH = re.compile(r"(?:^|[\s=,;:'\"(\[])/(?!dev/null(?![\w.-]))[\w.~-]")
+MAX_LISTED_DIFFS = 50
 
 
-# ---------------------------------------------------------------- host alias
+# ---------------------------------------------------------------- host alias (docs/specs/2026-10-28-mimir-host-alias.md)
 
-def host_alias(real: str | None = None, map_path: str | None = None) -> str:
-    """The alias of this host from the TOML map in $MIMIR_HOST_MAP (`"real name" = "host-1"`, flat or in a
-    [hosts] table). An unknown host gets the next `host-<n>` and is appended; no map gives `host-unmapped`.
-    The real name is never returned."""
-    real = real or platform.node()
-    path = map_path or os.environ.get("MIMIR_HOST_MAP", "")
-    if not path:
-        return UNMAPPED
-    p = Path(path)
-    data = tomllib.loads(p.read_text(encoding="utf-8")) if p.is_file() else {}
-    table = data.get("hosts", data)
-    for name, alias in table.items():
-        if isinstance(alias, str) and name.lower() == real.lower():
-            return alias
-    nums = [int(m.group(1)) for v in table.values() if isinstance(v, str) and (m := re.fullmatch(r"host-(\d+)", v))]
-    alias = f"host-{max(nums, default=0) + 1}"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    with p.open("a", encoding="utf-8") as fh:
-        fh.write(f'"{real}" = "{alias}"\n')
-    return alias
+class HostMapError(Exception):
+    """The host map is not set, missing or unusable: no record is written."""
+
+
+class RecordRefused(Exception):
+    """The record holds a private string or an absolute path; `hits` are 'rule at key.path' texts (never a value)."""
+
+    def __init__(self, hits: list[str]):
+        super().__init__("; ".join(hits))
+        self.hits = hits
+
+
+def map_path() -> Path:
+    """$MIMIR_HOST_MAP, else work/mimir-data/remote-private/hosts.toml of the workspace (Mimir's rule)."""
+    env = os.environ.get("MIMIR_HOST_MAP")
+    return Path(env) if env else Path.home() / "odin3-ws" / "work" / "mimir-data" / "remote-private" / "hosts.toml"
+
+
+def _read_hosts(path: Path) -> dict[str, str]:
+    table = tomllib.loads(path.read_text(encoding="utf-8")).get("hosts", {})
+    return {str(k).lower(): str(v) for k, v in table.items()}
+
+
+def host_table(path: Path | None = None) -> dict[str, str]:
+    """Lower-cased real name -> alias of the [hosts] table, read under a shared flock when the lock file exists.
+    HostMapError (naming MIMIR_HOST_MAP) when the map does not exist: an absent map is never an empty one."""
+    path = path or map_path()
+    if not path.is_file():
+        raise HostMapError(f"host map '{path.name}' does not exist: set MIMIR_HOST_MAP to the private map "
+                           "(created only by `mimir host-alias --init`); no run record is written without it")
+    lock = path.with_name(path.name + ".lock")
+    if not lock.exists():
+        return _read_hosts(path)
+    fd = os.open(lock, os.O_RDWR)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_SH)
+        return _read_hosts(path)
+    finally:
+        os.close(fd)
+
+
+def host_alias(real: str | None = None, path: Path | None = None) -> str:
+    """The alias of a host (this one by default) from the map; an alias maps to itself. A name that is not in the
+    map gets `host-<max+1>` and one line is appended, as Mimir's `hostalias.alias_of` does: exclusive flock on
+    `<map>.lock` (mode 600), the map re-read inside the lock, `O_APPEND` and `fsync`. The real name is never returned."""
+    real = (real or platform.node()).strip()
+    if not real:
+        raise HostMapError("empty host name")
+    if ALIAS_RE.fullmatch(real):
+        return real
+    path = path or map_path()
+    key = real.lower()
+    table = host_table(path)
+    if key in table:
+        return table[key]
+    lock = path.with_name(path.name + ".lock")
+    fd = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        os.fchmod(fd, 0o600)
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        table = _read_hosts(path)
+        if key in table:
+            return table[key]
+        used = [int(a.split("-")[1]) for a in table.values() if ALIAS_RE.fullmatch(a)]
+        alias = f"host-{max(used, default=0) + 1}"
+        line = f"{json.dumps(key)} = {json.dumps(alias)}\n"  # a JSON string is a TOML basic string
+        if path.stat().st_size and path.read_bytes()[-1:] != b"\n":
+            line = "\n" + line  # an append never joins the last line of a map that lacks its final newline
+        afd = os.open(path, os.O_WRONLY | os.O_APPEND)
+        try:
+            os.fchmod(afd, 0o600)
+            os.write(afd, line.encode("utf-8"))
+            os.fsync(afd)
+        finally:
+            os.close(afd)
+        return alias
+    finally:
+        os.close(fd)  # closing releases the lock
 
 
 # ---------------------------------------------------------------- git and binaries
@@ -63,6 +131,14 @@ def host_alias(real: str | None = None, map_path: str | None = None) -> str:
 def git(root: Path, *args: str) -> str:
     res = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True, check=False)
     return res.stdout.strip() if res.returncode == 0 else ""
+
+
+def git_show(root: Path | None, commit: str, path: str) -> list[str] | None:
+    """Lines of `path` as committed at `commit` (None when there is no tree, commit or file)."""
+    if root is None or not commit:
+        return None
+    res = subprocess.run(["git", "-C", str(root), "show", f"{commit}:{path}"], capture_output=True, text=True, errors="replace", check=False)
+    return res.stdout.split("\n") if res.returncode == 0 else None
 
 
 def file_sha256(path: Path) -> str:
@@ -73,24 +149,56 @@ def file_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def copy_differs(tree: Path, copy: Path) -> list[str]:
-    """Paths (tracked at HEAD of `tree`) whose content in the exported copy `copy` differs from HEAD or is
-    missing: the check that a `git archive` copy used for the build is the tree's HEAD."""
+def copy_state(tree: Path, copy: Path, allowed_extra: tuple[str, ...] = (), exempt: dict[str, tuple[str, ...]] | None = None) -> dict[str, object]:
+    """How a `git archive` copy used for a build differs from HEAD of `tree`:
+    `differs` (tracked paths whose content differs or that are missing), `extra` (files in the copy that HEAD lacks),
+    `sha256` (of each differing or extra file present), `unlisted` (the differences that are not listed exemptions)
+    and `is_head` (no unlisted difference). An exemption `exempt[path]` holds the lines the build may add to that
+    tracked file (checked by content: nothing removed, nothing else added); `allowed_extra` are extra files the
+    build adds (an overlay). Both kinds stay recorded and hashed."""
+    exempt = exempt or {}
     listing = git(tree, "ls-tree", "-r", "-z", "HEAD")
     entries = [e.split("\t", 1) for e in listing.split("\0") if e and not e.startswith("160000")]
-    paths = [p for _, p in entries if (copy / p).is_file()]
-    res = subprocess.run(["git", "-C", str(copy), "hash-object", "--no-filters", "--stdin-paths"], input="\n".join(paths) + "\n",
+    tracked = {p for _, p in entries}
+    present = [p for _, p in entries if (copy / p).is_file()]
+    res = subprocess.run(["git", "-C", str(copy), "hash-object", "--no-filters", "--stdin-paths"], input="\n".join(present) + "\n",
                          capture_output=True, text=True, check=False)
-    got = dict(zip(paths, res.stdout.split()))
-    out = [p for meta, p in entries if (copy / p).is_file() and meta.split()[2] != got.get(p)]
-    return sorted(out + [p for _, p in entries if not (copy / p).is_file()])
+    got = dict(zip(present, res.stdout.split()))
+    differs = sorted([p for meta, p in entries if (copy / p).is_file() and meta.split()[2] != got.get(p)] + [p for _, p in entries if not (copy / p).is_file()])
+    extra = []
+    for dirpath, dirnames, filenames in os.walk(copy):
+        dirnames[:] = [d for d in dirnames if d != ".git"]
+        for f in filenames:
+            rel = os.path.relpath(os.path.join(dirpath, f), copy).replace(os.sep, "/")
+            if rel not in tracked:
+                extra.append(rel)
+    extra.sort()
+    unlisted = [p for p in extra if p not in allowed_extra]
+    for p in differs:
+        if p not in exempt or not (copy / p).is_file():
+            unlisted.append(p)
+            continue
+        old = [ln.rstrip("\n") for ln in (git_show(tree, "HEAD", p) or [])]
+        new = (copy / p).read_text(encoding="utf-8", errors="replace").split("\n")
+        changes = [d for d in difflib.unified_diff(old, new, lineterm="", n=0) if d[:1] in "+-" and d[:3] not in ("+++", "---")]
+        if any(d[0] == "-" or d[1:].strip() not in exempt[p] for d in changes):
+            unlisted.append(p)
+    sha = {p: file_sha256(copy / p) for p in differs + extra if (copy / p).is_file()}
+    return {"differs": differs, "extra": extra, "sha256": sha, "unlisted": sorted(set(unlisted)), "is_head": not unlisted}
+
+
+def copy_differs(tree: Path, copy: Path) -> list[str]:
+    """Tracked paths of `tree` at HEAD whose content in the copy differs or is missing."""
+    return list(copy_state(tree, copy)["differs"])  # type: ignore[arg-type]
 
 
 def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = None, version_args: tuple[str, ...] | None = ("--version",),
-               copy: Path | None = None, copy_allowed: tuple[str, ...] = ()) -> dict[str, object]:
-    """Facts about one tool: HEAD of its source tree and how it was found, whether the tree is clean (and the
-    sha256 of its diff when it is not), the binary's sha256 and `--version` text, and whether that text
-    names the tree's HEAD (the evidence that the binary was built from it)."""
+               copy: Path | None = None, copy_allowed_extra: tuple[str, ...] = (), copy_exempt: dict[str, tuple[str, ...]] | None = None) -> dict[str, object]:
+    """Facts about one tool: HEAD of its source tree and how it was found, whether the tree is clean AT RECORD TIME
+    (and the sha256 of its diff when it is not), the binary's sha256 and `--version` text, whether that text names
+    the tree's HEAD, and whether the text says the binary was built from a dirty tree (`built_dirty`, from the
+    `-dirty` suffix of the version; None when unknown). For a tool built from a `git archive` copy: `build_copy`
+    (see copy_state)."""
     head = git(tree, "rev-parse", "HEAD") if tree else ""
     head = head if SHA40.fullmatch(head) else ""
     clean = None
@@ -104,33 +212,39 @@ def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = Non
         res = subprocess.run([str(binary), *version_args], capture_output=True, text=True, check=False, timeout=60, cwd=tempfile.gettempdir(),
                              env={**os.environ, **(env or {})})
         version = (res.stdout + res.stderr).strip()
-    differs = copy_differs(tree, copy) if (copy and tree and head and copy.is_dir()) else None
+    bc = copy_state(tree, copy, copy_allowed_extra, copy_exempt) if (copy and tree and head and copy.is_dir()) else None
     return {"commit": head, "commit_how": "git rev-parse HEAD of the source tree" if head else "no git source tree",
             "clean": clean, "dirty_diff_sha256": diff_sha,
             "binary_sha256": file_sha256(binary) if binary.is_file() else "",
             "binary_version": version,
+            "built_dirty": (re.search(r"-dirty\b", version) is not None) if version else None,
             # a script run from its tree (version_args None) is that tree's HEAD when the tree is clean
             "version_names_commit": (clean is True) if version_args is None else (bool(head) and head[:10] in version),
-            # a tool built from a `git archive` copy of the tree: the copy equals HEAD but for the listed overlay paths
-            "build_copy_differs": differs, "build_copy_is_head": differs is not None and set(differs) <= set(copy_allowed)}
+            "is_script": version_args is None,
+            "build_copy": bc, "build_copy_is_head": bool(bc and bc["is_head"])}
 
 
-def parse_time_v(text: str) -> tuple[float, float]:
-    """(elapsed wall seconds, peak RSS MiB) from `/usr/bin/time -v` output; (0, 0) when absent."""
+def parse_time_v(text: str) -> tuple[float | None, float | None]:
+    """(elapsed wall seconds, peak RSS MiB) from `/usr/bin/time -v` output; None for a value that is absent."""
     el = re.search(r"Elapsed \(wall clock\) time \(h:mm:ss or m:ss\): ([0-9:.]+)", text)
     rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", text)
-    secs = 0.0
+    secs = None
     if el:
+        secs = 0.0
         for part in el.group(1).split(":"):
             secs = secs * 60 + float(part)
-    return secs, (int(rss.group(1)) / 1024.0 if rss else 0.0)
+    return secs, (int(rss.group(1)) / 1024.0 if rss else None)
 
 
-# ---------------------------------------------------------------- defaults read from tool source
+# ---------------------------------------------------------------- defaults read from tool source at a commit
 
-def option_default(src: Path, option: str) -> tuple[str, str] | None:
-    """(value, 'first-last') of the `.default_value("x")` after the argparse entry of `option` in a VPR source file."""
-    lines = src.read_text(encoding="utf-8", errors="replace").split("\n") if src.is_file() else []
+def option_default(src: Path, option: str, commit: str = "", rel: str = "") -> tuple[str, str] | None:
+    """(value, 'first-last') of the `.default_value("x")` after the argparse entry of `option` in a VPR source file:
+    the file as committed at `commit` of the tree `src` when `commit` and `rel` are given, else the file `src`."""
+    if commit and rel:
+        lines = git_show(src, commit, rel) or []
+    else:
+        lines = src.read_text(encoding="utf-8", errors="replace").split("\n") if src.is_file() else []
     for i, ln in enumerate(lines):
         if f'"{option}")' in ln:
             for j in range(i, min(i + 20, len(lines))):
@@ -147,27 +261,92 @@ def line_of(src: Path, needle: str) -> int:
     return next((i + 1 for i, ln in enumerate(lines) if needle in ln), 0)
 
 
-# nextpnr defaults: (key, value, file in the nextpnr tree, text of the line that sets it)
-NEXTPNR_COMMON = (
-    ("timing_driven", "true", "common/kernel/command.cc", 'ctx->settings[ctx->id("timing_driven")] = true;'),
-    ("target_freq", "12e6", "common/kernel/command.cc", 'ctx->settings[ctx->id("target_freq")] = std::to_string(12e6);'),
-)
-NEXTPNR_HEAP = (
-    ("placerHeap/alpha", "0.1", "common/kernel/command.cc", 'ctx->settings[ctx->id("placerHeap/alpha")] = std::to_string(0.1);'),
-    ("placerHeap/beta", "0.9", "common/kernel/command.cc", 'ctx->settings[ctx->id("placerHeap/beta")] = std::to_string(0.9);'),
-    ("placerHeap/criticalityExponent", "2", "common/kernel/command.cc", 'ctx->settings[ctx->id("placerHeap/criticalityExponent")] = std::to_string(2);'),
-    ("placerHeap/timingWeight", "10", "common/kernel/command.cc", 'ctx->settings[ctx->id("placerHeap/timingWeight")] = std::to_string(10);'),
-    ("placerHeap/parallelRefine", "false", "common/place/placer_heap.cc", 'ctx->setting<bool>("placerHeap/parallelRefine", false)'),
-    ("placerHeap/netShareWeight", "0", "common/place/placer_heap.cc", 'ctx->setting<float>("placerHeap/netShareWeight", 0)'),
-    ("placerHeap/noCtrlSet", "false", "common/place/placer_heap.cc", 'ctx->setting<bool>("placerHeap/noCtrlSet", false)'),
-    ("placerHeap/cellPlacementTimeout", "8", "common/place/placer_heap.cc", 'ctx->setting<int>("placerHeap/cellPlacementTimeout", 8)'),
-)
-NEXTPNR_SA = (
-    ("placer1/constraintWeight", "10", "common/place/placer1.cc", 'ctx->setting<float>("placer1/constraintWeight", 10)'),
-    ("placer1/netShareWeight", "0", "common/place/placer1.cc", 'ctx->setting<float>("placer1/netShareWeight", 0)'),
-    ("placer1/minBelsForGridPick", "64", "common/place/placer1.cc", 'ctx->setting<int>("placer1/minBelsForGridPick", 64)'),
-    ("placer1/startTemp", "1", "common/place/placer1.cc", 'ctx->setting<float>("placer1/startTemp", 1)'),
-)
+# nextpnr: the settings the generic arch's flow reads (placers, timing, packing). The files are listed here, the
+# settings in them are enumerated from the source at the recorded commit (enumerate_settings).
+NEXTPNR_COMMON_FILES = ("common/kernel/command.cc", "common/kernel/timing.cc", "common/kernel/timing_log.cc", "common/place/place_common.cc",
+                        "common/place/detail_place_core.cc", "common/place/parallel_refine.cc", "generic/pack.cc", "generic/arch.cc", "generic/main.cc")
+NEXTPNR_PLACER_FILE = {"heap": "common/place/placer_heap.cc", "sa": "common/place/placer1.cc"}
+NEXTPNR_HELPERS = "common/kernel/util.h"  # `bool_or_default(..., bool def = false)` and the like
+COMMAND_CC = "common/kernel/command.cc"
+# the flag that sets a setting (verified against command.cc by cli_settings)
+SEED_SETTING = "seed"  # `--seed` is read by `ctx->rngseed` (command.cc), not stored as a setting by the flag itself
+LITERAL = re.compile(r"[-+]?\d+(?:\.\d*)?(?:[eE][-+]?\d+)?[fFuUlL]*|true|false|\"[^\"]*\"")
+
+
+def _balanced(text: str, start: int) -> str:
+    """Text between the parenthesis at text[start - 1] and its match."""
+    depth, i = 1, start
+    while i < len(text) and depth:
+        depth += {"(": 1, ")": -1}.get(text[i], 0)
+        i += 1
+    return text[start:i - 1]
+
+
+def _split_args(args: str) -> list[str]:
+    out, depth, cur = [], 0, ""
+    for i, ch in enumerate(args):
+        if ch in "(<[{":
+            depth += 1
+        elif ch in ")>]}" and not (ch == ">" and args[i - 1:i] == "-"):  # `->` is not a closing bracket
+            depth -= 1
+        if ch == "," and depth == 0:
+            out.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    out.append(cur.strip())
+    return out
+
+
+def literal_value(expr: str) -> str | None:
+    """The value of a literal expression (a number, true/false, a string, or std::to_string / int of one); else None."""
+    e = expr.strip()
+    m = re.fullmatch(r"(?:std::to_string|int|float|double|bool)\(\s*(.*?)\s*\)", e)
+    if m:
+        e = m.group(1)
+    if not LITERAL.fullmatch(e):
+        return None
+    e = e.strip('"') if e.startswith('"') else re.sub(r"[fFuUlL]+$", "", e)
+    return e
+
+
+def enumerate_settings(sources: dict[str, list[str]]) -> tuple[list[tuple[str, str, int, str | None]], dict[str, tuple[str, int, str]]]:
+    """From source files {path: lines}: (reads, command defaults).
+    reads: (setting name, path, line, literal default or None) of every `ctx->setting<T>("name"[, default])` and
+    `*_or_default(ctx->settings, ctx->id("name")[, default])`. command defaults: name -> (path, line, value text)
+    of the `if (settings.find(id("name")) == settings.end()) settings[id("name")] = value;` lines of command.cc,
+    and the helper defaults (`bool_or_default` -> false) of util.h under the key `<fn>()`."""
+    reads: list[tuple[str, str, int, str | None]] = []
+    defaults: dict[str, tuple[str, int, str]] = {}
+    for path, lines in sources.items():
+        text = "\n".join(lines)
+        line_at = lambda pos: text.count("\n", 0, pos) + 1  # noqa: E731
+        for m in re.finditer(r"\bsetting\s*<[^>]*>\s*\(", text):
+            args = _split_args(_balanced(text, m.end()))
+            name = re.fullmatch(r'"([^"]+)"', args[0]) if args else None
+            if name:
+                reads.append((name.group(1), path, line_at(m.start()), literal_value(args[1]) if len(args) > 1 else None))
+        for m in re.finditer(r"\b(\w+)_or_default\s*\(", text):
+            args = _split_args(_balanced(text, m.end()))
+            name = re.search(r'id\("([^"]+)"\)', args[1]) if len(args) > 1 and "settings" in args[0] else None
+            if name:
+                reads.append((name.group(1), path, line_at(m.start()), literal_value(args[2]) if len(args) > 2 else f"{m.group(1)}()"))
+        for m in re.finditer(r'settings\.find\(\s*ctx->id\("([^"]+)"\)\s*\)\s*==\s*ctx->settings\.end\(\)\s*\)\s*ctx->settings\[\s*ctx->id\("\1"\)\s*\]\s*=\s*([^;]*);', text):
+            defaults.setdefault(m.group(1), (path, line_at(m.start(2)), m.group(2).strip()))
+        if path == NEXTPNR_HELPERS:
+            for m in re.finditer(r"(\w+)_or_default\s*\([^)]*?\b(?:bool|int|std::string)\s+def\s*=\s*([^,)]+)\)", text):
+                defaults.setdefault(f"{m.group(1)}()", (path, line_at(m.start()), m.group(2).strip()))
+    return reads, defaults
+
+
+def cli_settings(command_lines: list[str]) -> dict[str, str]:
+    """flag -> setting name of the command.cc lines `ctx->settings[ctx->id("name")] = ... vm["flag"] ...`."""
+    out = {}
+    for ln in command_lines:
+        m = re.search(r'settings\[\s*ctx->id\("([^"]+)"\)\s*\]\s*=.*vm\["([\w-]+)"\]', ln)
+        if m:
+            out[m.group(2)] = m.group(1)
+    return out
 
 
 def cmd_options(flags: list[str]) -> list[tuple[str, list[str]]]:
@@ -189,6 +368,7 @@ class RunRecorder:
 
     def __init__(self, source: str, design: str, arm: str, seed: int, family: str, arch: str,
                  roots: dict[str, Path], roles: dict[Path, str] | None = None):
+        self.run_id = f"{source}/{design}/{arm}/s{int(seed)}"
         self.rec: dict[str, object] = {
             "record_version": RECORD_VERSION, "kind": "norns-run", "source": source, "design": design,
             "arm": arm, "seed": int(seed), "family": family, "arch": arch, "host": host_alias(),
@@ -196,7 +376,7 @@ class RunRecorder:
             "steps": [], "tools": {}, "params": {}, "inputs": {}, "artifacts": {}}
         self.roots = {k: v.resolve() for k, v in roots.items()}
         self.roles = {k.resolve(): v for k, v in (roles or {}).items()}
-        self.t0 = time.monotonic()
+        self.missing: list[tuple[str, str, str]] = []  # (table, role, placeholder path) of files absent at record time
 
     # paths
     def ph(self, text: str) -> str:
@@ -221,27 +401,57 @@ class RunRecorder:
         return [self.ph(a) for a in argv]
 
     # contents
-    def add_step(self, name: str, argv: list[str], rc: int, time_s: float, rss_mib: float, locked: bool = True) -> None:
+    def add_step(self, name: str, argv: list[str], rc: int, time_s: float | None, rss_mib: float | None, locked: bool,
+                 script: Path | None = None, shared: bool = False) -> None:
+        """One tool run. A time or RSS that `/usr/bin/time` did not report is null with conf `unknown`, never 0.
+        `shared` marks a step run once for several records (it is left out of the record's time). `script`: the
+        sha256 of a Python script this step ran."""
         steps = self.rec["steps"]
         assert isinstance(steps, list)
-        steps.append({"name": name, "argv": self.argv(argv), "exit_code": int(rc), "time_s": round(time_s, 3),
-                      "peak_rss_mib": round(rss_mib, 1), "locked": locked})
+        st: dict[str, object] = {"name": name, "argv": self.argv(argv), "exit_code": int(rc),
+                                 "time_s": None if time_s is None else round(time_s, 3), "time_conf": "unknown" if time_s is None else "given",
+                                 "peak_rss_mib": None if rss_mib is None else round(rss_mib, 1), "locked": bool(locked), "shared": bool(shared)}
+        if script is not None:
+            st["script_sha256"] = file_sha256(script) if script.is_file() else ""
+        steps.append(st)
 
     def add_tool(self, name: str, entry: dict[str, object]) -> None:
         tools = self.rec["tools"]
         assert isinstance(tools, dict)
         tools[name] = entry
         c = str(entry["commit"])
-        ok = bool(c) and bool(entry["version_names_commit"] or entry.get("build_copy_is_head"))
-        self.param(f"tool.{name}_commit", c, "given" if ok else "unknown",
-                   f"{name}: HEAD of its source tree, named by its --version text, or equal to the build's source copy, or a clean tree for a script" if ok else
-                   f"{name}: HEAD of the source tree is not named by the binary's --version text, or there is no tree")
+        bc = entry.get("build_copy")
+        built_dirty = entry.get("built_dirty")
+        if entry.get("is_script"):
+            ok, why = entry["clean"] is True, "a script run from its tree: the clean tree's HEAD"
+        elif bc is not None:
+            ok, why = bool(entry["build_copy_is_head"]), "HEAD of the source tree equals the build's source copy but for listed, hashed exemptions"
+        else:
+            ok, why = bool(entry["version_names_commit"]) and built_dirty is False, "the binary's --version text names HEAD and not '-dirty' (built from a clean tree)"
+        ok = ok and bool(c)
+        if ok:
+            self.param(f"tool.{name}_commit", c, "given", f"{name}: {why}")
+        else:
+            reason = ("there is no source tree" if not c else "the binary was built from a dirty tree (its --version says -dirty)" if built_dirty
+                      else "the source copy differs from HEAD in an unlisted way" if bc is not None else "the --version text does not name HEAD or the clean build is not shown")
+            self.param(f"tool.{name}_commit", c, "unknown", f"inferred at record time: HEAD of the source tree; not given because {reason}")
+        if built_dirty is not None:
+            self.param(f"tool.{name}_built_dirty", str(bool(built_dirty)).lower(), "given", f"{name} --version text ('-dirty' suffix)")
         self.param(f"tool.{name}_source_clean", "unknown" if entry["clean"] is None else str(entry["clean"]).lower(),
-                   "given" if entry["clean"] is not None else "unknown",
-                   "git status --porcelain of the source tree (tracked files)")
+                   "given" if entry["clean"] is not None else "unknown", "at record time: git status --porcelain of the source tree (tracked files)")
         if entry["dirty_diff_sha256"]:
-            self.param(f"tool.{name}_dirty_diff_sha256", str(entry["dirty_diff_sha256"]), "given", "sha256 of git diff HEAD of the source tree")
+            self.param(f"tool.{name}_dirty_diff_sha256", str(entry["dirty_diff_sha256"]), "given", "at record time: sha256 of git diff HEAD of the source tree")
         self.param(f"tool.{name}_binary_sha256", str(entry["binary_sha256"]), "given" if entry["binary_sha256"] else "unknown", "sha256 of the binary file")
+        if isinstance(bc, dict):
+            for kind in ("differs", "extra"):
+                label = "modified" if kind == "differs" else "extra"
+                for p in list(bc[kind])[:MAX_LISTED_DIFFS]:
+                    sha = bc["sha256"].get(p, "")
+                    listed = p not in bc["unlisted"]
+                    self.param(f"tool.{name}_build_copy_{label}[{p}]", sha, "given" if sha else "unknown",
+                               f"sha256 of the file in the build copy ({label} against HEAD; {'a listed exemption' if listed else 'NOT a listed exemption'})")
+                if len(bc[kind]) > MAX_LISTED_DIFFS:
+                    self.param(f"tool.{name}_build_copy_{label}_count", str(len(bc[kind])), "given", f"number of {label} files in the build copy (only {MAX_LISTED_DIFFS} listed)")
 
     def param(self, key: str, value: str, conf: str, source: str) -> None:
         params = self.rec["params"]
@@ -259,11 +469,14 @@ class RunRecorder:
             tab = self.rec[table]
             assert isinstance(tab, dict)
             tab[role] = {"path": self.ph(str(path.resolve())), "sha256": file_sha256(path)}
+        else:
+            self.missing.append((table, role, self.ph(str(path))))
 
     # parameters of the tools
-    def add_vpr_params(self, argv: list[str], log: Path, src: Path | None, tree_label: str) -> None:
+    def add_vpr_params(self, argv: list[str], log: Path, tree: Path | None, commit: str) -> None:
         """VPR: every option VPR echoed in its log (its own statement of the effective value, cited vpr.out:line),
-        the options on the command line, the seed, and the seed's default read from `src` (read_options.cpp)."""
+        the options on the command line, the seed, and the seed's default read from `read_options.cpp` as committed
+        at `commit` of `tree`. A log without the echo header is an `unknown` row (the options are not recorded)."""
         lines = log.read_text(encoding="utf-8", errors="replace").split("\n") if log.is_file() else []
         if VPR_OPTIONS_HEAD in lines:
             for n in range(lines.index(VPR_OPTIONS_HEAD) + 1, len(lines)):
@@ -272,22 +485,29 @@ class RunRecorder:
                     self.param(f"vpr.{m.group(1)}", m.group(2).strip() or "(empty)", "given", f"vpr.out:{n + 1} (VPR's echo of the effective option)")
                 elif lines[n].strip() and not lines[n].startswith(" ") and not lines[n].startswith("Using up to"):
                     break
+        else:
+            self.param("vpr.options_echo", "", "unknown", f"vpr.out lacks the line '{VPR_OPTIONS_HEAD}': the effective options are not recorded")
         for key, vals in cmd_options(argv[3:]):  # argv is vpr, arch, blif, then the options
             if key == "seed":
                 self.param("run.seed", vals[0], "given", "command line --seed")
             else:
                 self.param(f"vpr.cmd.{key}", " ".join(self.ph(v) for v in vals) or "(flag)", "given", "command line")
         self.param("vpr.cmd.arch_file", self.ph(argv[1]), "given", "command line")
-        found = option_default(src, "--seed") if src else None
-        if found and src:
-            self.param("run.seed_default", found[0], "default", f"{tree_label} vpr/src/base/read_options.cpp:{found[1]}")
+        rel = "vpr/src/base/read_options.cpp"
+        found = option_default(tree, "--seed", commit, rel) if tree and commit else None
+        if found:
+            self.param("run.seed_default", found[0], "default", f"vtr-tree {commit[:8]} {rel}:{found[1]}")
         else:
-            self.param("run.seed_default", "", "default-unrecorded", "VPR source tree not available")
+            self.param("run.seed_default", "", "default-unrecorded", "VPR source tree or commit not available")
 
-    def add_nextpnr_params(self, argv: list[str], src: Path | None, label: str, placer: str) -> None:
-        """nextpnr: the command-line options as given, and the defaults of the settings the chosen placer reads,
-        each cited file:line in the nextpnr source tree `src`."""
-        for key, vals in cmd_options(argv[1:]):
+    def add_nextpnr_params(self, argv: list[str], tree: Path | None, commit: str, label: str, placer: str,
+                           extra_sources: dict[str, Path] | None = None) -> None:
+        """nextpnr: the command-line options as given, and every setting the generic flow reads (enumerate_settings, from
+        the sources at `commit`: command.cc, timing, the chosen placer, packing, plus `extra_sources` = overlay files of
+        the build copy). A setting not given on the command line gets its default cited `path:line` at the commit; one
+        with no default found in the source is `default-unrecorded`, which makes the configuration partial."""
+        cmd = cmd_options(argv[1:])
+        for key, vals in cmd:
             val = " ".join(vals) or "(flag)"
             if key == "seed":
                 self.param("run.seed", val, "given", "command line --seed")
@@ -296,35 +516,113 @@ class RunRecorder:
                 self.param(f"nextpnr.vopt.{k}", v, "given", "command line --vopt")
             else:
                 self.param(f"nextpnr.cmd.{key}", val, "given", "command line")
-        table = NEXTPNR_COMMON + (NEXTPNR_HEAP if placer == "heap" else NEXTPNR_SA)
-        for key, value, path, needle in table:
-            n = line_of(src / path, needle) if src else 0
-            if key == "placer1/startTemp" and "--starttemp" in argv:
-                continue  # given on the command line (ctx setting placer1/startTemp)
-            if n:
-                self.param(f"nextpnr.{key}", value, "default", f"{label} {path}:{n}")
+        paths = list(NEXTPNR_COMMON_FILES) + [NEXTPNR_PLACER_FILE[placer], NEXTPNR_HELPERS]
+        sources: dict[str, list[str]] = {}
+        for p in paths:
+            lines = git_show(tree, commit, p)
+            if lines is None:
+                self.param(f"nextpnr.settings_source[{p}]", "", "unknown", f"{p} not readable at the recorded commit: its settings are not enumerated")
             else:
-                self.param(f"nextpnr.{key}", "", "default-unrecorded", f"{path}: line not found in the nextpnr source tree")
+                sources[p] = lines
+        for rel, f in (extra_sources or {}).items():
+            if f.is_file():
+                sources[rel] = f.read_text(encoding="utf-8", errors="replace").split("\n")
+        reads, defaults = enumerate_settings(sources)
+        flag_setting = cli_settings(sources.get(COMMAND_CC, []))
+        flags = {k for k, _ in cmd}
+        given_settings = {flag_setting[k] for k in flags if k in flag_setting} | ({SEED_SETTING} if "seed" in flags else set()) | {k for k in flags if k in ("placer",)}
+        if "no-route" in flags:  # the router does not run, so no router setting is read
+            self.param("nextpnr.router", "none", "given", "command line --no-route (the router does not run; its settings are not read)")
+            given_settings |= {n for n, *_ in reads if n == "router" or n.startswith("router")}
+        seen: dict[str, tuple[str, int, str | None]] = {}
+        conflict: set[str] = set()
+        for name, path, line, lit in reads:
+            if name in seen and lit is not None and seen[name][2] is not None and seen[name][2] != lit:
+                conflict.add(name)
+            if name not in seen or (seen[name][2] is None and lit is not None):
+                seen[name] = (path, line, lit)
+        cite = lambda path, line: f"{label} {commit[:8]} {path}:{line}"  # noqa: E731
+        for name in sorted(seen):
+            if name in given_settings:
+                continue  # given on the command line (the parameter above)
+            path, line, lit = seen[name]
+            if name in conflict:
+                self.param(f"nextpnr.{name}", "", "default-unrecorded", f"{path}:{line}: reads of this setting give different defaults")
+                continue
+            if lit is not None and lit.endswith("()") and lit in defaults:  # helper default, for example bool_or_default() is false
+                hp, hl, hv = defaults[lit]
+                lit, path, line = literal_value(hv), hp, hl
+            elif lit is None and name in defaults:
+                path, line, expr = defaults[name]
+                lit = literal_value(expr)
+            if lit is not None and not lit.endswith("()"):
+                self.param(f"nextpnr.{name}", lit, "default", cite(path, line))
+            else:
+                self.param(f"nextpnr.{name}", "", "default-unrecorded", f"{path}:{line}: read here; no literal default found in the source at the recorded commit")
 
     # output
-    def write(self, path: Path) -> None:
-        steps: list[dict[str, float]] = self.rec["steps"]  # type: ignore[assignment]
-        self.rec["time_s"] = round(sum(s["time_s"] for s in steps), 3)
-        self.rec["peak_rss_mib"] = max((s["peak_rss_mib"] for s in steps), default=0.0)
+    def write(self, path: Path, required_inputs: tuple[str, ...] = (), required_artifacts: tuple[str, ...] = ()) -> None:
+        """Write the record. A required role that was not added is recorded as an `unknown` parameter (never dropped), as is
+        every file that was absent at record time. RecordRefused (nothing written) when a privacy rule hits."""
+        steps: list[dict[str, object]] = self.rec["steps"]  # type: ignore[assignment]
+        for table, req in (("inputs", required_inputs), ("artifacts", required_artifacts)):
+            tab = self.rec[table]
+            assert isinstance(tab, dict)
+            for role in req:
+                if role not in tab and not any(t == table and r == role for t, r, _ in self.missing):
+                    self.missing.append((table, role, ""))
+        for table, role, where in self.missing:
+            self.param(f"{table}.{role}_sha256", "", "unknown", f"file absent at record time ({where or 'not offered by the runner'})")
+        own = [s for s in steps if not s["shared"]]
+        times = [s["time_s"] for s in own]
+        rss = [s["peak_rss_mib"] for s in own if "script_sha256" not in s]  # a helper script's RSS is not measured
+        self.rec["time_s"] = None if (not own or None in times) else round(sum(times), 3)  # type: ignore[arg-type]
+        self.rec["time_conf"] = "unknown" if self.rec["time_s"] is None else "given"
+        self.rec["peak_rss_mib"] = None if (not rss or None in rss) else max(rss)  # type: ignore[type-var]
+        nsteps = [s for s in steps if s["name"] == "nextpnr"]
+        if nsteps:  # the placer step only (the last attempt, the one whose result was used)
+            self.rec["placer_time_s"] = nsteps[-1]["time_s"]
         self.rec["ok"] = bool(steps) and steps[-1]["exit_code"] == 0  # the last step decides (earlier attempts may have failed)
         text = json.dumps(self.rec, indent=1, sort_keys=True) + "\n"
-        assert_clean(text)
+        hits = privacy_hits(self.rec)
+        if hits:
+            raise RecordRefused(hits)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
 
 
-def private_strings() -> list[str]:
-    """Strings no record may hold: the home directory, user name and host name of this machine."""
-    return [s for s in (str(Path.home()), getpass.getuser(), platform.node()) if len(s) >= 3]
+def _strings(obj: object, where: str = "record") -> list[tuple[str, str]]:
+    if isinstance(obj, str):
+        return [(where, obj)]
+    if isinstance(obj, dict):
+        return [x for k, v in obj.items() for x in _strings(v, f"{where}.{k}")]
+    if isinstance(obj, list):
+        return [x for i, v in enumerate(obj) for x in _strings(v, f"{where}[{i}]")]
+    return []
 
 
-def assert_clean(text: str) -> None:
-    low = text.lower()
-    bad = [s for s in private_strings() if s.lower() in low]
-    if bad or "/home/" in text:
-        raise ValueError("run record holds a private string or a home path; not written")
+def private_strings() -> list[tuple[str, str]]:
+    """(rule, string) no record may hold: the home directory, user name and host name of this machine, and every real
+    host name of the host map. The rule names are what a log may show; the strings are never shown."""
+    out = [("home-directory", str(Path.home())), ("user-name", getpass.getuser()), ("host-name", platform.node())]
+    try:
+        out += [("host-map-name", n) for n in host_table()]
+    except (HostMapError, OSError, ValueError):
+        pass
+    return [(r, s) for r, s in out if len(s) >= 3]
+
+
+def privacy_hits(rec: object) -> list[str]:
+    """Rule and key path of every string of `rec` that holds a private string, a home path or an absolute path (spec section 6)."""
+    privates = [(r, s.lower()) for r, s in private_strings()]
+    hits = []
+    for where, text in _strings(rec):
+        low = text.lower()
+        for rule, s in privates:
+            if s in low:
+                hits.append(f"{rule} at {where}")
+        if "/home/" in text or "/Users/" in text:
+            hits.append(f"home-path at {where}")
+        elif ABS_PATH.search(text):
+            hits.append(f"absolute-path at {where}")
+    return hits
