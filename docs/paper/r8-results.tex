@@ -1,0 +1,75 @@
+\subsection{Round eight results: other placers in the VTR flow}
+\label{sec:r8-results}
+
+% Sources: docs/plan/placers.md Sections 9 and 10 (pre-registration, dated entries, Section 10.9 results as corrected
+% by Section 10.10), data/placers/main_*.json, fix1_*.json, main_summary.json, main_tables_heldout_seeds456.txt.
+% Run records: scripts/runrecord.py (docstring), written by scripts/placers_main.py.
+
+Rounds one to seven use VPR's placers only, and a finding that holds only for them could be an artefact of VPR. This
+round places the same 15 designs with a placer from outside VTR and reads it back into VPR's own flow, so that the
+router and timing analysis are VPR's for every arm. The protocol (\code{docs/plan/placers.md}) was committed before any
+comparison run. Stock VPR needs no change: VPR reads a placement in its flat-placement file format
+(\code{--read\_flat\_place}, one line per atom) at commit \code{3c9a4d23b2} (VTR~\cite{rose2012vtr}, VTR~9~\cite{elgammal2025vtr9}).
+A converter writes the external placement in that format, and VPR packs, places and routes around it.
+
+\emph{Arms, by family.} The analytic family is VPR's analytic placer (\code{vpr\_ap}), nextpnr's HeAP~\cite{gort2012heap,shah2019nextpnr}
+(\code{ext\_nextpnr\_heap}, which includes nextpnr's own temperature-zero refinement) and a control, \code{vpr\_ap\_reread}, that
+reads \code{vpr\_ap}'s own final placement back into the default flow. The annealing family is VPR's simulated annealing
+(\code{vpr\_sa}), nextpnr's SA (\code{ext\_nextpnr\_sa}, \code{--placer sa --starttemp 100}) and \code{vpr\_sa\_reread}. Every
+ratio is within a family: an external arm is compared with its own family's reread control and VPR arm, and no headline
+crosses families. nextpnr's start temperature of 1 made its SA a greedy descent in the pipeline gate (a wirelength of 4.03
+times the control on one construction); one pre-registered change, \code{--starttemp}, was chosen from a grid of five values on seeds 1 to 3 of three LUT and flip-flop
+constructions before any main run, and gave 100. nextpnr runs on a purpose-built \code{k6\_frac\_N10} micro-architecture overlay
+in which a basic element holds a LUT and its flip-flop, with ten per tile.
+
+\emph{Rule H0, and what it biases.} Adders, multipliers and RAMs, and the pads, are fixed at the positions of the VPR analytic
+placer (\code{vpr\_ap}, seed 1) in both external arms and for every seed. nextpnr therefore places only the LUT and flip-flop logic, around
+hard blocks and pads that VPR's analytic placer chose, so the external arms inherit part of VPR's solution, and the
+annealing-family external arm inherits it from the analytic family. nextpnr has no timing model; both VPR families are
+timing-driven. Every number below carries this caption.
+
+\emph{Design set and seeds.} 15 VTR designs, six seeds (1 to 6). The result is the held-out report on seeds 4 to 6: the median
+of the three seeds per design and arm, then a geometric mean over designs with a 95\% percentile bootstrap over designs
+(10000 resamples, seed 20261026; pre-registered), and after the slash a two-level bootstrap (designs, then seeds). Two designs
+(blob\_merge and stereovision0) needed 20 basic elements per tile to fit, a rule labelled post hoc and for feasibility only; the means are also given without
+them (the numbers differ little, see the data files). \code{sha} and \code{stereovision2} are ineligible: \code{sha}
+has no legal reread control, and VPR refuses every stereovision2 file from either family. A first report of
+H0 legality (13 of 15 designs clean) was wrong, and a re-scan found 18 faulty records of 180 external records in two designs; after the re-runs
+of the fix round no record of an eligible design has a moved pad or hard block or an atom without a cell.
+
+\begin{table}[t]
+\caption{Round 8, ratios of an arm to its reference, geometric mean over eligible designs of the held-out median (seeds 4 to 6) with the
+pre-registered 95\% design bootstrap in brackets; below 1 favours the numerator. WL: routed wirelength, CPD: critical-path delay. $n$ is the number of
+designs. H0: adders, multipliers, RAMs and pads fixed at VPR analytic placer positions in both external arms. VPR runs: VTR~\cite{rose2012vtr},
+VTR~9~\cite{elgammal2025vtr9}, commit \code{3c9a4d23b2}. Source: \code{docs/plan/placers.md} Section 10.9, corrected by 10.10.}
+\label{tab:r8family}
+\centering\scriptsize
+\begin{tabular}{@{}llcccr@{}}
+\toprule
+family & ratio & WL & CPD & WL$\times$CPD & $n$ \\
+\midrule
+analytic & \code{vpr\_ap} / \code{vpr\_ap\_reread} & 0.974 [0.919, 1.016] & 0.985 [0.944, 1.022] & 0.946 [0.865, 1.005] & 13 \\
+analytic & HeAP / \code{vpr\_ap\_reread} & 1.001 [0.984, 1.019] & 1.027 [1.009, 1.046] & 1.028 [0.996, 1.061] & 13 \\
+analytic & HeAP / \code{vpr\_ap} & 1.028 [0.981, 1.094] & 1.043 [1.007, 1.089] & 1.087 [1.006, 1.212] & 13 \\
+annealing & \code{vpr\_sa} / \code{vpr\_sa\_reread} & 0.992 [0.960, 1.016] & 0.986 [0.930, 1.027] & 0.983 [0.905, 1.042] & 14 \\
+annealing & nextpnr SA / \code{vpr\_sa\_reread} & 0.947 [0.919, 0.975] & 1.003 [0.973, 1.039] & 0.952 [0.909, 1.003] & 13 \\
+annealing & nextpnr SA / \code{vpr\_sa} & 0.956 [0.921, 0.994] & 1.019 [0.962, 1.088] & 0.970 [0.894, 1.072] & 13 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Reading.} Analytic family (Table~\ref{tab:r8family}): with hard blocks and pads taken from VPR's analytic placer, nextpnr HeAP
+lands within about 0.1\% of \code{vpr\_ap\_reread} in wirelength and 2.7\% in critical-path delay; the WL$\times$CPD interval includes 1 in the
+pre-registered bootstrap (0.996 to 1.061) and in the two-level one (0.972 to 1.087). Annealing family, conditional on H0
+(a difference that cannot be separated from the inherited hard blocks and pads): nextpnr SA at a start temperature of 100 has about 5\% less routed wirelength than
+\code{vpr\_sa\_reread} (0.947; the pre-registered interval 0.919 to 0.975 and the two-level interval 0.913 to 0.995 both exclude 1; without the two 20-element designs
+0.935), with critical-path delay equal within noise (1.003), and the WL$\times$CPD ratio 0.952 has an interval that includes 1 in the two-level bootstrap (0.899 to 1.023)
+and just includes it in the pre-registered one (0.909 to 1.003). Neither external arm is timing-driven, and neither shows a critical-path advantage. The
+pre-registered rule that no external arm may exceed twice its family's reread control in wirelength did not fire in the main comparison. This round has
+no hypotheses with statuses: it is a comparison across placers, not a test of seeding.
+
+\emph{Run records.} Every VPR and nextpnr run of this round writes a \code{mimir-run.json}: the exact commands (paths replaced by
+placeholders), the commit of each tool tree with whether it was clean and how it was found, the binary hash and version text, every parameter as a
+value with its confidence and source, the seed, a host alias, time and peak memory, and the hashes of the inputs and artefacts. The format is
+M\'{\i}mir~III's run-record format (version 1), and \code{mimir import-runrecords} reads it, so the runs can enter the circuit knowledge base with
+how each value was obtained. A parameter that was only inferred, such as the commit of a dirty source tree, is recorded as unknown.
