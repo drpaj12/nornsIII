@@ -1,6 +1,8 @@
-# E10 alternative 1: VTR's old ABC script (use_old_abc_script), odin3 docs/PHASE3.md section 10 decision 10 option (b).
-# {K} is abc --lut K.
+# E10 alternative 1: VTR's old ABC script (use_old_abc_script: resyn; resyn2; if -K {K}; scleanup), odin3 docs/PHASE3.md
+# section 10 decision 10 option (b), with two checked changes: `strash` in front (the aliases need an AIG; the BLIF is read as a
+# logic network) and `scleanup` before the mapping (after `if` ABC aborts in this build: checked on s298). {K} is abc --lut K.
+strash
 resyn
 resyn2
-if -K {K}
 scleanup
+if -K {K}

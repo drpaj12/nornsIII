@@ -53,8 +53,19 @@ CONFIGS = {
     "earch": {"net": "earch", "arch": "earch", "vpr": "", "arms": "vpr_sa"},
     "uon": {"net": "base", "arch": "norns", "vpr": "--allow_unrelated_clustering on", "arms": "vpr_sa"},
     "uoff": {"net": "base", "arch": "norns", "vpr": "--allow_unrelated_clustering off", "arms": "vpr_sa"},
-    "plc": {"net": "base", "arch": "norns", "vpr": "", "arms": "vpr_ap,ext_nextpnr_heap,ext_nextpnr_sa"},
+    "plc": {"net": "base", "arch": "norns", "vpr": "", "arms": "vpr_ap,ext_nextpnr_heap,ext_nextpnr_sa", "extra": ["--sa-temp", "100"]}  # T = 100: placers.md section 10.5,
 }
+
+
+_MODULE = re.compile(r"^\s*module\s+(\w+)", re.M)
+
+
+def find_top(design):
+    """The module no other module of the file instantiates (the last one when several); the rule of mimir.structbatch.find_top, which the structure flow uses."""
+    text = nl.design_verilog(design).read_text(encoding="utf-8", errors="replace")
+    mods = _MODULE.findall(text)
+    free = [m for m in mods if not re.search(rf"^\s*{re.escape(m)}\s+(?:#\s*\(.*?\)\s*)?\w+\s*\(", text, re.M | re.S)]
+    return (free or mods)[-1]
 
 
 def src_of(design):
@@ -88,8 +99,11 @@ def odin_tool_entry():
     same_home = bool(m) and Path(m.group(1)).resolve() == ODIN_TREE.resolve()
     ct = rr.git(ODIN_TREE, "log", "-1", "--format=%ct")
     newer = ODIN_BIN.is_file() and ct.isdigit() and ODIN_BIN.stat().st_mtime > int(ct)
-    e = rr.tool_entry(ODIN_TREE, ODIN_BIN, copy=ODIN_TREE if (same_home and newer) else None)
+    e = rr.tool_entry(ODIN_TREE, ODIN_BIN)  # odin3 --version prints no commit, so it cannot name HEAD itself
     e["build_facts"] = {"cmake_home_is_tree": same_home, "binary_newer_than_commit": bool(newer)}
+    if same_home and newer and e["clean"] is True and e["built_dirty"] is False:
+        e["version_names_commit"] = True  # stands for: tree clean at record time, build dir configured from it, binary newer than HEAD (build_facts)
+        e["commit_how"] = "git rev-parse HEAD of the source tree; checked: tree clean, build directory configured from it, binary newer than HEAD"
     return e
 
 
@@ -109,7 +123,7 @@ def netlist(root, netkey, design):
         return blif
     d.mkdir(parents=True, exist_ok=True)
     script = odin_script(netkey, design, blif)
-    argv = [str(ODIN_BIN), "-p", script]
+    argv = [str(ODIN_BIN)] + ([] if design in MCNC20 else ["--top", find_top(design)]) + ["-p", script]
     t0 = time.time()
     p = subprocess.run(["/usr/bin/time", "-v", "-o", str(d / "odin.time"), *argv], capture_output=True, text=True, cwd=d, env=dict(os.environ, ODIN3_ROOT=str(ODIN_TREE)))
     secs = time.time() - t0
@@ -129,7 +143,7 @@ def netlist(root, netkey, design):
         params += [["odin.abc_script", af.name, "given", "command line (abc --script)"], ["odin.abc_script_sha256", rr.file_sha256(af), "given", "sha256 of the script file as committed in nornsIII data/e10/abc"]]
     else:
         line = rr.line_of(default_abc, "strash") if default_abc.is_file() else 0
-        params += [["odin.abc_script", "lib/abc/vtr.abc", "default", f"odin3 {head} lib/abc/vtr.abc:1-10 (the built-in script used when no --script is given; docs/DESIGN.md line 225)"],
+        params += [["odin.abc_script", "lib/abc/vtr.abc", "default", f"odin3 {head} lib/abc/vtr.abc:1-10"],
                    ["odin.abc_script_sha256", rr.file_sha256(default_abc), "default", f"odin3 {head} lib/abc/vtr.abc:1-10"]]
     ok = p.returncode == 0 and blif.is_file()
     m = {"argv": [ph(a).replace(str(ODIN_BIN), "<odin3>").replace(str(d) + "/", "<out>/") if a != script else ph(script).replace(str(d) + "/", "<out>/") for a in argv], "rc": p.returncode, "secs": secs if s2 is None else s2, "rss": (rss / 1024.0 if rss else None),
@@ -164,17 +178,75 @@ def run_config(root, label, cfg, design, seeds):
             "--arms", c["arms"], "--odin-meta", str(root / "netlists" / c["net"] / design / "netlist" / "odin-meta.json")]
     if c["vpr"]:
         argv += ["--vpr-extra", c["vpr"]]
+    argv += c.get("extra", [])
     return subprocess.run(argv, env=env).returncode
+
+
+def run_dirs(root, label, cfg, design):
+    """(record path, VPR run dir) of every finished run of (label, config, design)."""
+    base = root / "vpr" / f"{label}-{cfg}" / design
+    out = []
+    for rec in sorted(base.glob("*/mimir-run.json")):
+        d = rec.parent
+        v = d / "vpr" if (d / "vpr").is_dir() and not list(d.glob("*.net")) else d
+        if list(v.glob("*.net")) and list(v.glob("*.place")):
+            out.append((rec, v))
+    return out
+
+
+def odin_top(root, netkey, design):
+    m = re.search(r"stats: design: modules \d+, top (\S+)", (root / "netlists" / netkey / design / "netlist" / "odin.log").read_text())
+    return m.group(1) if m else ""
+
+
+def structures(root, label, cfg, design, db):
+    """Extend the name map of every run of a Norns design with its packing and placement (odin3 prov_post), then store the structure rows."""
+    if design in MCNC20:
+        return 0
+    net = CONFIGS[cfg]["net"]
+    nd = root / "netlists" / net / design / "netlist"
+    jobs = []
+    for rec, v in run_dirs(root, label, cfg, design):
+        r = json.loads(rec.read_text())
+        w = root / "struct" / f"{label}-{cfg}" / design / rec.parent.name
+        mp = w / "odin3" / f"{design}.blif.names"
+        if not mp.is_file():
+            mp.parent.mkdir(parents=True, exist_ok=True)
+            mp.write_bytes((nd / f"{design}.blif.names").read_bytes())
+            p = subprocess.run([sys.executable, str(ODIN_TREE / "tools/flow/prov_post.py"), str(w), "--blif", str(nd / f"{design}.blif"), "--map", str(mp), "--run-dir", str(v),
+                                "--top", odin_top(root, net, design)], capture_output=True, text=True)
+            (w / "prov-post.log").write_text(p.stdout + p.stderr)
+            if p.returncode:
+                print(f"{rec.parent.name}: prov_post FAILED", flush=True)
+                mp.rename(mp.with_name(mp.name + ".failed"))
+                continue
+        jobs.append({"source": r["source"], "design": design, "arch": r["arch"], "seed": r["seed"], "arm": r["arm"], "slug": f"e10/{design}",
+                     "blif": str(nd / f"{design}.blif"), "map": str(mp), "files": [str(nl.design_verilog(design))], "suite": "norns-e10"})
+    jf = root / "struct" / f"{label}-{cfg}" / design / "jobs.json"
+    jf.parent.mkdir(parents=True, exist_ok=True)
+    jf.write_text(json.dumps(jobs, indent=1))
+    env = dict(os.environ, PYTHONPATH=str(MIMIR), MIMIR_ODIN3_TREE=str(ODIN_TREE), MIMIR_LOKI_SRC=str(nl.WS_ROOT / "loki"), VTR_ROOT=str(VTR))
+    rc1 = subprocess.run([MIMIR_PY, "-m", "mimir.cli", "import-runrecords", str(db), str(root / "vpr" / f"{label}-{cfg}" / design)], env=env, capture_output=True, text=True)
+    (jf.parent / "import-runrecords.log").write_text(rc1.stdout + rc1.stderr)
+    rc2 = subprocess.run([MIMIR_PY, "-m", "mimir.structnorns", str(db), str(jf)], env=env, capture_output=True, text=True)
+    (jf.parent / "structnorns.log").write_text(rc2.stdout + rc2.stderr)
+    print(f"{label}-{cfg} {design}: {len(jobs)} runs; import-runrecords rc {rc1.returncode}, structnorns rc {rc2.returncode}", flush=True)
+    return rc1.returncode or rc2.returncode
+
+
+MIMIR = Path(os.environ.get("E10_MIMIR", str(nl.WS_ROOT / "work" / "mimir-e10")))
+MIMIR_PY = os.environ.get("E10_MIMIR_PY", str(nl.WS_ROOT / "work" / "mimir-venv" / "bin" / "python"))
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", required=True)
-    ap.add_argument("--stage", required=True, choices=("netlists", "order", "runs"))
+    ap.add_argument("--stage", required=True, choices=("netlists", "order", "runs", "structures"))
     ap.add_argument("--designs", default="")
     ap.add_argument("--configs", default=",".join(CONFIGS))
     ap.add_argument("--label", default="e10")
     ap.add_argument("--seeds", default="1,2,3")
+    ap.add_argument("--db", default="")
     a = ap.parse_args()
     root = Path(a.root)
     designs = a.designs.split(",") if a.designs else list(MCNC20 + NORNS15)
@@ -186,6 +258,10 @@ def main():
     elif a.stage == "order":
         ordered, sizes = order(root, designs)
         print(json.dumps([[d, sizes[d]] for d in ordered]))
+    elif a.stage == "structures":
+        for d in designs:
+            for cfg in a.configs.split(","):
+                structures(root, a.label, cfg, d, a.db)
     else:
         for d in designs:
             for cfg in a.configs.split(","):
