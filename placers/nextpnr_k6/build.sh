@@ -10,9 +10,10 @@ set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
 WS_ROOT=${WS_ROOT:-$HOME/odin3-ws}
 NORNS_TMP=${NORNS_TMP:-/tmp/claude-1000}
-SRC=${SRC:-$NORNS_TMP/nextpnr-k6-src}
-BLD=${BLD:-$NORNS_TMP/nextpnr-k6-build}
-DEPS=${DEPS:-$NORNS_TMP/nextpnr-deps}
+# Persistent default (a VM restart wipes /tmp; 2026-10-28): $WS_ROOT/work. Override with SRC, BLD, DEPS.
+SRC=${SRC:-$WS_ROOT/work/nextpnr-k6-src}
+BLD=${BLD:-$WS_ROOT/work/nextpnr-k6-build}
+DEPS=${DEPS:-$WS_ROOT/work/nextpnr-deps}
 JOBS=${JOBS:-4}
 if [ ! -e "$SRC/CMakeLists.txt" ]; then
     mkdir -p "$SRC"

@@ -200,20 +200,28 @@ def odin_top(root, netkey, design):
     return m.group(1) if m else ""
 
 
+INFRA_RC = (125, 127)  # /usr/bin/time could not run its command (125) or the command was not found (127): the tool did not run
+
+
+def is_infra_record(r):
+    """An infrastructure failure (docs/plan/e10.md section 12): a step exited 125 or 127, or the run took no time. The tool did not run; this says nothing about the design."""
+    return any(st.get("exit_code") in INFRA_RC for st in r.get("steps", [])) or not r.get("time_s")
+
+
 def quarantine_failed_records(root, label, cfg, design):
-    """Guard (docs/plan/e10.md section 11): a run record whose run failed (ok not true, a step with a non-zero exit code, or time_s 0) never reaches the store.
-    The record file is renamed to mimir-run.json.failed (not deleted) and logged in <root>/failed-records.log; the failure stays in data/placers."""
+    """Guard (docs/plan/e10.md sections 11 and 12): a run record of an infrastructure failure (a step exit code 125 or 127, or time_s 0) never reaches the store.
+    The record file is renamed to mimir-run.json.failed (not deleted) and logged in <root>/failed-records.log. A run that ran and failed (rc other than 0, 125, 127; for example
+    a VPR error or a readback fault) is a result: its record stays and is stored as a run row (rc, time) without quality records."""
     for rec in sorted((root / "vpr" / f"{label}-{cfg}" / design).glob("*/mimir-run.json")):
         try:
-            r = json.loads(rec.read_text())
-            bad = r.get("ok") is not True or not r.get("time_s") or any(st.get("exit_code") not in (0, None) for st in r.get("steps", []))
+            bad = is_infra_record(json.loads(rec.read_text()))
         except (OSError, ValueError):
             bad = True
         if bad:
             rec.rename(rec.with_name("mimir-run.json.failed"))
             with open(root / "failed-records.log", "a") as f:
-                f.write(f"{time.strftime('%FT%TZ', time.gmtime())} {label}-{cfg} {design} {rec.parent.name}: record not imported (failed run)\n")
-            print(f"{label}-{cfg} {design} {rec.parent.name}: failed record, not imported", flush=True)
+                f.write(f"{time.strftime('%FT%TZ', time.gmtime())} {label}-{cfg} {design} {rec.parent.name}: record not imported (infrastructure failure)\n")
+            print(f"{label}-{cfg} {design} {rec.parent.name}: infrastructure failure, record not imported", flush=True)
 
 
 def structures(root, label, cfg, design, db):
@@ -251,13 +259,19 @@ def structures(root, label, cfg, design, db):
     return rc1.returncode or rc2.returncode
 
 
+def is_infra_result(r):
+    """A result of data/placers whose tool did not run (exit code 125 or 127, in the result or in its nextpnr step)."""
+    return r.get("rc") in INFRA_RC or (r.get("nextpnr") or {}).get("rc") in INFRA_RC
+
+
 def failures(root, label, cfg):
-    """(designs run, designs failing) of a config: a design fails when it has a run that is not rc 0 and legally routed after its retry."""
+    """(designs done, designs failing) of a config. Done = designs with a result file; failing = a run that is not rc 0 and legally routed after its retry, or an error.
+    Infrastructure failures (is_infra_result) are not design failures and do not count as failing (docs/plan/e10.md section 12)."""
     run = bad = 0
     for f in sorted((root / "data" / "placers").glob(f"{label}-{cfg}_*.json")):
         d = json.loads(f.read_text())
         run += 1
-        bad += any(r["rc"] != 0 or not r.get("routed_ok") for r in d["runs"]) or bool(d.get("error"))
+        bad += any((r["rc"] != 0 or not r.get("routed_ok")) and not is_infra_result(r) for r in d["runs"]) or bool(d.get("error"))
     return run, bad
 
 
@@ -266,7 +280,7 @@ def sweep(root, a, designs):
     stopped_f = root / "stopped-configs.json"
     stopped = json.loads(stopped_f.read_text()) if stopped_f.is_file() else {}
     cfgs = [c for c in a.configs.split(",") if c not in stopped]
-    for i, d in enumerate(designs):
+    for d in designs:
         if a.no_new_design_after and time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()) > a.no_new_design_after:
             print(f"## no new design after {a.no_new_design_after}: stopping before {d}", flush=True)
             return
@@ -280,14 +294,13 @@ def sweep(root, a, designs):
         for cfg in cfgs:
             structures(root, a.label, cfg, d, a.db)
         subprocess.run([sys.executable, "-I", EVICT] + [str(root / "vpr" / f"{a.label}-{c}" / d) for c in cfgs] + [str(root / "netlists")])
-        if i + 1 >= 5:
-            for cfg in list(cfgs):
-                run, bad = failures(root, a.label, cfg)
-                if run and bad / run > 0.2:
-                    print(f"STOP RULE 1: config {cfg} stopped, it fails on {bad} of {run} designs", flush=True)
-                    cfgs.remove(cfg)
-                    stopped[cfg] = {"after_design": d, "designs_run": run, "designs_failing": bad}
-                    stopped_f.write_text(json.dumps(stopped, indent=1) + "\n")
+        for cfg in list(cfgs):  # the counter is the number of designs done overall (result files), not the position in this process's list (docs/plan/e10.md section 12)
+            run, bad = failures(root, a.label, cfg)
+            if run >= 5 and bad / run > 0.2:
+                print(f"STOP RULE 1: config {cfg} stopped, it fails on {bad} of {run} designs", flush=True)
+                cfgs.remove(cfg)
+                stopped[cfg] = {"after_design": d, "designs_run": run, "designs_failing": bad}
+                stopped_f.write_text(json.dumps(stopped, indent=1) + "\n")
         con = sqlite3.connect(a.db)
         orphan = con.execute("select count(*) from structure_mapping m left join run r on r.run_id=m.run_id where r.run_id is null").fetchone()[0]
         con.close()
