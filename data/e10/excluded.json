@@ -31,12 +31,43 @@
   ]
  },
  {
+  "level": "vpr_ap",
+  "measure": "clbs",
+  "excluded": [
+   "stereovision0",
+   "stereovision2"
+  ]
+ },
+ {
+  "level": "vpr_ap",
+  "measure": "cpd_ns",
+  "excluded": [
+   "stereovision0",
+   "stereovision2"
+  ]
+ },
+ {
+  "level": "vpr_ap",
+  "measure": "wl",
+  "excluded": [
+   "stereovision0",
+   "stereovision2"
+  ]
+ },
+ {
   "level": "ext_nextpnr_heap",
   "measure": "clbs",
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  },
  {
@@ -45,7 +76,14 @@
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  },
  {
@@ -54,7 +92,14 @@
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  },
  {
@@ -63,7 +108,14 @@
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  },
  {
@@ -72,7 +124,14 @@
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  },
  {
@@ -81,7 +140,14 @@
   "excluded": [
    "clma",
    "apex4",
-   "sha"
+   "sha",
+   "s38584.1",
+   "or1200",
+   "ex1010",
+   "blob_merge",
+   "stereovision1",
+   "stereovision0",
+   "stereovision2"
   ]
  }
 ]
