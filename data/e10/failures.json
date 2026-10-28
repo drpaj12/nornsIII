@@ -1,0 +1,219 @@
+[
+ {
+  "config": "k4",
+  "arm": "vpr_sa",
+  "design": "boundtop",
+  "seed": 1,
+  "error": ""
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "apex4",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "apex4",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "apex4",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "apex4",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "apex4",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "apex4",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 1}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "clma",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "clma",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "clma",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "clma",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "clma",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "clma",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 45}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "s38584.1",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "s38584.1",
+  "seed": 1,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "s38584.1",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "s38584.1",
+  "seed": 2,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "s38584.1",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "s38584.1",
+  "seed": 3,
+  "error": "readback fault {'fallback_ref': 11}"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "sha",
+  "seed": 1,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hkzllg333ya contains atom h72hlxpp6u5 (ID: 2434) with a location (3, 15, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (3, 14, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "sha",
+  "seed": 1,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hlcu7mqfmm3 contains atom hmajaxx4rmq (ID: 1922) with a location (15, 11, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (14, 11, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "sha",
+  "seed": 2,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block h57lleuxtdo contains atom hh72lu2fcvf (ID: 1762) with a location (4, 15, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (4, 14, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "sha",
+  "seed": 2,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hacssvrbiwl contains atom hh2jtjgzchh (ID: 1873) with a location (15, 6, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (14, 6, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "sha",
+  "seed": 3,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block h6fcckq4k2i contains atom hg6wxssbshl (ID: 1953) with a location (12, 15, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (12, 14, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "sha",
+  "seed": 3,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hnsjrddvvhv contains atom hd3sagcecvg (ID: 1863) with a location (15, 8, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (14, 8, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "stereovision2",
+  "seed": 1,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "stereovision2",
+  "seed": 1,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "stereovision2",
+  "seed": 2,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "stereovision2",
+  "seed": 2,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_heap",
+  "design": "stereovision2",
+  "seed": 3,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ },
+ {
+  "config": "plc",
+  "arm": "ext_nextpnr_sa",
+  "design": "stereovision2",
+  "seed": 3,
+  "error": "Error 1: | Type: Analytical Placement | File: $WS/work/norns-vtr/vpr/src/analytical_place/analytical_placement_flow.cpp | Line: 110 | Message: AP block hxbvjf6qt3t contains atom hjgii7az4o6 (ID: 7080) with a location (80, 69, layer: 0, subtile: 0) that conflicts the location of other atoms in this block of (79, 69, layer: 0, subtile: 0). | # Analytical Placement"
+ }
+]
