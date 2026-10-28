@@ -28,7 +28,7 @@ VTR = nl.VTR_ROOT
 ARCH_DIR = VTR / "vtr_flow" / "arch" / "timing"
 ARCHS = {"norns": ARCH_DIR / "k6_frac_N10_frac_chain_mem32K_40nm.xml", "k4": ARCH_DIR / "k4_N4_90nm.xml", "earch": ARCH_DIR / "EArch.xml"}
 ODIN_TREE = Path(os.environ.get("E10_ODIN_TREE", str(nl.WS_ROOT / "odin3")))
-ODIN_BIN = Path(os.environ.get("E10_ODIN_BIN", "/tmp/claude-1000/e10-odin3-build/odin3"))
+ODIN_BIN = Path(os.environ.get("E10_ODIN_BIN", "/home/jamiespa/odin3-ws/work/e10-odin3-build/odin3"))
 ODIN_BUILD = ODIN_BIN.parent
 ABC_DIR = REPO / "data" / "e10" / "abc"
 MCNC_DIR = VTR / "vtr_flow" / "benchmarks" / "blif"
@@ -278,7 +278,7 @@ def sweep(root, a, designs):
         print(f"## {d} done {time.strftime('%FT%TZ', time.gmtime())}", flush=True)
 
 
-EVICT = os.environ.get("E10_EVICT", "/tmp/claude-1000/-home-jamiespa-odin3-ws/c97be8f2-5314-46e1-af16-95a0c27014fc/scratchpad/evict.py")
+EVICT = os.environ.get("E10_EVICT", "/home/jamiespa/odin3-ws/work/controller-scripts/evict.py")
 MIMIR = Path(os.environ.get("E10_MIMIR", str(nl.WS_ROOT / "work" / "mimir-e10")))
 MIMIR_PY = os.environ.get("E10_MIMIR_PY", str(nl.WS_ROOT / "work" / "mimir-venv" / "bin" / "python"))
 
