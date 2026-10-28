@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -234,6 +235,44 @@ def structures(root, label, cfg, design, db):
     return rc1.returncode or rc2.returncode
 
 
+def failures(root, label, cfg):
+    """(designs run, designs failing) of a config: a design fails when it has a run that is not rc 0 and legally routed after its retry."""
+    run = bad = 0
+    for f in sorted((root / "data" / "placers").glob(f"{label}-{cfg}_*.json")):
+        d = json.loads(f.read_text())
+        run += 1
+        bad += any(r["rc"] != 0 or not r.get("routed_ok") for r in d["runs"]) or bool(d.get("error"))
+    return run, bad
+
+
+def sweep(root, a, designs):
+    import sqlite3
+    cfgs = a.configs.split(",")
+    for i, d in enumerate(designs):
+        free_c = shutil.disk_usage("/mnt/c").free / 1e9
+        if free_c < 30:
+            sys.exit(f"stop rule 4: /mnt/c has {free_c:.0f} GB free")
+        print(f"## {d} start {time.strftime('%FT%TZ', time.gmtime())} /mnt/c free {free_c:.0f} GB; " + subprocess.run(["free", "-g"], capture_output=True, text=True).stdout.splitlines()[1], flush=True)
+        for cfg in cfgs:
+            print(f"== {a.label}-{cfg} {d}", flush=True)
+            run_config(root, a.label, cfg, d, a.seeds)
+        for cfg in cfgs:
+            structures(root, a.label, cfg, d, a.db)
+        subprocess.run([sys.executable, "-I", EVICT] + [str(root / "vpr" / f"{a.label}-{c}" / d) for c in cfgs] + [str(root / "netlists")])
+        if i + 1 >= 5:
+            for cfg in cfgs:
+                run, bad = failures(root, a.label, cfg)
+                if run and bad / run > 0.2:
+                    sys.exit(f"stop rule 1: config {cfg} fails on {bad} of {run} designs")
+        con = sqlite3.connect(a.db)
+        orphan = con.execute("select count(*) from structure_mapping m left join run r on r.run_id=m.run_id where r.run_id is null").fetchone()[0]
+        con.close()
+        if orphan:
+            sys.exit(f"stop rule 2: {orphan} structure_mapping rows without a run record")
+        print(f"## {d} done {time.strftime('%FT%TZ', time.gmtime())}", flush=True)
+
+
+EVICT = os.environ.get("E10_EVICT", "/tmp/claude-1000/-home-jamiespa-odin3-ws/c97be8f2-5314-46e1-af16-95a0c27014fc/scratchpad/evict.py")
 MIMIR = Path(os.environ.get("E10_MIMIR", str(nl.WS_ROOT / "work" / "mimir-e10")))
 MIMIR_PY = os.environ.get("E10_MIMIR_PY", str(nl.WS_ROOT / "work" / "mimir-venv" / "bin" / "python"))
 
@@ -241,7 +280,7 @@ MIMIR_PY = os.environ.get("E10_MIMIR_PY", str(nl.WS_ROOT / "work" / "mimir-venv"
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", required=True)
-    ap.add_argument("--stage", required=True, choices=("netlists", "order", "runs", "structures"))
+    ap.add_argument("--stage", required=True, choices=("netlists", "order", "runs", "structures", "sweep"))
     ap.add_argument("--designs", default="")
     ap.add_argument("--configs", default=",".join(CONFIGS))
     ap.add_argument("--label", default="e10")
@@ -258,6 +297,8 @@ def main():
     elif a.stage == "order":
         ordered, sizes = order(root, designs)
         print(json.dumps([[d, sizes[d]] for d in ordered]))
+    elif a.stage == "sweep":
+        sweep(root, a, designs)
     elif a.stage == "structures":
         for d in designs:
             for cfg in a.configs.split(","):
