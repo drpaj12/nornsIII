@@ -388,6 +388,13 @@ class Recorder(unittest.TestCase):
         self.assertEqual(len(rec["steps"][3]["script_sha256"]), 64)
         self.assertIs(rec["ok"], True)  # the last step exited 0
 
+    def test_step_roles_keep_per_seed_paths_out_of_the_command_text(self):
+        r = self.make()
+        r.add_step("flatplace_chains", ["python3", str(self.d / "run" / "s1" / "in.fp")], 0, 1.0, None, False, roles={self.d / "run" / "s1" / "in.fp": "<collapse_in>"})
+        r.add_step("flatplace_chains", ["python3", str(self.d / "run" / "s1" / "in.fp")], 0, 1.0, None, False)
+        self.assertEqual(r.rec["steps"][1]["argv"][1], "<collapse_in>")
+        self.assertEqual(r.rec["steps"][2]["argv"][1], "<run>/s1/in.fp")  # the role applies to its own step only
+
     def test_missing_input_artifact_and_required_role_are_unknown_rows(self):
         r = self.make()
         r.add_input("arch", self.d / "arch.xml")  # absent file

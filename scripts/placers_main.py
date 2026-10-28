@@ -145,7 +145,7 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
                            roots={"run": cwd, "work": WORK, "norns_vtr": VPR_TREE, "vtr": nl.VTR_ROOT, "runs": nl.RUNS, "tmp": Path(TMP)},
                            roles={Path(NPNR): "<nextpnr>", VPR: "<vpr>", nl.ARCH: "<arch>", blif: "<blif>"} | {Path(k): v for k, v in (roles or {}).items()})
         for s in steps:
-            r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], s["locked"], script=s.get("script"), shared=s.get("shared", False))
+            r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], s["locked"], script=s.get("script"), shared=s.get("shared", False), roles=s.get("roles"))
         kinds = {s["kind"] for s in steps}
         for k in ("vpr", "nextpnr"):
             if k in kinds:
@@ -175,7 +175,7 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
         print(f"run record NOT written for {run_id}: privacy rule(s) hit: {'; '.join(exc.hits)}", file=sys.stderr, flush=True)
 
 
-def run_py(script, *a, sink=None, shared=False):
+def run_py(script, *a, sink=None, shared=False, roles=None):
     """Run a Norns script; the step (argv, script, wall time, exit code) is appended to `sink` when given."""
     argv = [sys.executable, str(HERE / script), *a]
     t = time.time()
@@ -184,7 +184,7 @@ def run_py(script, *a, sink=None, shared=False):
     if p.returncode:
         print(p.stdout, p.stderr, file=sys.stderr)
     if sink is not None:
-        sink.append({"kind": Path(script).stem, "argv": argv, "rc": p.returncode, "secs": secs, "rss": None, "locked": False, "script": HERE / script, "shared": shared})
+        sink.append({"kind": Path(script).stem, "argv": argv, "rc": p.returncode, "secs": secs, "rss": None, "locked": False, "script": HERE / script, "shared": shared, "roles": roles})
     return p.returncode, secs
 
 
@@ -263,7 +263,7 @@ def process(design):
     def collapsed(p):
         q = p.with_name("final.collapsed.flat_place")
         PRE[q] = []
-        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q), sink=PRE[q])
+        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q), sink=PRE[q], roles={p: "<collapse_in>"})
         return q
 
     # reference run (also the shared vpr_ap seed-1 run)

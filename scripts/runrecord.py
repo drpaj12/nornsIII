@@ -397,18 +397,25 @@ class RunRecorder:
                 return f"<{name}>/{rp.relative_to(root).as_posix()}".rstrip("/")
         return f"<abs>/{p.name}"
 
-    def argv(self, argv: list[str]) -> list[str]:
-        return [self.ph(a) for a in argv]
+    def argv(self, argv: list[str], roles: dict[Path, str] | None = None) -> list[str]:
+        """The argv with placeholders; `roles` names files of this step only (for example a per-seed input), so that
+        the command text of one setup does not change from seed to seed."""
+        saved = self.roles
+        self.roles = {**saved, **{k.resolve(): v for k, v in (roles or {}).items()}}
+        try:
+            return [self.ph(a) for a in argv]
+        finally:
+            self.roles = saved
 
     # contents
     def add_step(self, name: str, argv: list[str], rc: int, time_s: float | None, rss_mib: float | None, locked: bool,
-                 script: Path | None = None, shared: bool = False) -> None:
+                 script: Path | None = None, shared: bool = False, roles: dict[Path, str] | None = None) -> None:
         """One tool run. A time or RSS that `/usr/bin/time` did not report is null with conf `unknown`, never 0.
         `shared` marks a step run once for several records (it is left out of the record's time). `script`: the
         sha256 of a Python script this step ran."""
         steps = self.rec["steps"]
         assert isinstance(steps, list)
-        st: dict[str, object] = {"name": name, "argv": self.argv(argv), "exit_code": int(rc),
+        st: dict[str, object] = {"name": name, "argv": self.argv(argv, roles), "exit_code": int(rc),
                                  "time_s": None if time_s is None else round(time_s, 3), "time_conf": "unknown" if time_s is None else "given",
                                  "peak_rss_mib": None if rss_mib is None else round(rss_mib, 1), "locked": bool(locked), "shared": bool(shared)}
         if script is not None:
