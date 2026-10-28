@@ -1,109 +1,109 @@
-level,suite,measure,n_designs,geomean_ratio,ci95_lo,ci95_hi
-abc1,all,luts,35,1.103368,1.03132,1.199405
-abc1,all,clbs,35,1.114491,1.059153,1.183664
-abc1,all,cpd_ns,35,1.026669,1.00119,1.054369
-abc1,all,wl,35,1.1131,1.040214,1.215807
-abc1,mcnc20,luts,20,1.162042,1.058274,1.330558
-abc1,mcnc20,clbs,20,1.154537,1.065311,1.270048
-abc1,mcnc20,cpd_ns,20,1.022852,0.990942,1.059388
-abc1,mcnc20,wl,20,1.16937,1.04414,1.355099
-abc1,norns15,luts,15,1.029719,0.945084,1.102107
-abc1,norns15,clbs,15,1.063248,1.013063,1.119976
-abc1,norns15,cpd_ns,15,1.03178,0.992411,1.075252
-abc1,norns15,wl,15,1.042262,1.00603,1.082998
-abc2,all,luts,35,0.970027,0.954815,0.985014
-abc2,all,clbs,35,0.969907,0.948993,0.995301
-abc2,all,cpd_ns,35,1.141135,1.088834,1.202014
-abc2,all,wl,35,0.984825,0.959391,1.012444
-abc2,mcnc20,luts,20,0.958406,0.936236,0.981573
-abc2,mcnc20,clbs,20,0.971858,0.939602,1.013896
-abc2,mcnc20,cpd_ns,20,1.213712,1.148208,1.297077
-abc2,mcnc20,wl,20,0.96667,0.932255,1.00815
-abc2,norns15,luts,15,0.985742,0.971375,0.999883
-abc2,norns15,clbs,15,0.96731,0.943907,0.987849
-abc2,norns15,cpd_ns,15,1.051072,0.999942,1.11655
-abc2,norns15,wl,15,1.009562,0.979551,1.039841
-k4,all,luts,34,1.97368,1.497474,2.759769
-k4,all,clbs,33,5.320133,4.078886,6.885663
-k4,all,cpd_ns,33,1.488268,1.322609,1.646945
-k4,all,wl,33,1.288477,0.821623,1.774215
-k4,mcnc20,luts,20,1.410913,1.330236,1.517674
-k4,mcnc20,clbs,20,4.857372,4.434528,5.319097
-k4,mcnc20,cpd_ns,20,1.616288,1.533962,1.69347
-k4,mcnc20,wl,20,1.629109,1.47945,1.802064
-k4,norns15,luts,14,3.188075,1.711262,6.524651
-k4,norns15,clbs,13,6.119616,3.181382,11.075865
-k4,norns15,cpd_ns,13,1.310829,1.000302,1.66864
-k4,norns15,wl,13,0.89815,0.312031,1.986139
-earch,all,luts,35,1.0,1.0,1.0
-earch,all,clbs,35,0.854655,0.826995,0.884028
-earch,all,cpd_ns,35,1.004109,0.980323,1.031875
-earch,all,wl,35,1.159768,1.134762,1.186052
-earch,mcnc20,luts,20,1.0,1.0,1.0
-earch,mcnc20,clbs,20,0.826182,0.792974,0.860764
-earch,mcnc20,cpd_ns,20,0.985003,0.958281,1.013306
-earch,mcnc20,wl,20,1.171626,1.147311,1.197824
-earch,norns15,luts,15,1.0,1.0,1.0
-earch,norns15,clbs,15,0.894152,0.852827,0.93732
-earch,norns15,cpd_ns,15,1.03016,0.993689,1.081805
-earch,norns15,wl,15,1.144143,1.09943,1.19275
-uon,all,luts,35,1.0,1.0,1.0
-uon,all,clbs,35,0.923616,0.878209,0.954354
-uon,all,cpd_ns,35,0.996475,0.983473,1.009964
-uon,all,wl,35,1.001326,0.984405,1.017375
-uon,mcnc20,luts,20,1.0,1.0,1.0
-uon,mcnc20,clbs,20,0.917901,0.845778,0.962434
-uon,mcnc20,cpd_ns,20,0.991753,0.974254,1.010115
-uon,mcnc20,wl,20,0.984328,0.962154,1.004254
-uon,norns15,luts,15,1.0,1.0,1.0
-uon,norns15,clbs,15,0.931292,0.896821,0.958296
-uon,norns15,cpd_ns,15,1.002807,0.986367,1.021773
-uon,norns15,wl,15,1.024448,1.004441,1.046327
-uoff,all,luts,35,1.0,1.0,1.0
-uoff,all,clbs,35,1.0,1.0,1.0
-uoff,all,cpd_ns,35,1.0,1.0,1.0
-uoff,all,wl,35,1.0,1.0,1.0
-uoff,mcnc20,luts,20,1.0,1.0,1.0
-uoff,mcnc20,clbs,20,1.0,1.0,1.0
-uoff,mcnc20,cpd_ns,20,1.0,1.0,1.0
-uoff,mcnc20,wl,20,1.0,1.0,1.0
-uoff,norns15,luts,15,1.0,1.0,1.0
-uoff,norns15,clbs,15,1.0,1.0,1.0
-uoff,norns15,cpd_ns,15,1.0,1.0,1.0
-uoff,norns15,wl,15,1.0,1.0,1.0
-vpr_ap,all,luts,35,1.0,1.0,1.0
-vpr_ap,all,clbs,33,1.038106,1.016979,1.063493
-vpr_ap,all,cpd_ns,33,1.003515,0.978876,1.030605
-vpr_ap,all,wl,33,0.954288,0.930503,0.977188
-vpr_ap,mcnc20,luts,20,1.0,1.0,1.0
-vpr_ap,mcnc20,clbs,20,1.007425,0.995346,1.02054
-vpr_ap,mcnc20,cpd_ns,20,1.009327,0.979619,1.045319
-vpr_ap,mcnc20,wl,20,0.948203,0.91995,0.971647
-vpr_ap,norns15,luts,15,1.0,1.0,1.0
-vpr_ap,norns15,clbs,13,1.087143,1.044672,1.138151
-vpr_ap,norns15,cpd_ns,13,0.99464,0.957191,1.037416
-vpr_ap,norns15,wl,13,0.963726,0.921248,1.007498
-ext_nextpnr_heap,all,luts,35,1.0,1.0,1.0
-ext_nextpnr_heap,all,clbs,25,1.033846,1.013224,1.058122
-ext_nextpnr_heap,all,cpd_ns,25,1.016055,0.985864,1.05225
-ext_nextpnr_heap,all,wl,25,0.945735,0.920918,0.972024
-ext_nextpnr_heap,mcnc20,luts,20,1.0,1.0,1.0
-ext_nextpnr_heap,mcnc20,clbs,16,1.006932,0.992515,1.022159
-ext_nextpnr_heap,mcnc20,cpd_ns,16,1.010074,0.985301,1.034637
-ext_nextpnr_heap,mcnc20,wl,16,0.923141,0.89372,0.950978
-ext_nextpnr_heap,norns15,luts,15,1.0,1.0,1.0
-ext_nextpnr_heap,norns15,clbs,9,1.08348,1.046588,1.129545
-ext_nextpnr_heap,norns15,cpd_ns,9,1.026776,0.956031,1.121344
-ext_nextpnr_heap,norns15,wl,9,0.987277,0.956105,1.032742
-ext_nextpnr_sa,all,luts,35,1.0,1.0,1.0
-ext_nextpnr_sa,all,clbs,25,1.033372,1.01433,1.054879
-ext_nextpnr_sa,all,cpd_ns,25,1.020625,0.989672,1.056266
-ext_nextpnr_sa,all,wl,25,0.953431,0.925466,0.982638
-ext_nextpnr_sa,mcnc20,luts,20,1.0,1.0,1.0
-ext_nextpnr_sa,mcnc20,clbs,16,1.011443,0.995209,1.03032
-ext_nextpnr_sa,mcnc20,cpd_ns,16,1.017711,0.993694,1.040831
-ext_nextpnr_sa,mcnc20,wl,16,0.926422,0.894806,0.954226
-ext_nextpnr_sa,norns15,luts,15,1.0,1.0,1.0
-ext_nextpnr_sa,norns15,clbs,9,1.073539,1.041814,1.116068
-ext_nextpnr_sa,norns15,cpd_ns,9,1.025826,0.954242,1.117347
-ext_nextpnr_sa,norns15,wl,9,1.003408,0.96441,1.05053
+level,suite,measure,n_designs,geomean_ratio,ci95_lo,ci95_hi,boot_p,all_ratios_one,holm_p,holm_sig_05,verdict,direction
+abc1,all,luts,35,1.103368,1.03132,1.199405,0.0026,False,0.052,False,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,all,clbs,35,1.114491,1.059153,1.183664,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,all,cpd_ns,35,1.026669,1.00119,1.054369,0.039596,False,0.712728,False,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,all,wl,35,1.1131,1.040214,1.215807,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,mcnc20,luts,20,1.162042,1.058274,1.330558,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,mcnc20,clbs,20,1.154537,1.065311,1.270048,0.0004,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,mcnc20,cpd_ns,20,1.022852,0.990942,1.059388,0.181382,False,,,INCONCLUSIVE,CI includes 1.000
+abc1,mcnc20,wl,20,1.16937,1.04414,1.355099,0.002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,norns15,luts,15,1.029719,0.945084,1.102107,0.437956,False,,,INCONCLUSIVE,CI includes 1.000
+abc1,norns15,clbs,15,1.063248,1.013063,1.119976,0.007799,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc1,norns15,cpd_ns,15,1.03178,0.992411,1.075252,0.121388,False,,,INCONCLUSIVE,CI includes 1.000
+abc1,norns15,wl,15,1.042262,1.00603,1.082998,0.021398,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc2,all,luts,35,0.970027,0.954815,0.985014,0.0004,False,0.01,True,effect (USEFUL as evidence of an effect),lower than base (better)
+abc2,all,clbs,35,0.969907,0.948993,0.995301,0.021598,False,0.410362,False,effect (USEFUL as evidence of an effect),lower than base (better)
+abc2,all,cpd_ns,35,1.141135,1.088834,1.202014,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc2,all,wl,35,0.984825,0.959391,1.012444,0.257574,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+abc2,mcnc20,luts,20,0.958406,0.936236,0.981573,0.0008,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+abc2,mcnc20,clbs,20,0.971858,0.939602,1.013896,0.161184,False,,,INCONCLUSIVE,CI includes 1.000
+abc2,mcnc20,cpd_ns,20,1.213712,1.148208,1.297077,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+abc2,mcnc20,wl,20,0.96667,0.932255,1.00815,0.110989,False,,,INCONCLUSIVE,CI includes 1.000
+abc2,norns15,luts,15,0.985742,0.971375,0.999883,0.048395,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+abc2,norns15,clbs,15,0.96731,0.943907,0.987849,0.0008,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+abc2,norns15,cpd_ns,15,1.051072,0.999942,1.11655,0.050795,False,,,INCONCLUSIVE,CI includes 1.000
+abc2,norns15,wl,15,1.009562,0.979551,1.039841,0.526747,False,,,INCONCLUSIVE,CI includes 1.000
+k4,all,luts,34,1.97368,1.497474,2.759769,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,all,clbs,33,5.320133,4.078886,6.885663,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,all,cpd_ns,33,1.488268,1.322609,1.646945,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,all,wl,33,1.288477,0.821623,1.774215,0.229177,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+k4,mcnc20,luts,20,1.410913,1.330236,1.517674,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,mcnc20,clbs,20,4.857372,4.434528,5.319097,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,mcnc20,cpd_ns,20,1.616288,1.533962,1.69347,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,mcnc20,wl,20,1.629109,1.47945,1.802064,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,norns15,luts,14,3.188075,1.711262,6.524651,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,norns15,clbs,13,6.119616,3.181382,11.075865,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,norns15,cpd_ns,13,1.310829,1.000302,1.66864,0.049795,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+k4,norns15,wl,13,0.89815,0.312031,1.986139,0.918708,False,,,INCONCLUSIVE,CI includes 1.000
+earch,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+earch,all,clbs,35,0.854655,0.826995,0.884028,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),lower than base (better)
+earch,all,cpd_ns,35,1.004109,0.980323,1.031875,0.80252,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+earch,all,wl,35,1.159768,1.134762,1.186052,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+earch,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+earch,mcnc20,clbs,20,0.826182,0.792974,0.860764,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+earch,mcnc20,cpd_ns,20,0.985003,0.958281,1.013306,0.283372,False,,,INCONCLUSIVE,CI includes 1.000
+earch,mcnc20,wl,20,1.171626,1.147311,1.197824,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+earch,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+earch,norns15,clbs,15,0.894152,0.852827,0.93732,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+earch,norns15,cpd_ns,15,1.03016,0.993689,1.081805,0.142986,False,,,INCONCLUSIVE,CI includes 1.000
+earch,norns15,wl,15,1.144143,1.09943,1.19275,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+uon,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+uon,all,clbs,35,0.923616,0.878209,0.954354,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),lower than base (better)
+uon,all,cpd_ns,35,0.996475,0.983473,1.009964,0.594141,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+uon,all,wl,35,1.001326,0.984405,1.017375,0.855514,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+uon,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uon,mcnc20,clbs,20,0.917901,0.845778,0.962434,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+uon,mcnc20,cpd_ns,20,0.991753,0.974254,1.010115,0.371363,False,,,INCONCLUSIVE,CI includes 1.000
+uon,mcnc20,wl,20,0.984328,0.962154,1.004254,0.139186,False,,,INCONCLUSIVE,CI includes 1.000
+uon,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uon,norns15,clbs,15,0.931292,0.896821,0.958296,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+uon,norns15,cpd_ns,15,1.002807,0.986367,1.021773,0.814519,False,,,INCONCLUSIVE,CI includes 1.000
+uon,norns15,wl,15,1.024448,1.004441,1.046327,0.016998,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+uoff,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+uoff,all,clbs,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+uoff,all,cpd_ns,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+uoff,all,wl,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+uoff,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,mcnc20,clbs,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,mcnc20,cpd_ns,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,mcnc20,wl,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,norns15,clbs,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,norns15,cpd_ns,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+uoff,norns15,wl,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+vpr_ap,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+vpr_ap,all,clbs,35,1.040454,1.018945,1.06552,0.0004,False,0.01,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+vpr_ap,all,cpd_ns,35,1.004874,0.981492,1.030334,0.711729,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+vpr_ap,all,wl,35,0.957323,0.933862,0.979882,0.0004,False,0.01,True,effect (USEFUL as evidence of an effect),lower than base (better)
+vpr_ap,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+vpr_ap,mcnc20,clbs,20,1.007425,0.995416,1.020681,0.255174,False,,,INCONCLUSIVE,CI includes 1.000
+vpr_ap,mcnc20,cpd_ns,20,1.009327,0.979189,1.045668,0.577142,False,,,INCONCLUSIVE,CI includes 1.000
+vpr_ap,mcnc20,wl,20,0.948203,0.920271,0.971619,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+vpr_ap,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+vpr_ap,norns15,clbs,15,1.086184,1.046708,1.133045,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+vpr_ap,norns15,cpd_ns,15,0.998969,0.964795,1.037307,0.940506,False,,,INCONCLUSIVE,CI includes 1.000
+vpr_ap,norns15,wl,15,0.96962,0.930335,1.009857,0.133387,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_heap,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_heap,all,clbs,30,1.031614,1.014392,1.05166,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+ext_nextpnr_heap,all,cpd_ns,30,1.011283,0.985703,1.042164,0.435956,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_heap,all,wl,30,0.950166,0.927121,0.973868,0.0004,False,0.01,True,effect (USEFUL as evidence of an effect),lower than base (better)
+ext_nextpnr_heap,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_heap,mcnc20,clbs,17,1.007273,0.994193,1.02119,0.307369,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_heap,mcnc20,cpd_ns,17,1.011077,0.987469,1.033957,0.348765,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_heap,mcnc20,wl,17,0.926939,0.897993,0.954193,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+ext_nextpnr_heap,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_heap,norns15,clbs,13,1.064335,1.034908,1.100104,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+ext_nextpnr_heap,norns15,cpd_ns,13,1.011553,0.96229,1.078902,0.747125,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_heap,norns15,wl,13,0.981418,0.952093,1.016611,0.273373,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_sa,all,luts,35,1.0,1.0,1.0,1.0,True,1.0,False,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_sa,all,clbs,30,1.031092,1.014791,1.049812,0.0002,False,0.0072,True,effect (USEFUL as evidence of an effect),higher than base (worse)
+ext_nextpnr_sa,all,cpd_ns,30,1.017607,0.991598,1.04813,0.205979,False,1.0,False,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_sa,all,wl,30,0.954976,0.930528,0.980477,0.001,False,0.021,True,effect (USEFUL as evidence of an effect),lower than base (better)
+ext_nextpnr_sa,mcnc20,luts,20,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_sa,mcnc20,clbs,17,1.011519,0.996194,1.028885,0.156384,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_sa,mcnc20,cpd_ns,17,1.014542,0.992073,1.03707,0.19918,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_sa,mcnc20,wl,17,0.929568,0.900213,0.956405,0.0002,False,,,effect (USEFUL as evidence of an effect),lower than base (better)
+ext_nextpnr_sa,norns15,luts,15,1.0,1.0,1.0,1.0,True,,,no-op (DISMISSED),byte-identical to base
+ext_nextpnr_sa,norns15,clbs,13,1.05726,1.031308,1.089983,0.0002,False,,,effect (USEFUL as evidence of an effect),higher than base (worse)
+ext_nextpnr_sa,norns15,cpd_ns,13,1.02163,0.970928,1.085113,0.466553,False,,,INCONCLUSIVE,CI includes 1.000
+ext_nextpnr_sa,norns15,wl,13,0.989252,0.955398,1.026843,0.561744,False,,,INCONCLUSIVE,CI includes 1.000
