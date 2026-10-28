@@ -40,8 +40,8 @@ ODIN3_ROOT = Path(os.environ.get("ODIN3_ROOT", str(WS_ROOT / "odin3")))
 ODIN3 = ODIN3_ROOT / "build" / "release" / "odin3"
 ODIN3_LIB = ODIN3_ROOT / "build" / "release" / "libodin3.so"
 LOCK = Path(os.environ.get("NORNS_LOCK", "/tmp/claude-1000/odin3-heavy.lock"))
-RUNS = WS / "runs"
-DATA = WS / "data"
+RUNS = Path(os.environ.get("NORNS_RUNS", str(WS / "runs")))  # raw run outputs (not committed); override to keep them elsewhere
+DATA = Path(os.environ.get("NORNS_DATA", str(WS / "data")))  # committed result records; override for a smoke test
 
 
 def design_verilog(design: str) -> Path:
