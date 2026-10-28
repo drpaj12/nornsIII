@@ -22,6 +22,7 @@ import time
 from pathlib import Path
 
 import nornlib as nl
+import runrecord as rr
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--work", required=True)
@@ -45,6 +46,10 @@ NPNR = os.environ.get("NEXTPNR_K6", f"{TMP}/nextpnr-k6-build/nextpnr-generic")
 LIBS = os.environ.get("NEXTPNR_LIBS", f"{TMP}/nextpnr-deps/prefix/lib")
 NP_LOCK_AFTER_S = 600.0  # a nextpnr run expected to exceed this (an earlier run of the same arm and design did) takes the Norns lock, like VPR
 HERE = Path(__file__).resolve().parent
+NEXTPNR_SRC = Path(os.environ.get("NEXTPNR_SRC", str(nl.WS_ROOT / "external" / "nextpnr")))  # the clone nextpnr-k6 was exported from (read only)
+VPR_TREE = Path(os.environ.get("NORNS_VTR", str(VPR.parents[2])))  # source tree of the VPR binary
+STEPS: list[dict] = []  # tool steps since the last record was written (see write_record)
+TOOLS: dict[str, dict] = {}  # tool entries, computed once per process
 RX = {
     "pack_s": re.compile(r"#+ Packing took ([0-9.]+) seconds"),
     "ap_s": re.compile(r"Analytical Placement took ([0-9.]+) seconds"),
@@ -57,6 +62,7 @@ RX = {
     "clbs": re.compile(r"(\d+)\s+blocks of type: clb"),
 }
 SA = ["--pack", "--place", "--route", "--analysis"]
+FAMILY = {"vpr_ap": "analytic", "vpr_ap_reread": "analytic", "vpr_sa": "annealing", "vpr_sa_reread": "annealing", "ext_nextpnr_heap": "analytic", "ext_nextpnr_sa": "annealing"}  # placer family of the arm
 PERSEED_ARMS = ("vpr_ap", "vpr_ap_reread", "vpr_sa", "vpr_sa_reread", "ext_nextpnr_heap", "ext_nextpnr_sa")
 
 
@@ -68,8 +74,12 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     if read:
         flags += ["--read_flat_place", str(read)]
     log = cwd / "vpr.out"
-    cmd = ["flock", "-x", str(nl.LOCK), str(VPR), str(nl.ARCH), str(blif)] + flags
+    argv = [str(VPR), str(nl.ARCH), str(blif)] + flags
+    tfile = cwd / "time.txt"
+    cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + argv
     rc = nl.run(cmd, cwd=cwd, stdout=log, timeout=7200)
+    secs, rss = rr.parse_time_v(tfile.read_text(errors="replace")) if tfile.exists() else (0.0, 0.0)
+    STEPS.append({"kind": "vpr", "argv": argv, "rc": rc, "secs": secs, "rss": rss, "log": log})
     text = log.read_text(errors="replace")
     rec = {"rc": rc}
     for k, rx in RX.items():
@@ -92,6 +102,46 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     return rec
 
 
+def tool(name):
+    """The run-record entry of a tool (HEAD of its tree, clean flag, binary sha256, --version text); once per process."""
+    if name not in TOOLS:
+        if name == "vpr":
+            TOOLS[name] = rr.tool_entry(VPR_TREE, VPR)
+        elif name == "nextpnr":
+            TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS})
+        else:  # the Norns scripts, run from this checkout
+            TOOLS[name] = rr.tool_entry(nl.WS, Path(__file__), version_args=None)
+    return TOOLS[name]
+
+
+def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, artifacts=None, placer=None):
+    """Write <cwd>/mimir-run.json from the tool steps run since the last record (docs/specs/2026-10-28-mimir-run-record.md in mimirIII)."""
+    steps, STEPS[:] = list(STEPS), []
+    r = rr.RunRecorder(f"norns-placers-{args.tag}", design, arm, seed, family, nl.ARCH.stem,
+                       roots={"run": cwd, "work": WORK, "norns_vtr": VPR_TREE, "vtr": nl.VTR_ROOT, "runs": nl.RUNS, "tmp": Path(TMP)},
+                       roles={Path(NPNR): "<nextpnr>", VPR: "<vpr>", nl.ARCH: "<arch>", blif: "<blif>"} | {Path(k): v for k, v in (roles or {}).items()})
+    for s in steps:
+        r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], locked=True)
+    kinds = {s["kind"] for s in steps}
+    for k in ("vpr", "nextpnr"):
+        if k in kinds:
+            r.add_tool(k, tool(k))
+    r.add_tool("norns", tool("norns"))
+    vsteps = [s for s in steps if s["kind"] == "vpr"]
+    if vsteps:
+        r.add_vpr_params(vsteps[-1]["argv"], vsteps[-1]["log"], VPR_TREE / "vpr/src/base/read_options.cpp", "vtr-tree")
+    nsteps = [s for s in steps if s["kind"] == "nextpnr"]
+    if nsteps:
+        r.add_nextpnr_params(nsteps[-1]["argv"], NEXTPNR_SRC, "nextpnr", placer)
+    r.add_input("netlist", blif)
+    r.add_input("arch", nl.ARCH)
+    for role, path in (inputs or {}).items():
+        r.add_input(role, path)
+    for role, path in (artifacts or {}).items():
+        r.add_artifact(role, path)
+    r.write(cwd / "mimir-run.json")
+
+
 def run_py(script, *a):
     t = time.time()
     p = subprocess.run([sys.executable, str(HERE / script), *a], capture_output=True, text=True)
@@ -102,17 +152,20 @@ def run_py(script, *a):
 
 def nextpnr(cwd, js, anchors, grid, placer, seed, temp, n=10, locked=False):
     nl.ensure_dir(cwd)
-    cmd = (["flock", "-x", str(nl.LOCK)] if locked else []) + ["/usr/bin/time", "-v", NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}", "--vopt", f"n={n}"]
+    argv = [NPNR, "--uarch", "k6", "--vopt", f"width={grid[0]}", "--vopt", f"height={grid[1]}", "--vopt", f"n={n}"]
     if anchors.exists() and anchors.stat().st_size:
-        cmd += ["--vopt", f"anchors={anchors}"]
-    cmd += ["--json", str(js), "--no-route", "--placer", placer, "--seed", str(seed), "--write", str(cwd / "placed.json")]
+        argv += ["--vopt", f"anchors={anchors}"]
+    argv += ["--json", str(js), "--no-route", "--placer", placer, "--seed", str(seed), "--write", str(cwd / "placed.json")]
     if placer == "sa":
-        cmd += ["--starttemp", str(temp)]
+        argv += ["--starttemp", str(temp)]
+    cmd = (["flock", "-x", str(nl.LOCK)] if locked else []) + ["/usr/bin/time", "-v"] + argv
     t0 = time.time()
     p = subprocess.run(cmd, capture_output=True, text=True, env=dict(os.environ, LD_LIBRARY_PATH=LIBS), timeout=14400)
     wall = time.time() - t0
     txt = p.stdout + p.stderr
     (cwd / "nextpnr.log").write_text(txt)
+    secs, rss = rr.parse_time_v(txt)
+    STEPS.append({"kind": "nextpnr", "argv": argv, "rc": p.returncode, "secs": secs, "rss": rss, "log": cwd / "nextpnr.log"})
     g = lambda rx: (float(m.group(1)) if (m := re.search(rx, txt)) else None)
     rec = {"rc": p.returncode, "wall_s": wall, "ble_per_tile": n, "no_bels": "no BELs remaining" in txt, "heap_s": g(r"HeAP Placer Time: ([0-9.]+)s"), "sa_s": g(r"SA placement time ([0-9.]+)s"),
            "init_s": g(r"Initial placement time ([0-9.]+)s"), "max_rss_kb": g(r"Maximum resident set size \(kbytes\): (\d+)")}
@@ -157,10 +210,14 @@ def process(design):
         if key in done:
             return done[key]
         cwd = wd / (tdir or f"{arm}.s{seed}")
+        STEPS.clear()
         rec = vpr(cwd, flags, seed, blif, write=write, read=read)
         if rec["rc"]:  # a failed run is retried once (Section 5 rule 4)
             rec = vpr(cwd, flags, seed, blif, write=write, read=read) | {"retried": True}
         rec |= {"arm": arm, "seed": seed} | (extra or {})
+        write_record(cwd, design, arm, seed, FAMILY[arm], blif, roles={read: "<read_flat_place>"} if read else None,
+                     inputs={"read_flat_place": read} if read else None,
+                     artifacts={"vpr_out": cwd / "vpr.out", **({"flat_place": cwd / write} if write else {})})
         record(rec)
         return rec
 
@@ -222,17 +279,27 @@ def process(design):
                         continue
                     tag = f"{arm}.s{s}" + (f".t{T:g}" if T is not None else "")
                     cwd = wd / tag
+                    STEPS.clear()
                     slow = any((r.get("nextpnr") or {}).get("wall_s", 0) > NP_LOCK_AFTER_S for r in out["runs"] if r["arm"] == arm)
+                    def npr(T=T, s=s, arm=arm, placer=placer, cwd=cwd):
+                        ovl = Path(TMP) / "nextpnr-k6-src/generic/viaduct/k6/k6.cc"
+                        write_record(cwd, design, arm + (f"-t{T:g}" if T is not None else ""), s, FAMILY[arm], blif, placer=placer,
+                                     roles={js: "<json>", anchors: "<anchors>", cwd / "placed.json": "<placed>", cwd / "ext.flat_place": "<read_flat_place>"},
+                                     inputs={"nextpnr_json": js, "anchors": anchors, "reference_flat_place": refc, "overlay_k6cc_built": ovl,
+                                             "overlay_k6cc_repo": HERE.parent / "placers/nextpnr_k6/k6.cc", "read_flat_place": cwd / "ext.flat_place"},
+                                     artifacts={"placed_json": cwd / "placed.json", "nextpnr_log": cwd / "nextpnr.log", "vpr_out": cwd / "vpr" / "vpr.out"})
                     np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble, locked=slow)
                     if np_rec["rc"]:
                         np_rec = nextpnr(cwd, js, anchors, grid, placer, s, T, n=n_ble, locked=slow) | {"retried": True}
                     rec = {"arm": arm, "seed": s, "nextpnr": np_rec} | extra
                     if np_rec["max_rss_kb"] and np_rec["max_rss_kb"] > args.max_rss_gb * 1e6:
                         rec |= {"rc": -1, "routed_ok": False, "error": "nextpnr memory over the stop limit"}
+                        npr()
                         record(rec)
                         sys.exit("memory stop rule")
                     if np_rec["rc"]:
                         rec |= {"rc": np_rec["rc"], "routed_ok": False, "error": "nextpnr failed"}
+                        npr()
                         record(rec)
                         continue
                     rc2, sec2 = run_py("nextpnr_readback.py", "--json", str(cwd / "placed.json"), "--ref", str(refc), "--fixed", str(js) + ".fixed.txt",
@@ -242,16 +309,19 @@ def process(design):
                     bad_rb = {k: rec["readback"].get(k) for k in ("fallback_ref", "const_verbatim", "anchor_moved", "pad_moved") if rec["readback"].get(k)}
                     if bad_rb:  # section 10.4(a): a pipeline fault stops the arm for this seed; VPR does not see the file
                         rec |= {"rc": -2, "routed_ok": False, "error": f"readback fault {bad_rb}"}
+                        npr()
                         record(rec)
                         continue
                     if rc2:
                         rec |= {"rc": rc2, "routed_ok": False, "error": "readback failed"}
+                        npr()
                         record(rec)
                         continue
                     v = vpr(cwd / "vpr", [], s, blif, read=cwd / "ext.flat_place")
                     if v["rc"]:
                         v = vpr(cwd / "vpr", [], s, blif, read=cwd / "ext.flat_place") | {"retried": True}
                     rec |= v
+                    npr()
                     record(rec)
             else:
                 sys.exit(f"unknown arm {arm}")
