@@ -2,7 +2,8 @@
 % recovered clusters. IEEEtran conference class; compiles with pdfLaTeX (Overleaf) and BibTeX.
 % Style and figures follow the Odin III paper (shared TikZ palette, IMAGE/odin3-tikz-styles.tex).
 % Numbers trace to the experiment records in this repository (docs/plan/norns-experiment.md and
-% the run logs); gaps are marked with \todo{} and filled as runs land.
+% the run logs); gaps are marked with \todo{} and filled as runs land. Status as of 2026-10-28: rounds one to
+% eight (round eight: docs/plan/placers.md Sections 9 and 10, nornsIII #14 and #15), the suite tree (IMAGE/fig_yggdrasil.tex).
 \documentclass[conference]{IEEEtran}
 
 \usepackage{cite}
@@ -67,6 +68,7 @@ growing the CLB count, but routed wirelength is slightly worse than the stock pa
 \input{r5-abstract}
 \input{r6-abstract}
 \input{r7-abstract}
+\input{r8-abstract}
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -106,7 +108,21 @@ intra-cluster order; (4) a second round that adds bitwise (word and bit-slice)
 seeds, a random-start and a coarse-random arm that separate the clustering from
 the coarse layout, and structure analyses of when seeding helps
 (Sections~\ref{sec:r2-method} and~\ref{sec:r2-results}), with the research log in
-the appendix.
+the appendix; (5) rounds three to seven, which test whether VPR's packer dilutes the
+HDL structure, build clustering benchmarks whose optimum is known by construction, remove
+a leak from them, and run a placement corpus with a held-out hindsight-clustering gap
+(Sections~\ref{sec:r3-method} to~\ref{sec:r7-results}); and (6) round eight, which places the same designs with
+nextpnr's analytic and annealing placers through VPR's flat-placement file, per family, with
+a run record per run (Section~\ref{sec:r8-results}).
+
+Figure~\ref{fig:yggdrasil} places The Norns~III in the suite. Yggdrasil~III is drawn as a tree. Odin~III is the trunk, and the provenance hierarchy that seeds the placement comes from its one IR. The Norns~III is a side branch, a tool and experiment for placement with provenance, next to Loki~III (reverse engineering, whose L2 clusterings are the recovered seeds), Leman~Russ~III and Verdandi~III. It runs Odin~III and VPR as programs and changes neither. M\'{\i}mir~III, the circuit knowledge base, hangs from the canopy as the fruit, and the Norns' run records are among what it stores. Urdarbrunnr, the well of FPGA CAD and its views (VTR and VPR, nextpnr, DREAMPlaceFPGA, OpenPARF), feeds The Norns~III.
+
+\begin{figure*}[tp]
+\centering
+\odinfit{\textwidth}{\input{IMAGE/fig_yggdrasil}}
+\caption{Yggdrasil~III drawn as a tree, and where The Norns~III sits in it. The trunk is Odin~III (\protect\url{https://github.com/drpaj12/odin3}); the roots are its inputs and the tools it links to, and three wells hold outside work. The oracles stand beside the trunk. The canopy holds Wyrd~III (\protect\url{https://github.com/drpaj12/wyrd}), Bifrost~III and Midgard~III, and the fruit, M\'{\i}mir~III (\protect\url{https://github.com/drpaj12/mimirIII}). Side branches carry tools and experiments: Loki~III (\protect\url{https://github.com/drpaj12/loki}), Leman~Russ~III, The Norns~III (\protect\url{https://github.com/drpaj12/nornsIII}, this paper) and Verdandi~III (\protect\url{https://github.com/drpaj12/verdandiIII}). The hub is \protect\url{https://github.com/drpaj12/YggdrasilIII}.}
+\label{fig:yggdrasil}
+\end{figure*}
 
 \section{Background}
 \label{sec:background}
@@ -439,6 +455,7 @@ scale~1 is 0.68 of a seed's cluster CLBs (full) and 0.70 (inter).
 
 \input{r6-results}
 \input{r7-results}
+\input{r8-results}
 
 \section{Discussion}
 \label{sec:discussion}
