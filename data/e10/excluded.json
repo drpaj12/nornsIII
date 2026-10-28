@@ -1,0 +1,87 @@
+[
+ {
+  "level": "k4",
+  "measure": "luts",
+  "excluded": [
+   "mkDelayWorker32B"
+  ]
+ },
+ {
+  "level": "k4",
+  "measure": "clbs",
+  "excluded": [
+   "boundtop",
+   "mkDelayWorker32B"
+  ]
+ },
+ {
+  "level": "k4",
+  "measure": "cpd_ns",
+  "excluded": [
+   "boundtop",
+   "mkDelayWorker32B"
+  ]
+ },
+ {
+  "level": "k4",
+  "measure": "wl",
+  "excluded": [
+   "boundtop",
+   "mkDelayWorker32B"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_heap",
+  "measure": "clbs",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_heap",
+  "measure": "cpd_ns",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_heap",
+  "measure": "wl",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_sa",
+  "measure": "clbs",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_sa",
+  "measure": "cpd_ns",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ },
+ {
+  "level": "ext_nextpnr_sa",
+  "measure": "wl",
+  "excluded": [
+   "clma",
+   "apex4",
+   "sha"
+  ]
+ }
+]

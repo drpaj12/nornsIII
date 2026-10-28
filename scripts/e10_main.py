@@ -202,12 +202,10 @@ def odin_top(root, netkey, design):
 
 def structures(root, label, cfg, design, db):
     """Extend the name map of every run of a Norns design with its packing and placement (odin3 prov_post), then store the structure rows."""
-    if design in MCNC20:
-        return 0
     net = CONFIGS[cfg]["net"]
     nd = root / "netlists" / net / design / "netlist"
     jobs = []
-    for rec, v in run_dirs(root, label, cfg, design):
+    for rec, v in ([] if design in MCNC20 else run_dirs(root, label, cfg, design)):  # MCNC circuits have no HDL: run records only, no structure rows
         r = json.loads(rec.read_text())
         w = root / "struct" / f"{label}-{cfg}" / design / rec.parent.name
         mp = w / "odin3" / f"{design}.blif.names"
