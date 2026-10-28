@@ -4,6 +4,7 @@ Usage: python3 scripts/e10_tables.py --root RUNROOT --db e10.db --out data/e10 [
 """
 import argparse
 import csv
+import hashlib
 import json
 import math
 import random
@@ -51,7 +52,9 @@ def boot(ratios, rnd):
     g = lambda xs: math.exp(sum(math.log(x) for x in xs) / len(xs))
     est = g(ratios)
     ests = sorted(g([ratios[rnd.randrange(len(ratios))] for _ in ratios]) for _ in range(BOOT_N))
-    return est, ests[int(0.025 * BOOT_N)], ests[int(0.975 * BOOT_N) - 1]
+    le, ge = sum(e <= 1.0 for e in ests), sum(e >= 1.0 for e in ests)
+    p = min(1.0, 2 * (min(le, ge) + 1) / (BOOT_N + 1))  # two-sided percentile-bootstrap p of H0: geomean ratio = 1 (post hoc, docs/plan/e10.md section 13)
+    return est, ests[int(0.025 * BOOT_N)], ests[int(0.975 * BOOT_N) - 1], p
 
 
 def ratio_table(rows, luts, designs, suite_of, out):
@@ -73,16 +76,85 @@ def ratio_table(rows, luts, designs, suite_of, out):
                     else:
                         miss.append(d)
                 if rs:
-                    est, lo, hi = boot(rs, rnd)
-                    table.append({"level": lname, "suite": suite, "measure": m, "n_designs": len(rs), "geomean_ratio": round(est, 6), "ci95_lo": round(lo, 6), "ci95_hi": round(hi, 6)})
+                    est, lo, hi, pv = boot(rs, rnd)
+                    table.append({"level": lname, "suite": suite, "measure": m, "n_designs": len(rs), "geomean_ratio": round(est, 6), "ci95_lo": round(lo, 6), "ci95_hi": round(hi, 6),
+                                  "boot_p": round(pv, 6), "all_ratios_one": all(abs(x - 1.0) < 1e-12 for x in rs)})
                 if miss and suite == "all":
                     excluded.append({"level": lname, "measure": m, "excluded": miss})
-    with (out / "ratios.csv").open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(table[0]) if table else ["level"])
-        w.writeheader()
-        w.writerows(table)
-    (out / "excluded.json").write_text(json.dumps(excluded, indent=1) + "\n")
-    return table
+    return table, excluded
+
+
+def holm(pvals):
+    """Holm step-down adjusted p-values (family-wise error), same order as the input."""
+    order = sorted(range(len(pvals)), key=lambda i: pvals[i])
+    adj, run = [0.0] * len(pvals), 0.0
+    for rank, i in enumerate(order):
+        run = max(run, min(1.0, (len(pvals) - rank) * pvals[i]))
+        adj[i] = run
+    return adj
+
+
+def file_sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+
+
+def identical_to_base(root, label, designs):
+    """level -> {measure group: True when every compared file pair is byte-identical}. Netlist (luts): the BLIF of the level's netlist against base; placed runs (clbs, cpd_ns, wl):
+    the packed .net and the .place of each vpr_sa run of the level against the same seed of `base` (levels with arm vpr_sa only)."""
+    out = {}
+    for lname, cfg, arm in LEVELS:
+        nk = NETKEY[cfg]
+        pairs = [(root / "netlists" / nk / d / "netlist" / f"{d}.blif", root / "netlists" / "base" / d / "netlist" / f"{d}.blif") for d in designs]
+        pairs = [(a, b) for a, b in pairs if a.is_file() and b.is_file()]
+        net_same = bool(pairs) and all(file_sha(a) == file_sha(b) for a, b in pairs)
+        run_same = None
+        if arm == "vpr_sa" and cfg != "base":
+            cmp = []
+            for d in designs:
+                for sdir in sorted((root / "vpr" / f"{label}-{cfg}" / d).glob("vpr_sa.s*")):
+                    ref = root / "vpr" / f"{label}-base" / d / sdir.name
+                    for ext in (".net", ".place"):
+                        a, b = sdir / f"{d}{ext}", ref / f"{d}{ext}"
+                        if a.is_file() and b.is_file():
+                            cmp.append(file_sha(a) == file_sha(b))
+            run_same = bool(cmp) and all(cmp)
+        out[lname] = {"luts": net_same, "placed": run_same, "files_compared": len(pairs)}
+    return out
+
+
+def verdicts(table, same):
+    """Post-hoc verdict rule (docs/plan/e10.md section 13): byte-identical to base -> no-op (DISMISSED); CI excludes 1.000 -> effect (USEFUL as evidence of an effect, direction stated);
+    CI includes 1.000 -> INCONCLUSIVE. Holm-adjusted bootstrap p-values of the 'all' rows (36 tests) are added alongside."""
+    allrows = [r for r in table if r["suite"] == "all"]
+    adj = holm([r["boot_p"] for r in allrows])
+    for r, a in zip(allrows, adj):
+        r["holm_p"] = round(a, 6)
+        r["holm_sig_05"] = a < 0.05
+    out = []
+    for r in table:
+        flag = same.get(r["level"], {})
+        noop = (flag.get("luts") and r["measure"] == "luts") or (flag.get("placed") and r["measure"] != "luts")
+        if noop:
+            v, d = "no-op (DISMISSED)", "byte-identical to base"
+        elif r["ci95_lo"] > 1.0 or r["ci95_hi"] < 1.0:
+            v, d = "effect (USEFUL as evidence of an effect)", "higher than base (worse)" if r["ci95_lo"] > 1.0 else "lower than base (better)"
+        else:
+            v, d = "INCONCLUSIVE", "CI includes 1.000"
+        r["verdict"], r["direction"] = v, d
+        out.append(r)
+    return out
+
+
+def k4_without_outlier(luts, designs, out, outlier="boundtop"):
+    """Geometric mean of the k4 / base netlist LUT ratio with and without the soft-logic outlier (boundtop, whose memories and multipliers become soft logic at K=4)."""
+    rs = {d: luts[("k4", d)] / luts[("base", d)] for d in designs if luts.get(("k4", d)) and luts.get(("base", d))}
+    rnd = random.Random(BOOT_SEED)
+    res = {}
+    for name, sel in (("all", list(rs)), (f"without_{outlier}", [d for d in rs if d != outlier])):
+        est, lo, hi, _ = boot([rs[d] for d in sel], rnd)
+        res[name] = {"n_designs": len(sel), "geomean": round(est, 6), "ci95_lo": round(lo, 6), "ci95_hi": round(hi, 6)}
+    res["outlier"] = {"design": outlier, "ratio": round(rs.get(outlier, float("nan")), 3)}
+    (out / "k4_luts_outlier.json").write_text(json.dumps(res, indent=1) + "\n")
 
 
 def form_of(rows_by_level):
@@ -148,7 +220,17 @@ def main():
             r = rows[k]
             w.writerow([k[0], k[1], k[2], suite_of(k[2]), k[3], int(r["ok"]), luts.get((NETKEY[k[0]], k[2])), r["clbs"], r["cpd_ns"], r["wl"], r["W"], r["vpr_s"], r["nextpnr_s"]])
     (out / "failures.json").write_text(json.dumps(fails, indent=1) + "\n")
-    table = ratio_table(rows, luts, designs, suite_of, out)
+    table, excluded = ratio_table(rows, luts, designs, suite_of, out)
+    same = identical_to_base(root, a.label, designs)
+    table = verdicts(table, same)
+    fields = list(table[0]) + [k for k in ("holm_p", "holm_sig_05") if k not in table[0]]
+    with (out / "ratios.csv").open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=fields, restval="")
+        w.writeheader()
+        w.writerows(table)
+    (out / "excluded.json").write_text(json.dumps(excluded, indent=1) + "\n")
+    (out / "identical_to_base.json").write_text(json.dumps(same, indent=1) + "\n")
+    k4_without_outlier(luts, designs, out)
     counts = structure_share(a.db, a.label, out)
     print(f"{len(rows)} runs, {len(fails)} failures, {len(designs)} designs, {len(table)} ratio rows, {len(counts)} structure cells")
 
