@@ -200,10 +200,27 @@ def odin_top(root, netkey, design):
     return m.group(1) if m else ""
 
 
+def quarantine_failed_records(root, label, cfg, design):
+    """Guard (docs/plan/e10.md section 11): a run record whose run failed (ok not true, a step with a non-zero exit code, or time_s 0) never reaches the store.
+    The record file is renamed to mimir-run.json.failed (not deleted) and logged in <root>/failed-records.log; the failure stays in data/placers."""
+    for rec in sorted((root / "vpr" / f"{label}-{cfg}" / design).glob("*/mimir-run.json")):
+        try:
+            r = json.loads(rec.read_text())
+            bad = r.get("ok") is not True or not r.get("time_s") or any(st.get("exit_code") not in (0, None) for st in r.get("steps", []))
+        except (OSError, ValueError):
+            bad = True
+        if bad:
+            rec.rename(rec.with_name("mimir-run.json.failed"))
+            with open(root / "failed-records.log", "a") as f:
+                f.write(f"{time.strftime('%FT%TZ', time.gmtime())} {label}-{cfg} {design} {rec.parent.name}: record not imported (failed run)\n")
+            print(f"{label}-{cfg} {design} {rec.parent.name}: failed record, not imported", flush=True)
+
+
 def structures(root, label, cfg, design, db):
     """Extend the name map of every run of a Norns design with its packing and placement (odin3 prov_post), then store the structure rows."""
     net = CONFIGS[cfg]["net"]
     nd = root / "netlists" / net / design / "netlist"
+    quarantine_failed_records(root, label, cfg, design)
     jobs = []
     for rec, v in ([] if design in MCNC20 else run_dirs(root, label, cfg, design)):  # MCNC circuits have no HDL: run records only, no structure rows
         r = json.loads(rec.read_text())
@@ -221,6 +238,7 @@ def structures(root, label, cfg, design, db):
                 continue
         jobs.append({"source": r["source"], "design": design, "arch": r["arch"], "seed": r["seed"], "arm": r["arm"], "slug": f"e10/{design}",
                      "blif": str(nd / f"{design}.blif"), "map": str(mp), "files": [str(nl.design_verilog(design))], "suite": "norns-e10"})
+    quarantine_failed_records(root, label, cfg, design)
     jf = root / "struct" / f"{label}-{cfg}" / design / "jobs.json"
     jf.parent.mkdir(parents=True, exist_ok=True)
     jf.write_text(json.dumps(jobs, indent=1))
@@ -295,6 +313,8 @@ def main():
     ap.add_argument("--no-new-design-after", default="", help="UTC time YYYY-MM-DDTHH:MM:SSZ; the sweep starts no design after it (a design that has started finishes)")
     a = ap.parse_args()
     root = Path(a.root)
+    if not root.is_absolute():
+        sys.exit(f"--root must be an absolute path (a relative root broke the 2026-10-28 relaunch): {a.root}")
     designs = a.designs.split(",") if a.designs else list(MCNC20 + NORNS15)
     if a.stage == "netlists":
         for nk in NETKEYS:
