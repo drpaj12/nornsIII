@@ -1,0 +1,6 @@
+# E10 alternative 1: VTR's old ABC script (use_old_abc_script), odin3 docs/PHASE3.md section 10 decision 10 option (b).
+# {K} is abc --lut K.
+resyn
+resyn2
+if -K {K}
+scleanup

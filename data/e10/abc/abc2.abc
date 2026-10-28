@@ -1,0 +1,10 @@
+# E10 alternative 2: the default script of odin3 lib/abc/vtr.abc with the one change `if -a` (area-oriented LUT mapping;
+# odin3 docs/user/outputs.md lines 54-55: `if` maps for delay unless -a). {K} is abc --lut K.
+strash
+ifraig -v
+scorr -v
+dc2 -v
+dch -f
+if -a -K {K} -v
+mfs2 -v
+print_stats
