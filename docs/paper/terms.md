@@ -7,18 +7,18 @@ uses. Check with `python3 docs/paper/check_terms.py --tex docs/paper/norns.tex` 
 Generated 2026-10-28 against origin/main be9096c; line numbers are the .tex files' own lines.
 | term | definition | defined at | first used at | depends on | search |
 |---|---|---|---|---|---|
-| FPGA | A chip made of many small programmable logic blocks and wires that a design is loaded onto. | none | norns.tex:75 | - | `\bFPGAs?\b` |
+| FPGA | A chip made of many small programmable logic blocks and wires that a design is loaded onto. | none | norns.tex:118 | - | `\bFPGAs?\b` |
 | netlist | A list of the logic gates (or LUTs) of a design and the wires between them. | none | norns.tex:87 | - | `\bnetlists?\b` |
 | HDL | Hardware description language: the Verilog text a designer writes. | none | norns.tex:112 | - | `\bHDL\b` |
 | LUT | Look-up table: the small memory that implements any logic function of K inputs. | none | norns.tex:179 | - | `\bLUTs?\b` |
 | K | The number of inputs of a LUT; here K = 6. | norns.tex:178 | norns.tex:178 | LUT | `six-input\|\bK~?=` |
 | BLE | Basic logic element: one LUT with its flip-flop. | r8-results.tex:23 | r8-results.tex:23 | LUT | `\bBLEs?\b\|basic element` |
 | CLB | Configurable logic block: a group of 10 BLEs that is placed as one unit. | none | norns.tex:195 | BLE | `\bCLBs?\b` |
-| provenance | The record, on every netlist object, of which HDL text and which module it came from. | norns.tex:146 | norns.tex:29 | HDL; netlist | `provenance` |
+| provenance | The record, on every netlist object, of which HDL text and which module it came from. | norns.tex:146 | norns.tex:89 | HDL; netlist | `provenance` |
 | elaboration | The front-end step that turns HDL text into a design graph before any gates exist. | none | r4-results.tex:141 | HDL | `elaborat` |
 | IR | Intermediate representation: Odin III's one internal design graph. | none | norns.tex:118 | netlist | `\bIR\b` |
 | module | One HDL module; the unit of the design hierarchy. | norns.tex:146 | norns.tex:146 | HDL; provenance | `\bmodules?\b` |
-| placement | The choice of which site on the chip each block occupies. | none | norns.tex:29 | CLB | `\bplace(ment\|d)\b\|\bplacers?\b` |
+| placement | The choice of which site on the chip each block occupies. | none | norns.tex:82 | CLB | `\bplace(ment\|d)\b\|\bplacers?\b` |
 | routing | The choice of which wires connect the placed blocks. | none | norns.tex:301 | placement | `\brout(ed\|ing\|er)\b` |
 | wirelength | Total length of the routed wires of a design; lower is smaller and usually faster. | none | norns.tex:302 | routing | `wirelength` |
 | critical path | The slowest register-to-register path; it sets the clock speed. | none | norns.tex:137 | netlist | `critical.path` |
@@ -28,11 +28,11 @@ Generated 2026-10-28 against origin/main be9096c; line numbers are the .tex file
 | channel width | Number of routing tracks per channel; the smaller the routable width, the less wire area. | none | norns.tex:302 | routing | `channel width` |
 | VPR | The place-and-route program of the VTR flow. | none | norns.tex:82 | placement; routing | `\bVPR\b` |
 | packing | The step that groups LUTs and flip-flops into CLBs before placement (VPR's AAPack). | r3-method.tex:10 | norns.tex:111 | CLB; LUT | `\bpack(ing\|er\|ed\|ings)?\b` |
-| simulated annealing | A placement search that accepts worse moves at a falling temperature to escape bad layouts. | norns.tex:132 | norns.tex:29 | placement | `simulated.annealing\|\banneal` |
+| simulated annealing | A placement search that accepts worse moves at a falling temperature to escape bad layouts. | norns.tex:132 | norns.tex:82 | placement | `simulated.annealing\|\banneal` |
 | analytic placement | A placement computed by solving a smooth wirelength model; VPR's start for the anneal. | norns.tex:132 | norns.tex:94 | placement | `analytic` |
 | seed (initial placement) | A placement file given to VPR to start the anneal from, instead of its own start. | norns.tex:167 | norns.tex:95 | simulated annealing; placement | `\bseeds?\b\|seeded` |
 | checkpointing | VPR's save-best-and-restore flag in the anneal (from RLPlace). | norns.tex:137 | norns.tex:93 | simulated annealing | `checkpoint` |
-| cluster / clustering | A partition of the netlist blocks into groups that are meant to belong together. | norns.tex:167 | norns.tex:30 | netlist | `\bclusters?\b\|clustering\|partition` |
+| cluster / clustering | A partition of the netlist blocks into groups that are meant to belong together. | norns.tex:167 | norns.tex:90 | netlist | `\bclusters?\b\|clustering\|partition` |
 | Urd (provenance seed) | The seed whose clusters are the HDL modules. | norns.tex:146 | norns.tex:146 | provenance; module; cluster / clustering | `\bUrd\b` |
 | Verdandi (recovered clusters) | Clusters recovered from the flat netlist alone (Loki III L2: Louvain, spectral, affinity propagation, k-means). | norns.tex:153 | norns.tex:118 | cluster / clustering | `Verdandi\|Louvain` |
 | quotient layout | Contract each cluster to a node, weight edges by cut nets, lay the small graph out, scale to the die. | norns.tex:168 | norns.tex:100 | cluster / clustering | `quotient` |

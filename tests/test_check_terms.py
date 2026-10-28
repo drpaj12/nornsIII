@@ -10,7 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "docs" / "paper"))
 import check_terms as ct
 
-MAIN = r"""\begin{abstract}
+MAIN = r"""\nociteall{keyone,
+  gizmo}
+\begin{abstract}
 The LUT is used here, which is exempt.
 \end{abstract}
 \section{Intro}
@@ -56,6 +58,9 @@ class CheckTerms(unittest.TestCase):
 
     def test_comment_is_stripped(self) -> None:
         self.assertFalse(any("gizmo" in line.text for line in self.lines))
+
+    def test_nociteall_block_is_skipped(self) -> None:
+        self.assertFalse(any("keyone" in line.text for line in self.lines))
 
     def test_parse_terms(self) -> None:
         self.assertEqual([t.name for t in self.terms], ["LUT", "CLB", "netlist", "gizmo", "ghost"])

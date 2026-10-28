@@ -20,7 +20,8 @@ the term itself. A literal ``|`` inside a cell is written ``\\|``. The checker e
   * DEPENDS-ORDER: a term is defined before a term it depends on;
   * STALE: ``first used at`` in terms.md differs from the computed first use (informational).
 
-Lines of the abstract are exempt (an abstract may use a term before the body defines it).
+Front matter is exempt: everything before the first ``\\section`` (title, abstract, keywords; an
+abstract may use a term before the body defines it).
 
 Exit status is 1 when any of the first four kinds is found, unless ``--report-only`` is given.
 Standard library only.
@@ -96,14 +97,20 @@ def flatten(tex: Path) -> list[Line]:
     """Expand \\input recursively, in reading order, with comments stripped."""
     base = tex.parent
     out: list[Line] = []
-    state = {"abstract": False}
+    state = {"abstract": True, "nocite": False}
 
     def walk(path: Path) -> None:
         rel = path.relative_to(base).as_posix()
         for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             text = strip_comment(raw)
-            if "\\begin{abstract}" in text:
-                state["abstract"] = True
+            if "\\nociteall{" in text or "\\nocite{" in text:
+                state["nocite"] = "}" not in text
+                continue
+            if state["nocite"]:
+                state["nocite"] = "}" not in text
+                continue
+            if "\\section{" in text or "\\section*{" in text:
+                state["abstract"] = False
             match = INPUT_RE.search(text)
             if match:
                 name = match.group(1)
@@ -114,8 +121,6 @@ def flatten(tex: Path) -> list[Line]:
                 if name.startswith("IMAGE/"):
                     continue
             out.append(Line(rel, number, STRIP_RE.sub("", text), state["abstract"]))
-            if "\\end{abstract}" in text:
-                state["abstract"] = False
 
     walk(tex)
     return out
