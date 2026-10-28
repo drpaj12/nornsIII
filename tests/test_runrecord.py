@@ -42,6 +42,26 @@ class HostAlias(unittest.TestCase):
             self.assertEqual(len(Path(m).read_text().splitlines()), 2)
 
 
+class BuildCopy(unittest.TestCase):
+    def test_copy_differs_lists_changed_and_missing_files(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as t:
+            tree, copy = Path(t) / "tree", Path(t) / "copy"
+            tree.mkdir()
+            g = ["git", "-C", str(tree), "-c", "user.name=t", "-c", "user.email=t@example.invalid"]
+            subprocess.run([*g, "init", "-q"], check=True)
+            (tree / "a.txt").write_text("a\n")
+            (tree / "b.txt").write_text("b\n")
+            subprocess.run([*g, "add", "."], check=True)
+            subprocess.run([*g, "commit", "-q", "-m", "x"], check=True)
+            copy.mkdir()
+            (copy / "a.txt").write_text("a\n")
+            (copy / "b.txt").write_text("changed\n")
+            self.assertEqual(rr.copy_differs(tree, copy), ["b.txt"])
+            (copy / "b.txt").write_text("b\n")
+            self.assertEqual(rr.copy_differs(tree, copy), [])
+
+
 class Parsing(unittest.TestCase):
     def test_time_and_options(self):
         self.assertEqual(rr.parse_time_v(TIME_V), (62.5, 2.0))

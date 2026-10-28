@@ -73,7 +73,21 @@ def file_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = None, version_args: tuple[str, ...] | None = ("--version",)) -> dict[str, object]:
+def copy_differs(tree: Path, copy: Path) -> list[str]:
+    """Paths (tracked at HEAD of `tree`) whose content in the exported copy `copy` differs from HEAD or is
+    missing: the check that a `git archive` copy used for the build is the tree's HEAD."""
+    listing = git(tree, "ls-tree", "-r", "-z", "HEAD")
+    entries = [e.split("\t", 1) for e in listing.split("\0") if e and not e.startswith("160000")]
+    paths = [p for _, p in entries if (copy / p).is_file()]
+    res = subprocess.run(["git", "-C", str(copy), "hash-object", "--no-filters", "--stdin-paths"], input="\n".join(paths) + "\n",
+                         capture_output=True, text=True, check=False)
+    got = dict(zip(paths, res.stdout.split()))
+    out = [p for meta, p in entries if (copy / p).is_file() and meta.split()[2] != got.get(p)]
+    return sorted(out + [p for _, p in entries if not (copy / p).is_file()])
+
+
+def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = None, version_args: tuple[str, ...] | None = ("--version",),
+               copy: Path | None = None, copy_allowed: tuple[str, ...] = ()) -> dict[str, object]:
     """Facts about one tool: HEAD of its source tree and how it was found, whether the tree is clean (and the
     sha256 of its diff when it is not), the binary's sha256 and `--version` text, and whether that text
     names the tree's HEAD (the evidence that the binary was built from it)."""
@@ -90,12 +104,15 @@ def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = Non
         res = subprocess.run([str(binary), *version_args], capture_output=True, text=True, check=False, timeout=60, cwd=tempfile.gettempdir(),
                              env={**os.environ, **(env or {})})
         version = (res.stdout + res.stderr).strip()
+    differs = copy_differs(tree, copy) if (copy and tree and head and copy.is_dir()) else None
     return {"commit": head, "commit_how": "git rev-parse HEAD of the source tree" if head else "no git source tree",
             "clean": clean, "dirty_diff_sha256": diff_sha,
             "binary_sha256": file_sha256(binary) if binary.is_file() else "",
             "binary_version": version,
             # a script run from its tree (version_args None) is that tree's HEAD when the tree is clean
-            "version_names_commit": (clean is True) if version_args is None else (bool(head) and head[:10] in version)}
+            "version_names_commit": (clean is True) if version_args is None else (bool(head) and head[:10] in version),
+            # a tool built from a `git archive` copy of the tree: the copy equals HEAD but for the listed overlay paths
+            "build_copy_differs": differs, "build_copy_is_head": differs is not None and set(differs) <= set(copy_allowed)}
 
 
 def parse_time_v(text: str) -> tuple[float, float]:
@@ -215,9 +232,9 @@ class RunRecorder:
         assert isinstance(tools, dict)
         tools[name] = entry
         c = str(entry["commit"])
-        ok = bool(c) and bool(entry["version_names_commit"])
+        ok = bool(c) and bool(entry["version_names_commit"] or entry.get("build_copy_is_head"))
         self.param(f"tool.{name}_commit", c, "given" if ok else "unknown",
-                   f"{name}: HEAD of its source tree, named by its --version text (or a clean tree for a script)" if ok else
+                   f"{name}: HEAD of its source tree, named by its --version text, or equal to the build's source copy, or a clean tree for a script" if ok else
                    f"{name}: HEAD of the source tree is not named by the binary's --version text, or there is no tree")
         self.param(f"tool.{name}_source_clean", "unknown" if entry["clean"] is None else str(entry["clean"]).lower(),
                    "given" if entry["clean"] is not None else "unknown",

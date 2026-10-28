@@ -108,7 +108,8 @@ def tool(name):
         if name == "vpr":
             TOOLS[name] = rr.tool_entry(VPR_TREE, VPR)
         elif name == "nextpnr":
-            TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS})
+            TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS}, copy=Path(NPNR).resolve().parent.parent / "nextpnr-k6-src",
+                                        copy_allowed=("generic/CMakeLists.txt",))  # build.sh patches this file (two lines); the k6 overlay dir is added, not tracked
         else:  # the Norns scripts, run from this checkout
             TOOLS[name] = rr.tool_entry(nl.WS, Path(__file__), version_args=None)
     return TOOLS[name]
@@ -133,6 +134,9 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
     nsteps = [s for s in steps if s["kind"] == "nextpnr"]
     if nsteps:
         r.add_nextpnr_params(nsteps[-1]["argv"], NEXTPNR_SRC, "nextpnr", placer)
+    ovl = (inputs or {}).get("overlay_k6cc_built")
+    if nsteps and ovl and Path(ovl).is_file():
+        r.param("nextpnr.overlay_k6cc_sha256", rr.file_sha256(Path(ovl)), "given", "sha256 of generic/viaduct/k6/k6.cc in the build's source copy")
     r.add_input("netlist", blif)
     r.add_input("arch", nl.ARCH)
     for role, path in (inputs or {}).items():
