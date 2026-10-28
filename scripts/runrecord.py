@@ -192,13 +192,65 @@ def copy_differs(tree: Path, copy: Path) -> list[str]:
     return list(copy_state(tree, copy)["differs"])  # type: ignore[arg-type]
 
 
+def overlay_check(tree: Path, norns: Path, binary: Path, version: str, pin_rel: str = "packer/VTR_COMMIT", overlay_rel: str = "packer/vpr") -> dict[str, object]:
+    """Is a dirty VTR build tree exactly "VTR base commit + the Norns packer overlay"? Four checks at record time:
+    `vtr_head_is_pin` (tree HEAD equals the pin file at the nornsIII commit), `tree_matches_overlay` (every modified or
+    untracked, non-ignored file of the tree has a byte-identical counterpart in the overlay as committed, and every overlay
+    file is present and identical in the tree), `packer_clean` (the nornsIII tree's packer/ has no change), and
+    `binary_newer_or_names_base` (binary mtime not older than any overlay file in the tree, or its --version text names the
+    base commit). Result: `ok`, `failed` (check names, with `details`), `base_commit`, `overlay_commit`, `overlay_sha256`."""
+    failed: dict[str, str] = {}
+    commit = git(norns, "rev-parse", "HEAD")
+    base = git(tree, "rev-parse", "HEAD")
+    pin = "\n".join(git_show(norns, commit, pin_rel) or []).strip() if commit else ""
+    if not (SHA40.fullmatch(commit) and SHA40.fullmatch(base)):
+        failed["vtr_head_is_pin"] = "no git commit for the VTR tree or the nornsIII tree"
+    elif base != pin:
+        failed["vtr_head_is_pin"] = f"tree HEAD {base[:10]} differs from {pin_rel} {pin[:10] or '(unreadable)'}"
+    files: dict[str, bytes] = {}  # path under vpr/ (as in the VTR tree) -> committed bytes
+    if commit:
+        for name in git(norns, "ls-tree", "-r", "--name-only", "-z", commit, "--", overlay_rel).split("\0"):
+            if not name:
+                continue
+            res = subprocess.run(["git", "-C", str(norns), "show", f"{commit}:{name}"], capture_output=True, check=False)
+            if res.returncode == 0:
+                files["vpr/" + name[len(overlay_rel) + 1:]] = res.stdout
+    problems = []
+    if not files:
+        problems.append("no overlay files at the nornsIII commit")
+    for rel, data in sorted(files.items()):
+        f = tree / rel
+        if not f.is_file():
+            problems.append(f"overlay file missing in the tree: {rel}")
+        elif f.read_bytes() != data:
+            problems.append(f"overlay file differs in the tree: {rel}")
+    status = subprocess.run(["git", "-C", str(tree), "status", "--porcelain", "-z", "--untracked-files=all"], capture_output=True, text=True, check=False).stdout  # not git(): it strips the first entry's leading space
+    for ent in status.split("\0"):
+        if ent and ent[3:] not in files:
+            problems.append(f"modified or untracked file without an overlay counterpart: {ent[3:]}")
+    if problems:
+        failed["tree_matches_overlay"] = "; ".join(problems[:MAX_LISTED_DIFFS])
+    if git(norns, "status", "--porcelain", "--untracked-files=all", "--", "packer") != "":
+        failed["packer_clean"] = "packer/ of the nornsIII tree has uncommitted changes"
+    present = [tree / r for r in files if (tree / r).is_file()]
+    if binary.is_file() and present:
+        if not (binary.stat().st_mtime >= max(f.stat().st_mtime for f in present) or (base and base[:10] in version)):
+            failed["binary_newer_or_names_base"] = "the binary is older than an overlay file and its --version text does not name the base commit"
+    elif not binary.is_file():
+        failed["binary_newer_or_names_base"] = "no binary"
+    h = hashlib.sha256()
+    for rel in sorted(files):
+        h.update(f"{rel}\0{len(files[rel])}\0".encode() + files[rel] + b"\n")
+    return {"ok": not failed, "failed": failed, "base_commit": base, "overlay_commit": commit, "overlay_sha256": h.hexdigest() if files else ""}
+
+
 def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = None, version_args: tuple[str, ...] | None = ("--version",),
-               copy: Path | None = None, copy_allowed_extra: tuple[str, ...] = (), copy_exempt: dict[str, tuple[str, ...]] | None = None) -> dict[str, object]:
+               copy: Path | None = None, copy_allowed_extra: tuple[str, ...] = (), copy_exempt: dict[str, tuple[str, ...]] | None = None, overlay_repo: Path | None = None) -> dict[str, object]:
     """Facts about one tool: HEAD of its source tree and how it was found, whether the tree is clean AT RECORD TIME
     (and the sha256 of its diff when it is not), the binary's sha256 and `--version` text, whether that text names
     the tree's HEAD, and whether the text says the binary was built from a dirty tree (`built_dirty`, from the
     `-dirty` suffix of the version; None when unknown). For a tool built from a `git archive` copy: `build_copy`
-    (see copy_state)."""
+    (see copy_state). With `overlay_repo` (the norns repo whose packer/vpr overlays a VTR tree): `overlay` (see overlay_check)."""
     head = git(tree, "rev-parse", "HEAD") if tree else ""
     head = head if SHA40.fullmatch(head) else ""
     clean = None
@@ -212,6 +264,7 @@ def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = Non
         res = subprocess.run([str(binary), *version_args], capture_output=True, text=True, check=False, timeout=60, cwd=tempfile.gettempdir(),
                              env={**os.environ, **(env or {})})
         version = (res.stdout + res.stderr).strip()
+    ov = overlay_check(tree, overlay_repo, binary, version) if (overlay_repo and tree and head) else None
     bc = copy_state(tree, copy, copy_allowed_extra, copy_exempt) if (copy and tree and head and copy.is_dir()) else None
     return {"commit": head, "commit_how": "git rev-parse HEAD of the source tree" if head else "no git source tree",
             "clean": clean, "dirty_diff_sha256": diff_sha,
@@ -221,7 +274,7 @@ def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = Non
             # a script run from its tree (version_args None) is that tree's HEAD when the tree is clean
             "version_names_commit": (clean is True) if version_args is None else (bool(head) and head[:10] in version),
             "is_script": version_args is None,
-            "build_copy": bc, "build_copy_is_head": bool(bc and bc["is_head"])}
+            "overlay": ov, "build_copy": bc, "build_copy_is_head": bool(bc and bc["is_head"])}
 
 
 def parse_time_v(text: str) -> tuple[float | None, float | None]:
@@ -429,7 +482,11 @@ class RunRecorder:
         c = str(entry["commit"])
         bc = entry.get("build_copy")
         built_dirty = entry.get("built_dirty")
-        if entry.get("is_script"):
+        ov = entry.get("overlay")
+        ov_ok = isinstance(ov, dict) and bool(ov["ok"])
+        if ov_ok:
+            ok, why = True, f"VTR {ov['base_commit']} + Norns packer overlay at nornsIII {ov['overlay_commit']} (tree and overlay checked identical at record time)"
+        elif entry.get("is_script"):
             ok, why = entry["clean"] is True, "a script run from its tree: the clean tree's HEAD"
         elif bc is not None:
             ok, why = bool(entry["build_copy_is_head"]), "HEAD of the source tree equals the build's source copy but for listed, hashed exemptions"
@@ -442,6 +499,14 @@ class RunRecorder:
             reason = ("there is no source tree" if not c else "the binary was built from a dirty tree (its --version says -dirty)" if built_dirty
                       else "the source copy differs from HEAD in an unlisted way" if bc is not None else "the --version text does not name HEAD or the clean build is not shown")
             self.param(f"tool.{name}_commit", c, "unknown", f"inferred at record time: HEAD of the source tree; not given because {reason}")
+        if isinstance(ov, dict):
+            if ov_ok:
+                self.param(f"tool.{name}_base_commit", str(ov["base_commit"]), "given", "VTR tree HEAD equals packer/VTR_COMMIT at the nornsIII commit (checked at record time)")
+                self.param(f"tool.{name}_overlay_commit", str(ov["overlay_commit"]), "given", "HEAD of the nornsIII tree; packer/ clean and byte-identical to the VTR tree's overlay files (checked at record time)")
+                self.param(f"tool.{name}_overlay_sha256", str(ov["overlay_sha256"]), "given", "sha256 over the sorted overlay file list and contents, as committed at the nornsIII commit")
+            else:
+                for chk, why_failed in dict(ov["failed"]).items():  # type: ignore[call-overload]
+                    self.param(f"tool.{name}_overlay_check_failed[{chk}]", why_failed, "unknown", "at record time: this check of 'VTR base + Norns packer overlay' failed")
         if built_dirty is not None:
             self.param(f"tool.{name}_built_dirty", str(bool(built_dirty)).lower(), "given", f"{name} --version text ('-dirty' suffix)")
         self.param(f"tool.{name}_source_clean", "unknown" if entry["clean"] is None else str(entry["clean"]).lower(),

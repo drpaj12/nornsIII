@@ -112,7 +112,7 @@ def tool(name):
     """The run-record entry of a tool (HEAD of its tree, clean flag, binary sha256, --version text); once per process."""
     if name not in TOOLS:
         if name == "vpr":
-            TOOLS[name] = rr.tool_entry(VPR_TREE, VPR)
+            TOOLS[name] = rr.tool_entry(VPR_TREE, VPR, overlay_repo=nl.WS)  # the VPR tree is the pinned VTR plus packer/vpr
         elif name == "nextpnr":
             TOOLS[name] = rr.tool_entry(NEXTPNR_SRC, Path(NPNR), env={"LD_LIBRARY_PATH": LIBS}, copy=NPNR_COPY, copy_allowed_extra=NEXTPNR_OVERLAY, copy_exempt=NEXTPNR_PATCHED)  # build.sh patches one tracked file (two lines) and adds the k6 overlay
         else:  # the Norns scripts, run from this checkout

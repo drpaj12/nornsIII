@@ -226,6 +226,102 @@ class ToolCommit(unittest.TestCase):
             self.assertEqual(self.rec(e, "norns")["tool.norns_commit"]["conf"], "unknown")
 
 
+class VprOverlay(unittest.TestCase):
+    """A dirty VTR tree that is exactly base commit + packer/vpr overlay gives the commit `given`; any failed check gives unknown."""
+
+    def setup(self, d: Path):
+        base = init_repo(d / "vtr", {"vpr/src/a.cpp": "orig a\n", "vpr/src/b.cpp": "orig b\n"})
+        norns = d / "norns"
+        init_repo(norns, {"packer/VTR_COMMIT": base + "\n", "packer/vpr/src/a.cpp": "new a\n", "packer/vpr/src/c.cpp": "added c\n"})
+        (d / "vtr/vpr/src/a.cpp").write_text("new a\n")  # what packer/build.sh does: copy the overlay in
+        (d / "vtr/vpr/src/c.cpp").write_text("added c\n")
+        binary = fake_binary(d / "vpr", "Version: unrelated")
+        os.utime(binary, (4e9, 4e9))  # newer than the overlay copies, whatever the clock resolution
+        return base, norns, binary
+
+    def params(self, d, norns, binary):
+        e = rr.tool_entry(d / "vtr", binary, overlay_repo=norns)
+        with tempfile.TemporaryDirectory() as t2:
+            with mock.patch.dict(os.environ, {"MIMIR_HOST_MAP": str(make_map(Path(t2)))}):
+                r = rr.RunRecorder("s", "d", "a", 1, "analytic", "arch", roots={})
+        r.add_tool("vpr", e)
+        return r.rec["params"], e["overlay"]
+
+    def assert_unknown(self, p, ov, check):
+        self.assertEqual(p["tool.vpr_commit"]["conf"], "unknown")
+        self.assertIn("inferred at record time", p["tool.vpr_commit"]["source"])
+        self.assertEqual(list(ov["failed"]), [check])
+        self.assertEqual(p[f"tool.vpr_overlay_check_failed[{check}]"]["conf"], "unknown")
+        self.assertNotIn("tool.vpr_base_commit", p)
+
+    def test_match_is_given(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            base, norns, binary = self.setup(d)
+            p, ov = self.params(d, norns, binary)
+            self.assertTrue(ov["ok"], ov)
+            self.assertEqual((p["tool.vpr_commit"]["conf"], p["tool.vpr_commit"]["value"]), ("given", base))
+            self.assertIn("Norns packer overlay at nornsIII", p["tool.vpr_commit"]["source"])
+            self.assertEqual((p["tool.vpr_base_commit"]["conf"], p["tool.vpr_base_commit"]["value"]), ("given", base))
+            self.assertEqual((p["tool.vpr_overlay_commit"]["conf"], p["tool.vpr_overlay_commit"]["value"]), ("given", rr.git(norns, "rev-parse", "HEAD")))
+            self.assertEqual((p["tool.vpr_overlay_sha256"]["conf"], len(p["tool.vpr_overlay_sha256"]["value"])), ("given", 64))
+            self.assertEqual(p["tool.vpr_source_clean"]["value"], "false")  # still dirty, still recorded
+
+    def test_one_changed_byte(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            (d / "vtr/vpr/src/a.cpp").write_text("new A\n")
+            p, ov = self.params(d, norns, binary)
+            self.assert_unknown(p, ov, "tree_matches_overlay")
+            self.assertIn("a.cpp", ov["failed"]["tree_matches_overlay"])
+
+    def test_missing_overlay_file(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            (d / "vtr/vpr/src/c.cpp").unlink()
+            p, ov = self.params(d, norns, binary)
+            self.assert_unknown(p, ov, "tree_matches_overlay")
+            self.assertIn("missing", ov["failed"]["tree_matches_overlay"])
+
+    def test_extra_modified_file(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            (d / "vtr/vpr/src/b.cpp").write_text("hand edit\n")
+            p, ov = self.params(d, norns, binary)
+            self.assert_unknown(p, ov, "tree_matches_overlay")
+            self.assertIn("b.cpp", ov["failed"]["tree_matches_overlay"])
+
+    def test_base_commit_mismatch(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            (norns / "packer/VTR_COMMIT").write_text("0" * 40 + "\n")
+            subprocess.run(["git", "-C", str(norns), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(norns), *G, "commit", "-q", "-m", "pin"], check=True)
+            p, ov = self.params(d, norns, binary)
+            self.assert_unknown(p, ov, "vtr_head_is_pin")
+
+    def test_dirty_packer_dir(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            (norns / "packer/vpr/src/a.cpp").write_text("uncommitted\n")
+            p, ov = self.params(d, norns, binary)
+            self.assertIn("packer_clean", ov["failed"])
+            self.assertEqual(p["tool.vpr_commit"]["conf"], "unknown")
+
+    def test_binary_older_than_overlay(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t)
+            _, norns, binary = self.setup(d)
+            os.utime(binary, (1, 1))
+            p, ov = self.params(d, norns, binary)
+            self.assert_unknown(p, ov, "binary_newer_or_names_base")
+
+
 NEXTPNR_FILES = {
     "common/kernel/command.cc": '''void f() {
     if (vm.count("starttemp"))
