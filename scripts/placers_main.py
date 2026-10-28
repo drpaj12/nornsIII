@@ -35,6 +35,7 @@ ap.add_argument("--sa-temp", type=float, default=1.0)
 ap.add_argument("--redo-failed", action="store_true", help="drop failed records (kept under first_attempt_failures) and, for a converter older than section 10.7, all ext_* records")
 ap.add_argument("--max-rss-gb", type=float, default=13.0)
 ap.add_argument("--vpr-extra", default="", help="E10 sweep: extra VPR flags added to every VPR run (one string, split like a shell line), e.g. '--allow_unrelated_clustering on'")
+ap.add_argument("--vpr-timeout", type=int, default=0, help="E10 (docs/plan/e10.md section 9): wall-time limit in seconds of one VPR run (0 = none); a run over it ends with rc 124, is not retried, and skips the remaining seeds of the design")
 ap.add_argument("--odin-meta", default=None, help="E10 sweep: JSON file naming the Odin III step that made the netlists (argv, rc, secs, rss, abc script, K); added to every record as a shared step")
 args = ap.parse_args()
 if not Path("/usr/bin/time").is_file():
@@ -42,6 +43,7 @@ if not Path("/usr/bin/time").is_file():
 
 import shlex
 VPR_EXTRA = shlex.split(args.vpr_extra)  # E10: part of the configuration of every VPR run of this process
+VPR_TIMEOUT = args.vpr_timeout
 NEED_EXT = any(a.startswith("ext_") for a in args.arms.split(","))  # only the external arms need the reference run, the converter and the probe
 ODIN_META = json.loads(Path(args.odin_meta).read_text()) if args.odin_meta else None
 WORK = Path(args.work)
@@ -88,7 +90,7 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     log = cwd / "vpr.out"
     argv = [str(VPR), str(nl.ARCH), str(blif)] + flags
     tfile = cwd / "time.txt"
-    cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + argv
+    cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + (["timeout", "-k", "30", str(VPR_TIMEOUT)] if VPR_TIMEOUT else []) + argv
     rc = nl.run(cmd, cwd=cwd, stdout=log, timeout=7200)
     secs, rss = rr.parse_time_v(tfile.read_text(errors="replace")) if tfile.exists() else (0.0, 0.0)
     STEPS.append({"kind": "vpr", "argv": argv, "rc": rc, "secs": secs, "rss": rss, "log": log, "locked": True})
@@ -262,7 +264,7 @@ def process(design):
         STEPS.clear()
         STEPS.extend(PRE.get(read, []) if read else [])
         rec = vpr(cwd, flags, seed, blif, write=write, read=read)
-        if rec["rc"]:  # a failed run is retried once (Section 5 rule 4)
+        if rec["rc"] and rec["rc"] != 124:  # a failed run is retried once (Section 5 rule 4); a run over the E10 time limit is not
             rec = vpr(cwd, flags, seed, blif, write=write, read=read) | {"retried": True}
         rec |= {"arm": arm, "seed": seed} | (extra or {})
         write_record(cwd, design, arm, seed, FAMILY[arm], blif, roles={read: "<read_flat_place>"} if read else None,
@@ -316,6 +318,9 @@ def process(design):
         out["probe"] = {k: probe[k] for k in ("rc", "no_bels", "wall_s")}
         save()
     for s in SEEDS:
+        if VPR_TIMEOUT and any(r.get("rc") == 124 for r in out["runs"]):
+            print(design, "time limit reached on an earlier seed: remaining seeds skipped", flush=True)
+            break
         for arm in ARMS:
             if arm == "vpr_ap":
                 vrun("vpr_ap", s, [], write="final.flat_place")

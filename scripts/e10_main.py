@@ -50,7 +50,7 @@ CONFIGS = {
     "base": {"net": "base", "arch": "norns", "vpr": "", "arms": "vpr_sa"},
     "abc1": {"net": "abc1", "arch": "norns", "vpr": "", "arms": "vpr_sa"},
     "abc2": {"net": "abc2", "arch": "norns", "vpr": "", "arms": "vpr_sa"},
-    "k4": {"net": "k4", "arch": "k4", "vpr": "", "arms": "vpr_sa"},
+    "k4": {"net": "k4", "arch": "k4", "vpr": "", "arms": "vpr_sa", "extra": ["--vpr-timeout", "900"]},
     "earch": {"net": "earch", "arch": "earch", "vpr": "", "arms": "vpr_sa"},
     "uon": {"net": "base", "arch": "norns", "vpr": "--allow_unrelated_clustering on", "arms": "vpr_sa"},
     "uoff": {"net": "base", "arch": "norns", "vpr": "--allow_unrelated_clustering off", "arms": "vpr_sa"},
@@ -247,7 +247,9 @@ def failures(root, label, cfg):
 
 def sweep(root, a, designs):
     import sqlite3
-    cfgs = a.configs.split(",")
+    stopped_f = root / "stopped-configs.json"
+    stopped = json.loads(stopped_f.read_text()) if stopped_f.is_file() else {}
+    cfgs = [c for c in a.configs.split(",") if c not in stopped]
     for i, d in enumerate(designs):
         free_c = shutil.disk_usage("/mnt/c").free / 1e9
         if free_c < 30:
@@ -260,10 +262,13 @@ def sweep(root, a, designs):
             structures(root, a.label, cfg, d, a.db)
         subprocess.run([sys.executable, "-I", EVICT] + [str(root / "vpr" / f"{a.label}-{c}" / d) for c in cfgs] + [str(root / "netlists")])
         if i + 1 >= 5:
-            for cfg in cfgs:
+            for cfg in list(cfgs):
                 run, bad = failures(root, a.label, cfg)
                 if run and bad / run > 0.2:
-                    sys.exit(f"stop rule 1: config {cfg} fails on {bad} of {run} designs")
+                    print(f"STOP RULE 1: config {cfg} stopped, it fails on {bad} of {run} designs", flush=True)
+                    cfgs.remove(cfg)
+                    stopped[cfg] = {"after_design": d, "designs_run": run, "designs_failing": bad}
+                    stopped_f.write_text(json.dumps(stopped, indent=1) + "\n")
         con = sqlite3.connect(a.db)
         orphan = con.execute("select count(*) from structure_mapping m left join run r on r.run_id=m.run_id where r.run_id is null").fetchone()[0]
         con.close()
