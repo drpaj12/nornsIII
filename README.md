@@ -108,13 +108,7 @@ medians of the queued share of handed-over molecules 49% / 46% / 48% and of prop
 The fix (count queued molecules only, return a bool, scan order) is queued for round 4. Affinity-file entries that did not match
 an atom are listed per design and source in `data/analysis/r3fix-match.json` (for example mkDelayWorker32B matches 38 of 1620 word entries).
 
-Part of [Yggdrasil III](https://github.com/drpaj12/YggdrasilIII) (hub documentation:
-<https://drpaj12.github.io/YggdrasilIII/>; this repository is a submodule under `components/`, and
-the hub's [getting-started page](https://drpaj12.github.io/YggdrasilIII/getting-started.html) sets up
-the tools it needs). Uses [Odin III](https://github.com/drpaj12/odin3) (manual:
-<https://drpaj12.github.io/odin3/>), [Loki III](https://github.com/drpaj12/loki) (manual:
-<https://drpaj12.github.io/loki/>) and [Wyrd III](https://github.com/drpaj12/wyrd) (manual:
-<https://drpaj12.github.io/wyrd/>) to run the matrix.
+The Norns III is part of **Yggdrasil III**, the suite of Odin III (<https://github.com/drpaj12/odin3>, the trunk), Wyrd III (<https://github.com/drpaj12/wyrd>, the canopy, with Bifrost III and Midgard III), Loki III (<https://github.com/drpaj12/loki>), The Norns III (<https://github.com/drpaj12/nornsIII>) and Verdandi III (<https://github.com/drpaj12/verdandiIII>) on side branches, and Mímir III (<https://github.com/drpaj12/mimirIII>, the fruit). The Norns III is a side branch, a tool and experiment: placement with provenance. This repository is a submodule under `components/` of the hub, and the hub's [getting-started page](https://drpaj12.github.io/YggdrasilIII/getting-started.html) sets up the tools it needs. It uses [Odin III](https://github.com/drpaj12/odin3) (manual: <https://drpaj12.github.io/odin3/>), [Loki III](https://github.com/drpaj12/loki) (manual: <https://drpaj12.github.io/loki/>) and [Wyrd III](https://github.com/drpaj12/wyrd) (manual: <https://drpaj12.github.io/wyrd/>) to run the matrix, and its run records are read by Mímir III. It has no package version: it is scripts and data, identified by its commit in the hub's pins. The hub is <https://github.com/drpaj12/YggdrasilIII> (documentation: <https://drpaj12.github.io/YggdrasilIII/>, versions of every piece: <https://drpaj12.github.io/YggdrasilIII/versions.html>) and its picture of the tree is <https://github.com/drpaj12/YggdrasilIII/blob/main/images/yggdrasil-tree.png>.
 
 Round four (packing census, knowns, hierarchy, arms with CPD; protocol docs/plan/round4.md; needs odin3 >= 0b90fff9 for the
 attribution library, imported by scripts/timing4.py). Run with `. scripts/env.sh` and `$NR_PY` (scipy, networkx):
