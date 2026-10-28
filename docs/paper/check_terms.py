@@ -2,7 +2,7 @@
 """Report every term a LaTeX paper uses before its definition.
 
 Usage:
-    python3 docs/paper/check_terms.py [--tex docs/paper/<paper>.tex] [--terms docs/paper/terms.md]
+    python3 docs/paper/check_terms.py --tex docs/paper/<paper>.tex [--terms docs/paper/terms.md]
                                       [--top N] [--report-only]
 
 terms.md holds one table row per term:
@@ -11,7 +11,8 @@ terms.md holds one table row per term:
 
 ``defined at`` is ``file:line`` (relative to the .tex directory) or ``none``. ``search`` is an
 optional regular expression (case-insensitive) that finds the term in the text; the default is
-the term itself. A literal ``|`` inside a cell is written ``\\|``. The checker expands ``\\input`` in reading order, strips comments, then reports
+the term itself. A literal ``|`` inside a cell is written ``\\|``. The checker expands
+``\\input`` in reading order, strips comments, then reports
 
   * USED-BEFORE-DEFINED: first use precedes the defining line;
   * NEVER-DEFINED: the term occurs but has no definition (``none``);
@@ -34,7 +35,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 INPUT_RE = re.compile(r"\\input\{([^}]+)\}")
-STRIP_RE = re.compile(r"\\(?:cite|ref|label|eqref|url|includegraphics|input|bibliography)\w*(?:\[[^\]]*\])?\{[^}]*\}")
+STRIP_RE = re.compile(
+    r"\\(?:cite|ref|label|eqref|url|includegraphics|input|bibliography)\w*(?:\[[^\]]*\])?\{[^}]*\}"
+)
 
 
 @dataclass(frozen=True)
@@ -124,12 +127,16 @@ def parse_terms(md: Path) -> list[Term]:
     for raw in md.read_text(encoding="utf-8").splitlines():
         if not raw.startswith("|"):
             continue
-        cells = [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", raw.strip().strip("|"))]
+        cells = [
+            c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", raw.strip().strip("|"))
+        ]
         if len(cells) < 5 or cells[0].lower() == "term" or set(cells[0]) <= {"-", ":", " "}:
             continue
         deps = [d.strip() for d in cells[4].split(";") if d.strip() and d.strip() != "-"]
         search = cells[5].strip("`") if len(cells) > 5 else ""
-        terms.append(Term(cells[0], cells[1], cells[2].strip("`"), cells[3].strip("`"), deps, search))
+        terms.append(
+            Term(cells[0], cells[1], cells[2].strip("`"), cells[3].strip("`"), deps, search)
+        )
     return terms
 
 
@@ -207,7 +214,10 @@ def render(rep: Report, top: int) -> str:
     out.append(f"USED-BEFORE-DEFINED: {len(rep.used_before_defined)}")
     for term, gap, used, defined in rep.used_before_defined[:top]:
         where = f"{defined.file}:{defined.number}" if defined else "?"
-        out.append(f"  {term.name}: first used {used.file}:{used.number}, defined {where} ({gap} lines later)")
+        out.append(
+            f"  {term.name}: first used {used.file}:{used.number}, "
+            f"defined {where} ({gap} lines later)"
+        )
     out.append(f"NEVER-DEFINED (used, no definition): {len(rep.never_defined)}")
     for term, uses, used in rep.never_defined[:top]:
         out.append(f"  {term.name}: first used {used.file}:{used.number}, {uses} lines use it")
