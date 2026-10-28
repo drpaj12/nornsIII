@@ -282,7 +282,7 @@ def process(design):
                     STEPS.clear()
                     slow = any((r.get("nextpnr") or {}).get("wall_s", 0) > NP_LOCK_AFTER_S for r in out["runs"] if r["arm"] == arm)
                     def npr(T=T, s=s, arm=arm, placer=placer, cwd=cwd):
-                        ovl = Path(TMP) / "nextpnr-k6-src/generic/viaduct/k6/k6.cc"
+                        ovl = Path(NPNR).resolve().parent.parent / "nextpnr-k6-src/generic/viaduct/k6/k6.cc"  # the overlay copy that was compiled
                         write_record(cwd, design, arm + (f"-t{T:g}" if T is not None else ""), s, FAMILY[arm], blif, placer=placer,
                                      roles={js: "<json>", anchors: "<anchors>", cwd / "placed.json": "<placed>", cwd / "ext.flat_place": "<read_flat_place>"},
                                      inputs={"nextpnr_json": js, "anchors": anchors, "reference_flat_place": refc, "overlay_k6cc_built": ovl,

@@ -23,6 +23,7 @@ import platform
 import re
 import subprocess
 import time
+import tempfile
 import tomllib
 from pathlib import Path
 
@@ -86,7 +87,7 @@ def tool_entry(tree: Path | None, binary: Path, env: dict[str, str] | None = Non
             diff_sha = hashlib.sha256(git(tree, "diff", "HEAD").encode()).hexdigest()
     version = ""
     if binary.is_file() and version_args is not None:
-        res = subprocess.run([str(binary), *version_args], capture_output=True, text=True, check=False, timeout=60,
+        res = subprocess.run([str(binary), *version_args], capture_output=True, text=True, check=False, timeout=60, cwd=tempfile.gettempdir(),
                              env={**os.environ, **(env or {})})
         version = (res.stdout + res.stderr).strip()
     return {"commit": head, "commit_how": "git rev-parse HEAD of the source tree" if head else "no git source tree",
