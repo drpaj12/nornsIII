@@ -251,6 +251,9 @@ def sweep(root, a, designs):
     stopped = json.loads(stopped_f.read_text()) if stopped_f.is_file() else {}
     cfgs = [c for c in a.configs.split(",") if c not in stopped]
     for i, d in enumerate(designs):
+        if a.no_new_design_after and time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()) > a.no_new_design_after:
+            print(f"## no new design after {a.no_new_design_after}: stopping before {d}", flush=True)
+            return
         free_c = shutil.disk_usage("/mnt/c").free / 1e9
         if free_c < 30:
             sys.exit(f"stop rule 4: /mnt/c has {free_c:.0f} GB free")
@@ -291,6 +294,7 @@ def main():
     ap.add_argument("--label", default="e10")
     ap.add_argument("--seeds", default="1,2,3")
     ap.add_argument("--db", default="")
+    ap.add_argument("--no-new-design-after", default="", help="UTC time YYYY-MM-DDTHH:MM:SSZ; the sweep starts no design after it (a design that has started finishes)")
     a = ap.parse_args()
     root = Path(a.root)
     designs = a.designs.split(",") if a.designs else list(MCNC20 + NORNS15)
