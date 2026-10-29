@@ -137,6 +137,7 @@ struct t_options {
     argparse::ArgValue<float> norns_affinity_weight;       // Norns III
     argparse::ArgValue<std::string> norns_pack_census;     // Norns III round 4
     argparse::ArgValue<std::string> norns_proposal_count;  // Norns III round 4
+    argparse::ArgValue<int> norns_refresh_crit;            // Norns III H-refresh
     argparse::ArgValue<std::vector<std::string>> pack_high_fanout_threshold;
     argparse::ArgValue<int> pack_verbosity;
     argparse::ArgValue<bool> use_ram_mapper;

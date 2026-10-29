@@ -1,0 +1,16 @@
+{
+ "gate": "--norns_refresh_crit 0 vs stock sweep .net (pack only, sha256)",
+ "plan": "docs/plan/refresh-crit.md",
+ "explicit_k0_seeds123": {
+  "runs": 105,
+  "rc0": 105,
+  "net_equal": 105,
+  "designs": 35
+ },
+ "no_option_seed1": {
+  "runs": 35,
+  "rc0": 35,
+  "net_equal": 35,
+  "designs": 35
+ }
+}
