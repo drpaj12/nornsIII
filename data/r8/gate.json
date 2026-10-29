@@ -1,0 +1,142 @@
+{
+ "r8_chain_w16_1024": {
+  "beta0_net_sha256": "11d073466b26c425cda83f1d10e4e9fe08a45b96c696bc834d7e53ccf37c1d53",
+  "identical": true,
+  "stock_net_sha256": "11d073466b26c425cda83f1d10e4e9fe08a45b96c696bc834d7e53ccf37c1d53"
+ },
+ "r8_chain_w16_128": {
+  "beta0_net_sha256": "f90e2fbb848207dbdf7cdbd297aba5733abfcb57abba6d53adea5a4736f6ca88",
+  "identical": true,
+  "stock_net_sha256": "f90e2fbb848207dbdf7cdbd297aba5733abfcb57abba6d53adea5a4736f6ca88"
+ },
+ "r8_chain_w16_16": {
+  "beta0_net_sha256": "ef3009e75b1ab938371a904fbcf63e0528e7bd4dc0c4ea58e52c40bab21c5de9",
+  "identical": true,
+  "stock_net_sha256": "ef3009e75b1ab938371a904fbcf63e0528e7bd4dc0c4ea58e52c40bab21c5de9"
+ },
+ "r8_chain_w16_256": {
+  "beta0_net_sha256": "534abd14542c88e2554466a6829edb86f61d1f2b42894defb3187ea2a747ecce",
+  "identical": true,
+  "stock_net_sha256": "534abd14542c88e2554466a6829edb86f61d1f2b42894defb3187ea2a747ecce"
+ },
+ "r8_chain_w16_32": {
+  "beta0_net_sha256": "d627c1ed254911654b4bf06dbb21a766d2b7347c596ca12212b65c3de0d9cb51",
+  "identical": true,
+  "stock_net_sha256": "d627c1ed254911654b4bf06dbb21a766d2b7347c596ca12212b65c3de0d9cb51"
+ },
+ "r8_chain_w16_512": {
+  "beta0_net_sha256": "81685ec2e2644c9cc9d17902728bcb5f5fe0bf1f3b7a2001cf624bce6039d945",
+  "identical": true,
+  "stock_net_sha256": "81685ec2e2644c9cc9d17902728bcb5f5fe0bf1f3b7a2001cf624bce6039d945"
+ },
+ "r8_chain_w16_64": {
+  "beta0_net_sha256": "46e295ec8beac6e7fe851a67c56e5b8e26627c1e77267865ce66ac7135294fad",
+  "identical": true,
+  "stock_net_sha256": "46e295ec8beac6e7fe851a67c56e5b8e26627c1e77267865ce66ac7135294fad"
+ },
+ "r8_chain_w32_1024": {
+  "beta0_net_sha256": "c4fc7c67b34f9cfe41d83aea872b504161c9d0758d63ca1b54cf463e3ce174e4",
+  "identical": true,
+  "stock_net_sha256": "c4fc7c67b34f9cfe41d83aea872b504161c9d0758d63ca1b54cf463e3ce174e4"
+ },
+ "r8_chain_w32_128": {
+  "beta0_net_sha256": "c837c9b5405a1f55849bb7aa656018d3a4f17d857680845cd0e9c3b7562d6a4d",
+  "identical": true,
+  "stock_net_sha256": "c837c9b5405a1f55849bb7aa656018d3a4f17d857680845cd0e9c3b7562d6a4d"
+ },
+ "r8_chain_w32_16": {
+  "beta0_net_sha256": "1142616cabef912501a7663cbb33b192538a5c06e9ce1f26d1b17a196ce4e4eb",
+  "identical": true,
+  "stock_net_sha256": "1142616cabef912501a7663cbb33b192538a5c06e9ce1f26d1b17a196ce4e4eb"
+ },
+ "r8_chain_w32_256": {
+  "beta0_net_sha256": "660f509beaded868acbf11660f497a0c410102a90f9721eb319cf9f28de27e39",
+  "identical": true,
+  "stock_net_sha256": "660f509beaded868acbf11660f497a0c410102a90f9721eb319cf9f28de27e39"
+ },
+ "r8_chain_w32_32": {
+  "beta0_net_sha256": "8f7a6a6590ac57124ea1c41c368d99f121fab2546d90dcce7996061942c21244",
+  "identical": true,
+  "stock_net_sha256": "8f7a6a6590ac57124ea1c41c368d99f121fab2546d90dcce7996061942c21244"
+ },
+ "r8_chain_w32_512": {
+  "beta0_net_sha256": "134e8bc3c544436633861013af4fbec63c85067bfe2d5096664e05f624cfbdd4",
+  "identical": true,
+  "stock_net_sha256": "134e8bc3c544436633861013af4fbec63c85067bfe2d5096664e05f624cfbdd4"
+ },
+ "r8_chain_w32_64": {
+  "beta0_net_sha256": "a71fd979f729700c7341f94406e65a1b84170450eafe77f76c43b77a10e19d3c",
+  "identical": true,
+  "stock_net_sha256": "a71fd979f729700c7341f94406e65a1b84170450eafe77f76c43b77a10e19d3c"
+ },
+ "r8_chain_w4_1024": {
+  "beta0_net_sha256": "18a4d87dd59bd1dca6f229b98afc45980d1c9a08a8fe5570bedd66c3b36571e2",
+  "identical": true,
+  "stock_net_sha256": "18a4d87dd59bd1dca6f229b98afc45980d1c9a08a8fe5570bedd66c3b36571e2"
+ },
+ "r8_chain_w4_128": {
+  "beta0_net_sha256": "8dfb06f38aa9efc4ca6cb9ffceed3752c1d9c2931a258056270fedd132e1b381",
+  "identical": true,
+  "stock_net_sha256": "8dfb06f38aa9efc4ca6cb9ffceed3752c1d9c2931a258056270fedd132e1b381"
+ },
+ "r8_chain_w4_16": {
+  "beta0_net_sha256": "40fa1d480f98195e46ce094bb73f36a216af65f3148da943fc19fb41cdd7cbf6",
+  "identical": true,
+  "stock_net_sha256": "40fa1d480f98195e46ce094bb73f36a216af65f3148da943fc19fb41cdd7cbf6"
+ },
+ "r8_chain_w4_256": {
+  "beta0_net_sha256": "3586b69303011b1c9721ebea5002ddaeb3b7b9e6bddee975b836c697ddc70c91",
+  "identical": true,
+  "stock_net_sha256": "3586b69303011b1c9721ebea5002ddaeb3b7b9e6bddee975b836c697ddc70c91"
+ },
+ "r8_chain_w4_32": {
+  "beta0_net_sha256": "0ec83b52c261c35e850db4fd589fd901fc216c028e7e892105cc5914edd292d8",
+  "identical": true,
+  "stock_net_sha256": "0ec83b52c261c35e850db4fd589fd901fc216c028e7e892105cc5914edd292d8"
+ },
+ "r8_chain_w4_512": {
+  "beta0_net_sha256": "20d398210640eecd5003299bb05a02ad9048bba311395d7eb46ce191d1dabd85",
+  "identical": true,
+  "stock_net_sha256": "20d398210640eecd5003299bb05a02ad9048bba311395d7eb46ce191d1dabd85"
+ },
+ "r8_chain_w4_64": {
+  "beta0_net_sha256": "f87cb227640d625c18197775df10760d52aa85ffea709056ec05892759085c92",
+  "identical": true,
+  "stock_net_sha256": "f87cb227640d625c18197775df10760d52aa85ffea709056ec05892759085c92"
+ },
+ "r8_chain_w8_1024": {
+  "beta0_net_sha256": "2847deb64a1cd07ea2411fd2d70948e23d7d7ba07549767507083b8c4cc26f07",
+  "identical": true,
+  "stock_net_sha256": "2847deb64a1cd07ea2411fd2d70948e23d7d7ba07549767507083b8c4cc26f07"
+ },
+ "r8_chain_w8_128": {
+  "beta0_net_sha256": "41c7fbc2a700aafbc7c493a811facfb0982508850a004a70c763d2ff006df004",
+  "identical": true,
+  "stock_net_sha256": "41c7fbc2a700aafbc7c493a811facfb0982508850a004a70c763d2ff006df004"
+ },
+ "r8_chain_w8_16": {
+  "beta0_net_sha256": "42beb48244d2121c049460132ae843c8933c285c0ae339fa31ab7feb3b47b17e",
+  "identical": true,
+  "stock_net_sha256": "42beb48244d2121c049460132ae843c8933c285c0ae339fa31ab7feb3b47b17e"
+ },
+ "r8_chain_w8_256": {
+  "beta0_net_sha256": "0d195e82c91cb7fbed1eb681ec1ca28c13f4771741ac65db8d2b7e0187633c82",
+  "identical": true,
+  "stock_net_sha256": "0d195e82c91cb7fbed1eb681ec1ca28c13f4771741ac65db8d2b7e0187633c82"
+ },
+ "r8_chain_w8_32": {
+  "beta0_net_sha256": "4000a5c319e58aa2584028256dae26711bda41a1218ec7629e464d94c89461ad",
+  "identical": true,
+  "stock_net_sha256": "4000a5c319e58aa2584028256dae26711bda41a1218ec7629e464d94c89461ad"
+ },
+ "r8_chain_w8_512": {
+  "beta0_net_sha256": "318c65e18ebd55c8942872080cb81dc54a43d88fe015d58116c04a4e2b7223b3",
+  "identical": true,
+  "stock_net_sha256": "318c65e18ebd55c8942872080cb81dc54a43d88fe015d58116c04a4e2b7223b3"
+ },
+ "r8_chain_w8_64": {
+  "beta0_net_sha256": "a3e4f4e0874558d130e72ddf4fb7246c1e90c9881e1736bce6094ef1148a4eff",
+  "identical": true,
+  "stock_net_sha256": "a3e4f4e0874558d130e72ddf4fb7246c1e90c9881e1736bce6094ef1148a4eff"
+ }
+}

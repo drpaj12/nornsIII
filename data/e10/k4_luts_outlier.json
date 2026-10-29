@@ -1,0 +1,18 @@
+{
+ "all": {
+  "n_designs": 34,
+  "geomean": 1.97368,
+  "ci95_lo": 1.490928,
+  "ci95_hi": 2.768366
+ },
+ "without_boundtop": {
+  "n_designs": 33,
+  "geomean": 1.777011,
+  "ci95_lo": 1.427371,
+  "ci95_hi": 2.29033
+ },
+ "outlier": {
+  "design": "boundtop",
+  "ratio": 63.042
+ }
+}

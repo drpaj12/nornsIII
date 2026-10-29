@@ -34,18 +34,27 @@ ap.add_argument("--temps", default=None, help="comma list of --starttemp values 
 ap.add_argument("--sa-temp", type=float, default=1.0)
 ap.add_argument("--redo-failed", action="store_true", help="drop failed records (kept under first_attempt_failures) and, for a converter older than section 10.7, all ext_* records")
 ap.add_argument("--max-rss-gb", type=float, default=13.0)
+ap.add_argument("--vpr-extra", default="", help="E10 sweep: extra VPR flags added to every VPR run (one string, split like a shell line), e.g. '--allow_unrelated_clustering on'")
+ap.add_argument("--vpr-timeout", type=int, default=0, help="E10 (docs/plan/e10.md section 9): wall-time limit in seconds of one VPR run (0 = none); a run over it ends with rc 124, is not retried, and skips the remaining seeds of the design")
+ap.add_argument("--odin-meta", default=None, help="E10 sweep: JSON file naming the Odin III step that made the netlists (argv, rc, secs, rss, abc script, K); added to every record as a shared step")
 args = ap.parse_args()
 if not Path("/usr/bin/time").is_file():
     sys.exit("placers_main.py: /usr/bin/time (GNU time, package 'time') is required: every step's time and peak RSS come from `/usr/bin/time -v`")
 
+import shlex
+VPR_EXTRA = shlex.split(args.vpr_extra)  # E10: part of the configuration of every VPR run of this process
+VPR_TIMEOUT = args.vpr_timeout
+NEED_EXT = any(a.startswith("ext_") for a in args.arms.split(","))  # only the external arms need the reference run, the converter and the probe
+ODIN_META = json.loads(Path(args.odin_meta).read_text()) if args.odin_meta else None
 WORK = Path(args.work)
 SEEDS = [int(s) for s in args.seeds.split(",")]
 ARMS = args.arms.split(",")
 TEMPS = [float(t) for t in (args.temps or str(args.sa_temp)).split(",")]
 VPR = Path(os.environ["NORNS_VPR"])
 TMP = os.environ.get("NORNS_TMP", "/tmp/claude-1000")  # base of the third-party build trees and the locks (default: the value used so far)
-NPNR = os.environ.get("NEXTPNR_K6", f"{TMP}/nextpnr-k6-build/nextpnr-generic")
-LIBS = os.environ.get("NEXTPNR_LIBS", f"{TMP}/nextpnr-deps/prefix/lib")
+NPNR_BASE = nl.WS_ROOT / "work"  # persistent (a VM restart wipes /tmp, 2026-10-28): nextpnr-k6-build, nextpnr-k6-src and nextpnr-deps live here
+NPNR = os.environ.get("NEXTPNR_K6", str(NPNR_BASE / "nextpnr-k6-build" / "nextpnr-generic"))
+LIBS = os.environ.get("NEXTPNR_LIBS", str(NPNR_BASE / "nextpnr-deps" / "prefix" / "lib"))
 NP_LOCK_AFTER_S = 600.0  # a nextpnr run expected to exceed this (an earlier run of the same arm and design did) takes the Norns lock, like VPR
 HERE = Path(__file__).resolve().parent
 NPNR_COPY = Path(NPNR).resolve().parent.parent / "nextpnr-k6-src"  # the git-archive copy of the nextpnr clone that nextpnr-generic was built from
@@ -74,7 +83,7 @@ PERSEED_ARMS = ("vpr_ap", "vpr_ap_reread", "vpr_sa", "vpr_sa_reread", "ext_nextp
 
 def vpr(cwd, flags, seed, blif, write=None, read=None):
     nl.ensure_dir(cwd)
-    flags = flags + ["--seed", str(seed), "--timing_report_npaths", "200", "--route_file", "/dev/null"]
+    flags = flags + VPR_EXTRA + ["--seed", str(seed), "--timing_report_npaths", "200", "--route_file", "/dev/null"]
     if write:
         flags += ["--write_flat_place", str(cwd / write)]
     if read:
@@ -82,7 +91,7 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
     log = cwd / "vpr.out"
     argv = [str(VPR), str(nl.ARCH), str(blif)] + flags
     tfile = cwd / "time.txt"
-    cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + argv
+    cmd = ["flock", "-x", str(nl.LOCK), "/usr/bin/time", "-v", "-o", str(tfile)] + (["timeout", "-k", "30", str(VPR_TIMEOUT)] if VPR_TIMEOUT else []) + argv
     rc = nl.run(cmd, cwd=cwd, stdout=log, timeout=7200)
     secs, rss = rr.parse_time_v(tfile.read_text(errors="replace")) if tfile.exists() else (0.0, 0.0)
     STEPS.append({"kind": "vpr", "argv": argv, "rc": rc, "secs": secs, "rss": rss, "log": log, "locked": True})
@@ -144,6 +153,11 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
         r = rr.RunRecorder(f"norns-placers-{args.tag}", design, arm, seed, family, nl.ARCH.stem,
                            roots={"run": cwd, "work": WORK, "norns_vtr": VPR_TREE, "vtr": nl.VTR_ROOT, "runs": nl.RUNS, "tmp": Path(TMP)},
                            roles={Path(NPNR): "<nextpnr>", VPR: "<vpr>", nl.ARCH: "<arch>", blif: "<blif>"} | {Path(k): v for k, v in (roles or {}).items()})
+        if ODIN_META:  # E10: the Odin III step that made the netlist, run once per design and configuration (shared), with its parameters
+            r.add_step("odin3", ODIN_META["argv"], ODIN_META["rc"], ODIN_META["secs"], ODIN_META.get("rss"), False, shared=True)
+            r.add_tool("odin3", ODIN_META["tool"])
+            for key, value, conf, source in ODIN_META["params"]:
+                r.param(key, value, conf, source)
         for s in steps:
             r.add_step(s["kind"], s["argv"], s["rc"], s["secs"], s["rss"], s["locked"], script=s.get("script"), shared=s.get("shared", False), roles=s.get("roles"))
         kinds = {s["kind"] for s in steps}
@@ -251,7 +265,7 @@ def process(design):
         STEPS.clear()
         STEPS.extend(PRE.get(read, []) if read else [])
         rec = vpr(cwd, flags, seed, blif, write=write, read=read)
-        if rec["rc"]:  # a failed run is retried once (Section 5 rule 4)
+        if rec["rc"] and rec["rc"] != 124:  # a failed run is retried once (Section 5 rule 4); a run over the E10 time limit is not
             rec = vpr(cwd, flags, seed, blif, write=write, read=read) | {"retried": True}
         rec |= {"arm": arm, "seed": seed} | (extra or {})
         write_record(cwd, design, arm, seed, FAMILY[arm], blif, roles={read: "<read_flat_place>"} if read else None,
@@ -266,41 +280,48 @@ def process(design):
         run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(p), "--out", str(q), sink=PRE[q], roles={p: "<collapse_in>"})
         return q
 
-    # reference run (also the shared vpr_ap seed-1 run)
-    r1 = vrun("vpr_ap", 1, [], write="final.flat_place")
-    ref = wd / "vpr_ap.s1" / "final.flat_place"
-    grid = r1["grid"]
-    out["reference"] = {"arm": "vpr_ap", "seed": 1, "grid": grid}
-    if r1["rc"] or not ref.exists():
-        out["error"] = "reference run failed"
-        save()
-        return
-    refc = wd / "ref.collapsed.flat_place"
-    ref_steps = []  # steps run once per design that every external arm of the design reads (marked shared in the records)
-    run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(ref), "--out", str(refc), "--stats", str(wd / "ref.collapse.json"), sink=ref_steps, shared=True)
-    out["chain_collapse_ref"] = json.loads((wd / "ref.collapse.json").read_text())
-    ext = nl.ensure_dir(wd / "ext")
-    js, anchors = ext / f"{design}.json", ext / f"{design}.json.anchors.txt"
-    ref_sha = hashlib.sha256(refc.read_bytes()).hexdigest()
-    # the converter output is valid only for the reference file it was built from (a stale JSON gave anchor_moved 1404 on stereovision2, section 10.10)
-    if not out["converter"].get("ok") or not js.exists() or out["converter"].get("ref_sha256") != ref_sha:
-        rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(refc), "--out", str(js),
-                         "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors), sink=ref_steps, shared=True)
-        st = json.loads((ext / "convert_stats.json").read_text()) if (ext / "convert_stats.json").exists() else {}
-        out["converter"] = {"rc": rc, "seconds": sec, "ref_sha256": ref_sha, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
-        save()
-        if rc:
-            out["error"] = "converter failed"
+    js = anchors = ref = refc = grid = None
+    n_ble = 10
+    ref_steps: list[dict] = []
+    if NEED_EXT:  # E10: configurations without an external arm skip the reference run, the converter and the probe
+        # reference run (also the shared vpr_ap seed-1 run)
+        r1 = vrun("vpr_ap", 1, [], write="final.flat_place")
+        ref = wd / "vpr_ap.s1" / "final.flat_place"
+        grid = r1["grid"]
+        out["reference"] = {"arm": "vpr_ap", "seed": 1, "grid": grid}
+        if r1["rc"] or not ref.exists():
+            out["error"] = "reference run failed"
             save()
             return
-    # BLE slots per tile (section 10.8): 10 (Section 9.2) unless the design has more BLE cells than slots, then 20 (two LUT5 per fle).
-    # Decided once per design by a quick HeAP probe, because nextpnr's SA does not stop on an over-full device.
-    probe = nextpnr(wd / "probe_n10", js, anchors, grid, "heap", 1, None, n=10)
-    n_ble = 20 if (probe["rc"] and probe["no_bels"]) else 10
-    out["ble_per_tile"] = n_ble
-    out["probe"] = {k: probe[k] for k in ("rc", "no_bels", "wall_s")}
-    save()
+        refc = wd / "ref.collapsed.flat_place"
+        ref_steps = []  # steps run once per design that every external arm of the design reads (marked shared in the records)
+        run_py("flatplace_chains.py", "--blif", str(blif), "--in", str(ref), "--out", str(refc), "--stats", str(wd / "ref.collapse.json"), sink=ref_steps, shared=True)
+        out["chain_collapse_ref"] = json.loads((wd / "ref.collapse.json").read_text())
+        ext = nl.ensure_dir(wd / "ext")
+        js, anchors = ext / f"{design}.json", ext / f"{design}.json.anchors.txt"
+        ref_sha = hashlib.sha256(refc.read_bytes()).hexdigest()
+        # the converter output is valid only for the reference file it was built from (a stale JSON gave anchor_moved 1404 on stereovision2, section 10.10)
+        if not out["converter"].get("ok") or not js.exists() or out["converter"].get("ref_sha256") != ref_sha:
+            rc, sec = run_py("nextpnr_blif2json.py", "--blif", str(blif), "--ref", str(refc), "--out", str(js),
+                             "--stats", str(ext / "convert_stats.json"), "--anchors", str(anchors), sink=ref_steps, shared=True)
+            st = json.loads((ext / "convert_stats.json").read_text()) if (ext / "convert_stats.json").exists() else {}
+            out["converter"] = {"rc": rc, "seconds": sec, "ref_sha256": ref_sha, **{k: v for k, v in st.items() if k != "ref_atoms_without_cell"}}
+            save()
+            if rc:
+                out["error"] = "converter failed"
+                save()
+                return
+        # BLE slots per tile (section 10.8): 10 (Section 9.2) unless the design has more BLE cells than slots, then 20 (two LUT5 per fle).
+        # Decided once per design by a quick HeAP probe, because nextpnr's SA does not stop on an over-full device.
+        probe = nextpnr(wd / "probe_n10", js, anchors, grid, "heap", 1, None, n=10)
+        n_ble = 20 if (probe["rc"] and probe["no_bels"]) else 10
+        out["ble_per_tile"] = n_ble
+        out["probe"] = {k: probe[k] for k in ("rc", "no_bels", "wall_s")}
+        save()
     for s in SEEDS:
+        if VPR_TIMEOUT and any(r.get("rc") == 124 for r in out["runs"]):
+            print(design, "time limit reached on an earlier seed: remaining seeds skipped", flush=True)
+            break
         for arm in ARMS:
             if arm == "vpr_ap":
                 vrun("vpr_ap", s, [], write="final.flat_place")

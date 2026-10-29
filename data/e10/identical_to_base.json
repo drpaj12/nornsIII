@@ -1,0 +1,47 @@
+{
+ "abc1": {
+  "luts": false,
+  "placed": false,
+  "files_compared": 35
+ },
+ "abc2": {
+  "luts": false,
+  "placed": false,
+  "files_compared": 35
+ },
+ "k4": {
+  "luts": false,
+  "placed": false,
+  "files_compared": 34
+ },
+ "earch": {
+  "luts": true,
+  "placed": false,
+  "files_compared": 35
+ },
+ "uon": {
+  "luts": true,
+  "placed": false,
+  "files_compared": 35
+ },
+ "uoff": {
+  "luts": true,
+  "placed": true,
+  "files_compared": 35
+ },
+ "vpr_ap": {
+  "luts": true,
+  "placed": null,
+  "files_compared": 35
+ },
+ "ext_nextpnr_heap": {
+  "luts": true,
+  "placed": null,
+  "files_compared": 35
+ },
+ "ext_nextpnr_sa": {
+  "luts": true,
+  "placed": null,
+  "files_compared": 35
+ }
+}
