@@ -1,0 +1,124 @@
+{
+ "blk": {
+  "adder": {
+   "designs": 6,
+   "median_enrichment": 0.2887488328664799,
+   "never_in_heap_designs": 3
+  },
+  "counter": {
+   "designs": 4,
+   "median_enrichment": 0.496878168426075,
+   "never_in_heap_designs": 2
+  },
+  "equality": {
+   "designs": 3,
+   "median_enrichment": 0.0,
+   "never_in_heap_designs": 2
+  },
+  "fsm": {
+   "designs": 7,
+   "median_enrichment": 0.0,
+   "never_in_heap_designs": 4
+  },
+  "logic": {
+   "designs": 6,
+   "median_enrichment": 0.03304758073854667,
+   "never_in_heap_designs": 3
+  },
+  "mux": {
+   "designs": 8,
+   "median_enrichment": 1.1296429813453959,
+   "never_in_heap_designs": 1
+  },
+  "none": {
+   "designs": 5,
+   "median_enrichment": 0.6403708514943219,
+   "never_in_heap_designs": 2
+  },
+  "register_word": {
+   "designs": 12,
+   "median_enrichment": 0.9971777869362588,
+   "never_in_heap_designs": 2
+  }
+ },
+ "det": {
+  "equality": {
+   "designs": 1,
+   "median_enrichment": 12.608291060291062,
+   "never_in_heap_designs": 0
+  },
+  "mux": {
+   "designs": 2,
+   "median_enrichment": 20.492018626813945,
+   "never_in_heap_designs": 1
+  },
+  "none": {
+   "designs": 13,
+   "median_enrichment": 1.0130401032706784,
+   "never_in_heap_designs": 0
+  },
+  "register_word": {
+   "designs": 9,
+   "median_enrichment": 0.5080858317240309,
+   "never_in_heap_designs": 2
+  }
+ },
+ "op": {
+  "adder": {
+   "designs": 13,
+   "median_enrichment": 1.05489417989418,
+   "never_in_heap_designs": 3
+  },
+  "equality": {
+   "designs": 10,
+   "median_enrichment": 0.0,
+   "never_in_heap_designs": 6
+  },
+  "multiplier": {
+   "designs": 2,
+   "median_enrichment": 4.5991333144178705,
+   "never_in_heap_designs": 0
+  },
+  "mux": {
+   "designs": 6,
+   "median_enrichment": 0.35999879350644765,
+   "never_in_heap_designs": 2
+  },
+  "none": {
+   "designs": 13,
+   "median_enrichment": 0.935202041084394,
+   "never_in_heap_designs": 0
+  },
+  "relational": {
+   "designs": 6,
+   "median_enrichment": 0.3720392200296248,
+   "never_in_heap_designs": 3
+  }
+ },
+ "unseen_share_op": {
+  "adder": [
+   0.8166552606899349,
+   78906
+  ],
+  "equality": [
+   0.41626159964648696,
+   6789
+  ],
+  "multiplier": [
+   0.8632302405498282,
+   1455
+  ],
+  "mux": [
+   0.31257270693512307,
+   11175
+  ],
+  "none": [
+   0.8332803936694245,
+   198339
+  ],
+  "relational": [
+   0.6660097597597597,
+   10656
+  ]
+ }
+}
