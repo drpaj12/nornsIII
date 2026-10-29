@@ -85,3 +85,44 @@ census of a pilot run turns out to match the current files it is used to check t
 state); shuffles of one build are not independent for features. Exact-reproduction is a stringent label (a cluster is exact
 only if all 10 slots match). Criticality is a proxy. None of this tests the effect of changing the seed order; that is the
 step-2 probe.
+
+## Amendment 2026-10-29 (a): mine every Mimir metric on local regions, at cluster and LUT level (written before the analysis was run)
+
+The controller's two brief amendments (Peter 2026-10-29) widen the work from a handful of hand-picked features to data-first
+mining: "the other properties of Mimir about the circuits might correlate to the right choice"; "this is at the LUT level too". The
+plan above is kept; the following is added. Still no VPR, still the 3 pilot designs.
+
+1. Extractor `scripts/seed_features.py`, imports the Mimir code from `~/odin3-ws/mimir` (`mimir.hutton.characterise`, `levels`,
+   `seq_levels`, `mimir.rent.fit`), copies none of it. The pilot BLIF is turned into a Mimir `Netlist` with one node per atom (an adder
+   is two nodes, a hard block one node). A region is a sub-netlist (inside nodes keep their kind, fan-ins from outside become PIs).
+   Regions for a cluster: R1 (real atoms, and with dummies), R2 fan-in cone depth 1, 2, 4, R3 fan-out cone depth 1, 2, 4 (through
+   combinational nodes, stopping at flip-flops, hard blocks and pads), R4 ball of k = 1, 2 hops (undirected, not through nets of more
+   than 32 sinks). Every scalar row of `characterise` is a feature (histogram bins are not). Local Rent: terminals against nodes on
+   growing balls (radius 1 to 4) fitted with Mimir's own `rent.fit`; four radii give at most 4 points, so the measurer's
+   low-confidence flag (points < 5) is always set and is kept as a column, small regions are reported not dropped. `rent.measure`
+   (recursive bisection) needs 512 nodes and `pymetis`; it is not run on regions this small.
+2. Per atom (and per cluster as max and mean over real members): fan-in and fan-out cone size at depth 4, reconvergence excess of the
+   fan-in cone (edges - nodes + 1 inside the cone; 0 for a tree), comb level, level / design depth, sequential level (absolute and
+   / depth), level spread of the cluster, and the timing-proxy criticality.
+3. Per LUT (one row per LUT x build x shuffle, dummies flagged): own fan-in and fan-out cones of depth 1, 2, 4 with the same Mimir
+   calls, level, sequential level, used inputs (the inputs the truth table depends on), fan-out, drives-FF, chain-adjacent
+   (reads a carry or drives an adder), function class from the truth table (constant, buffer/inverter, XOR/parity-like,
+   AND/OR-like, MUX-like, other), share of dummies in its cones.
+4. Labels per LUT: share of its C-cluster mates (other atoms of the same cluster of C) that stock puts in the same stock cluster;
+   "whole" = that share is 1. "Used as seed" and "seed cluster equals its C cluster" need the pack census, which the pilot stock
+   runs do not have: the code reads `sh<s>/census.tsv` if present and the pilot columns are empty; this is reported, not guessed.
+5. Mining discipline. Effect sizes: AUC for the binary label (cluster: exact; LUT: whole), Spearman for the continuous label
+   (cluster: purity; LUT: mates kept), each pooled raw and stratified (feature replaced by its percentile within the build).
+   Resampling unit: the cluster (all its shuffle rows together, stratified by build); 1000 resamples give a two-sided bootstrap p
+   per feature, Benjamini-Hochberg FDR over all features of a level, 10000 resamples and Holm for the top 40, design-level bootstrap
+   (3 designs: 27 distinct resamples, nearly uninformative) beside it. Best feature per family (size, connectivity, level,
+   fan-out, reconvergence, cone, Rent, timing proxy, function) and per region. Missing feature values are replaced by the column
+   median; a feature with more than 30 percent missing or no variation is dropped. The ranking key is |AUC - 0.5| + |rho| / 2
+   (stratified). Baseline: the stratified AUC and Spearman of the max-criticality proxy.
+6. Artefact checks: Spearman of each feature with the number of dummies of the cluster (|rho| >= 0.7 flags it), the same feature on
+   the real-only and the with-dummies view (D' with dummies deleted is the nearest we can get to D: the original D is not
+   recoverable from the pilot outputs because D' atom names are random tokens and no map back to D is stored; this is a limit of
+   the data, said in the results), own against foreign signs, and the dummy share in a LUT's cones. Whether the LUT-level and
+   cluster-level signals agree: Spearman across the Mimir metrics both levels measure (the cone metrics) of their signed effects,
+   and the best feature per family at both levels side by side.
+7. The script takes any list of build directories; the controller reruns it on the round 9 full set.
