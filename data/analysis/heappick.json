@@ -1,0 +1,5830 @@
+{
+ "designs": [
+  "blob_merge",
+  "boundtop",
+  "ch_intrinsics",
+  "diffeq1",
+  "diffeq2",
+  "mkDelayWorker32B",
+  "mkPktMerge",
+  "mkSMAdapter4B",
+  "or1200",
+  "raygentop",
+  "sha",
+  "stereovision0",
+  "stereovision1",
+  "stereovision2",
+  "stereovision3"
+ ],
+ "p1": {
+  "cand_picks_leave": {
+   "hi90": 0.920479302832244,
+   "lo90": 0.7236842105263158,
+   "median": 0.8181818181818182,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.8181818181818182,
+    "boundtop": 0.7236842105263158,
+    "ch_intrinsics": 1.0,
+    "diffeq1": 0.52046783625731,
+    "diffeq2": 0.5081967213114754,
+    "mkDelayWorker32B": 0.9876160990712074,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 0.8062015503875969,
+    "or1200": 0.920479302832244,
+    "raygentop": 0.888888888888889,
+    "sha": 0.7777777777777778,
+    "stereovision0": 0.8267370272647317,
+    "stereovision1": 1.0,
+    "stereovision2": 0.3508771929824561,
+    "stereovision3": 0.6587301587301587
+   }
+  },
+  "heap_picks_leave": {
+   "hi90": 0.9136822773186409,
+   "lo90": 0.6319444444444445,
+   "median": 0.8066666666666666,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.7338709677419355,
+    "boundtop": 0.7403100775193798,
+    "ch_intrinsics": 1.0,
+    "diffeq1": 0.42253521126760557,
+    "diffeq2": 0.460093896713615,
+    "mkDelayWorker32B": 0.986737400530504,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 0.8066666666666666,
+    "or1200": 0.9136822773186409,
+    "raygentop": 0.8157894736842106,
+    "sha": 0.5522875816993464,
+    "stereovision0": 0.8148148148148149,
+    "stereovision1": 1.0,
+    "stereovision2": 0.2924976258309592,
+    "stereovision3": 0.6319444444444445
+   }
+  },
+  "heap_picks_share": {
+   "hi90": 0.11077204760451632,
+   "lo90": 0.030413625304136254,
+   "median": 0.04305427782888684,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.019329696024941542,
+    "boundtop": 0.09207708779443254,
+    "ch_intrinsics": 0.03273809523809524,
+    "diffeq1": 0.12522045855379188,
+    "diffeq2": 0.18933333333333333,
+    "mkDelayWorker32B": 0.1326530612244898,
+    "mkPktMerge": 0.013525698827772768,
+    "mkSMAdapter4B": 0.030413625304136254,
+    "or1200": 0.11077204760451632,
+    "raygentop": 0.019791666666666666,
+    "sha": 0.07327586206896551,
+    "stereovision0": 0.04268705836801859,
+    "stereovision1": 0.00962502506516944,
+    "stereovision2": 0.04305427782888684,
+    "stereovision3": 0.2171945701357466
+   }
+  },
+  "rho_pc_rc": {
+   "hi90": 0.7295354893190863,
+   "lo90": 0.599398463073216,
+   "median": 0.6630841857198224,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.8144131953210652,
+    "boundtop": 0.8037894070067028,
+    "ch_intrinsics": 0.0871270614413514,
+    "diffeq1": 0.6450044395203594,
+    "diffeq2": 0.7295354893190863,
+    "mkDelayWorker32B": 0.7150483633489579,
+    "mkPktMerge": 0.27898474500857856,
+    "mkSMAdapter4B": 0.7964359583353132,
+    "or1200": 0.08391902292986463,
+    "raygentop": 0.6454510746040937,
+    "sha": 0.599398463073216,
+    "stereovision0": 0.6630841857198224,
+    "stereovision1": -0.01664111498102683,
+    "stereovision2": 0.6693846228889712,
+    "stereovision3": 0.7782288912906088
+   }
+  },
+  "route_heap_gainless": {
+   "hi90": 0.0020325203252032522,
+   "lo90": 0.0,
+   "median": 0.00036469730123997083,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.7359009009009009,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.1111111111111111,
+    "mkPktMerge": 0.6411764705882352,
+    "mkSMAdapter4B": 0.0033670033670033673,
+    "or1200": 0.0013333333333333333,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0020325203252032522,
+    "stereovision1": 0.00036469730123997083,
+    "stereovision2": 0.0008353675518847706,
+    "stereovision3": 0.0
+   }
+  },
+  "route_heap_late": {
+   "hi90": 0.6188489842538957,
+   "lo90": 0.15377819198508855,
+   "median": 0.31647153167602243,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.7957873077756119,
+    "boundtop": 0.7899549549549549,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.15377819198508855,
+    "diffeq2": 0.31647153167602243,
+    "mkDelayWorker32B": 0.8333333333333334,
+    "mkPktMerge": 0.3333333333333333,
+    "mkSMAdapter4B": 0.23135421411283477,
+    "or1200": 0.6188489842538957,
+    "raygentop": 0.43431246372422844,
+    "sha": 0.0,
+    "stereovision0": 0.022357723577235773,
+    "stereovision1": 0.8101042416422533,
+    "stereovision2": 0.19849274568566086,
+    "stereovision3": 0.13057659932659935
+   }
+  },
+  "route_heap_pc_lt_050": {
+   "hi90": 0.066264978066005,
+   "lo90": 0.011769357054455913,
+   "median": 0.04992807933984405,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.02440978990686593,
+    "boundtop": 0.055,
+    "ch_intrinsics": 1.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.16666666666666666,
+    "mkPktMerge": 0.3333333333333333,
+    "mkSMAdapter4B": 0.06077128490921594,
+    "or1200": 0.0,
+    "raygentop": 0.04992807933984405,
+    "sha": 0.007411084679777869,
+    "stereovision0": 0.19651600165169383,
+    "stereovision1": 0.066264978066005,
+    "stereovision2": 0.011769357054455913,
+    "stereovision3": 0.020202020202020204
+   }
+  },
+  "route_heap_unrelated": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "seed_picks_leave": {
+   "hi90": 0.8771929824561404,
+   "lo90": 0.23703703703703702,
+   "median": 0.7419354838709676,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.07142857142857142,
+    "boundtop": 0.8666666666666667,
+    "ch_intrinsics": 1.0,
+    "diffeq1": 0.023809523809523808,
+    "diffeq2": 0.16666666666666666,
+    "mkDelayWorker32B": 0.9814814814814815,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 0.8095238095238096,
+    "or1200": 0.8771929824561404,
+    "raygentop": 0.6904761904761904,
+    "sha": 0.18803418803418803,
+    "stereovision0": 0.7419354838709676,
+    "stereovision1": 1.0,
+    "stereovision2": 0.23703703703703702,
+    "stereovision3": 0.4444444444444444
+   }
+  },
+  "stay_by_category": {
+   "after_hard_block": {
+    "atoms": 6420,
+    "hi90": 0.5,
+    "lo90": 0.0,
+    "median": 0.07291666666666667,
+    "n": 5,
+    "per_design": {
+     "diffeq1": 0.07291666666666667,
+     "diffeq2": 0.0625,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.5,
+     "stereovision2": 0.43845157110463234
+    }
+   },
+   "blk=adder": {
+    "atoms": 951,
+    "hi90": 0.37037037037037035,
+    "lo90": 0.0,
+    "median": 0.0,
+    "n": 5,
+    "per_design": {
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.0,
+     "or1200": 0.30584192439862545,
+     "sha": 0.37037037037037035,
+     "stereovision1": 0.0
+    }
+   },
+   "blk=counter": {
+    "atoms": 129,
+    "hi90": 0.8421052631578947,
+    "lo90": 0.0,
+    "median": 0.42105263157894735,
+    "n": 2,
+    "per_design": {
+     "stereovision1": 0.0,
+     "stereovision3": 0.8421052631578947
+    }
+   },
+   "blk=equality": {
+    "atoms": 288,
+    "hi90": 0.0,
+    "lo90": 0.0,
+    "median": 0.0,
+    "n": 1,
+    "per_design": {
+     "or1200": 0.0
+    }
+   },
+   "blk=fsm": {
+    "atoms": 579,
+    "hi90": 0.8087431693989071,
+    "lo90": 0.0,
+    "median": 0.5205992509363296,
+    "n": 3,
+    "per_design": {
+     "or1200": 0.0,
+     "sha": 0.8087431693989071,
+     "stereovision0": 0.5205992509363296
+    }
+   },
+   "blk=logic": {
+    "atoms": 1716,
+    "hi90": 0.5956284153005464,
+    "lo90": 0.015222365026844232,
+    "median": 0.08516764186867279,
+    "n": 4,
+    "per_design": {
+     "mkDelayWorker32B": 0.013262599469496022,
+     "mkSMAdapter4B": 0.15315315315315314,
+     "or1200": 0.01718213058419244,
+     "sha": 0.5956284153005464
+    }
+   },
+   "blk=mux": {
+    "atoms": 1659,
+    "hi90": 0.30819387089763095,
+    "lo90": 0.0,
+    "median": 0.08110133594004562,
+    "n": 8,
+    "per_design": {
+     "blob_merge": 0.35669781931464173,
+     "boundtop": 0.2596899224806202,
+     "ch_intrinsics": 0.0,
+     "mkSMAdapter4B": 0.42592592592592593,
+     "or1200": 0.1191919191919192,
+     "raygentop": 0.0,
+     "sha": 0.043010752688172046,
+     "stereovision1": 0.0
+    }
+   },
+   "blk=none": {
+    "atoms": 66,
+    "hi90": 0.3,
+    "lo90": 0.3,
+    "median": 0.3,
+    "n": 1,
+    "per_design": {
+     "or1200": 0.3
+    }
+   },
+   "blk=register_word": {
+    "atoms": 14262,
+    "hi90": 0.6052896956362304,
+    "lo90": 0.09956240487062404,
+    "median": 0.21274619100706055,
+    "n": 8,
+    "per_design": {
+     "diffeq1": 0.7181069958847737,
+     "diffeq2": 0.7037037037037037,
+     "mkPktMerge": 0.0,
+     "or1200": 0.044444444444444446,
+     "raygentop": 0.16908212560386474,
+     "stereovision0": 0.15468036529680365,
+     "stereovision2": 0.5068756875687569,
+     "stereovision3": 0.2564102564102564
+    }
+   },
+   "carry_chain": {
+    "atoms": 951,
+    "hi90": 0.75,
+    "lo90": 0.0,
+    "median": 0.4882075471698113,
+    "n": 6,
+    "per_design": {
+     "blob_merge": 0.559748427672956,
+     "diffeq1": 0.75,
+     "diffeq2": 0.765625,
+     "or1200": 0.0,
+     "raygentop": 0.0,
+     "sha": 0.4166666666666667
+    }
+   },
+   "lvl=1-3": {
+    "atoms": 17934,
+    "hi90": 0.42857142857142855,
+    "lo90": 0.11351706036745407,
+    "median": 0.22641509433962265,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.41025641025641024,
+     "boundtop": 0.2596899224806202,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.6513994910941476,
+     "diffeq2": 0.6412213740458015,
+     "mkDelayWorker32B": 0.008086253369272238,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.22641509433962265,
+     "or1200": 0.11351706036745407,
+     "raygentop": 0.18518518518518517,
+     "sha": 0.47909199522102747,
+     "stereovision0": 0.18035426731078905,
+     "stereovision1": 0.0,
+     "stereovision2": 0.5068756875687569,
+     "stereovision3": 0.42857142857142855
+    }
+   },
+   "lvl=11+": {
+    "atoms": 330,
+    "hi90": 0.2909090909090909,
+    "lo90": 0.2909090909090909,
+    "median": 0.2909090909090909,
+    "n": 1,
+    "per_design": {
+     "blob_merge": 0.2909090909090909
+    }
+   },
+   "lvl=4-6": {
+    "atoms": 1230,
+    "hi90": 0.5119047619047619,
+    "lo90": 0.0,
+    "median": 0.23938223938223938,
+    "n": 9,
+    "per_design": {
+     "blob_merge": 0.5119047619047619,
+     "diffeq1": 1.0,
+     "diffeq2": 0.96875,
+     "mkDelayWorker32B": 0.3333333333333333,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.2222222222222222,
+     "or1200": 0.0,
+     "raygentop": 0.0,
+     "stereovision0": 0.23938223938223938
+    }
+   },
+   "lvl=7-10": {
+    "atoms": 156,
+    "hi90": 0.41025641025641024,
+    "lo90": 0.41025641025641024,
+    "median": 0.41025641025641024,
+    "n": 1,
+    "per_design": {
+     "blob_merge": 0.41025641025641024
+    }
+   },
+   "op=adder": {
+    "atoms": 10539,
+    "hi90": 0.5243055555555556,
+    "lo90": 0.1345565749235474,
+    "median": 0.359899648962149,
+    "n": 10,
+    "per_design": {
+     "blob_merge": 0.5292397660818714,
+     "diffeq1": 0.5243055555555556,
+     "diffeq2": 0.53125,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.28205128205128205,
+     "or1200": 0.19910514541387025,
+     "raygentop": 0.1345565749235474,
+     "sha": 0.4578059071729958,
+     "stereovision1": 0.0,
+     "stereovision2": 0.43774801587301587
+    }
+   },
+   "op=equality": {
+    "atoms": 276,
+    "hi90": 0.8333333333333334,
+    "lo90": 0.0,
+    "median": 0.034013605442176874,
+    "n": 5,
+    "per_design": {
+     "ch_intrinsics": 0.0,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.11904761904761904,
+     "or1200": 0.034013605442176874,
+     "stereovision3": 0.8333333333333334
+    }
+   },
+   "op=multiplier": {
+    "atoms": 84,
+    "hi90": 0.7638888888888888,
+    "lo90": 0.7638888888888888,
+    "median": 0.7638888888888888,
+    "n": 1,
+    "per_design": {
+     "stereovision2": 0.7638888888888888
+    }
+   },
+   "op=mux": {
+    "atoms": 1155,
+    "hi90": 0.42424242424242425,
+    "lo90": 0.05673758865248227,
+    "median": 0.40942028985507245,
+    "n": 3,
+    "per_design": {
+     "mkSMAdapter4B": 0.42424242424242425,
+     "or1200": 0.05673758865248227,
+     "sha": 0.40942028985507245
+    }
+   },
+   "op=none": {
+    "atoms": 6102,
+    "hi90": 0.3680555555555556,
+    "lo90": 0.16666666666666666,
+    "median": 0.24686192468619247,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.17647058823529413,
+     "boundtop": 0.2596899224806202,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 1.0,
+     "diffeq2": 0.9696969696969697,
+     "mkDelayWorker32B": 0.013262599469496022,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.16666666666666666,
+     "or1200": 0.2108843537414966,
+     "raygentop": 0.2708333333333333,
+     "sha": 0.8160919540229885,
+     "stereovision0": 0.24686192468619247,
+     "stereovision1": 0.0,
+     "stereovision2": 0.7012987012987013,
+     "stereovision3": 0.3680555555555556
+    }
+   },
+   "op=relational": {
+    "atoms": 1494,
+    "hi90": 1.0,
+    "lo90": 0.17895545314900155,
+    "median": 0.96875,
+    "n": 3,
+    "per_design": {
+     "diffeq1": 1.0,
+     "diffeq2": 0.96875,
+     "stereovision0": 0.17895545314900155
+    }
+   },
+   "typ=adder": {
+    "atoms": 10215,
+    "hi90": 0.559748427672956,
+    "lo90": 0.14965986394557823,
+    "median": 0.40220734126984126,
+    "n": 10,
+    "per_design": {
+     "blob_merge": 0.559748427672956,
+     "diffeq1": 0.75,
+     "diffeq2": 0.765625,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.36666666666666664,
+     "or1200": 0.2335958005249344,
+     "raygentop": 0.14965986394557823,
+     "sha": 0.4578059071729958,
+     "stereovision1": 0.0,
+     "stereovision2": 0.43774801587301587
+    }
+   },
+   "typ=ff": {
+    "atoms": 2718,
+    "hi90": 0.8160919540229885,
+    "lo90": 0.013888888888888888,
+    "median": 0.3333333333333333,
+    "n": 11,
+    "per_design": {
+     "diffeq1": 1.0,
+     "diffeq2": 0.96875,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.3333333333333333,
+     "or1200": 0.013888888888888888,
+     "raygentop": 0.23809523809523808,
+     "sha": 0.8160919540229885,
+     "stereovision0": 0.24686192468619247,
+     "stereovision1": 0.0,
+     "stereovision2": 0.7012987012987013,
+     "stereovision3": 0.8787878787878788
+    }
+   },
+   "typ=lut": {
+    "atoms": 6567,
+    "hi90": 0.3475177304964539,
+    "lo90": 0.06387225548902195,
+    "median": 0.17895545314900155,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.1574074074074074,
+     "boundtop": 0.2596899224806202,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.5364583333333334,
+     "diffeq2": 0.515625,
+     "mkDelayWorker32B": 0.013262599469496022,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.18115942028985507,
+     "or1200": 0.06387225548902195,
+     "raygentop": 0.17777777777777778,
+     "sha": 0.40942028985507245,
+     "stereovision0": 0.17895545314900155,
+     "stereovision1": 0.0,
+     "stereovision2": 0.7012987012987013,
+     "stereovision3": 0.3475177304964539
+    }
+   },
+   "typ=other": {
+    "atoms": 150,
+    "hi90": 0.7638888888888888,
+    "lo90": 0.3,
+    "median": 0.5319444444444444,
+    "n": 2,
+    "per_design": {
+     "or1200": 0.3,
+     "stereovision2": 0.7638888888888888
+    }
+   }
+  }
+ },
+ "p2": {
+  "blen_mean": {
+   "hi90": 22.128222044078814,
+   "lo90": 4.565997027579335,
+   "median": 15.045454545454547,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 37.111111111111114,
+    "boundtop": 3.0,
+    "ch_intrinsics": null,
+    "diffeq1": 17.90625,
+    "diffeq2": 17.602150537634408,
+    "mkDelayWorker32B": 5.0,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 5.833333333333333,
+    "or1200": 27.311066592981486,
+    "raygentop": 15.045454545454547,
+    "sha": 25.775712143928036,
+    "stereovision0": 4.565997027579335,
+    "stereovision1": null,
+    "stereovision2": 22.128222044078814,
+    "stereovision3": 2.8888888888888893
+   }
+  },
+  "cause_full": {
+   "hi90": 1.0,
+   "lo90": 0.8452762125911935,
+   "median": 0.9779927760577916,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.6755555555555556,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.9657894736842105,
+    "diffeq2": 0.9901960784313726,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 0.7379937482239273,
+    "raygentop": 1.0,
+    "sha": 0.8588635717791728,
+    "stereovision0": 0.9968553459119497,
+    "stereovision1": null,
+    "stereovision2": 0.9525586769584597,
+    "stereovision3": 1.0
+   }
+  },
+  "cause_not_proposed": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "cause_queued_not_taken": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "cause_refused_pins": {
+   "hi90": 0.1547237874088065,
+   "lo90": 0.0,
+   "median": 0.022007223942208463,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.3244444444444445,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.034210526315789476,
+    "diffeq2": 0.00980392156862745,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.26200625177607273,
+    "raygentop": 0.0,
+    "sha": 0.1411364282208272,
+    "stereovision0": 0.003144654088050314,
+    "stereovision1": null,
+    "stereovision2": 0.047441323041540244,
+    "stereovision3": 0.0
+   }
+  },
+  "cause_refused_route": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "cause_unknown": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "chain_excess": {
+   "hi90": 7.05580126603365,
+   "lo90": 1.0520833333333333,
+   "median": 3.3371632732021093,
+   "n": 4,
+   "per_design": {
+    "blob_merge": 8.555555555555555,
+    "boundtop": null,
+    "ch_intrinsics": null,
+    "diffeq1": 1.0520833333333333,
+    "diffeq2": 1.1182795698924732,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": null,
+    "or1200": null,
+    "raygentop": null,
+    "sha": 5.556046976511745,
+    "stereovision0": null,
+    "stereovision1": null,
+    "stereovision2": null,
+    "stereovision3": null
+   }
+  },
+  "cross_chain_pairs": {
+   "hi90": 0.006891162262006252,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.2110180754917597,
+    "diffeq2": 0.14158664443294425,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.013782324524012504,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "full_also_refused": {
+   "hi90": 0.7884711779448622,
+   "lo90": 0.3333333333333333,
+   "median": 0.4166666666666667,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.8799019607843137,
+    "boundtop": 0.03125,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.8667318344737699,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.48073174388963863,
+    "or1200": 0.594017094017094,
+    "raygentop": 0.4166666666666667,
+    "sha": 0.15127353266888152,
+    "stereovision0": 0.7884711779448622,
+    "stereovision1": null,
+    "stereovision2": 0.3432641316836063,
+    "stereovision3": 0.3333333333333333
+   }
+  },
+  "full_never_queued_heap": {
+   "hi90": 0.6375046142488002,
+   "lo90": 0.02631578947368421,
+   "median": 0.25356125356125353,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.96875,
+    "ch_intrinsics": null,
+    "diffeq1": 0.7186780081516924,
+    "diffeq2": 0.13326816552623003,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.02631578947368421,
+    "or1200": 0.25356125356125353,
+    "raygentop": 0.4055555555555555,
+    "sha": 0.6375046142488002,
+    "stereovision0": 0.03391812865497076,
+    "stereovision1": null,
+    "stereovision2": 0.6567358683163937,
+    "stereovision3": 0.0
+   }
+  },
+  "full_never_queued_other": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "full_queued_cluster_closed_next_heap": {
+   "hi90": 0.0977657819763083,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0977657819763083,
+    "or1200": 0.12678062678062677,
+    "raygentop": 0.0,
+    "sha": 0.02521225544481358,
+    "stereovision0": 0.012197159565580618,
+    "stereovision1": null,
+    "stereovision2": 0.3368672101813101,
+    "stereovision3": 0.0
+   }
+  },
+  "full_queued_cluster_closed_next_other": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "full_queued_outranked_heap": {
+   "hi90": 0.2888888888888889,
+   "lo90": 0.0,
+   "median": 0.21428571428571427,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.06004901960784314,
+    "boundtop": 0.03125,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.7781526465736993,
+    "or1200": 0.4743589743589744,
+    "raygentop": 0.2888888888888889,
+    "sha": 0.286858619416759,
+    "stereovision0": 0.7011417432470064,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.21428571428571427
+   }
+  },
+  "full_queued_outranked_other": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "full_queued_then_dropped_heap": {
+   "hi90": 0.3055555555555555,
+   "lo90": 0.0977657819763083,
+   "median": 0.2527429685324422,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.9399509803921569,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.28132199184830764,
+    "diffeq2": 0.8667318344737699,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0977657819763083,
+    "or1200": 0.1452991452991453,
+    "raygentop": 0.3055555555555555,
+    "sha": 0.05042451088962716,
+    "stereovision0": 0.2527429685324422,
+    "stereovision1": null,
+    "stereovision2": 0.006396921502296246,
+    "stereovision3": 0.7857142857142857
+   }
+  },
+  "full_queued_then_dropped_other": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "long_extra": {
+   "hi90": 5.556046976511745,
+   "lo90": 0.7549206349206349,
+   "median": 1.0333333333333334,
+   "n": 7,
+   "per_design": {
+    "blob_merge": 8.555555555555555,
+    "boundtop": null,
+    "ch_intrinsics": null,
+    "diffeq1": 0.7549206349206349,
+    "diffeq2": 0.8630434782608695,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": null,
+    "or1200": 0.1864734299516908,
+    "raygentop": 1.0333333333333334,
+    "sha": 5.556046976511745,
+    "stereovision0": null,
+    "stereovision1": null,
+    "stereovision2": 4.540002007136618,
+    "stereovision3": null
+   }
+  },
+  "mean_excess10": {
+   "hi90": 2.7944444444444443,
+   "lo90": 1.0520833333333333,
+   "median": 1.1439393939393938,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 8.555555555555555,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 1.0520833333333333,
+    "diffeq2": 1.1182795698924732,
+    "mkDelayWorker32B": 2.6666666666666665,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 2.7944444444444443,
+    "or1200": 0.2448957661723619,
+    "raygentop": 1.1439393939393938,
+    "sha": 5.556046976511745,
+    "stereovision0": 2.7296152741889177,
+    "stereovision1": null,
+    "stereovision2": 4.5431442563833,
+    "stereovision3": 1.1037037037037036
+   }
+  },
+  "mean_floor10": {
+   "hi90": 2.6621267827088255,
+   "lo90": 1.0,
+   "median": 1.8863636363636365,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 4.333333333333333,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 2.2395833333333335,
+    "diffeq2": 2.2043010752688175,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 4.089899757452948,
+    "raygentop": 1.8863636363636365,
+    "sha": 2.9984507746126936,
+    "stereovision0": 1.0,
+    "stereovision1": null,
+    "stereovision2": 2.6621267827088255,
+    "stereovision3": 1.0
+   }
+  },
+  "mean_floor20": {
+   "hi90": 1.5912412352874175,
+   "lo90": 1.0,
+   "median": 1.0,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 2.3333333333333335,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 1.40625,
+    "diffeq2": 1.3440860215053763,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 2.7705781216419516,
+    "raygentop": 1.0,
+    "sha": 1.7385807096451773,
+    "stereovision0": 1.0,
+    "stereovision1": null,
+    "stereovision2": 1.5912412352874175,
+    "stereovision3": 1.0
+   }
+  },
+  "mean_visits": {
+   "hi90": 4.334795523625311,
+   "lo90": 3.03030303030303,
+   "median": 3.6666666666666665,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 12.888888888888888,
+    "boundtop": 2.0,
+    "ch_intrinsics": null,
+    "diffeq1": 3.2916666666666665,
+    "diffeq2": 3.3225806451612905,
+    "mkDelayWorker32B": 3.6666666666666665,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 3.7944444444444443,
+    "or1200": 4.334795523625311,
+    "raygentop": 3.03030303030303,
+    "sha": 8.554497751124439,
+    "stereovision0": 3.7296152741889173,
+    "stereovision1": null,
+    "stereovision2": 7.205271039092125,
+    "stereovision3": 2.103703703703704
+   }
+  },
+  "n_cross_edges": {
+   "hi90": 32.666666666666664,
+   "lo90": 8.333333333333334,
+   "median": 20.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 24.666666666666668,
+    "boundtop": 19.666666666666668,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 37.0,
+    "diffeq2": 32.666666666666664,
+    "mkDelayWorker32B": 2.6666666666666665,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 20.0,
+    "or1200": 26.333333333333332,
+    "raygentop": 8.333333333333334,
+    "sha": 47.0,
+    "stereovision0": 69.33333333333333,
+    "stereovision1": 0.0,
+    "stereovision2": 732.3333333333334,
+    "stereovision3": 11.333333333333334
+   }
+  },
+  "n_paths": {
+   "hi90": 31.0,
+   "lo90": 5.666666666666667,
+   "median": 19.666666666666668,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 3.0,
+    "boundtop": 19.666666666666668,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 32.0,
+    "diffeq2": 31.0,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 20.0,
+    "mkSMAdapter4B": 11.333333333333334,
+    "or1200": 56.333333333333336,
+    "raygentop": 5.666666666666667,
+    "sha": 24.0,
+    "stereovision0": 69.33333333333333,
+    "stereovision1": 0.0,
+    "stereovision2": 404.6666666666667,
+    "stereovision3": 16.0
+   }
+  },
+  "nochain_excess": {
+   "hi90": 2.7296152741889177,
+   "lo90": 1.0,
+   "median": 1.1439393939393938,
+   "n": 9,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": null,
+    "diffeq2": null,
+    "mkDelayWorker32B": 2.6666666666666665,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 2.7944444444444443,
+    "or1200": 0.2448957661723619,
+    "raygentop": 1.1439393939393938,
+    "sha": null,
+    "stereovision0": 2.7296152741889177,
+    "stereovision1": null,
+    "stereovision2": 4.5431442563833,
+    "stereovision3": 1.1037037037037036
+   }
+  },
+  "share_at_floor10": {
+   "hi90": 0.1840958605664488,
+   "lo90": 0.0,
+   "median": 0.022222222222222223,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.11458333333333333,
+    "diffeq2": 0.13978494623655913,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 1.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.7960186976144423,
+    "raygentop": 0.25,
+    "sha": 0.0,
+    "stereovision0": 0.1840958605664488,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": 0.022222222222222223
+   }
+  },
+  "share_over_floor10": {
+   "hi90": 1.0,
+   "lo90": 0.8159041394335512,
+   "median": 0.9777777777777779,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 1.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.8854166666666666,
+    "diffeq2": 0.8602150537634409,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 0.2039813023855577,
+    "raygentop": 0.75,
+    "sha": 1.0,
+    "stereovision0": 0.8159041394335512,
+    "stereovision1": null,
+    "stereovision2": 1.0,
+    "stereovision3": 0.9777777777777779
+   }
+  },
+  "share_over_floor20": {
+   "hi90": 1.0,
+   "lo90": 1.0,
+   "median": 1.0,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 1.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 1.0,
+    "diffeq2": 1.0,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 1.0,
+    "raygentop": 1.0,
+    "sha": 1.0,
+    "stereovision0": 0.8159041394335512,
+    "stereovision1": null,
+    "stereovision2": 1.0,
+    "stereovision3": 0.9777777777777779
+   }
+  },
+  "short_split": {
+   "hi90": 1.0,
+   "lo90": 1.0,
+   "median": 1.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 1.0,
+    "diffeq2": 1.0,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 1.0,
+    "raygentop": 1.0,
+    "sha": null,
+    "stereovision0": 0.8159041394335512,
+    "stereovision1": null,
+    "stereovision2": 1.0,
+    "stereovision3": 0.9777777777777779
+   }
+  }
+ },
+ "p3": {
+  "atoms_on_ge2": {
+   "hi90": 0.42414696963998183,
+   "lo90": 0.20342530030030032,
+   "median": 0.2740623110511993,
+   "n": 14,
+   "per_design": {
+    "blob_merge": 0.42552523283517435,
+    "boundtop": 0.21004504504504506,
+    "ch_intrinsics": null,
+    "diffeq1": 0.42414696963998183,
+    "diffeq2": 0.35663258258131264,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.19680555555555557,
+    "or1200": 0.3158921169436191,
+    "raygentop": 0.2322325051587796,
+    "sha": 0.5284862680893658,
+    "stereovision0": 0.21128235290035358,
+    "stereovision1": 0.068378995984517,
+    "stereovision2": 0.5477954526302754,
+    "stereovision3": 0.4869177890011223
+   }
+  },
+  "branch_cross_share": {
+   "hi90": 0.8321068535366035,
+   "lo90": 0.2611336032388664,
+   "median": 0.655395477041177,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.06722222222222222,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.9631313131313132,
+    "diffeq2": 0.9487857704176489,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.2611336032388664,
+    "or1200": 0.17931230463199774,
+    "raygentop": 0.4611111111111111,
+    "sha": 0.7154279366555581,
+    "stereovision0": 0.8166905733936519,
+    "stereovision1": null,
+    "stereovision2": 0.6869814302728301,
+    "stereovision3": 0.6238095238095238
+   }
+  },
+  "fork_all": {
+   "hi90": 0.26385358422778166,
+   "lo90": 0.0,
+   "median": 0.06523297491039426,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.057067254011226844,
+    "diffeq2": 0.06523297491039426,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.40740740740740744,
+    "or1200": 0.0,
+    "raygentop": 0.07407407407407407,
+    "sha": 0.09799082313681869,
+    "stereovision0": 0.40740740740740744,
+    "stereovision1": null,
+    "stereovision2": 0.26385358422778166,
+    "stereovision3": 0.0
+   }
+  },
+  "fork_none": {
+   "hi90": 0.5407407407407407,
+   "lo90": 0.03261648745519713,
+   "median": 0.3148148148148148,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.6666666666666666,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.028533627005613422,
+    "diffeq2": 0.03261648745519713,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.3148148148148148,
+    "or1200": 0.3333333333333333,
+    "raygentop": 0.0,
+    "sha": 0.054168984056358914,
+    "stereovision0": 0.5407407407407407,
+    "stereovision1": null,
+    "stereovision2": 0.04773028218906328,
+    "stereovision3": 0.611111111111111
+   }
+  },
+  "fork_split": {
+   "hi90": 0.9021505376344087,
+   "lo90": 0.3333333333333333,
+   "median": 0.6666666666666666,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.3333333333333333,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.9143991189831597,
+    "diffeq2": 0.9021505376344087,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.27777777777777773,
+    "or1200": 0.6666666666666666,
+    "raygentop": 0.9259259259259259,
+    "sha": 0.8478401928068223,
+    "stereovision0": 0.05185185185185185,
+    "stereovision1": null,
+    "stereovision2": 0.688416133583155,
+    "stereovision3": 0.38888888888888884
+   }
+  },
+  "forks": {
+   "hi90": 13.0,
+   "lo90": 1.0,
+   "median": 4.333333333333333,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 1.0,
+    "boundtop": 1.3333333333333333,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 35.333333333333336,
+    "diffeq2": 30.666666666666668,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 4.333333333333333,
+    "or1200": 4.666666666666667,
+    "raygentop": 4.333333333333333,
+    "sha": 30.666666666666668,
+    "stereovision0": 13.0,
+    "stereovision1": 0.0,
+    "stereovision2": 526.3333333333334,
+    "stereovision3": 2.0
+   }
+  },
+  "join_all": {
+   "hi90": 0.037037037037037035,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 6,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": null,
+    "ch_intrinsics": null,
+    "diffeq1": 0.07407407407407407,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": null,
+    "sha": 0.0,
+    "stereovision0": null,
+    "stereovision1": null,
+    "stereovision2": 0.0,
+    "stereovision3": null
+   }
+  },
+  "join_split": {
+   "hi90": 1.0,
+   "lo90": 0.9391534391534391,
+   "median": 0.9868238013322002,
+   "n": 6,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": null,
+    "ch_intrinsics": null,
+    "diffeq1": 0.8783068783068783,
+    "diffeq2": 1.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 1.0,
+    "raygentop": null,
+    "sha": 0.9722222222222222,
+    "stereovision0": null,
+    "stereovision1": null,
+    "stereovision2": 0.9736476026644003,
+    "stereovision3": null
+   }
+  }
+ },
+ "p4": {
+  "e0.0": {
+   "earliest_queued": {
+    "hi90": 0.995575221238938,
+    "lo90": 0.9587378640776699,
+    "median": 0.983132530120482,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.8783943329397875,
+     "boundtop": 0.9766355140186916,
+     "ch_intrinsics": 1.0,
+     "diffeq1": 1.0,
+     "diffeq2": 1.0,
+     "mkDelayWorker32B": 0.9891745602165088,
+     "mkPktMerge": 1.0,
+     "mkSMAdapter4B": 0.983132530120482,
+     "or1200": 0.9587378640776699,
+     "raygentop": 0.9760191846522782,
+     "sha": 0.995575221238938,
+     "stereovision0": 0.8408551068883611,
+     "stereovision1": 0.9857659831121833,
+     "stereovision2": 0.9561005770816159,
+     "stereovision3": 0.8043478260869565
+    }
+   },
+   "hot_lost": {
+    "hi90": 0.5666666666666667,
+    "lo90": 0.022452504317789293,
+    "median": 0.202020202020202,
+    "n": 12,
+    "per_design": {
+     "blob_merge": 0.3333333333333333,
+     "boundtop": 0.5666666666666667,
+     "ch_intrinsics": null,
+     "diffeq1": 0.9682539682539683,
+     "diffeq2": 0.9027777777777778,
+     "mkDelayWorker32B": 0.022452504317789293,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.0,
+     "or1200": 0.6744186046511628,
+     "raygentop": null,
+     "sha": 0.3333333333333333,
+     "stereovision0": 0.0707070707070707,
+     "stereovision1": 0.0,
+     "stereovision2": null,
+     "stereovision3": 0.030303030303030304
+    }
+   },
+   "hot_n": {
+    "hi90": 24.0,
+    "lo90": 1.0,
+    "median": 4.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 4.0,
+     "boundtop": 70.0,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 21.0,
+     "diffeq2": 24.0,
+     "mkDelayWorker32B": 193.0,
+     "mkPktMerge": 1.0,
+     "mkSMAdapter4B": 4.0,
+     "or1200": 86.0,
+     "raygentop": 0.0,
+     "sha": 1.0,
+     "stereovision0": 66.0,
+     "stereovision1": 3.0,
+     "stereovision2": 0.0,
+     "stereovision3": 11.0
+    }
+   },
+   "hot_share": {
+    "hi90": 0.2087378640776699,
+    "lo90": 0.0017699115044247787,
+    "median": 0.00963855421686747,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.004722550177095631,
+     "boundtop": 0.32710280373831774,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.26582278481012656,
+     "diffeq2": 0.3870967741935483,
+     "mkDelayWorker32B": 0.13058186738836267,
+     "mkPktMerge": 0.0017699115044247787,
+     "mkSMAdapter4B": 0.00963855421686747,
+     "or1200": 0.2087378640776699,
+     "raygentop": 0.0,
+     "sha": 0.004424778761061947,
+     "stereovision0": 0.031353919239904986,
+     "stereovision1": 0.0007237635705669481,
+     "stereovision2": 0.0,
+     "stereovision3": 0.23913043478260873
+    }
+   },
+   "hot_won": {
+    "hi90": 0.25,
+    "lo90": 0.031746031746031744,
+    "median": 0.15,
+    "n": 12,
+    "per_design": {
+     "blob_merge": 0.5,
+     "boundtop": 0.13333333333333333,
+     "ch_intrinsics": null,
+     "diffeq1": 0.031746031746031744,
+     "diffeq2": 0.09722222222222222,
+     "mkDelayWorker32B": 0.003454231433506045,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.25,
+     "or1200": 0.16666666666666666,
+     "raygentop": null,
+     "sha": 0.6666666666666666,
+     "stereovision0": 0.196969696969697,
+     "stereovision1": 0.0,
+     "stereovision2": null,
+     "stereovision3": 0.2727272727272727
+    }
+   },
+   "src_pooled": {
+    "conn/timing": 15522,
+    "high fanout": 1308,
+    "ram": 5769,
+    "transitive": 25158
+   },
+   "tie_rate": {
+    "hi90": 0.45147679324894513,
+    "lo90": 0.2893081761006289,
+    "median": 0.35028248587570615,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.15149347165086746,
+     "boundtop": 0.45147679324894513,
+     "ch_intrinsics": 0.6436781609195402,
+     "diffeq1": 0.3172690763052209,
+     "diffeq2": 0.35028248587570615,
+     "mkDelayWorker32B": 0.929559748427673,
+     "mkPktMerge": 0.9608843537414966,
+     "mkSMAdapter4B": 0.3765880217785844,
+     "or1200": 0.19136089177891313,
+     "raygentop": 0.34692179700499165,
+     "sha": 0.1966927763272411,
+     "stereovision0": 0.26233798604187436,
+     "stereovision1": 0.5021807608432275,
+     "stereovision2": 0.4074913916183757,
+     "stereovision3": 0.2893081761006289
+    }
+   },
+   "zero_gain_share": {
+    "hi90": 0.0,
+    "lo90": 0.0,
+    "median": 0.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.0,
+     "boundtop": 0.0,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.0,
+     "diffeq2": 0.0,
+     "mkDelayWorker32B": 0.0,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.0,
+     "or1200": 0.0,
+     "raygentop": 0.0,
+     "sha": 0.0,
+     "stereovision0": 0.0,
+     "stereovision1": 0.0,
+     "stereovision2": 0.0,
+     "stereovision3": 0.0
+    }
+   }
+  },
+  "e0.01": {
+   "earliest_queued": {
+    "hi90": 0.8989449390042862,
+    "lo90": 0.841726618705036,
+    "median": 0.8865979381443299,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.8915514592933947,
+     "boundtop": 0.8431372549019608,
+     "ch_intrinsics": 0.9365079365079364,
+     "diffeq1": 0.9280575539568345,
+     "diffeq2": 0.841726618705036,
+     "mkDelayWorker32B": 0.891042780748663,
+     "mkPktMerge": 0.9877622377622378,
+     "mkSMAdapter4B": 0.7779816513761468,
+     "or1200": 0.8384401114206129,
+     "raygentop": 0.8576850094876661,
+     "sha": 0.8865979381443299,
+     "stereovision0": 0.8374296713058929,
+     "stereovision1": 0.9726027397260274,
+     "stereovision2": 0.8989449390042862,
+     "stereovision3": 0.5348837209302325
+    }
+   },
+   "hot_lost": {
+    "hi90": 0.31840796019900497,
+    "lo90": 0.06666666666666667,
+    "median": 0.1301775147928994,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.31840796019900497,
+     "boundtop": 0.5666666666666667,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.5575757575757575,
+     "diffeq2": 0.4833333333333334,
+     "mkDelayWorker32B": 0.06666666666666667,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.08333333333333333,
+     "or1200": 0.3899782135076253,
+     "raygentop": 0.125,
+     "sha": 0.27777777777777773,
+     "stereovision0": 0.1301775147928994,
+     "stereovision1": 0.0,
+     "stereovision2": 0.0,
+     "stereovision3": 0.2888888888888889
+    }
+   },
+   "hot_n": {
+    "hi90": 120.0,
+    "lo90": 8.0,
+    "median": 55.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 134.0,
+     "boundtop": 70.0,
+     "ch_intrinsics": 3.0,
+     "diffeq1": 55.0,
+     "diffeq2": 60.0,
+     "mkDelayWorker32B": 205.0,
+     "mkPktMerge": 2.0,
+     "mkSMAdapter4B": 24.0,
+     "or1200": 153.0,
+     "raygentop": 8.0,
+     "sha": 6.0,
+     "stereovision0": 169.0,
+     "stereovision1": 3.0,
+     "stereovision2": 120.0,
+     "stereovision3": 30.0
+    }
+   },
+   "hot_share": {
+    "hi90": 0.21309192200557103,
+    "lo90": 0.020618556701030927,
+    "median": 0.047619047619047616,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.041167434715821814,
+     "boundtop": 0.27450980392156865,
+     "ch_intrinsics": 0.047619047619047616,
+     "diffeq1": 0.39568345323741005,
+     "diffeq2": 0.4316546762589928,
+     "mkDelayWorker32B": 0.13703208556149732,
+     "mkPktMerge": 0.0034965034965034965,
+     "mkSMAdapter4B": 0.044036697247706424,
+     "or1200": 0.21309192200557103,
+     "raygentop": 0.015180265654648957,
+     "sha": 0.020618556701030927,
+     "stereovision0": 0.05004441812259402,
+     "stereovision1": 0.0006965405154399814,
+     "stereovision2": 0.019782393669634024,
+     "stereovision3": 0.3488372093023256
+    }
+   },
+   "hot_won": {
+    "hi90": 0.25,
+    "lo90": 0.05555555555555555,
+    "median": 0.18736383442265794,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.11940298507462686,
+     "boundtop": 0.13333333333333333,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.03636363636363636,
+     "diffeq2": 0.05555555555555555,
+     "mkDelayWorker32B": 0.013008130081300813,
+     "mkPktMerge": 0.5,
+     "mkSMAdapter4B": 0.3333333333333333,
+     "or1200": 0.18736383442265794,
+     "raygentop": 0.25,
+     "sha": 0.38888888888888884,
+     "stereovision0": 0.20118343195266272,
+     "stereovision1": 0.0,
+     "stereovision2": 1.0,
+     "stereovision3": 0.22222222222222224
+    }
+   },
+   "src_pooled": {
+    "conn/timing": 33183,
+    "high fanout": 1311,
+    "ram": 5769,
+    "transitive": 25245
+   },
+   "tie_rate": {
+    "hi90": 0.5821856555177964,
+    "lo90": 0.4945553539019964,
+    "median": 0.5379746835443038,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.5821856555177964,
+     "boundtop": 0.5379746835443038,
+     "ch_intrinsics": 0.7241379310344828,
+     "diffeq1": 0.5582329317269076,
+     "diffeq2": 0.7853107344632768,
+     "mkDelayWorker32B": 0.9408805031446542,
+     "mkPktMerge": 0.9727891156462585,
+     "mkSMAdapter4B": 0.4945553539019964,
+     "or1200": 0.3334881560613098,
+     "raygentop": 0.4384359400998336,
+     "sha": 0.25326370757180156,
+     "stereovision0": 0.4208624127617149,
+     "stereovision1": 0.5218076084322752,
+     "stereovision2": 0.509448223733938,
+     "stereovision3": 0.5408805031446541
+    }
+   },
+   "zero_gain_share": {
+    "hi90": 0.0,
+    "lo90": 0.0,
+    "median": 0.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.0,
+     "boundtop": 0.0,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.0,
+     "diffeq2": 0.0,
+     "mkDelayWorker32B": 0.0,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.0,
+     "or1200": 0.0,
+     "raygentop": 0.0,
+     "sha": 0.0,
+     "stereovision0": 0.0,
+     "stereovision1": 0.0,
+     "stereovision2": 0.0,
+     "stereovision3": 0.0
+    }
+   }
+  },
+  "e0.05": {
+   "earliest_queued": {
+    "hi90": 0.8675,
+    "lo90": 0.7142857142857143,
+    "median": 0.8208686712927268,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.8208686712927268,
+     "boundtop": 0.7288732394366196,
+     "ch_intrinsics": 0.8507462686567164,
+     "diffeq1": 0.8815789473684209,
+     "diffeq2": 0.7142857142857143,
+     "mkDelayWorker32B": 0.8698811096433289,
+     "mkPktMerge": 0.9877622377622378,
+     "mkSMAdapter4B": 0.6671779141104294,
+     "or1200": 0.632495164410058,
+     "raygentop": 0.7445820433436533,
+     "sha": 0.8675,
+     "stereovision0": 0.6294621608757734,
+     "stereovision1": 0.8908860224148869,
+     "stereovision2": 0.8621784693553508,
+     "stereovision3": 0.2828282828282828
+    }
+   },
+   "hot_lost": {
+    "hi90": 0.4444444444444444,
+    "lo90": 0.08787878787878788,
+    "median": 0.23345367027677497,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.6465201465201466,
+     "boundtop": 0.5511111111111111,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.5459770114942529,
+     "diffeq2": 0.3896103896103896,
+     "mkDelayWorker32B": 0.08787878787878788,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.21739130434782608,
+     "or1200": 0.23345367027677497,
+     "raygentop": 0.2753623188405797,
+     "sha": 0.4444444444444444,
+     "stereovision0": 0.21441441441441444,
+     "stereovision1": 0.0,
+     "stereovision2": 0.0,
+     "stereovision3": 0.5658914728682171
+    }
+   },
+   "hot_n": {
+    "hi90": 120.0,
+    "lo90": 23.0,
+    "median": 58.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 182.0,
+     "boundtop": 75.0,
+     "ch_intrinsics": 8.0,
+     "diffeq1": 58.0,
+     "diffeq2": 77.0,
+     "mkDelayWorker32B": 220.0,
+     "mkPktMerge": 2.0,
+     "mkSMAdapter4B": 46.0,
+     "or1200": 277.0,
+     "raygentop": 23.0,
+     "sha": 9.0,
+     "stereovision0": 370.0,
+     "stereovision1": 3.0,
+     "stereovision2": 120.0,
+     "stereovision3": 43.0
+    }
+   },
+   "hot_share": {
+    "hi90": 0.2640845070422535,
+    "lo90": 0.03560371517027864,
+    "median": 0.08805330794859591,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.04677460806990491,
+     "boundtop": 0.2640845070422535,
+     "ch_intrinsics": 0.11940298507462686,
+     "diffeq1": 0.3815789473684211,
+     "diffeq2": 0.5,
+     "mkDelayWorker32B": 0.1453104359313078,
+     "mkPktMerge": 0.0034965034965034965,
+     "mkSMAdapter4B": 0.0705521472392638,
+     "or1200": 0.2678916827852998,
+     "raygentop": 0.03560371517027864,
+     "sha": 0.022500000000000003,
+     "stereovision0": 0.08805330794859591,
+     "stereovision1": 0.0006343835906111228,
+     "stereovision2": 0.01905366783105748,
+     "stereovision3": 0.4343434343434344
+    }
+   },
+   "hot_won": {
+    "hi90": 0.1901323706377858,
+    "lo90": 0.0695970695970696,
+    "median": 0.13953488372093023,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.0695970695970696,
+     "boundtop": 0.13777777777777778,
+     "ch_intrinsics": 0.125,
+     "diffeq1": 0.034482758620689655,
+     "diffeq2": 0.043290043290043295,
+     "mkDelayWorker32B": 0.012121212121212121,
+     "mkPktMerge": 0.5,
+     "mkSMAdapter4B": 0.23913043478260873,
+     "or1200": 0.1901323706377858,
+     "raygentop": 0.18840579710144925,
+     "sha": 0.3703703703703704,
+     "stereovision0": 0.1693693693693694,
+     "stereovision1": 0.0,
+     "stereovision2": 1.0,
+     "stereovision3": 0.13953488372093023
+    }
+   },
+   "src_pooled": {
+    "conn/timing": 41595,
+    "high fanout": 1323,
+    "ram": 5769,
+    "transitive": 25395
+   },
+   "tie_rate": {
+    "hi90": 0.6959399034162046,
+    "lo90": 0.5374376039933444,
+    "median": 0.5991561181434599,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.6959399034162046,
+     "boundtop": 0.5991561181434599,
+     "ch_intrinsics": 0.7701149425287356,
+     "diffeq1": 0.6104417670682731,
+     "diffeq2": 0.8700564971751413,
+     "mkDelayWorker32B": 0.9522012578616352,
+     "mkPktMerge": 0.9727891156462585,
+     "mkSMAdapter4B": 0.5916515426497277,
+     "or1200": 0.48026010218300047,
+     "raygentop": 0.5374376039933444,
+     "sha": 0.34812880765883375,
+     "stereovision0": 0.523678963110668,
+     "stereovision1": 0.5729343348679428,
+     "stereovision2": 0.5289325606785924,
+     "stereovision3": 0.6226415094339622
+    }
+   },
+   "zero_gain_share": {
+    "hi90": 0.0,
+    "lo90": 0.0,
+    "median": 0.0,
+    "n": 15,
+    "per_design": {
+     "blob_merge": 0.0,
+     "boundtop": 0.0,
+     "ch_intrinsics": 0.0,
+     "diffeq1": 0.0,
+     "diffeq2": 0.0,
+     "mkDelayWorker32B": 0.0,
+     "mkPktMerge": 0.0,
+     "mkSMAdapter4B": 0.0,
+     "or1200": 0.0,
+     "raygentop": 0.0,
+     "sha": 0.0,
+     "stereovision0": 0.0,
+     "stereovision1": 0.0,
+     "stereovision2": 0.0,
+     "stereovision3": 0.0
+    }
+   }
+  },
+  "n_choice": {
+   "hi90": 2153.0,
+   "lo90": 474.0,
+   "median": 1149.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 5591.0,
+    "boundtop": 474.0,
+    "ch_intrinsics": 87.0,
+    "diffeq1": 249.0,
+    "diffeq2": 177.0,
+    "mkDelayWorker32B": 1590.0,
+    "mkPktMerge": 588.0,
+    "mkSMAdapter4B": 1102.0,
+    "or1200": 2153.0,
+    "raygentop": 1202.0,
+    "sha": 1149.0,
+    "stereovision0": 8024.0,
+    "stereovision1": 8254.0,
+    "stereovision2": 11907.0,
+    "stereovision3": 159.0
+   }
+  },
+  "not_top": {
+   "hi90": 0.03901532745006967,
+   "lo90": 0.005649717514124294,
+   "median": 0.014767932489451477,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.025219102128420674,
+    "boundtop": 0.014767932489451477,
+    "ch_intrinsics": 0.04597701149425287,
+    "diffeq1": 0.08032128514056225,
+    "diffeq2": 0.005649717514124294,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.029038112522686024,
+    "or1200": 0.03901532745006967,
+    "raygentop": 0.054076539101497505,
+    "sha": 0.009573542210617928,
+    "stereovision0": 0.007352941176470587,
+    "stereovision1": 0.005209595347710201,
+    "stereovision2": 0.002183589485176787,
+    "stereovision3": 0.08176100628930817
+   }
+  },
+  "stale_gain": {
+   "hi90": 0.12087912087912088,
+   "lo90": 0.014614703277236492,
+   "median": 0.033734939759036145,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.03279820472984637,
+    "boundtop": 0.2385685884691849,
+    "ch_intrinsics": 0.30851063829787234,
+    "diffeq1": 0.12087912087912088,
+    "diffeq2": 0.04838709677419354,
+    "mkDelayWorker32B": 0.7382230172927847,
+    "mkPktMerge": 0.7351973684210527,
+    "mkSMAdapter4B": 0.04541406945681211,
+    "or1200": 0.014614703277236492,
+    "raygentop": 0.033734939759036145,
+    "sha": 0.011904761904761904,
+    "stereovision0": 0.013062722660045342,
+    "stereovision1": 0.009309107222969942,
+    "stereovision2": 0.01538352474124486,
+    "stereovision3": 0.006060606060606061
+   }
+  }
+ },
+ "p5": {
+  "filler_source_pooled": {
+   "conn/timing": 18086,
+   "high fanout": 224,
+   "seed": 10796,
+   "transitive": 4042
+  },
+  "full_cross_with_filler": {
+   "hi90": 1.0,
+   "lo90": 0.6722406792174235,
+   "median": 1.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 1.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.08585858585858586,
+    "diffeq2": 0.21342456826327796,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 0.9615384615384616,
+    "raygentop": 1.0,
+    "sha": 0.6722406792174235,
+    "stereovision0": 1.0,
+    "stereovision1": null,
+    "stereovision2": 1.0,
+    "stereovision3": 0.8333333333333334
+   }
+  },
+  "heap_clusters_over_min": {
+   "hi90": 4.048611111111111,
+   "lo90": 2.9803275775385307,
+   "median": 3.583333333333333,
+   "n": 14,
+   "per_design": {
+    "blob_merge": 2.8444444444444446,
+    "boundtop": 4.0,
+    "ch_intrinsics": null,
+    "diffeq1": 1.6904761904761905,
+    "diffeq2": 1.0666666666666667,
+    "mkDelayWorker32B": 3.6666666666666665,
+    "mkPktMerge": 3.5,
+    "mkSMAdapter4B": 5.571428571428572,
+    "or1200": 3.401960784313726,
+    "raygentop": 3.6999999999999997,
+    "sha": 4.097222222222222,
+    "stereovision0": 4.694444444444445,
+    "stereovision1": 4.3076923076923075,
+    "stereovision2": 2.9884329328548396,
+    "stereovision3": 2.972222222222222
+   }
+  },
+  "heap_clusters_share": {
+   "hi90": 0.23943661971830985,
+   "lo90": 0.12313104661389622,
+   "median": 0.17073170731707318,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.03292181069958848,
+    "boundtop": 0.17073170731707318,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.3440860215053763,
+    "diffeq2": 0.28787878787878785,
+    "mkDelayWorker32B": 0.0582010582010582,
+    "mkPktMerge": 0.3859649122807018,
+    "mkSMAdapter4B": 0.16101694915254236,
+    "or1200": 0.2208157524613221,
+    "raygentop": 0.1706036745406824,
+    "sha": 0.23943661971830985,
+    "stereovision0": 0.05508072174738841,
+    "stereovision1": 0.12313104661389622,
+    "stereovision2": 0.22656404183935266,
+    "stereovision3": 0.6444444444444444
+   }
+  },
+  "heap_fle_per_heap_cluster": {
+   "hi90": 3.107153953687246,
+   "lo90": 2.215465262291888,
+   "median": 2.4767996890237978,
+   "n": 14,
+   "per_design": {
+    "blob_merge": 3.3541666666666665,
+    "boundtop": 2.574074074074074,
+    "ch_intrinsics": null,
+    "diffeq1": 5.43939393939394,
+    "diffeq2": 8.992063492063492,
+    "mkDelayWorker32B": 1.388888888888889,
+    "mkPktMerge": 1.976190476190476,
+    "mkSMAdapter4B": 1.8057498057498058,
+    "or1200": 2.842932728647014,
+    "raygentop": 2.3536953242835597,
+    "sha": 2.379525303973521,
+    "stereovision0": 2.077235200300216,
+    "stereovision1": 2.2942216981132075,
+    "stereovision2": 3.338887031953616,
+    "stereovision3": 2.8754208754208754
+   }
+  },
+  "nonheap_fle_share": {
+   "hi90": 0.7400955249508545,
+   "lo90": 0.6372897017251856,
+   "median": 0.7037372877302032,
+   "n": 14,
+   "per_design": {
+    "blob_merge": 0.6373873873873874,
+    "boundtop": 0.6334799608993157,
+    "ch_intrinsics": null,
+    "diffeq1": 0.44595015576323993,
+    "diffeq2": 0.08714759535655059,
+    "mkDelayWorker32B": 0.8380952380952381,
+    "mkPktMerge": 0.6706349206349206,
+    "mkSMAdapter4B": 0.8179364495153969,
+    "or1200": 0.7046597779760134,
+    "raygentop": 0.7222091900929479,
+    "sha": 0.757981859808761,
+    "stereovision0": 0.7862229736062901,
+    "stereovision1": 0.7028147974843929,
+    "stereovision2": 0.6247232286582943,
+    "stereovision3": 0.7124579124579125
+   }
+  }
+ },
+ "p6": {
+  "auc_max_pin": {
+   "hi90": 0.9465198653226056,
+   "lo90": 0.8629688188368959,
+   "median": 0.934027170863487,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.9938856082676834,
+    "boundtop": 0.9439197917612038,
+    "ch_intrinsics": 0.013640507749491548,
+    "diffeq1": 0.9629940144714172,
+    "diffeq2": 0.9465198653226056,
+    "mkDelayWorker32B": 0.8303235948163484,
+    "mkPktMerge": 0.5704662273525661,
+    "mkSMAdapter4B": 0.8658373004753025,
+    "or1200": 0.625803854190356,
+    "raygentop": 0.8629688188368959,
+    "sha": 0.9638252404995497,
+    "stereovision0": 0.9587737219124873,
+    "stereovision1": 0.9393763687166707,
+    "stereovision2": 0.934027170863487,
+    "stereovision3": 0.8884151191340734
+   }
+  },
+  "auc_mean_pin": {
+   "hi90": 0.9302990108378971,
+   "lo90": 0.8182886900129688,
+   "median": 0.8384593489239253,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.9812609458429566,
+    "boundtop": 0.9473942485420969,
+    "ch_intrinsics": 0.013640507749491548,
+    "diffeq1": 0.8780148802803266,
+    "diffeq2": 0.8182886900129688,
+    "mkDelayWorker32B": 0.8228088336783989,
+    "mkPktMerge": 0.5900401793949456,
+    "mkSMAdapter4B": 0.8563086155150773,
+    "or1200": 0.5387138422895138,
+    "raygentop": 0.8384593489239253,
+    "sha": 0.9341427923709857,
+    "stereovision0": 0.9302990108378971,
+    "stereovision1": 0.9801101587770024,
+    "stereovision2": 0.8321120856227534,
+    "stereovision3": 0.8011671335200746
+   }
+  },
+  "inherited_n": {
+   "hi90": 12.0,
+   "lo90": 0.0,
+   "median": 3.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 12.0,
+    "boundtop": 3.0,
+    "ch_intrinsics": 19.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 2.0,
+    "or1200": 0.0,
+    "raygentop": 7.0,
+    "sha": 7.0,
+    "stereovision0": 104.0,
+    "stereovision1": 0.0,
+    "stereovision2": 174.0,
+    "stereovision3": 13.0
+   }
+  },
+  "inherited_share": {
+   "hi90": 0.25,
+   "lo90": 0.0,
+   "median": 0.10434782608695652,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.10434782608695652,
+    "boundtop": 0.25,
+    "ch_intrinsics": 0.6785714285714285,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.05000000000000001,
+    "or1200": 0.0,
+    "raygentop": 0.18421052631578946,
+    "sha": 0.17073170731707318,
+    "stereovision0": 0.2765957446808511,
+    "stereovision1": 0.0,
+    "stereovision2": 0.5576923076923077,
+    "stereovision3": 0.29545454545454547
+   }
+  },
+  "inherited_stay": {
+   "hi90": 0.16666666666666666,
+   "lo90": 0.0,
+   "median": 0.0421455938697318,
+   "n": 9,
+   "per_design": {
+    "blob_merge": 0.16666666666666666,
+    "boundtop": 0.2222222222222222,
+    "ch_intrinsics": 0.0,
+    "diffeq1": null,
+    "diffeq2": null,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.3333333333333333,
+    "or1200": null,
+    "raygentop": 0.0,
+    "sha": 0.14285714285714285,
+    "stereovision0": 0.02243589743589744,
+    "stereovision1": null,
+    "stereovision2": 0.0421455938697318,
+    "stereovision3": 0.0
+   }
+  },
+  "multi_stay": {
+   "hi90": 0.45042039529335354,
+   "lo90": 0.1336634653861544,
+   "median": 0.2933646812957158,
+   "n": 14,
+   "per_design": {
+    "blob_merge": 0.3817829457364341,
+    "boundtop": 0.6666666666666666,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.7538461538461538,
+    "diffeq2": 0.7589743589743589,
+    "mkDelayWorker32B": 0.014590347923681255,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.28787878787878785,
+    "or1200": 0.1288515406162465,
+    "raygentop": 0.15511551155115513,
+    "sha": 0.4302134646962233,
+    "stereovision0": 0.13378684807256236,
+    "stereovision1": null,
+    "stereovision2": 0.4706273258904838,
+    "stereovision3": 0.2988505747126437
+   }
+  },
+  "own_stay": {
+   "hi90": 0.16666666666666666,
+   "lo90": 0.06182795698924731,
+   "median": 0.14285714285714285,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.15857605177993528,
+    "boundtop": 0.2962962962962963,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.15238095238095237,
+    "diffeq2": 0.14285714285714285,
+    "mkDelayWorker32B": 0.01388888888888889,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.16666666666666666,
+    "or1200": 0.06182795698924731,
+    "raygentop": 0.08602150537634408,
+    "sha": 0.37254901960784315,
+    "stereovision0": 0.10784313725490197,
+    "stereovision1": 0.0,
+    "stereovision2": 0.9589371980676328,
+    "stereovision3": 0.17204301075268816
+   }
+  },
+  "single_share": {
+   "hi90": 0.1795841209829868,
+   "lo90": 0.010101010101010102,
+   "median": 0.05825242718446602,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.05825242718446602,
+    "boundtop": 0.7441860465116279,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.010101010101010102,
+    "diffeq2": 0.010101010101010102,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.35714285714285715,
+    "mkSMAdapter4B": 0.07142857142857142,
+    "or1200": 0.010893246187363835,
+    "raygentop": 0.0078125,
+    "sha": 0.124,
+    "stereovision0": 0.4147465437788018,
+    "stereovision1": 0.3333333333333333,
+    "stereovision2": 0.1795841209829868,
+    "stereovision3": 0.0
+   }
+  },
+  "single_stay": {
+   "hi90": 0.43004385964912284,
+   "lo90": 0.0,
+   "median": 0.2333333333333333,
+   "n": 12,
+   "per_design": {
+    "blob_merge": 0.27777777777777773,
+    "boundtop": 0.2916666666666667,
+    "ch_intrinsics": null,
+    "diffeq1": 1.0,
+    "diffeq2": 1.0,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.3440860215053763,
+    "stereovision0": 0.18888888888888888,
+    "stereovision1": 0.0,
+    "stereovision2": 0.5684210526315789,
+    "stereovision3": null
+   }
+  }
+ },
+ "p7": {
+  "all_hf_driver_share": {
+   "hi90": 0.012941762070681933,
+   "lo90": 0.003194888178913738,
+   "median": 0.006415396952686447,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.02789358745284892,
+    "boundtop": 0.008447729672650475,
+    "ch_intrinsics": 0.016042780748663103,
+    "diffeq1": 0.003194888178913738,
+    "diffeq2": 0.0023094688221709007,
+    "mkDelayWorker32B": 0.011111111111111112,
+    "mkPktMerge": 0.0639269406392694,
+    "mkSMAdapter4B": 0.012941762070681933,
+    "or1200": 0.015620641562064157,
+    "raygentop": 0.006063055780113177,
+    "sha": 0.006415396952686447,
+    "stereovision0": 0.0009047188229131946,
+    "stereovision1": 0.0012634238787113076,
+    "stereovision2": 0.0005475851494907458,
+    "stereovision3": 0.006269592476489029
+   }
+  },
+  "gt16_net_share": {
+   "hi90": 0.01624576908309569,
+   "lo90": 0.0,
+   "median": 0.008130081300813009,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.012671131943687445,
+    "boundtop": 0.35555555555555557,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.15227272727272725,
+    "or1200": 0.01624576908309569,
+    "raygentop": 0.0,
+    "sha": 0.009022108409269433,
+    "stereovision0": 0.021567841880341877,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.008130081300813009
+   }
+  },
+  "gt8_net_share": {
+   "hi90": 0.06713735558408217,
+   "lo90": 0.0,
+   "median": 0.01624576908309569,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.11404018749318702,
+    "boundtop": 0.35555555555555557,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.1766835016835017,
+    "or1200": 0.01624576908309569,
+    "raygentop": 0.011494252873563218,
+    "sha": 0.018044216818538867,
+    "stereovision0": 0.0656383547008547,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.06713735558408217
+   }
+  },
+  "hf_edge_share": {
+   "hi90": 0.001692047377326565,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.8121693121693122,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.02854090354090354,
+    "or1200": 0.001692047377326565,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.029723991507430995,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "hf_net_share": {
+   "hi90": 0.0021645021645021645,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.2888888888888889,
+    "ch_intrinsics": null,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.029040404040404044,
+    "or1200": 0.0021645021645021645,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.003472222222222222,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "hf_nets": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 1.3333333333333333,
+    "or1200": 0.3333333333333333,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.3333333333333333,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "near_nets": {
+   "hi90": 83.33333333333333,
+   "lo90": 26.666666666666668,
+   "median": 39.333333333333336,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 79.33333333333333,
+    "boundtop": 3.6666666666666665,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 83.33333333333333,
+    "diffeq2": 83.0,
+    "mkDelayWorker32B": 4.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 38.0,
+    "or1200": 168.66666666666666,
+    "raygentop": 39.333333333333336,
+    "sha": 111.33333333333333,
+    "stereovision0": 100.66666666666667,
+    "stereovision1": 39.0,
+    "stereovision2": 2007.6666666666667,
+    "stereovision3": 26.666666666666668
+   }
+  }
+ },
+ "p7_nets": [
+  {
+   "atom": "hu34fm2kg5x",
+   "blk": "fsm",
+   "design": "blob_merge",
+   "fanout": 18,
+   "line": "blob_merge.v:254",
+   "op": "none",
+   "text": "always@(posedge clk) begin",
+   "typ": "ff"
+  },
+  {
+   "atom": "h32owsmioso",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 12,
+   "line": "blob_merge.v:1520",
+   "op": "adder",
+   "text": "diff5 = dividend_copy4 - divider_copy4;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hfkwch6rxau",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 12,
+   "line": "blob_merge.v:1535",
+   "op": "adder",
+   "text": "diff6 = dividend_copy5 - divider_copy5;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hbtl5ouz65f",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 12,
+   "line": "blob_merge.v:1520",
+   "op": "adder",
+   "text": "diff5 = dividend_copy4 - divider_copy4;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hixnr46cmjt",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 11,
+   "line": "blob_merge.v:1551",
+   "op": "adder",
+   "text": "diff7 = dividend_copy6 - divider_copy6;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hrvysbwtuzm",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 11,
+   "line": "blob_merge.v:1551",
+   "op": "adder",
+   "text": "diff7 = dividend_copy6 - divider_copy6;",
+   "typ": "adder"
+  },
+  {
+   "atom": "ha2udhpnp4q",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 10,
+   "line": "blob_merge.v:1489",
+   "op": "adder",
+   "text": "diff3 = dividend_copy2 - divider_copy2;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hrzcatr43fy",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 10,
+   "line": "blob_merge.v:1489",
+   "op": "adder",
+   "text": "diff3 = dividend_copy2 - divider_copy2;",
+   "typ": "adder"
+  },
+  {
+   "atom": "hdqs7zvjyvl",
+   "blk": "mux",
+   "design": "blob_merge",
+   "fanout": 9,
+   "line": "blob_merge.v:1505",
+   "op": "adder",
+   "text": "diff4 = dividend_copy3 - divider_copy3;",
+   "typ": "adder"
+  },
+  {
+   "atom": "tm3_sram_we[0]",
+   "blk": "mux",
+   "design": "boundtop",
+   "fanout": 64,
+   "line": null,
+   "op": "none",
+   "text": "",
+   "typ": "lut"
+  },
+  {
+   "atom": "huzdd427vlk",
+   "blk": "mux",
+   "design": "mkSMAdapter4B",
+   "fanout": 31,
+   "line": "mkSMAdapter4B.v:1372",
+   "op": "mux",
+   "text": "wci_respF_c_r != 2'b10 && wci_reqF__EMPTY_N &&",
+   "typ": "lut"
+  },
+  {
+   "atom": "hjkal6qa3pg",
+   "blk": "mux",
+   "design": "mkSMAdapter4B",
+   "fanout": 31,
+   "line": "mkSMAdapter4B.v:1372",
+   "op": "mux",
+   "text": "wci_respF_c_r != 2'b10 && wci_reqF__EMPTY_N &&",
+   "typ": "lut"
+  },
+  {
+   "atom": "hfqnlt2gpeq",
+   "blk": "mux",
+   "design": "mkSMAdapter4B",
+   "fanout": 31,
+   "line": "mkSMAdapter4B.v:1372",
+   "op": "mux",
+   "text": "wci_respF_c_r != 2'b10 && wci_reqF__EMPTY_N &&",
+   "typ": "lut"
+  },
+  {
+   "atom": "dcpu_dat_o[0]",
+   "blk": "register_word",
+   "design": "or1200",
+   "fanout": 25,
+   "line": null,
+   "op": "none",
+   "text": "",
+   "typ": "ff"
+  },
+  {
+   "atom": "htpjd622hfx",
+   "blk": "register_word",
+   "design": "or1200",
+   "fanout": 19,
+   "line": "or1200.v:3227",
+   "op": "none",
+   "text": "always @(posedge clk ) begin",
+   "typ": "ff"
+  },
+  {
+   "atom": "hieuws2sval",
+   "blk": "register_word",
+   "design": "raygentop",
+   "fanout": 9,
+   "line": "raygentop.v:2711",
+   "op": "none",
+   "text": "always @(posedge clk)",
+   "typ": "ff"
+  },
+  {
+   "atom": "hhxisrhh2x3",
+   "blk": "logic",
+   "design": "sha",
+   "fanout": 32,
+   "line": "sha.v:127",
+   "op": "mux",
+   "text": "assign SHA1_f1_BCD = (B & C) ^ (~B & D);",
+   "typ": "lut"
+  },
+  {
+   "atom": "hclg7vo5e4h",
+   "blk": "fsm",
+   "design": "sha",
+   "fanout": 15,
+   "line": "sha.v:148",
+   "op": "none",
+   "text": "always @(posedge clk_i)",
+   "typ": "ff"
+  },
+  {
+   "atom": "hssthgpff6r",
+   "blk": "register_word",
+   "design": "stereovision0",
+   "fanout": 29,
+   "line": "stereovision0.v:1191",
+   "op": "none",
+   "text": "always @(posedge clk)",
+   "typ": "ff"
+  },
+  {
+   "atom": "hjyu3erqhhy",
+   "blk": "fsm",
+   "design": "stereovision0",
+   "fanout": 17,
+   "line": "stereovision0.v:887",
+   "op": "relational",
+   "text": "if ((horiz <= x_reg_r) & (horiz >= x_reg_l) & (vert <= y_reg_dn) & (vert >= y_reg_up))",
+   "typ": "lut"
+  },
+  {
+   "atom": "htalzygggxx",
+   "blk": "register_word",
+   "design": "stereovision0",
+   "fanout": 13,
+   "line": "stereovision0.v:3301",
+   "op": "relational",
+   "text": "if (res_2_5 > res_2_6)",
+   "typ": "lut"
+  },
+  {
+   "atom": "hb4nuftmeqg",
+   "blk": "register_word",
+   "design": "stereovision0",
+   "fanout": 12,
+   "line": "stereovision0.v:3229",
+   "op": "relational",
+   "text": "if (res_1_1 > res_1_2)",
+   "typ": "lut"
+  },
+  {
+   "atom": "hnfyrmd6xaw",
+   "blk": "register_word",
+   "design": "stereovision0",
+   "fanout": 11,
+   "line": "stereovision0.v:3187",
+   "op": "relational",
+   "text": "if (d_in12 > d_in13)",
+   "typ": "lut"
+  },
+  {
+   "atom": "hjribc4htvx",
+   "blk": "counter",
+   "design": "stereovision3",
+   "fanout": 12,
+   "line": "stereovision3.v:1029",
+   "op": "none",
+   "text": "always @(posedge tm3_clk_v2)",
+   "typ": "ff"
+  },
+  {
+   "atom": "hrjvdwpona2",
+   "blk": "counter",
+   "design": "stereovision3",
+   "fanout": 11,
+   "line": "stereovision3.v:1029",
+   "op": "none",
+   "text": "always @(posedge tm3_clk_v2)",
+   "typ": "ff"
+  }
+ ],
+ "p8_rows": [
+  {
+   "any": 0.0,
+   "co_cluster": 0.39285714285714285,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.125,
+   "key": "RLE_BlobMerging/oAvgSizeXaxis",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 3.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.5714285714285714,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.25,
+   "key": "RLE_BlobMerging/oAvgSizeYaxis",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.035437430786267994,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "RLE_BlobMerging/oWriteBlobData",
+   "kinds": {
+    "ff": 43
+   },
+   "n": 43,
+   "pairs": 903,
+   "spread": 4.2,
+   "src": "odin"
+  },
+  {
+   "any": 0.7268847795163584,
+   "co_cluster": 0.14082503556187767,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:iReadFifoData",
+   "kinds": {
+    "lut": 38
+   },
+   "n": 38,
+   "pairs": 703,
+   "spread": 3.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03382663847780127,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:oWriteBlobData",
+   "kinds": {
+    "adder": 1,
+    "ff": 43
+   },
+   "n": 44,
+   "pairs": 946,
+   "spread": 4.4,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.3055555555555556,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.1111111111111111,
+   "key": "out:oAvgSizeXaxis",
+   "kinds": {
+    "adder": 1,
+    "ff": 8
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.4444444444444444,
+   "design": "blob_merge",
+   "flow": 0.0,
+   "heap_rate": 0.2222222222222222,
+   "key": "out:oAvgSizeYaxis",
+   "kinds": {
+    "adder": 1,
+    "ff": 8
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 3.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.1431451612903226,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_boundtop_hierarchy_no_mem/rgResultData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.17137096774193547,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_boundtop_hierarchy_no_mem/raydata",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.4696969696969697,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_boundtop_hierarchy_no_mem/triID",
+   "kinds": {
+    "lut": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 1.5,
+   "src": "odin"
+  },
+  {
+   "any": 1.0,
+   "co_cluster": 0.21568627450980393,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_boundtop_hierarchy_no_mem/tm3_sram_addr",
+   "kinds": {
+    "lut": 18
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.16666666666666666,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.34375,
+   "key": "paj_boundtop_hierarchy_no_mem/tm3_sram_data_out",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 0.8571428571428571,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.21568627450980393,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:addr2in",
+   "kinds": {
+    "lut": 18
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.4666666666666667,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:braddrin",
+   "kinds": {
+    "lut": 10
+   },
+   "n": 10,
+   "pairs": 45,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.1350806451612903,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:rgData",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.16666666666666666,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.34375,
+   "key": "in:data2in",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 0.8571428571428571,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.20362903225806453,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:resultdata",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.3974358974358974,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:triID",
+   "kinds": {
+    "adder": 1,
+    "lut": 12
+   },
+   "n": 13,
+   "pairs": 78,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.17137096774193547,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:raydata",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.16666666666666666,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.34375,
+   "key": "out:tm3_sram_data_out",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 0.8571428571428571,
+   "src": "port"
+  },
+  {
+   "any": 0.8947368421052632,
+   "co_cluster": 0.19298245614035087,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:tm3_sram_addr",
+   "kinds": {
+    "adder": 1,
+    "lut": 18
+   },
+   "n": 19,
+   "pairs": 171,
+   "spread": 2.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.1431451612903226,
+   "design": "boundtop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:rgResultData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.27419354838709675,
+   "design": "ch_intrinsics",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "memset/return_val",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.017543859649122806,
+   "co_cluster": 0.15114709851551958,
+   "design": "ch_intrinsics",
+   "flow": 0.01349527665317139,
+   "heap_rate": 0.0,
+   "key": "in:n",
+   "kinds": {
+    "lut": 39
+   },
+   "n": 39,
+   "pairs": 741,
+   "spread": 1.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.27419354838709675,
+   "design": "ch_intrinsics",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:m",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.27419354838709675,
+   "design": "ch_intrinsics",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:return_val",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.12298387096774194,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "diffeq_paj_convert/Uoutport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.18346774193548387,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "diffeq_paj_convert/Xoutport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.12298387096774194,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "diffeq_paj_convert/Youtport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.16330645161290322,
+   "co_cluster": 0.11290322580645161,
+   "design": "diffeq1",
+   "flow": 0.04838709677419355,
+   "heap_rate": 0.0,
+   "key": "in:Aport",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.25,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.10483870967741936,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:Xinport",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.25,
+   "src": "port"
+  },
+  {
+   "any": 0.12298387096774194,
+   "co_cluster": 0.5020161290322581,
+   "design": "diffeq1",
+   "flow": 0.12298387096774194,
+   "heap_rate": 0.0,
+   "key": "in:DXport",
+   "kinds": {
+    "adder": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 0.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.11088709677419355,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 1.0,
+   "key": "in:Uinport",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.11088709677419355,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:Yinport",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.18346774193548387,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:Xoutport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.12298387096774194,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:Youtport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.12298387096774194,
+   "design": "diffeq1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:Uoutport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.2600806451612903,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.96875,
+   "key": "diffeq_f_systemC/uport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.25,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "diffeq_f_systemC/yport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.04233870967741935,
+   "co_cluster": 0.125,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "diffeq_f_systemC/xport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.12298387096774194,
+   "co_cluster": 0.5020161290322581,
+   "design": "diffeq2",
+   "flow": 0.12298387096774194,
+   "heap_rate": 0.0,
+   "key": "in:dxport",
+   "kinds": {
+    "adder": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 0.5,
+   "src": "port"
+  },
+  {
+   "any": 0.16129032258064516,
+   "co_cluster": 0.14919354838709678,
+   "design": "diffeq2",
+   "flow": 0.02217741935483871,
+   "heap_rate": 0.0,
+   "key": "in:aport",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.75,
+   "src": "port"
+  },
+  {
+   "any": 0.04233870967741935,
+   "co_cluster": 0.125,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:xport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.25,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:yport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.2600806451612903,
+   "design": "diffeq2",
+   "flow": 0.0,
+   "heap_rate": 0.96875,
+   "key": "out:uport",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.10606060606060606,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "mkSMAdapter4B/wmiM_MAddr",
+   "kinds": {
+    "ff": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 3.5,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.010080645161290322,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.125,
+   "key": "mkSMAdapter4B/wciS0_SData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.15151515151515152,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "mkSMAdapter4B/wsiM1_MBurstLength",
+   "kinds": {
+    "lut": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 3.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.09274193548387097,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "mkSMAdapter4B/wsiM1_MData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.5,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.07142857142857142,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "mkSMAdapter4B/wsiM1_MReqInfo",
+   "kinds": {
+    "lut": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 6.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.13911290322580644,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:wmiM_SFlag",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 3.25,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.010080645161290322,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.125,
+   "key": "out:wciS0_SData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.10989010989010989,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:wmiM_MAddr",
+   "kinds": {
+    "adder": 1,
+    "ff": 13
+   },
+   "n": 14,
+   "pairs": 91,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.15151515151515152,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:wsiM1_MBurstLength",
+   "kinds": {
+    "lut": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 3.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.09274193548387097,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:wsiM1_MData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.07142857142857142,
+   "design": "mkSMAdapter4B",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:wsiM1_MReqInfo",
+   "kinds": {
+    "lut": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 6.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0665024630541872,
+   "co_cluster": 0.024630541871921183,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "or1200_flat/ex_insn",
+   "kinds": {
+    "ff": 29
+   },
+   "n": 29,
+   "pairs": 406,
+   "spread": 7.666666666666667,
+   "src": "odin"
+  },
+  {
+   "any": 0.0020161290322580645,
+   "co_cluster": 0.012096774193548387,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "or1200_flat/icpu_adr_o",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 6.5,
+   "src": "odin"
+  },
+  {
+   "any": 0.006048387096774193,
+   "co_cluster": 0.0,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.3125,
+   "key": "or1200_flat/rf_dataw",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 8.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03694581280788178,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "or1200_flat/id_pc",
+   "kinds": {
+    "ff": 29
+   },
+   "n": 29,
+   "pairs": 406,
+   "spread": 6.333333333333333,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "or1200_flat/du_dat_cpu",
+   "kinds": {
+    "lut": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 6.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.016129032258064516,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_du",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 6.75,
+   "src": "port"
+  },
+  {
+   "any": 0.02132936507936508,
+   "co_cluster": 0.054563492063492064,
+   "design": "or1200",
+   "flow": 0.015873015873015872,
+   "heap_rate": 0.0,
+   "key": "in:icpu_dat_i",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 3.0,
+   "src": "port"
+  },
+  {
+   "any": 0.2852852852852853,
+   "co_cluster": 0.0945945945945946,
+   "design": "or1200",
+   "flow": 0.0075075075075075074,
+   "heap_rate": 0.0,
+   "key": "in:du_addr",
+   "kinds": {
+    "lut": 37
+   },
+   "n": 37,
+   "pairs": 666,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.015873015873015872,
+   "co_cluster": 0.010912698412698412,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:du_dat_du",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 6.142857142857143,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.008064516129032258,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_pm",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.25,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.008064516129032258,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_immu",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.25,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.006048387096774193,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_pic",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.25,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.006048387096774193,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_dmmu",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.5,
+   "src": "port"
+  },
+  {
+   "any": 0.3600464576074332,
+   "co_cluster": 0.13821138211382114,
+   "design": "or1200",
+   "flow": 0.06620209059233449,
+   "heap_rate": 0.047619047619047616,
+   "key": "in:dcpu_dat_i",
+   "kinds": {
+    "lut": 42
+   },
+   "n": 42,
+   "pairs": 861,
+   "spread": 2.6,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.012096774193548387,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:spr_dat_tt",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.25,
+   "src": "port"
+  },
+  {
+   "any": 0.16374269005847952,
+   "co_cluster": 0.26900584795321636,
+   "design": "or1200",
+   "flow": 0.04093567251461988,
+   "heap_rate": 0.0,
+   "key": "in:du_dsr",
+   "kinds": {
+    "lut": 19
+   },
+   "n": 19,
+   "pairs": 171,
+   "spread": 2.5,
+   "src": "port"
+  },
+  {
+   "any": 0.1165,
+   "co_cluster": 0.0365,
+   "design": "or1200",
+   "flow": 0.00725,
+   "heap_rate": 0.0,
+   "key": "in:icpu_adr_i",
+   "kinds": {
+    "lut": 96
+   },
+   "n": 96,
+   "pairs": 4000,
+   "spread": 3.2,
+   "src": "port"
+  },
+  {
+   "any": 0.0020161290322580645,
+   "co_cluster": 0.012096774193548387,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:icpu_adr_o",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 6.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0625,
+   "co_cluster": 0.024193548387096774,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:ex_insn",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 6.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.036290322580645164,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:id_pc",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 5.0,
+   "src": "port"
+  },
+  {
+   "any": 1.0,
+   "co_cluster": 0.036290322580645164,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:spr_dat_npc",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 5.0,
+   "src": "port"
+  },
+  {
+   "any": 0.006048387096774193,
+   "co_cluster": 0.0,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.3125,
+   "key": "out:rf_dataw",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.02564102564102564,
+   "co_cluster": 0.24358974358974358,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:du_except",
+   "kinds": {
+    "adder": 1,
+    "lut": 12
+   },
+   "n": 13,
+   "pairs": 78,
+   "spread": 2.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0020161290322580645,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:du_dat_cpu",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.75,
+   "src": "port"
+  },
+  {
+   "any": 0.3064516129032258,
+   "co_cluster": 0.5020161290322581,
+   "design": "or1200",
+   "flow": 0.12298387096774194,
+   "heap_rate": 0.0,
+   "key": "out:dcpu_adr_o",
+   "kinds": {
+    "adder": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 0.5,
+   "src": "port"
+  },
+  {
+   "any": 0.27419354838709675,
+   "co_cluster": 0.14516129032258066,
+   "design": "or1200",
+   "flow": 0.04838709677419355,
+   "heap_rate": 0.03125,
+   "key": "out:dcpu_dat_o",
+   "kinds": {
+    "ff": 8,
+    "lut": 24
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 3.0,
+   "src": "port"
+  },
+  {
+   "any": 0.23790322580645162,
+   "co_cluster": 0.09475806451612903,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:spr_addr",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 3.75,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.004032258064516129,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:spr_dat_cpu",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 7.5,
+   "src": "port"
+  },
+  {
+   "any": 0.5161290322580645,
+   "co_cluster": 0.24193548387096775,
+   "design": "or1200",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:spr_cs",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.3204301075268817,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_raygentop_hierarchy_no_mem/rgStat",
+   "kinds": {
+    "ff": 31
+   },
+   "n": 31,
+   "pairs": 465,
+   "spread": 0.75,
+   "src": "odin"
+  },
+  {
+   "any": 0.5359477124183006,
+   "co_cluster": 0.006535947712418301,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_raygentop_hierarchy_no_mem/tm3_sram_addr",
+   "kinds": {
+    "lut": 18
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 8.5,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03373015873015873,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_raygentop_hierarchy_no_mem/tm3_sram_data_out",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 3.4285714285714284,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.06666666666666667,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_raygentop_hierarchy_no_mem/fbdata",
+   "kinds": {
+    "ff": 10
+   },
+   "n": 10,
+   "pairs": 45,
+   "spread": 7.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.19117647058823528,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "paj_raygentop_hierarchy_no_mem/rgData",
+   "kinds": {
+    "ff": 17
+   },
+   "n": 17,
+   "pairs": 136,
+   "spread": 3.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.7058823529411765,
+   "co_cluster": 0.27450980392156865,
+   "design": "raygentop",
+   "flow": 0.0196078431372549,
+   "heap_rate": 0.0,
+   "key": "in:rgCont",
+   "kinds": {
+    "lut": 18
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.11264367816091954,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:rgCfgData",
+   "kinds": {
+    "lut": 30
+   },
+   "n": 30,
+   "pairs": 435,
+   "spread": 2.6666666666666665,
+   "src": "port"
+  },
+  {
+   "any": 0.03725,
+   "co_cluster": 0.02225,
+   "design": "raygentop",
+   "flow": 0.00325,
+   "heap_rate": 0.0,
+   "key": "in:tm3_sram_data_in",
+   "kinds": {
+    "ff": 63,
+    "lut": 254
+   },
+   "n": 317,
+   "pairs": 4000,
+   "spread": 1.90625,
+   "src": "port"
+  },
+  {
+   "any": 1.0,
+   "co_cluster": 0.24183006535947713,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:rgaddrin",
+   "kinds": {
+    "lut": 18
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 2.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03373015873015873,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:rgdatain",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 3.4285714285714284,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.02620967741935484,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:rgResultData",
+   "kinds": {
+    "lut": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 5.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0625,
+   "co_cluster": 0.3004032258064516,
+   "design": "raygentop",
+   "flow": 0.0625,
+   "heap_rate": 0.0,
+   "key": "out:rgStat",
+   "kinds": {
+    "ff": 31,
+    "lut": 1
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03373015873015873,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:tm3_sram_data_out",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 3.4285714285714284,
+   "src": "port"
+  },
+  {
+   "any": 0.47953216374269003,
+   "co_cluster": 0.005847953216374269,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:tm3_sram_addr",
+   "kinds": {
+    "adder": 1,
+    "lut": 18
+   },
+   "n": 19,
+   "pairs": 171,
+   "spread": 9.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.05009920634920635,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:fbdata",
+   "kinds": {
+    "ff": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 3.857142857142857,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.10887096774193548,
+   "design": "raygentop",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:rgData",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "sha",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "sha1/text_o",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 8.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.06075,
+   "co_cluster": 0.0135,
+   "design": "sha",
+   "flow": 0.00325,
+   "heap_rate": 0.0,
+   "key": "in:text_i",
+   "kinds": {
+    "lut": 512
+   },
+   "n": 512,
+   "pairs": 4000,
+   "spread": 1.1153846153846154,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "sha",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:text_o",
+   "kinds": {
+    "ff": 32
+   },
+   "n": 32,
+   "pairs": 496,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 1.0,
+   "key": "sv_chip0_hierarchy_no_mem/tm3_vidout_red",
+   "kinds": {
+    "ff": 9
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 9.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03571428571428571,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 1.0,
+   "key": "sv_chip0_hierarchy_no_mem/tm3_vidout_green",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 7.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.02702702702702703,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "sv_chip0_hierarchy_no_mem/offchip_sram_data_out",
+   "kinds": {
+    "ff": 38
+   },
+   "n": 38,
+   "pairs": 703,
+   "spread": 7.25,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_2_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.09113300492610837,
+   "co_cluster": 0.2536945812807882,
+   "design": "stereovision0",
+   "flow": 0.05665024630541872,
+   "heap_rate": 0.0,
+   "key": "in:x_in",
+   "kinds": {
+    "adder": 13,
+    "ff": 16
+   },
+   "n": 29,
+   "pairs": 406,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.12351190476190477,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:offchip_sram_data_in",
+   "kinds": {
+    "lut": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 1.1428571428571428,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_5_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_6_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0960591133004926,
+   "co_cluster": 0.29310344827586204,
+   "design": "stereovision0",
+   "flow": 0.05665024630541872,
+   "heap_rate": 0.0,
+   "key": "in:y_in",
+   "kinds": {
+    "adder": 13,
+    "ff": 16
+   },
+   "n": 29,
+   "pairs": 406,
+   "spread": 1.6666666666666667,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.25,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:vidin_rgb_reg_fifo_left",
+   "kinds": {
+    "lut": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_3_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_4_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_1_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.25,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:vidin_rgb_reg_fifo_right",
+   "kinds": {
+    "lut": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s1_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.07142857142857142,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s2_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 6.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.75,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s4_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s1_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03571428571428571,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s2_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 7.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.75,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:v_d_reg_s4_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 1.0,
+   "key": "out:tm3_vidout_red",
+   "kinds": {
+    "ff": 9
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 9.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.027777777777777776,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.8888888888888888,
+   "key": "out:tm3_vidout_green",
+   "kinds": {
+    "adder": 1,
+    "ff": 8
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.027777777777777776,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.8888888888888888,
+   "key": "out:tm3_vidout_blue",
+   "kinds": {
+    "adder": 1,
+    "ff": 8
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.027777777777777776,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:depth_out",
+   "kinds": {
+    "adder": 1,
+    "ff": 8
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.1437908496732026,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_addr",
+   "kinds": {
+    "adder": 1,
+    "ff": 17
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 3.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.01488095238095238,
+   "design": "stereovision0",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_data_out",
+   "kinds": {
+    "ff": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 6.285714285714286,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_3_2to1",
+   "kinds": {
+    "lut": 16
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_4_2to1",
+   "kinds": {
+    "lut": 12
+   },
+   "n": 12,
+   "pairs": 66,
+   "spread": 6.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.027777777777777776,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_5_2to1",
+   "kinds": {
+    "lut": 9
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.4175824175824176,
+   "co_cluster": 0.3516483516483517,
+   "design": "stereovision1",
+   "flow": 0.25274725274725274,
+   "heap_rate": 0.0,
+   "key": "in:offchip_sram_data_in",
+   "kinds": {
+    "lut": 14
+   },
+   "n": 14,
+   "pairs": 91,
+   "spread": 1.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:bus_word_6_2to1",
+   "kinds": {
+    "lut": 9
+   },
+   "n": 9,
+   "pairs": 36,
+   "spread": 9.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_1_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_2_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_3_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_4_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_5_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_6_1to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.058333333333333334,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_addr",
+   "kinds": {
+    "adder": 1,
+    "ff": 15
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 5.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.030257936507936508,
+   "design": "stereovision1",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_data_out",
+   "kinds": {
+    "ff": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 6.428571428571429,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s1_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.05575,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:offchip_sram_data_in",
+   "kinds": {
+    "lut": 128
+   },
+   "n": 128,
+   "pairs": 4000,
+   "spread": 1.6153846153846154,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s4_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s4_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.08771929824561403,
+   "co_cluster": 0.10526315789473684,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:vidin_addr_reg",
+   "kinds": {
+    "ff": 19
+   },
+   "n": 19,
+   "pairs": 171,
+   "spread": 6.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s1_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s2_right_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:vidin_rgb_reg",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:v_d_reg_s2_left_2to0",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.03333333333333333,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_3_2to1",
+   "kinds": {
+    "ff": 16
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 6.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_4_2to1",
+   "kinds": {
+    "ff": 16
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_5_2to1",
+   "kinds": {
+    "ff": 15
+   },
+   "n": 15,
+   "pairs": 105,
+   "spread": 7.5,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:bus_word_6_2to1",
+   "kinds": {
+    "ff": 16
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:vidin_rgb_reg_fifo_left",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.0,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:vidin_rgb_reg_fifo_right",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 8.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.1,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_addr",
+   "kinds": {
+    "adder": 1,
+    "ff": 15
+   },
+   "n": 16,
+   "pairs": 120,
+   "spread": 4.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.07291666666666667,
+   "design": "stereovision2",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "out:offchip_sram_data_out",
+   "kinds": {
+    "ff": 64
+   },
+   "n": 64,
+   "pairs": 2016,
+   "spread": 2.2857142857142856,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.4338235294117647,
+   "design": "stereovision3",
+   "flow": 0.0,
+   "heap_rate": 0.058823529411764705,
+   "key": "sv_chip3_hierarchy_no_mem/vidin_addr_reg",
+   "kinds": {
+    "ff": 17
+   },
+   "n": 17,
+   "pairs": 136,
+   "spread": 2.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 1.0,
+   "design": "stereovision3",
+   "flow": 0.0,
+   "heap_rate": 0.125,
+   "key": "sv_chip3_hierarchy_no_mem/vidin_rgb_reg",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 1.0,
+   "src": "odin"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.75,
+   "design": "stereovision3",
+   "flow": 0.0,
+   "heap_rate": 0.0,
+   "key": "in:tm3_vidin_vpo",
+   "kinds": {
+    "lut": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 2.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 1.0,
+   "design": "stereovision3",
+   "flow": 0.0,
+   "heap_rate": 0.125,
+   "key": "out:vidin_rgb_reg",
+   "kinds": {
+    "ff": 8
+   },
+   "n": 8,
+   "pairs": 28,
+   "spread": 1.0,
+   "src": "port"
+  },
+  {
+   "any": 0.0,
+   "co_cluster": 0.38562091503267976,
+   "design": "stereovision3",
+   "flow": 0.0,
+   "heap_rate": 0.05555555555555555,
+   "key": "out:vidin_addr_reg",
+   "kinds": {
+    "adder": 1,
+    "ff": 17
+   },
+   "n": 18,
+   "pairs": 153,
+   "spread": 2.5,
+   "src": "port"
+  }
+ ],
+ "p9": {
+  "after_hard": {
+   "hi90": 0.12792434046789447,
+   "lo90": 0.0,
+   "median": 0.07383100902378999,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.0193756727664155,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.15458937198067632,
+    "diffeq2": 0.22429906542056074,
+    "mkDelayWorker32B": 0.12777777777777777,
+    "mkPktMerge": 0.1004566210045662,
+    "mkSMAdapter4B": 0.12792434046789447,
+    "or1200": 0.018136160714285716,
+    "raygentop": 0.07383100902378999,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": 0.1290596476331989,
+    "stereovision2": 0.21449966718437985,
+    "stereovision3": 0.0
+   }
+  },
+  "after_hard_in_heap": {
+   "hi90": 0.15550225389863548,
+   "lo90": 0.0038910505836575876,
+   "median": 0.02256944444444444,
+   "n": 10,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.024305555555555552,
+    "diffeq2": 0.020833333333333332,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.007782101167315175,
+    "or1200": 0.7384615384615385,
+    "raygentop": 0.1814814814814815,
+    "sha": null,
+    "stereovision0": null,
+    "stereovision1": 0.12952302631578946,
+    "stereovision2": 0.1590380139643134,
+    "stereovision3": null
+   }
+  },
+  "chain_atoms": {
+   "hi90": 0.038751345532831,
+   "lo90": 0.0010613457864572277,
+   "median": 0.015475926336809408,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.31070081397657334,
+    "boundtop": 0.038751345532831,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.10628019323671496,
+    "diffeq2": 0.2336448598130841,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.015928322548531607,
+    "or1200": 0.04157366071428571,
+    "raygentop": 0.017227235438884332,
+    "sha": 0.015236567762630313,
+    "stereovision0": 0.005475929717632493,
+    "stereovision1": 0.0010613457864572277,
+    "stereovision2": 0.015475926336809408,
+    "stereovision3": 0.0
+   }
+  },
+  "chain_count": {
+   "hi90": 4.0,
+   "lo90": 1.0,
+   "median": 2.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 262.0,
+    "boundtop": 2.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 2.0,
+    "diffeq2": 2.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 2.0,
+    "or1200": 4.0,
+    "raygentop": 4.0,
+    "sha": 1.0,
+    "stereovision0": 11.0,
+    "stereovision1": 1.0,
+    "stereovision2": 18.0,
+    "stereovision3": 0.0
+   }
+  },
+  "chain_in_heap": {
+   "hi90": 0.3508771929824561,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 11,
+   "per_design": {
+    "blob_merge": 0.013205537806176783,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": 0.7272727272727272,
+    "diffeq2": 0.49,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.3508771929824561,
+    "stereovision0": 0.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": null
+   }
+  },
+  "collector_count": {
+   "hi90": 40.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 40.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 188.0,
+    "sha": 0.0,
+    "stereovision0": 94.0,
+    "stereovision1": 51.0,
+    "stereovision2": 82.0,
+    "stereovision3": 3.0
+   }
+  },
+  "collector_ff": {
+   "hi90": 0.005265523662749631,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 0.11267605633802817,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.19873150105708245,
+    "sha": 0.0,
+    "stereovision0": 0.008203875021818817,
+    "stereovision1": 0.004944255937954435,
+    "stereovision2": 0.005265523662749631,
+    "stereovision3": 0.025000000000000005
+   }
+  },
+  "collector_in_heap": {
+   "hi90": 0.3333333333333333,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 6,
+   "per_design": {
+    "blob_merge": null,
+    "boundtop": 0.0,
+    "ch_intrinsics": null,
+    "diffeq1": null,
+    "diffeq2": null,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": null,
+    "or1200": null,
+    "raygentop": 0.014184397163120567,
+    "sha": null,
+    "stereovision0": 0.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.6666666666666666
+   }
+  },
+  "deep_atoms": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 1137.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "deep_in_heap": {
+   "hi90": 0.0079155672823219,
+   "lo90": 0.0079155672823219,
+   "median": 0.0079155672823219,
+   "n": 1,
+   "per_design": {
+    "blob_merge": 0.0079155672823219,
+    "boundtop": null,
+    "ch_intrinsics": null,
+    "diffeq1": null,
+    "diffeq2": null,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": null,
+    "mkSMAdapter4B": null,
+    "or1200": null,
+    "raygentop": null,
+    "sha": null,
+    "stereovision0": null,
+    "stereovision1": null,
+    "stereovision2": null,
+    "stereovision3": null
+   }
+  },
+  "deep_pack_heap": {
+   "hi90": 0.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 56.0,
+    "boundtop": 0.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 0.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 0.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "fork_all": {
+   "hi90": 0.3157894736842105,
+   "lo90": 0.0468384074941452,
+   "median": 0.20000000000000004,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.25333333333333335,
+    "boundtop": 0.20000000000000004,
+    "ch_intrinsics": null,
+    "diffeq1": 0.03225806451612903,
+    "diffeq2": 0.03225806451612903,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": 0.3157894736842105,
+    "mkSMAdapter4B": 0.5,
+    "or1200": 0.13013698630136986,
+    "raygentop": 0.375,
+    "sha": 0.05660377358490567,
+    "stereovision0": 0.3106060606060606,
+    "stereovision1": 1.0,
+    "stereovision2": 0.0468384074941452,
+    "stereovision3": 0.04545454545454545
+   }
+  },
+  "fork_atoms": {
+   "hi90": 132.0,
+   "lo90": 12.0,
+   "median": 40.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 150.0,
+    "boundtop": 5.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 62.0,
+    "diffeq2": 62.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 19.0,
+    "mkSMAdapter4B": 8.0,
+    "or1200": 146.0,
+    "raygentop": 40.0,
+    "sha": 159.0,
+    "stereovision0": 132.0,
+    "stereovision1": 12.0,
+    "stereovision2": 2562.0,
+    "stereovision3": 22.0
+   }
+  },
+  "fork_none": {
+   "hi90": 0.25757575757575757,
+   "lo90": 0.03225806451612903,
+   "median": 0.05031446540880504,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.18000000000000002,
+    "boundtop": 0.6,
+    "ch_intrinsics": null,
+    "diffeq1": 0.03225806451612903,
+    "diffeq2": 0.03225806451612903,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.125,
+    "or1200": 0.4383561643835616,
+    "raygentop": 0.025000000000000005,
+    "sha": 0.05031446540880504,
+    "stereovision0": 0.25757575757575757,
+    "stereovision1": 0.0,
+    "stereovision2": 0.04215456674473068,
+    "stereovision3": 0.45454545454545453
+   }
+  },
+  "fork_split": {
+   "hi90": 0.8930817610062892,
+   "lo90": 0.4315068493150685,
+   "median": 0.5666666666666667,
+   "n": 13,
+   "per_design": {
+    "blob_merge": 0.5666666666666667,
+    "boundtop": 0.20000000000000004,
+    "ch_intrinsics": null,
+    "diffeq1": 0.9354838709677419,
+    "diffeq2": 0.9354838709677419,
+    "mkDelayWorker32B": null,
+    "mkPktMerge": 0.6842105263157895,
+    "mkSMAdapter4B": 0.375,
+    "or1200": 0.4315068493150685,
+    "raygentop": 0.6,
+    "sha": 0.8930817610062892,
+    "stereovision0": 0.4318181818181818,
+    "stereovision1": 0.0,
+    "stereovision2": 0.9110070257611241,
+    "stereovision3": 0.5
+   }
+  },
+  "hf_critical": {
+   "hi90": 1.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 12.0,
+    "mkSMAdapter4B": 1.0,
+    "or1200": 8.0,
+    "raygentop": 0.0,
+    "sha": 0.0,
+    "stereovision0": 3.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 0.0
+   }
+  },
+  "hf_nets": {
+   "hi90": 22.0,
+   "lo90": 7.0,
+   "median": 17.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 283.0,
+    "boundtop": 10.0,
+    "ch_intrinsics": 5.0,
+    "diffeq1": 4.0,
+    "diffeq2": 3.0,
+    "mkDelayWorker32B": 7.0,
+    "mkPktMerge": 17.0,
+    "mkSMAdapter4B": 28.0,
+    "or1200": 60.0,
+    "raygentop": 17.0,
+    "sha": 17.0,
+    "stereovision0": 20.0,
+    "stereovision1": 26.0,
+    "stereovision2": 22.0,
+    "stereovision3": 3.0
+   }
+  },
+  "logic_atoms": {
+   "hi90": 3584.0,
+   "lo90": 540.0,
+   "median": 2009.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 10074.0,
+    "boundtop": 929.0,
+    "ch_intrinsics": 179.0,
+    "diffeq1": 621.0,
+    "diffeq2": 428.0,
+    "mkDelayWorker32B": 540.0,
+    "mkPktMerge": 219.0,
+    "mkSMAdapter4B": 2009.0,
+    "or1200": 3584.0,
+    "raygentop": 2438.0,
+    "sha": 2494.0,
+    "stereovision0": 21001.0,
+    "stereovision1": 18844.0,
+    "stereovision2": 36056.0,
+    "stereovision3": 319.0
+   }
+  },
+  "max_level": {
+   "hi90": 5.0,
+   "lo90": 3.0,
+   "median": 5.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 22.0,
+    "boundtop": 3.0,
+    "ch_intrinsics": 3.0,
+    "diffeq1": 5.0,
+    "diffeq2": 5.0,
+    "mkDelayWorker32B": 5.0,
+    "mkPktMerge": 4.0,
+    "mkSMAdapter4B": 5.0,
+    "or1200": 7.0,
+    "raygentop": 5.0,
+    "sha": 3.0,
+    "stereovision0": 5.0,
+    "stereovision1": 3.0,
+    "stereovision2": 3.0,
+    "stereovision3": 4.0
+   }
+  },
+  "mid_critical": {
+   "hi90": 8.0,
+   "lo90": 0.0,
+   "median": 1.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 14.0,
+    "boundtop": 1.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 2.0,
+    "or1200": 86.0,
+    "raygentop": 6.0,
+    "sha": 9.0,
+    "stereovision0": 32.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 8.0
+   }
+  },
+  "mid_nets": {
+   "hi90": 80.0,
+   "lo90": 2.0,
+   "median": 25.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 158.0,
+    "boundtop": 25.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 2.0,
+    "diffeq2": 2.0,
+    "mkDelayWorker32B": 1.0,
+    "mkPktMerge": 2.0,
+    "mkSMAdapter4B": 44.0,
+    "or1200": 157.0,
+    "raygentop": 80.0,
+    "sha": 56.0,
+    "stereovision0": 107.0,
+    "stereovision1": 86.0,
+    "stereovision2": 13.0,
+    "stereovision3": 11.0
+   }
+  },
+  "other_ff_in_heap": {
+   "hi90": 0.05364995602462621,
+   "lo90": 0.006687785990848293,
+   "median": 0.02797323176898414,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 0.008695652173913044,
+    "boundtop": 0.003174603174603175,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.16580310880829016,
+    "diffeq2": 0.3229166666666667,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.01773604590505999,
+    "or1200": 0.07490079365079365,
+    "raygentop": 0.05364995602462621,
+    "sha": 0.02799552071668533,
+    "stereovision0": 0.006687785990848293,
+    "stereovision1": 0.03302805923616524,
+    "stereovision2": 0.02797323176898414,
+    "stereovision3": 0.12535612535612536
+   }
+  },
+  "sibling_nets": {
+   "hi90": 2.0,
+   "lo90": 0.0,
+   "median": 0.0,
+   "n": 15,
+   "per_design": {
+    "blob_merge": 4.0,
+    "boundtop": 2.0,
+    "ch_intrinsics": 0.0,
+    "diffeq1": 0.0,
+    "diffeq2": 0.0,
+    "mkDelayWorker32B": 0.0,
+    "mkPktMerge": 0.0,
+    "mkSMAdapter4B": 0.0,
+    "or1200": 5.0,
+    "raygentop": 4.0,
+    "sha": 0.0,
+    "stereovision0": 3.0,
+    "stereovision1": 0.0,
+    "stereovision2": 0.0,
+    "stereovision3": 1.0
+   }
+  }
+ },
+ "p9_mid_driver_kinds": {
+  "adder": 13,
+  "equality": 3,
+  "mux": 16,
+  "other": 2,
+  "reg": 102,
+  "relational": 20
+ },
+ "runs": 45
+}
