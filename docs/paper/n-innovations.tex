@@ -38,9 +38,32 @@ Each subsection gives the idea in plain English first and the technical descript
 
 \pp{Plain English.} Real circuits get more connected to the rest of the chip as a block grows, at a rate that Rent's rule describes by one number, the Rent exponent. A synthetic design made from identical blocks with a fixed handful of wires between them has hardly any such growth. If the packer's gap is measured only on such designs, we cannot tell how big the gap is on real logic. We measured it.
 
-\pp{Technical.} The exponent is the Mimir metric \code{rent.p} (recursive bisection with METIS, three partitioner seeds), read from the Mimir main store without modification and split by design set by \code{scripts/rent\_split.py} (output \code{data/analysis/rent-split.json}). The synthetic designs have fixed numbers of external inputs and outputs, and their nets stay inside blocks or follow the block pattern.
+\pp{Technical.} The exponent is the Mimir metric \code{rent.p} (recursive bisection with METIS, three partitioner seeds), read from the Mimir main store without modification and split by design set by \code{scripts/rent\_split.py} (output \code{data/analysis/rent-split.json}). The synthetic designs have a fixed number of external inputs and outputs per block, and their nets stay inside blocks or follow the block pattern.
 
-\textsc{[Rent table: step 3]}
+\begin{table}[t]
+\caption{Rent exponent \code{rent.p} by design set (three partitioner seeds per design; each seed is one run). Negative runs have a fitted exponent below 0; low-confidence runs are flagged by the measurer (a fit on fewer than five points); the last column is the mean over the runs that are not flagged. Source: \code{data/analysis/rent-split.json}, from the Mimir main store.}
+\label{tab:rent}
+\centering
+\footnotesize\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Set & n & Mean $p$ & Range & Neg. & Low & Conf. \\
+\midrule
+Real VTR & 12 & 0.562 & 0.44 to 0.70 & 0/36 & 9/36 & 0.562 \\
+MCNC & 20 & 0.586 & 0.32 to 0.75 & 0/60 & 36/60 & 0.608 \\
+Loki LUT & 10 & 0.617 & 0.44 to 0.76 & 0/30 & 21/30 & 0.468 \\
+Loki gate & 22 & 0.606 & 0.37 to 0.72 & 0/66 & 48/66 & 0.583 \\
+\midrule
+Synth. r5 & 47 & 0.126 & $-$0.55 to 0.56 & 39/141 & 45/141 & 0.203 \\
+Synth. n5 & 48 & 0.102 & $-$0.54 to 0.56 & 48/144 & 48/144 & 0.184 \\
+Synth. r6 & 90 & 0.038 & $-$0.52 to 0.48 & 105/270 & 90/270 & 0.101 \\
+\midrule
+Synth. all & 185 & 0.077 & $-$0.55 to 0.56 & 192/555 & 183/555 & 0.149 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\pp{Result.} Real designs have a Rent exponent of 0.32 to 0.76 whichever set they come from (mean 0.56 for the 12 VTR Verilog designs of this paper that are large enough to measure, 0.59 for MCNC, 0.61 to 0.62 for the Loki designs). The synthetic designs have a mean of 0.04 to 0.13, and 192 of their 555 runs (64 of 185 designs) give a negative exponent, which no real design in the table does. Restricting to the runs the measurer does not flag raises the synthetic mean only to 0.15 against 0.56 for the real designs, so the gap is not an artefact of the low-confidence fits (every one of the 144 n5 runs is flagged, which is itself a statement about how small their curves are). The reading is that the synthetic designs have almost no Rent growth, because each block has the same few external wires whatever the size of the region around it, so their regular structure can hide the true gap: a packer is not tested on the property of real logic that makes grouping hard, the way terminals grow with region size. This is the reason for building the second yardstick from real designs (Section~\ref{sec:i-yardstick-real}). It is a limit of the first yardstick and not a claim about its numbers: those stand as the gap on regular designs (Section~\ref{sec:e-room}).
 
 \subsection{A leak found by the yardstick}
 \label{sec:i-leak}
