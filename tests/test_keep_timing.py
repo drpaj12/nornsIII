@@ -134,5 +134,28 @@ class KeepTiming(unittest.TestCase):
         self.assertEqual(nl.npaths(200), 1000)
 
 
+class TopOfBlif(unittest.TestCase):
+    """The attribution needs Odin III's top module, not the design (file) name."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.t = Path(self._tmp.name)
+        self.addCleanup(self._tmp.cleanup)
+        self.blif = self.t / "diffeq1.blif"
+        self.blif.write_text(".model x\n.end\n")
+        self.names = self.t / "diffeq1.blif.names"
+        self.names.write_text("# odin3-names 2\nO\tdiffeq_paj_convert\tnet\th1\nO\tdiffeq_paj_convert\tnet\th2\nO\tsub\tnet\th3\n")
+
+    def test_from_odin_log(self):
+        (self.t / "odin.log").write_text("stats: design: modules 2, top diffeq_paj_convert\n")
+        self.assertEqual(nl.top_of_blif(self.blif, self.names, "diffeq1"), "diffeq_paj_convert")
+
+    def test_from_name_map(self):
+        self.assertEqual(nl.top_of_blif(self.blif, self.names, "diffeq1"), "diffeq_paj_convert")
+
+    def test_design_name_last(self):
+        self.assertEqual(nl.top_of_blif(self.blif, None, "diffeq1"), "diffeq1")
+
+
 if __name__ == "__main__":
     unittest.main()
