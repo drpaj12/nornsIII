@@ -32,6 +32,35 @@ For the Norns packer on the 63 HDL designs, WL is still 1.099 [1.057, 1.147] of 
 These HDL designs include the \code{dp} designs whose word file is the leak (Section~\ref{sec:e-leak}), so H20 describes the packer with the hint; it does not say how much room remains with realistic words.
 \pp{Verdict.} \textsc{useful} (validity, H25/H19, H32, and H20 for WL). Limits of the yardstick are in Section~\ref{sec:limits}.
 
+\subsection{How far is the packer from a known optimum on real designs? (H38, round 9)}
+\label{sec:e-real}
+
+\pp{Hypothesis (H38).} On real designs made into known-optimum yardsticks (Section~\ref{sec:i-yardstick-real}), the standard packer is worse than the known clustering by at least 5\% in CLBs, wire or delay. The rule is that of the synthetic yardstick: \emph{room} if the geometric mean of stock over known is at least 1.05 and the 90\% bootstrap interval of the mean log ratio excludes 0; \emph{no room} if the mean is at most 1.02 or the interval lies inside [0.98, 1.02]; otherwise inconclusive. With fewer than 12 designs no pooled claim is made.
+\pp{Experiment (pilot).} Three designs (ch\_intrinsics, diffeq1, mkPktMerge: 12 to 42 clusters, with memory slices and multipliers), each built with the own and the foreign clustering, three shuffles, three VPR seeds, arms stock and known (108 runs), plus 18 stock runs on the unshuffled \emph{ordered} files. Flow flags and architecture as the synthetic yardstick (VTR commit \code{3c9a4d23b2}~\cite{rose2012vtr,murray2020vtr8}). Table~\ref{tab:r9pilot}.
+\pp{Result.} The known arm needs 1.02 to 1.11 times the exact CLB count $K$ and reproduces 40\% to 80\% of the clusters; the standard packer needs 1.06 to 1.19 times $K$. The room is small on two designs and larger on the smallest: stock over known is 1.13 in CLBs and 1.09 to 1.14 in wire on ch\_intrinsics, between 1.007 and 1.075 on the other two, and the delay ratio is between 0.98 and 1.07 (room only on ch\_intrinsics with the own clustering). No design shows the 1.49 of the synthetic meshes and trees. The ordered control has stock purity within 0.06 of the shuffled arm on all six builds, higher by at most 0.04 and lower once (0.80 against 0.85 on ch\_intrinsics own), so file order gives the packer no visible advantage. The wire gap is larger on the foreign build than on the own build for all three designs (by 0.05, 0.03 and 0.01), which is the direction a small advantage to VPR on its own clustering would take, but three designs cannot separate self-bias from design. % data/r9/pilot-summary.json
+\pp{Verdict.} \textsc{inconclusive} (3 designs; the rule needs 12). The row is the pilot and not the answer. The comparison with the synthetic yardstick is a pointer only: on these three designs the artificial regularity did not hide a larger gap.
+
+\begin{table}[t]
+\caption{H38 pilot: stock over known (geometric mean over 3 shuffles $\times$ 3 seeds) and CLB counts against the exact bound $K$. Status by the rule of the text: R room, N no room, I inconclusive. Source: \code{data/r9/pilot-summary.json}.}
+\label{tab:r9pilot}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Design & C & $K$ & stock/$K$ & known/$K$ & CLB & WL & CPD \\
+\midrule
+ch\_intrinsics & own & 12 & 1.19 & 1.06 & 1.13\,R & 1.09\,R & 1.06\,R \\
+ch\_intrinsics & foreign & 12 & 1.19 & 1.06 & 1.13\,R & 1.14\,R & 0.98\,N \\
+diffeq1 & own & 42 & 1.14 & 1.11 & 1.02\,I & 1.01\,N & 1.02\,N \\
+diffeq1 & foreign & 41 & 1.11 & 1.10 & 1.02\,N & 1.03\,I & 1.00\,N \\
+mkPktMerge & own & 22 & 1.06 & 1.03 & 1.03\,I & 1.01\,N & 0.99\,N \\
+mkPktMerge & foreign & 22 & 1.09 & 1.02 & 1.07\,R & 1.02\,N & 1.02\,N \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\pp{Full set.} \todo{round 9 full: 15 Verilog designs and 20 MCNC designs, own and foreign, table to be filled after the full-set pull request merges; the verdict of H38 is then re-stated on that table}
+
 \subsection{Does the packer pay when the words equal the blocks? The leak (H33, H36, H35, H34, H22, H23)}
 \label{sec:e-leak}
 
