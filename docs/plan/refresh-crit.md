@@ -142,8 +142,8 @@ Method in `refresh_p1.py` (the P1 definition of `heap-picking.md`: a heap pick =
 | k = 1 | 88% [69%, 91%] | +3.6 points [0.0, +8.0] | 15.8% [8.4%, 23.1%] |
 | k = 8 | 79% [73%, 93%] | +0.5 points [-1.4, +2.9] | 15.8% [8.3%, 23.0%] |
 
-The mechanism moved, but not the way the hypothesis needs: the refresh doubles the share of picks made on crit >= 0.90 (the criticality computed with the intra-cluster estimate rises as the packed
-part of the design looks faster, so more picks are classed critical), while the share of those picks that leave the post-route heap does not fall (k = 1: up 3.6 points, interval touching 0; k = 8: no change).
+The mechanism moved, but not the way the hypothesis needs: the refresh doubles the share of picks made on crit >= 0.90 (not diagnosed; a candidate reason is that the shorter intra-cluster delays of packed
+connections raise the relative criticality of the remaining ones), while the share of those picks that leave the post-route heap does not fall (k = 1: up 3.6 points, interval touching 0; k = 8: no change).
 So the packer sees a moving heap now, but the picks it makes from it are no better matched to the post-route heap. This is the likely reason CPD does not move.
 
 ## Not met / limits
