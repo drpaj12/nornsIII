@@ -200,3 +200,41 @@ ratios may fall below 1.
 Pilot designs have 12 to 30 CLBs of logic (stock packing), so each flow is about 5 to 60 s (mkPktMerge has 459 memory slices
 and a larger grid). 126 runs x at most 60 s is under 2.5 h of VPR under the lock; the generator, the METIS checks and the Rent
 measurement are minutes.
+
+## Entry 2026-10-29 (a): changes found necessary while writing the generator (dated; written before any D' or D'' was run in VPR)
+
+The plan above is kept; the following refine Stage 1 and the reports. No VPR arm run of any D' or D'' existed when this entry was
+written (VPR was run only on cleaned D, on single clusters, and on written files to test the generator). No rule of Stage 2 changed.
+
+1. D is the generator's clean-up of the E10 BLIF (constants folded into LUTs, buffer LUTs absorbed, dangling logic swept). Check
+   per design: `vpr --pack` on the cleaned file reports the same flip-flop and adder counts and at most two more LUT atoms than
+   the cleaned file has, the extra ones being the constant generators `gnd` and `vcc`, which VPR instantiates as LUT atoms. Each is
+   a cell of weight 1 (kind K) placed in a cluster, so the count stays exact; the bound still holds if VPR pairs the two in one fle
+   (10K - 1 > 10(K-1)). A primary output driven by a constant is kept as `.names gnd o` (a buffer VPR absorbs).
+2. Pin limits. C respects what VPR's default flow forms, not the raw architecture: at most 32 external input nets (0.8 of 40) and
+   12 external output nets (0.6 of 20) per cluster; a carry-chain macro keeps its own pins. Reason: a C that needs 33 inputs cannot
+   be formed by the stock flow, so stock/known would measure the flag, not the packer.
+3. Step A also (i) keeps one logic element free per cluster for a dummy (capacity 9 for real cells, 10 only where a single vertex
+   needs it), because the strict margin of Step C needs at least one all-internal net per cell and only a dummy can supply it, and (ii)
+   merges clusters that fit together (VPR leaves tail clusters of one to four cells). K can still exceed VPR's cluster count.
+4. Step C: when a cell already has six real inputs and no spare slot, one input that is a pad or hard-block net (constant-cut, with
+   other readers) is replaced by a dummy output. Count reported as `rewired_const_cut`. Inter-cluster logic nets are never rewired.
+   A cell that still cannot be anchored is counted as `unmet`. Constant-generator cells have no nets; a swap with one is a tie by
+   construction and is counted apart (`swaps_le_0_with_const_cell`).
+5. Carry chains are cut into segments of at most 12 adders (not 20): a segment then needs at most 24 input nets and 12 sumout nets,
+   which VPR's default flow can form; a 20-adder segment (40 inputs, 20 outputs) cannot be formed by it. Segments are of even length
+   except the last; one carry net is removed per boundary and its count is reported (`carry_links_cut`). Segments are the same
+   in the own and the foreign construction; the cluster of a segment in `own` is the cluster of its first adder in VPR's packing.
+6. Foreign C0 = the lowest cut over 40 METIS seeds (1001 to 1040), each followed by pair-swap descent, then Step A. The independent
+   check uses seeds 1 to 100 (disjoint from the construction's). Reason: a single METIS run was beaten by a local search from other
+   METIS runs on the first design tried, so it was not a fair "foreign optimum".
+7. Legality of C. Added: VPR itself packs every cluster of C alone (stock binary, and the Norns binary with all atoms in one
+   affinity group). C's clusters that give exactly one logic CLB under at least one of the two are "confirmed"; the others are
+   listed per design. Greedy packing can fail on a legal cluster (observed: a cluster of one carry-chain macro plus ordinary cells
+   is split by VPR's order of placement), so "not confirmed" is not "illegal"; it is reported, not hidden. The counting bound on
+   the CLB count holds regardless.
+8. Reports. Besides stock/known (the brief), the summary gives stock/K and known/K for CLBs (K is the exact area bound), cut/cut(C),
+   purity, reproduction rate, and the `ordered` control (shuffle id 0: statements cluster by cluster, names in order of first use).
+   Bootstrap detail: "interval excludes 0 after Holm" is read as the Holm-adjusted two-sided bootstrap p < 0.10.
+9. The independent partitioner check can be vacuous when no METIS partition satisfies the pin limits (diffeq1); the record carries
+   `metis_legal` and the best pin-illegal cut, and the report states which. The perturbation search (`shake`) is always legal.
