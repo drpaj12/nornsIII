@@ -798,6 +798,33 @@ class Strengthen:
     def spare(self, i: int) -> int:
         return 6 - len(self.g.v[i][1].ins)
 
+    def comb(self, i: int) -> bool:
+        """A vertex whose output depends combinationally on its inputs: an adder macro or a LUT cell without its own flip-flop."""
+        kind, o = self.g.v[i]
+        return kind == "m" or (o.kind != "K" and not o.ff)
+
+    def driver_comb(self, net: str) -> bool:
+        d = self.g.drv.get(net)
+        return d is not None and self.comb(d)
+
+    def cyc(self, net: str, u: int) -> bool:
+        """Would adding `net` as an input of vertex u close a combinational cycle? Only a net driven combinationally can: it does
+        iff u reaches that driver through combinational vertices (a flip-flop output, a pad or a hard-block net never does)."""
+        d = self.g.drv.get(net)
+        if d is None or not self.comb(d) or not self.comb(u):
+            return False
+        stack, seen = [u], {u}
+        while stack:
+            x = stack.pop()
+            if x == d:
+                return True
+            for n in self.g.vout(x):
+                for r in self.g.rd.get(n, ()):
+                    if r not in seen and self.comb(r):
+                        seen.add(r)
+                        stack.append(r)
+        return False
+
     def a_and_trouble(self, i: int, c: int) -> tuple:
         """a = nets lying entirely inside cluster c that contain vertex i; trouble = (net, other cluster) for nets whose
         only pin in c is i and whose other pins are all in one other cluster (moving i there would uncut them)."""
@@ -838,7 +865,7 @@ class Strengthen:
                 _a, tr = self.a_and_trouble(u, c)
                 for net, _j in tr:
                     cand = [v for v in cells if v != u and net not in g.v[v][1].ins and self.spare(v) > 0
-                            and g.drv.get(net) != v]
+                            and g.drv.get(net) != v and not self.cyc(net, v)]
                     if cand:
                         v = max(cand, key=lambda x: (self.spare(x), -x))
                         self.add_read(v, net)
@@ -873,11 +900,13 @@ class Strengthen:
             for u in cells:  # fill to six inputs, preferring nets that stay entirely inside the cluster
                 cu = g.v[u][1]
                 while len(cu.ins) < 6:
-                    cand = [x for x in pool if x not in cu.ins and x != cu.out] or [x for x in pool if x not in cu.ins]
-                    if not cand:
-                        raise ValueError("cluster too small to give a LUT six distinct inputs")
-                    cand.sort(key=lambda x: (not self.internal_only(x, c), len(g.rd.get(x, ())), x))
-                    self.add_read(u, cand[0])
+                    cand = [x for x in pool if x not in cu.ins and x != cu.out]
+                    # prefer nets that stay inside, then flip-flop outputs and other non-combinational nets (they cannot close a cycle)
+                    cand.sort(key=lambda x: (not self.internal_only(x, c), self.driver_comb(x), len(g.rd.get(x, ())), x))
+                    pick = next((x for x in cand if not self.cyc(x, u)), None)
+                    if pick is None:
+                        raise ValueError("cluster too small to give a LUT six distinct inputs without a combinational loop")
+                    self.add_read(u, pick)
                     self.stats["filled"] += 1
         self.unmet = []
         for c in sorted(self.members):
@@ -892,6 +921,74 @@ class Strengthen:
 
 # ---------------------------------------------------------------------------------------
 # the cut, margins, independent checks
+
+def comb_back_edges(g: Graph) -> tuple:
+    """(number of back edges of a depth-first search over the combinational vertices, number of those at a dummy cell).
+    A flip-flop cell ends a combinational path (its LUT feeds only its flip-flop). 0 means the netlist has no combinational loop."""
+    def comb(i: int) -> bool:
+        kind, o = g.v[i]
+        return kind == "m" or (o.kind != "K" and not o.ff)
+
+    succ = {}
+    for i in range(len(g.v)):
+        if comb(i):
+            succ[i] = [r for n in g.vout(i) for r in g.rd.get(n, ()) if comb(r)]
+    state, back, back_dummy = {}, 0, 0
+    for root in succ:
+        if root in state:
+            continue
+        state[root] = 1
+        stack = [(root, iter(succ[root]))]
+        while stack:
+            x, it = stack[-1]
+            nxt = next(it, None)
+            if nxt is None:
+                state[x] = 2
+                stack.pop()
+                continue
+            if state.get(nxt) == 1:
+                back += 1
+                if g.v[nxt][0] == "c" and g.v[nxt][1].kind == "D" or g.v[x][0] == "c" and g.v[x][1].kind == "D":
+                    back_dummy += 1
+            elif nxt not in state:
+                state[nxt] = 1
+                stack.append((nxt, iter(succ[nxt])))
+    return back, back_dummy
+
+
+def blif_comb_back_edges(text: str) -> int:
+    """Back edges of a depth-first search over the combinational net graph of a written BLIF (LUTs and adders; latches and hard
+    blocks end a path). Independent of the generator's data structures: it reads the file VPR reads."""
+    succ: dict = collections.defaultdict(list)
+    for ln in logical_lines(text):
+        t = ln.split()
+        if t[0] == ".names" and len(t) > 2:
+            for x in t[1:-1]:
+                succ[x].append(t[-1])
+        elif t[0] == ".subckt" and t[1] == "adder":
+            kv = dict(x.split("=", 1) for x in t[2:])
+            for p in ("a", "b", "cin"):
+                for q in ("sumout", "cout"):
+                    succ[kv[p]].append(kv[q])
+    state, back = {}, 0
+    for root in list(succ):
+        if root in state:
+            continue
+        state[root] = 1
+        stack = [(root, iter(succ.get(root, ())))]
+        while stack:
+            x, it = stack[-1]
+            nxt = next(it, None)
+            if nxt is None:
+                state[x] = 2
+                stack.pop()
+            elif state.get(nxt) == 1:
+                back += 1
+            elif nxt not in state:
+                state[nxt] = 1
+                stack.append((nxt, iter(succ.get(nxt, ()))))
+    return back
+
 
 def cut_of(hn: list, cl) -> int:
     return sum(1 for _n, vs in hn if len({cl[v] for v in vs}) > 1)
@@ -1249,6 +1346,9 @@ def build_from(design: str, cb: Blif, clean_path: Path, cons: str, root: Path, c
     rec["cut_C"] = rec["cut_star_C"] + rec["K0"]
     rec["hstar_nets"] = len(cu.hn)
     rec["strengthen"] = dict(st.stats)
+    rec["comb_back_edges"], rec["comb_back_edges_at_dummy"] = comb_back_edges(g)
+    if rec["comb_back_edges"]:
+        raise ValueError(f"{design} {cons}: {rec['comb_back_edges']} combinational back edges in D'")
     rec["unmet_cells"] = len(set(st.unmet))
     rec["margin"] = cu.margin()
     rec["max_pins"] = max(len(ext_inputs(g, {i for i in range(len(cl)) if cl[i] == c})) for c in range(k))
@@ -1443,6 +1543,10 @@ def run(design: str, cons_list: list, shuffles: list, check: bool, n_metis: int,
         rec["shuffles"] = {}
         for s in [0] + [x for x in shuffles if x != 0]:
             rec["shuffles"][str(s)] = write_shuffled(g, cl, des, root / cons / f"sh{s}", s, design, cons)
+        rec["comb_back_edges_file"] = {sk: blif_comb_back_edges((root / cons / f"sh{sk}" / sv["blif"]).read_text())
+                                       for sk, sv in rec["shuffles"].items()}
+        if any(rec["comb_back_edges_file"].values()):
+            raise ValueError(f"{design} {cons}: combinational loop in a written file {rec['comb_back_edges_file']}")
         # VPR reads the written file: its atom counts must be the generator's (nothing swept, nothing merged)
         sh1 = rec["shuffles"].get("1") or next(iter(rec["shuffles"].values()))
         key = "1" if "1" in rec["shuffles"] else next(iter(rec["shuffles"]))
@@ -1456,7 +1560,7 @@ def run(design: str, cons_list: list, shuffles: list, check: bool, n_metis: int,
                                                              "K0": rec["K0"], "w": g.w}))
         (root / cons / "build.json").write_text(json.dumps(rec, indent=1, sort_keys=True))
         print(design, cons, "K", rec["K"], "K_vpr", rec["K_vpr"], "dummies", rec["dummies"], "cut*", rec["cut_star_C"],
-              "margin", rec["margin"]["min_margin"], "unmet", rec["unmet_cells"], "match", rec["vpr_atoms_match"],
+              "margin", rec["margin"]["min_margin"], "unmet", rec["unmet_cells"], "comb_loops", rec["comb_back_edges"], "match", rec["vpr_atoms_match"],
               "Dprime_match", rec["vpr_check_dprime"]["match"], flush=True)
     return 0
 

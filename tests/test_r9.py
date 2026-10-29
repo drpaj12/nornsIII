@@ -14,24 +14,29 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import r9build as rb  # noqa: E402
 
 
-def toy_blif(n: int = 34, seed: int = 5) -> str:
+def toy_blif(n: int = 34, seed: int = 5, comb: bool = False) -> str:
+    """comb=True: every second LUT has no flip-flop (its output is combinational), so the fill step could close loops."""
     rnd = random.Random(seed)
     pis = [f"p{i}" for i in range(12)]
-    out = [".model toy", ".inputs clk " + " ".join(pis), ".outputs " + " ".join(f"q{i}" for i in range(n - 4, n))]
+    outs = [f"l{i}" if comb and i % 2 else f"q{i}" for i in range(n - 4, n)]
+    out = [".model toy", ".inputs clk " + " ".join(pis), ".outputs " + " ".join(outs)]
     pool = list(pis)
     for i in range(n):
         k = rnd.choice([2, 3, 4, 5])
         ins = rnd.sample(pool, k)
         out.append(".names " + " ".join(ins) + f" l{i}")
         out.append("1" * k + " 1")
+        if comb and i % 2:
+            pool.append(f"l{i}")
+            continue
         out.append(f".latch l{i} q{i} re clk 2")
         pool.append(f"q{i}")
     out.append(".end")
     return "\n".join(out) + "\n"
 
 
-def build_toy(tmp: Path, n: int = 34, per: int = 8):
-    cb = rb.clean(rb.parse_blif(toy_blif(n)))
+def build_toy(tmp: Path, n: int = 34, per: int = 8, comb: bool = False):
+    cb = rb.clean(rb.parse_blif(toy_blif(n, comb=comb)))
     atom_cl = {}
     for i in range(n):
         atom_cl[f"l{i}"] = i // per
@@ -135,6 +140,30 @@ class Toy(unittest.TestCase):
             names[a] = int(c)
         seq = [names[ln.split()[-1]] for ln in lines if ln.split()[-1] in names]
         self.assertEqual(seq, sorted(seq))
+
+
+class NoCombLoop(unittest.TestCase):
+    """Step C (fill, doubling) must never close a combinational cycle; the clean toy has none, and neither may D'."""
+
+    def test_detector_finds_a_loop(self):
+        loop = ".model t\n.inputs clk a\n.outputs y\n.names a y2 y1\n11 1\n.names y1 y2\n1 1\n.names y1 y\n1 1\n.end\n"
+        self.assertGreaterEqual(rb.blif_comb_back_edges(loop), 1)
+        ok = loop.replace(".names a y2 y1\n11 1", ".names a y1x y1\n11 1").replace(".names y1 y2", ".names y1 y2x")
+        self.assertEqual(rb.blif_comb_back_edges(ok), 0)
+        seq = ".model t\n.inputs clk a\n.outputs y\n.names a q y1\n11 1\n.latch y1 q re clk 2\n.names q y\n1 1\n.end\n"
+        self.assertEqual(rb.blif_comb_back_edges(seq), 0)  # a loop through a flip-flop is not combinational
+
+    def test_built_toys_are_acyclic(self):
+        for comb in (False, True):
+            for n in (34, 90, 120):  # with the old fill rule the larger two close loops (checked when the fix was made)
+                tmp = Path(tempfile.mkdtemp())
+                self.assertEqual(rb.blif_comb_back_edges(toy_blif(n, comb=comb)), 0)
+                rec = build_toy(tmp, n=n, comb=comb)
+                self.assertEqual(rec["comb_back_edges"], 0)
+                g, cl = rec["_graph"]
+                for s in (1, 2):
+                    sh = rb.write_shuffled(g, cl, g.des, tmp / f"s{s}", s, "toy", "own")
+                    self.assertEqual(rb.blif_comb_back_edges((tmp / f"s{s}" / sh["blif"]).read_text()), 0)
 
 
 class Parts(unittest.TestCase):
