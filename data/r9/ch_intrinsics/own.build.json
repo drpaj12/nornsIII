@@ -1,0 +1,137 @@
+{
+ "K": 12,
+ "K0": 99,
+ "K_vpr": 12,
+ "adders_D": 0,
+ "all_luts_6": true,
+ "atoms_not_in_clb": 0,
+ "bound_real_only": 10,
+ "carry_links_cut": 0,
+ "cells_real": 97,
+ "chains": [],
+ "clb_lower_bound": 12,
+ "const_generators": 2,
+ "construction": "own",
+ "cut_C": 134,
+ "cut_star_C": 35,
+ "cut_star_C0": 24,
+ "demand_padded": 120,
+ "demand_real": 99,
+ "demand_total_real": 99,
+ "design": "ch_intrinsics",
+ "distinct_inputs": true,
+ "dummies": 21,
+ "evicted": 19,
+ "ffs_D": 82,
+ "full_clusters": true,
+ "hard_D": 8,
+ "hard_models": {
+  "single_port_ram": 8
+ },
+ "hstar_nets": 85,
+ "independent": {
+  "below_C_found": false,
+  "cut_star_C": 35,
+  "metis_below_C": 0,
+  "metis_best_after_ls": 39,
+  "metis_best_legal": 50,
+  "metis_equal_C": 0,
+  "metis_full": 100,
+  "metis_legal": 100,
+  "metis_runs": 100,
+  "shake_below_C": 0,
+  "shake_best": 35,
+  "shake_equal_C": 50,
+  "shake_runs": 100
+ },
+ "legality": {
+  "clusters": 12,
+  "not_one_clb": [],
+  "one_clb": 12
+ },
+ "luts_D": 95,
+ "macros": 0,
+ "margin": {
+  "adjacent_swaps": 1800,
+  "min_a": 0,
+  "min_a_pair_bound": 1,
+  "min_adjacent_swap_delta": 1,
+  "min_margin": 1,
+  "swaps_le_0_other": 0,
+  "swaps_le_0_with_const_cell": 2,
+  "swaps_with_delta_le_0": 2
+ },
+ "max_demand": 9,
+ "max_out_pins": 9,
+ "max_pins": 19,
+ "merged": 7,
+ "pin_excess_clusters": 0,
+ "pis": 99,
+ "pos": 130,
+ "reserve": 1,
+ "shuffles": {
+  "0": {
+   "atoms_labelled": 223,
+   "blif": "design.blif",
+   "expected_adders": 0,
+   "expected_ffs": 103,
+   "expected_luts_excl_const_generators": 118,
+   "sha256": "d1681aa4047841eb40f2c01fec237b6bfd95b01de2627164ef9a0499d47d7029"
+  },
+  "1": {
+   "atoms_labelled": 223,
+   "blif": "design.blif",
+   "expected_adders": 0,
+   "expected_ffs": 103,
+   "expected_luts_excl_const_generators": 118,
+   "sha256": "43c5ab8def932e45734e48f9c02a06f1755b1832a88b227d5bc67b264dcd7be6"
+  },
+  "2": {
+   "atoms_labelled": 223,
+   "blif": "design.blif",
+   "expected_adders": 0,
+   "expected_ffs": 103,
+   "expected_luts_excl_const_generators": 118,
+   "sha256": "bcf971ab983bfe65cc0b1f3616af0984d6f2dd78cc63638db4d20e3d29bc69c9"
+  },
+  "3": {
+   "atoms_labelled": 223,
+   "blif": "design.blif",
+   "expected_adders": 0,
+   "expected_ffs": 103,
+   "expected_luts_excl_const_generators": 118,
+   "sha256": "2509c9f496dcfb1bc7b8c72f8757475b2892490da23a5a4376abf00ae8a4a2f7"
+  }
+ },
+ "strengthen": {
+  "anchored": 57,
+  "doubled": 58,
+  "filled": 193,
+  "rewired_const_cut": 2,
+  "ring": 21
+ },
+ "structure_sig": "92bef2b4eab3ddb2",
+ "unmet_cells": 1,
+ "vpr_atoms": {
+  "ff": 82,
+  "inpad": 99,
+  "lut": 97,
+  "memory_slice": 8,
+  "outpad": 130
+ },
+ "vpr_atoms_match": true,
+ "vpr_check_dprime": {
+  "expected_adder": 0,
+  "expected_ff": 103,
+  "expected_lut": 120,
+  "match": true,
+  "vpr": {
+   "ff": 103,
+   "inpad": 99,
+   "lut": 120,
+   "memory_slice": 8,
+   "outpad": 130
+  }
+ },
+ "wrappers": 2
+}
