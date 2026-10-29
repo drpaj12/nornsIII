@@ -83,7 +83,7 @@ PERSEED_ARMS = ("vpr_ap", "vpr_ap_reread", "vpr_sa", "vpr_sa_reread", "ext_nextp
 
 def vpr(cwd, flags, seed, blif, write=None, read=None):
     nl.ensure_dir(cwd)
-    flags = flags + VPR_EXTRA + ["--seed", str(seed), "--timing_report_npaths", "200", "--route_file", "/dev/null"]
+    flags = flags + VPR_EXTRA + ["--seed", str(seed), "--timing_report_npaths", str(nl.npaths(200)), "--route_file", "/dev/null"]
     if write:
         flags += ["--write_flat_place", str(cwd / write)]
     if read:
@@ -101,6 +101,8 @@ def vpr(cwd, flags, seed, blif, write=None, read=None):
         m = rx.search(text)
         rec[k] = float(m.group(1)) if m else None
     rec["routed_ok"] = "Circuit successfully routed" in text
+    if rc == 0:
+        rec["keep"] = nl.keep_timing(cwd, cwd, Path(blif).stem, Path(blif), nl.name_map_of(Path(blif)))  # W Q3.3 (speed): report, attribution, blif + map
     rec["reader_warnings"] = len(re.findall(r"Flat placement file, line", text))
     m = re.search(r"FPGA sized to (\d+) x (\d+)", text)
     rec["grid"] = [int(m.group(1)), int(m.group(2))] if m else None
@@ -181,6 +183,9 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
             r.add_input(role, path)
         for role, path in (artifacts or {}).items():
             r.add_artifact(role, path)
+        for role, name in nl.KEEP_ARTIFACTS:
+            if (cwd / name).is_file():
+                r.add_artifact(role, cwd / name)
         req_in, req_out = required_roles(steps)
         r.write(cwd / "mimir-run.json", required_inputs=req_in, required_artifacts=req_out)
     except rr.HostMapError as exc:

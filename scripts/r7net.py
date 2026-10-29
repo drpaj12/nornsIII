@@ -521,7 +521,7 @@ def vpr_net_run(design: str, arm: str, seed: int, net_path: Path, model: NetMode
     sc_net = sc / f"{design}.net"
     shutil.copy(net_path, sc_net) if not str(net_path).endswith(".gz") else _gunzip(net_path, sc_net)
     blif = nl.runs_dir(design, "netlist", f"{design}.blif")
-    flags = ["--place", "--route", "--analysis", "--net_file", str(sc_net), "--seed", str(seed), "--timing_report_npaths", str(lib.NPATHS),
+    flags = ["--place", "--route", "--analysis", "--net_file", str(sc_net), "--seed", str(seed), "--timing_report_npaths", str(nl.npaths(lib.NPATHS)),
              "--route_file", "/dev/null", "--write_initial_place_file", str(sc / "initial.place"),
              "--write_flat_place", str(sc / "final.flat_place")]
     nornsvpr = os.environ.get("NORNS_VPR", "")
@@ -541,8 +541,9 @@ def vpr_net_run(design: str, arm: str, seed: int, net_path: Path, model: NetMode
         shutil.copy(sc / "vpr.out", rd / "vpr.out")
         import r3lib
         rec["logic_clbs"] = len(r3lib.logic_groups(rd / "final.flat_place"))
-        paths = lib.parse_report(sc / "report_timing.setup.rpt")
+        paths = lib.parse_report(sc / "report_timing.setup.rpt")[:lib.NPATHS]  # the analysis keeps the 200 worst; the kept report holds more
         rec["paths_in_report"] = len(paths)
+        rec["keep"] = nl.keep_timing(rd, sc, design, blif, nl.name_map_of(blif))
         with gzip.open(rd / "paths.json.gz", "wt") as fh:
             json.dump([{"arrival": p["arrival"], "slack": p["slack"], "nodes": p["nodes"]} for p in paths], fh)
         fid = realised_fidelity(model, assign, rd / "final.flat_place")
