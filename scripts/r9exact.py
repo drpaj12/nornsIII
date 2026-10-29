@@ -70,7 +70,7 @@ def statements(text: str) -> tuple:
     return out
 
 
-def cluster_blifs(blif: Path, aff: Path) -> dict:
+def cluster_blifs(blif: Path, aff: Path, real_const: set) -> dict:
     """cluster -> BLIF text, from the shuffled design file and its affinity labels (atom -> cluster)."""
     lab = {}
     for ln in aff.read_text().splitlines():
@@ -127,7 +127,7 @@ def cluster_blifs(blif: Path, aff: Path) -> dict:
                 continue  # constant generator: VPR keeps no atom for it in the full packing, so it is in no packed cluster
             body += s
             for n in b:
-                if (drv.get(n) not in mset or n in rb.CONST) and n != clk:
+                if (drv.get(n) not in mset or n in rb.CONST) and n != clk and (n not in rb.CONST or n in real_const):
                     pis.add(n)
             for n in a:
                 rd = readers.get(n, [])
@@ -145,7 +145,8 @@ def cluster_blifs(blif: Path, aff: Path) -> dict:
 
 def inputs_ok(net: Path, text: str) -> bool:
     """Every net the cluster reads from outside (a pad of the single-cluster netlist) must reach a pin of the CLB."""
-    pis = set(next(ln for ln in text.splitlines() if ln.startswith(".inputs")).split()[1:]) - {"clk"}
+    toks = next(ln for ln in text.splitlines() if ln.startswith(".inputs")).split()[1:]
+    pis = set(toks[1:])  # the first input is the clock (r9build writes it first), which is a clock pin, not an input pin
     clb = next(b for b in ET.parse(net).getroot().findall("block") if b.get("instance", "").startswith("clb["))
     have = set()
     for p in clb.find("inputs").findall("port"):
@@ -156,6 +157,7 @@ def inputs_ok(net: Path, text: str) -> bool:
 def pack_alone(text: str, d: Path, tag: str) -> tuple:
     """Pack one cluster alone. Returns (net path, variant index) for the first variant that gives exactly one logic CLB."""
     d.mkdir(parents=True, exist_ok=True)
+    tag = f"{tag}.{hashlib.sha256(text.encode()).hexdigest()[:8]}"  # keyed by content: a changed cluster never reuses an old packing
     p = d / f"{tag}.blif"
     p.write_text(text)
     for k, v in enumerate(VARIANTS):
@@ -176,15 +178,21 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
 def build_exact(design: str, cons: str, sh: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
     blif, aff = shd / "design.blif", shd / "affinity.tsv"
-    rec_p = shd / "exact7.json"
-    if rec_p.is_file() and (shd / "exact7" / "design.net").is_file():
+    rec_p = shd / "exact10.json"
+    if rec_p.is_file() and (shd / "exact10" / "design.net").is_file():
         return json.loads(rec_p.read_text())
     full = rb.run_vpr_pack(blif, shd / "pack")
-    cb = cluster_blifs(blif, aff)
+    ftree = ET.parse(full)
+    real_const = set()  # constant nets that the stock packing routes into a CLB input pin (the others are folded into the logic by VPR)
+    for t in ftree.getroot().findall("block"):
+        if t.get("instance", "").startswith("clb["):
+            for p in t.find("inputs").findall("port"):
+                real_const |= set(p.text.split()) & set(rb.CONST)
+    cb = cluster_blifs(blif, aff, real_const)
     k = len(cb)
     clbs, variants, bad = [], {}, []
     for c in sorted(cb):
-        net, v = pack_alone(cb[c], shd / "exact_parts6", f"c{c}")
+        net, v = pack_alone(cb[c], shd / "exact_parts", f"c{c}")
         if net is None:
             bad.append(c)
             continue
@@ -195,12 +203,29 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
         rec["ok"] = False
         rec_p.write_text(json.dumps(rec, indent=1, sort_keys=True))
         return rec
-    tree = ET.parse(full)
+    tree = ftree
     root = tree.getroot()
     tops = root.findall("block")
-    # the constant generators gnd and vcc are CLBs of their own in the stock packing of the full netlist; they are copied as they are
     nonclb = [b for b in tops if not b.get("instance", "").startswith("clb[")]
-    constclb = [b for b in tops if b.get("instance", "").startswith("clb[") and b.get("name") in rb.CONST]
+    # constant generators (gnd, vcc) are implicit atoms. A CLB that holds only them is copied from the stock packing; one that was packed
+    # with other logic there gets its generator as a CLB of its own (packed alone), which needs the net to be a real one
+    constclb, covered, all_const = [], set(), set()
+    for t in tops:
+        leaves = [x.get("name") for x in t.iter("block") if not x.findall("block") and x.get("name") != "open"]
+        in_const = {n for n in leaves if n in rb.CONST}
+        all_const |= in_const
+        if t.get("instance", "").startswith("clb[") and in_const and in_const == set(leaves):
+            constclb.append(t)
+            covered |= in_const
+    for cn in sorted(all_const - covered):
+        txt = f".model k{cn}\n.inputs clk\n.outputs {cn}\n.names {cn}\n" + ("1\n" if rb.CONST_VAL[cn] else "") + ".end\n"
+        net, _v = pack_alone(txt, shd / "exact_parts", f"const_{cn}")
+        if net is None or cn not in real_const:
+            rec = {"K": k, "packed_alone": len(clbs), "unpackable": [f"const_{cn}"], "variants_used": variants, "ok": False}
+            rec_p.write_text(json.dumps(rec, indent=1, sort_keys=True))
+            return rec
+        constclb.append(next(x for x in ET.parse(net).getroot().findall("block") if x.get("instance", "").startswith("clb[")))
+    nonclb = [x for x in nonclb if x not in constclb]
     for b in tops:
         root.remove(b)
     final = []
@@ -211,7 +236,7 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
         blk.set("instance", blk.get("instance").split("[")[0] + f"[{i}]")
         root.append(blk)
     rec["const_clbs"] = len(constclb)
-    od = shd / "exact7"
+    od = shd / "exact10"
     od.mkdir(exist_ok=True)
     tree.write(od / "design.net")
     rec["ok"] = True
@@ -223,13 +248,13 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
 
 def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
-    cwd = shd / "exact7_run" / f"s{seed}"
+    cwd = shd / "exact10_run" / f"s{seed}"
     mp = cwd / "metrics.json"
     if mp.is_file():
         return json.loads(mp.read_text())
     cwd.mkdir(parents=True, exist_ok=True)
     blif = shd / "design.blif"
-    flags = ["--net_file", str(shd / "exact7" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
+    flags = ["--net_file", str(shd / "exact10" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
     cmd = ["prlimit", f"--as={rr.MEM_BYTES}", "flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(blif), "--place", "--route", "--analysis"] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:
@@ -250,7 +275,7 @@ def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
         struct = json.loads((base / "struct.json").read_text())
         struct["cut_star_C"] = json.loads((base / "build.json").read_text())["cut_star_C"]
         vatoms = json.loads((shd / "vatoms.json").read_text())
-        rec.update(rr.pack_metrics(shd / "exact7" / "design.net", aff, struct, vatoms))
+        rec.update(rr.pack_metrics(shd / "exact10" / "design.net", aff, struct, vatoms))
     else:
         rec["error"] = "timeout" if rc == -9 else "see vpr.out"
     mp.write_text(json.dumps(rec, sort_keys=True))
