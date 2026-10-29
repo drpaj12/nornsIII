@@ -108,7 +108,11 @@ def arm_run(design: str, cons: str, sh: int, arm: str, seed: int) -> dict:
     if arm == "known":
         flags += ["--norns_affinity", str(shd / "affinity.tsv"), "--norns_affinity_weight", f"{BETA_KNOWN:g}",
                   "--norns_proposal_count", "queued"]
-    binary = rb.STOCK_VPR if arm == "stock" else NORNS_VPR
+    if arm == "stock":
+        # the Norns binary with no affinity file packs exactly as the stock binary (gate in scripts/heap_census.py: byte-identical .net);
+        # it also writes the pack census the seed-signal extractor reads: sh<s>/census.tsv (VPR seed 1; the pack does not depend on the seed)
+        flags += ["--norns_pack_census", str(shd / "census.tsv" if seed == 1 else cwd / "census.tsv")]
+    binary = NORNS_VPR
     cmd = ["prlimit", f"--as={MEM_BYTES}", "flock", "-x", LOCK, str(binary), str(rb.ARCH), str(blif)] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:

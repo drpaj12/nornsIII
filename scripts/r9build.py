@@ -807,6 +807,21 @@ class Strengthen:
         d = self.g.drv.get(net)
         return d is not None and self.comb(d)
 
+    def new_pin_source(self, u: int, c: int):
+        g, cl = self.g, self.cl
+        if not hasattr(self, "ffnets"):
+            self.ffnets = sorted(o.out for kind, o in g.v if kind == "c" and o.kind not in ("K", "D") and o.ff)
+        if len(ext_inputs(g, set(self.members[c]))) >= MAX_IN:
+            return None
+        cu = g.v[u][1]
+        for x in self.ffnets:
+            if x in cu.ins or x == cu.out or x in g.nonlogic:
+                continue
+            cls = {cl[v] for v in g.verts(x)}
+            if c not in cls and len(cls) >= 2:
+                return x
+        return None
+
     def cyc(self, net: str, u: int) -> bool:
         """Would adding `net` as an input of vertex u close a combinational cycle? Only a net driven combinationally can: it does
         iff u reaches that driver through combinational vertices (a flip-flop output, a pad or a hard-block net never does)."""
@@ -905,7 +920,14 @@ class Strengthen:
                     cand.sort(key=lambda x: (not self.internal_only(x, c), self.driver_comb(x), len(g.rd.get(x, ())), x))
                     pick = next((x for x in cand if not self.cyc(x, u)), None)
                     if pick is None:
-                        raise ValueError("cluster too small to give a LUT six distinct inputs without a combinational loop")
+                        # last resort, counted: a flip-flop output from outside that already crosses clusters (so the cut of C does not
+                        # change, and u does not become the only pin of a net that a single move could uncut), if a pin is free
+                        pick = self.new_pin_source(u, c)
+                        if pick is None:
+                            raise ValueError(f"cluster {c} too small to give LUT {cu.out} ({len(cu.ins)} inputs, kind {cu.kind}, ff {cu.ff}) six distinct "
+                                             f"inputs without a combinational loop; pool {len(pool)}, ext inputs {len(ext_inputs(g, set(self.members[c])))}, "
+                                             f"members {len(self.members[c])}")
+                        self.stats["fill_new_pin"] += 1
                     self.add_read(u, pick)
                     self.stats["filled"] += 1
         self.unmet = []
