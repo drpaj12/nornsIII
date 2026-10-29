@@ -36,6 +36,9 @@ VARIANTS = (
     ("--timing_driven_clustering", "off", "--connection_driven_clustering", "off", "--allow_unrelated_clustering", "on"),
     ("--target_ext_pin_util", "1.0,1.0"),
     ("--target_ext_pin_util", "1.0,1.0", "--timing_driven_clustering", "off"),
+    ("norns",),  # the Norns binary with every atom of the cluster in one affinity group (beta 100): a different, stronger pull
+    ("norns", "--target_ext_pin_util", "1.0,1.0"),
+    ("norns", "--timing_driven_clustering", "off", "--connection_driven_clustering", "off"),
 )
 
 
@@ -177,7 +180,16 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
         od.mkdir(exist_ok=True)
         net = od / (p.stem + ".net")
         if not net.is_file():
-            cmd = ["flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(p), "--pack", "--seed", "1", *v]
+            if v and v[0] == "norns":
+                atoms = [ln.split()[-1] for ln in text.splitlines() if ln.startswith(".names")]
+                atoms += [ln.split()[2] for ln in text.splitlines() if ln.startswith(".latch")]
+                atoms += [dict(x.split("=") for x in ln.split()[2:])["cout"] for ln in text.splitlines() if ln.startswith(".subckt adder")]
+                af = od / "all.aff"
+                af.write_text("".join(f"{x}\t0\n" for x in atoms))
+                cmd = ["flock", "-x", rb.LOCK, str(rr.NORNS_VPR), str(rb.ARCH), str(p), "--pack", "--seed", "1", "--norns_affinity", str(af),
+                       "--norns_affinity_weight", "100", "--norns_proposal_count", "queued", *v[1:]]
+            else:
+                cmd = ["flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(p), "--pack", "--seed", "1", *v]
             with (od / "pack.out").open("w") as fh:
                 rcode = subprocess.run(cmd, cwd=od, stdout=fh, stderr=subprocess.STDOUT, check=False).returncode
             if rcode != 0:
@@ -190,13 +202,17 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
 def build_exact(design: str, cons: str, sh: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
     blif, aff = shd / "design.blif", shd / "affinity.tsv"
-    rec_p = shd / "exact13.json"
-    if rec_p.is_file() and (shd / "exact13" / "design.net").is_file():
+    rec_p = shd / "exact15.json"
+    if rec_p.is_file() and (shd / "exact15" / "design.net").is_file():
         return json.loads(rec_p.read_text())
     full = rb.run_vpr_pack(blif, shd / "pack")
     ftree = ET.parse(full)
-    # constant nets VPR sees as real nets: those the design file defines with an explicit generator (`.names gnd`); the others are folded away
-    real_const = {ln.split()[1] for ln in blif.read_text().splitlines() if ln.startswith(".names ") and len(ln.split()) == 2 and ln.split()[1] in rb.CONST}
+    # constant nets that the stock packing of the full netlist routes into a CLB input pin are real nets for VPR; the others are folded away
+    real_const = set()
+    for t in ftree.getroot().findall("block"):
+        if t.get("instance", "").startswith("clb["):
+            for p in t.find("inputs").findall("port"):
+                real_const |= set(p.text.split()) & set(rb.CONST)
     cb = cluster_blifs(blif, aff, real_const)
     k = len(cb)
     clbs, variants, bad = [], {}, []
@@ -263,7 +279,7 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
         blk.set("instance", blk.get("instance").split("[")[0] + f"[{i}]")
         root.append(blk)
     rec["const_clbs"] = len(constclb)
-    od = shd / "exact13"
+    od = shd / "exact15"
     od.mkdir(exist_ok=True)
     tree.write(od / "design.net")
     rec["ok"] = True
@@ -275,13 +291,13 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
 
 def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
-    cwd = shd / "exact13_run" / f"s{seed}"
+    cwd = shd / "exact15_run" / f"s{seed}"
     mp = cwd / "metrics.json"
     if mp.is_file():
         return json.loads(mp.read_text())
     cwd.mkdir(parents=True, exist_ok=True)
     blif = shd / "design.blif"
-    flags = ["--net_file", str(shd / "exact13" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
+    flags = ["--net_file", str(shd / "exact15" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
     cmd = ["prlimit", f"--as={rr.MEM_BYTES}", "flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(blif), "--place", "--route", "--analysis"] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:
@@ -302,7 +318,7 @@ def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
         struct = json.loads((base / "struct.json").read_text())
         struct["cut_star_C"] = json.loads((base / "build.json").read_text())["cut_star_C"]
         vatoms = json.loads((shd / "vatoms.json").read_text())
-        rec.update(rr.pack_metrics(shd / "exact13" / "design.net", aff, struct, vatoms))
+        rec.update(rr.pack_metrics(shd / "exact15" / "design.net", aff, struct, vatoms))
     else:
         rec["error"] = "timeout" if rc == -9 else "see vpr.out"
     mp.write_text(json.dumps(rec, sort_keys=True))
