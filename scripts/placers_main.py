@@ -145,7 +145,7 @@ def required_roles(steps):
     return tuple(dict.fromkeys(ins)), tuple(dict.fromkeys(outs))
 
 
-def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, artifacts=None, placer=None):
+def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, artifacts=None, placer=None, keep=None):
     """Write <cwd>/mimir-run.json from the tool steps of this run (docs/specs/2026-10-28-mimir-run-record.md in mimirIII).
     Never raises for a record that cannot be written: no host map, or a privacy rule hit, is logged (run id, rule, key path;
     never a value) and the record is skipped, so the sweep goes on."""
@@ -183,9 +183,8 @@ def write_record(cwd, design, arm, seed, family, blif, roles=None, inputs=None, 
             r.add_input(role, path)
         for role, path in (artifacts or {}).items():
             r.add_artifact(role, path)
-        for role, name in nl.KEEP_ARTIFACTS:
-            if (cwd / name).is_file():
-                r.add_artifact(role, cwd / name)
+        for role, name in nl.kept_artifacts(keep):  # only what this run's keep_timing wrote
+            r.add_artifact(role, cwd / name)
         req_in, req_out = required_roles(steps)
         r.write(cwd / "mimir-run.json", required_inputs=req_in, required_artifacts=req_out)
     except rr.HostMapError as exc:
@@ -275,7 +274,8 @@ def process(design):
         rec |= {"arm": arm, "seed": seed} | (extra or {})
         write_record(cwd, design, arm, seed, FAMILY[arm], blif, roles={read: "<read_flat_place>"} if read else None,
                      inputs={"read_flat_place": read} if read else None,
-                     artifacts={"vpr_out": cwd / "vpr.out", **({"flat_place": cwd / write} if write else {})})
+                     artifacts={"vpr_out": cwd / "vpr.out", **({"flat_place": cwd / write} if write else {})},
+                     keep=rec.get("keep"))
         record(rec)
         return rec
 

@@ -85,6 +85,45 @@ class KeepTiming(unittest.TestCase):
         self.assertIn("stale map", rec["attribution_note"])
         self.assertTrue((self.out / "report_timing.setup.rpt.gz").is_file())
 
+    def test_paths_tokenised(self):
+        vtr, ws, home = self.t / "vtrroot", self.t / "wsroot", "/home/someone"
+        span = f"{vtr}/vtr_flow/benchmarks/verilog/d.v:82"
+        att = json.dumps({"paths": [{"nodes": [{"span": span, "src": f"{ws}/odin3/x.v:3", "other": f"{home}/stuff/y.v:1"}]}]})
+        self.tool.write_text("#!/bin/sh\nmkdir -p \"$1/timing\"\ncat > \"$1/timing/attribution.json\" <<'EOF'\n" + att + "\nEOF\n")
+        self.tool.chmod(self.tool.stat().st_mode | stat.S_IXUSR)
+        self.map.write_text(f"a {span}\nb {ws}/q.v:1\nc {home}/z.v:2\n")
+        self.blif.write_text(f".model d\n# {home}/gen\n.end\n")
+        with mock.patch.object(nl, "VTR_ROOT", vtr), mock.patch.object(nl, "WS_ROOT", ws):
+            rec = nl.keep_timing(self.out, self.vpr, "d", self.blif, self.map)
+        with lzma.open(self.out / "attribution.json.xz", "rt") as fh:
+            a = fh.read()
+        self.assertNotIn("/home/", a)
+        self.assertNotIn(str(self.t), a)
+        n = json.loads(a)["paths"][0]["nodes"][0]
+        self.assertEqual(n["span"], "$VTR_ROOT/vtr_flow/benchmarks/verilog/d.v:82")
+        self.assertEqual(n["src"], "$WS/odin3/x.v:3")
+        self.assertEqual(n["other"], "~/stuff/y.v:1")
+        store = self.t / "store" / "d" / rec["blif_sha256"]
+        for f in ("d.blif.names.xz", "d.blif.xz"):
+            with lzma.open(store / f, "rt") as fh:
+                self.assertNotIn("/home/", fh.read())
+        self.assertEqual(rec["map_sha256"], nl.file_sha256(self.map))  # sha is of the original
+        self.assertEqual(rec["paths_rewritten"], {"$VTR_ROOT": 2, "$WS": 2, "~": 3})
+        self.assertEqual(json.loads((self.out / "keep-timing.json").read_text())["paths_rewritten"], rec["paths_rewritten"])
+
+    def test_kept_artifacts_ignores_stale_files(self):
+        self.stub(STUB_BAD)
+        self.out.mkdir()
+        (self.out / "attribution.json.xz").write_bytes(b"stale")  # left by an earlier attempt
+        rec = nl.keep_timing(self.out, self.vpr, "d", self.blif, self.map)
+        roles = [r for r, _ in nl.kept_artifacts(rec)]
+        self.assertEqual(roles, ["timing_report_gz", "keep_timing"])
+        self.assertEqual(nl.kept_artifacts(None), [])
+        self.assertEqual(nl.kept_artifacts({"keep_timing": False}), [])
+        self.stub(STUB_OK)
+        rec = nl.keep_timing(self.out, self.vpr, "d", self.blif, self.map)
+        self.assertIn("timing_attribution", [r for r, _ in nl.kept_artifacts(rec)])
+
     def test_off_switch(self):
         self.stub(STUB_OK)
         with mock.patch.dict(os.environ, {"NORNS_KEEP_TIMING": "0"}):

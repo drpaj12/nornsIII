@@ -392,6 +392,19 @@ KEEP_ARTIFACTS = (("timing_report_gz", "report_timing.setup.rpt.gz"), ("timing_a
                   ("keep_timing", "keep-timing.json"))  # run-record roles of the files keep_timing writes
 
 
+def kept_artifacts(keep: dict[str, Any] | None) -> list[tuple[str, str]]:
+    """(role, file name) of the files this run's keep_timing result says it wrote; nothing from a stale directory."""
+    if not keep or not keep.get("keep_timing"):
+        return []
+    out = []
+    if "report_bytes" in keep:
+        out.append(KEEP_ARTIFACTS[0])
+    if keep.get("attribution"):
+        out.append(KEEP_ARTIFACTS[1])
+    out.append(KEEP_ARTIFACTS[2])
+    return out
+
+
 def keep_timing_on() -> bool:
     """On by default; NORNS_KEEP_TIMING=0 turns it off."""
     return os.environ.get("NORNS_KEEP_TIMING", "1") != "0"
@@ -417,6 +430,41 @@ def _compress(src: Path, dst: Path, opener: Any) -> int:
     return dst.stat().st_size
 
 
+_HOME_RX = re.compile(r"/home/[^/\s\"':,;()<>]+")  # as mimir/scrub.py _HOME
+
+
+def scrub_roots() -> list[tuple[str, str]]:
+    """(root, token) pairs, longest root first. Token spellings follow the Mimir scrubber
+    (mimir/mimir/structcli.py make_scrub: "$VTR_ROOT", "$WS"; mimir/mimir/scrub.py Scrubber: longest root first,
+    then any other /home/<user> path). Copied here, not imported: Norns does not depend on Mimir."""
+    pairs = [(str(VTR_ROOT).rstrip("/"), "$VTR_ROOT"), (str(WS_ROOT).rstrip("/"), "$WS")]
+    return sorted(pairs, key=lambda x: -len(x[0]))
+
+
+def scrub_text(text: str, counts: dict[str, int] | None = None) -> str:
+    """Rewrite VTR root -> $VTR_ROOT, workspace root -> $WS, any other home dir -> ~ (counts: occurrences per token)."""
+    for root, token in scrub_roots():
+        n = text.count(root)
+        if n:
+            text = text.replace(root, token)
+            if counts is not None:
+                counts[token] = counts.get(token, 0) + n
+    text, n = _HOME_RX.subn("~", text)
+    if n and counts is not None:
+        counts["~"] = counts.get("~", 0) + n
+    return text
+
+
+def _compress_scrubbed(src: Path, dst: Path, counts: dict[str, int]) -> int:
+    """xz of src with scrub_text applied line by line (a path never spans lines; JSON from odin3-timing is read whole)."""
+    ensure_dir(dst.parent)
+    with src.open("r", encoding="utf-8", errors="surrogateescape", newline="") as fi, \
+            lzma.open(dst, "wt", encoding="utf-8", errors="surrogateescape", newline="") as fo:
+        for line in fi:
+            fo.write(scrub_text(line, counts))
+    return dst.stat().st_size
+
+
 def keep_store() -> Path:
     """Where each (design, blif sha256) input pair is kept once; NORNS_KEEP_STORE overrides."""
     return Path(os.environ.get("NORNS_KEEP_STORE", str(RUNS / "_keep-inputs")))
@@ -430,18 +478,21 @@ def odin_timing_tool() -> Path:
 def keep_inputs(design: str, blif: Path, name_map: Path | None) -> dict[str, Any]:
     """Keep blif + name map once per (design, blif sha256) in the store; return their sha256 and sizes."""
     sha = file_sha256(blif)
-    out: dict[str, Any] = {"blif_sha256": sha, "map_sha256": None}
+    out: dict[str, Any] = {"blif_sha256": sha, "map_sha256": None}  # shas are of the original files, kept copies are path-scrubbed
+    counts: dict[str, int] = {}
+    out["_rewritten"] = counts
     d = keep_store() / design / sha
     if not (d / f"{design}.blif.xz").is_file():
-        out["blif_bytes"] = _compress(blif, d / f"{design}.blif.xz", lzma.open)
+        out["blif_bytes"] = _compress_scrubbed(blif, d / f"{design}.blif.xz", counts)
     if name_map is not None and name_map.is_file():
         out["map_sha256"] = file_sha256(name_map)
         if not (d / f"{design}.blif.names.xz").is_file():
-            out["map_bytes"] = _compress(name_map, d / f"{design}.blif.names.xz", lzma.open)
+            out["map_bytes"] = _compress_scrubbed(name_map, d / f"{design}.blif.names.xz", counts)
     return out
 
 
-def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Path) -> tuple[bool, str]:
+def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Path,
+               counts: dict[str, int]) -> tuple[bool, str]:
     """Run odin3-timing over a small flow directory pointing at the run; xz the attribution to dest."""
     tool = odin_timing_tool()
     if not tool.is_file():
@@ -455,7 +506,7 @@ def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Pat
     att = flow / "timing" / "attribution.json"
     if r.returncode != 0 or not att.is_file():
         return False, (r.stderr or r.stdout).strip().splitlines()[-1][:200] if (r.stderr or r.stdout).strip() else f"rc {r.returncode}"
-    _compress(att, dest, lzma.open)
+    _compress_scrubbed(att, dest, counts)  # every string field, spans included
     return True, ""
 
 
@@ -473,17 +524,22 @@ def keep_timing(run_dir: Path, vpr_cwd: Path, design: str, blif: Path, name_map:
         rec["paths_kept"] = sum(1 for ln in rpt.read_text(errors="replace").splitlines() if ln.startswith("#Path "))
     else:
         rec["note"] = "no report_timing.setup.rpt"
+    counts: dict[str, int] = {}
     if blif.is_file():
-        rec.update(keep_inputs(design, blif, name_map))
+        inp = keep_inputs(design, blif, name_map)
+        for k, v in inp.pop("_rewritten").items():
+            counts[k] = counts.get(k, 0) + v
+        rec.update(inp)
     if rec["map_sha256"] is None:
         rec["attribution_note"] = "no name map for this call site: report kept only"
     elif rpt.is_file() and name_map is not None:
-        ok, why = _attribute(vpr_cwd, design, blif, name_map, run_dir / "attribution.json.xz")
+        ok, why = _attribute(vpr_cwd, design, blif, name_map, run_dir / "attribution.json.xz", counts)
         rec["attribution"] = ok
         if ok:
             rec["attribution_bytes"] = (run_dir / "attribution.json.xz").stat().st_size
         else:
             rec["attribution_note"] = why
+    rec["paths_rewritten"] = {t: counts.get(t, 0) for t in ("$VTR_ROOT", "$WS", "~")}
     (run_dir / "keep-timing.json").write_text(json.dumps(rec, indent=1, sort_keys=True) + "\n")
     return rec
 
