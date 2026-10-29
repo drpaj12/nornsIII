@@ -1,7 +1,7 @@
 \section{Background}
 \label{sec:background}
 
-This section defines every term of the paper once, in dependency order, so that no term is used before its definition. The basic definitions follow the order and the wording of the FPGA and CAD background chapters of two University of Toronto theses of the same research line~\cite{jamiesonthesis,luu2014thesis}: the soft logic fabric and the basic logic element, the three CAD stages that follow synthesis, and (from Luu) timing criticality. The terms that are the paper's own come after them.
+This section defines every term of the paper once, in dependency order, so that no term is used before its definition. The basic definitions follow the order and the wording of the FPGA and CAD background chapters of two University of Toronto theses of the same research line~\cite{jamiesonthesis,luu2014thesis}: the soft logic fabric and the basic logic element, the three CAD stages that follow synthesis, and (from Luu) the timing terms. The terms that are the paper's own come after them.
 
 \subsection{Glossary}
 \label{sec:glossary}
@@ -15,6 +15,8 @@ This section defines every term of the paper once, in dependency order, so that 
 \item[$K$] The number of inputs of a LUT; here $K=6$.
 \item[BLE] Basic logic element: one LUT with its flip-flop~\cite{jamiesonthesis,luu2014thesis}.
 \item[cluster] A set of netlist blocks that are meant to belong together; a clustering is a partition of the netlist into clusters.
+\item[cut] The number of nets whose pins lie in more than one cluster of a clustering; fewer is better.
+\item[Rent exponent] The $p$ of Rent's rule $T=k\,B^{p}$, fitted to the terminals $T$ (nets leaving a block) of blocks of $B$ netlist nodes found by recursive bisection; real logic has $p$ near 0.5 to 0.7, and $p$ near 0 means a block's size hardly changes how many nets leave it.
 \item[CLB] Configurable logic block: a group of 10 BLEs placed as one unit (a logic block or soft logic cluster tile in the theses).
 \item[module] One HDL module, the unit of the design hierarchy.
 \item[provenance] The record kept on every netlist object of which HDL text, and which module, it came from.
@@ -27,6 +29,7 @@ This section defines every term of the paper once, in dependency order, so that 
 \item[critical path] The slowest register-to-register path of a design; it sets the clock speed.
 \item[CPD] Critical-path delay: the delay of the critical path, in nanoseconds.
 \item[slack] How much earlier than required a signal arrives; negative slack means the clock is too fast. VPR normalises slack by the CPD~\cite{luu2014thesis}.
+\item[criticality] A connection's closeness to the CPD, $1-\text{slack}/\text{CPD}$, so 1 is on the critical path; the criticality of an atom is the largest criticality over the paths (post-route, from the 1000 reported paths) or input pins (pack time) that contain it~\cite{luu2014thesis}.
 \item[near-critical] A path (or connection) whose delay is within a stated fraction of the CPD; criticality is $1-\text{slack}/\text{CPD}$~\cite{luu2014thesis}, and VPR~9 relaxes it per timing constraint~\cite{wainberg2015relaxed}.
 \item[channel width] The number of routing tracks per channel; a smaller routable width needs less wire area.
 \item[packing] The step that groups LUTs and flip-flops into CLBs before placement; VPR's packer is AAPack~\cite{jamiesonthesis,luu2014thesis}.
@@ -36,9 +39,15 @@ This section defines every term of the paper once, in dependency order, so that 
 \item[purity] The share of a CLB's labelled atoms that carry its most common word (or module), atom-weighted over CLBs.
 \item[split factor] How many CLBs a word spans, divided by the fewest CLBs that could hold it; 1.0 is best.
 \item[known-optimum yardstick] A design built from blocks that each fill exactly one CLB, so the intended clustering is known by construction; it is an optimum for CLB count only and not a proven best placement.
+\item[foreign clustering] A clustering that VPR did not make (here METIS), used to build a yardstick so that VPR is not graded on its own answer.
 \item[alignment] How closely the HDL words match the blocks of a yardstick design: 1 means each word is one block, 0 means each word holds about ten blocks' bits.
 \item[leak] A gain that exists only because the input file (the word file) already equals the answer (the block partition).
 \item[pairing class] The class of a pair of atoms in one CLB: series-critical, series-noncritical, shared-input, orthogonal or filler.
+\item[critical heap] The set of atoms whose criticality is at least 0.90 (the near-critical atoms the greedy packer takes first). The picture: the packer works the heap, a new heap forms as it goes, and at the end a heap remains whose criticality has been pushed down to a floor it cannot get below (the cell delays alone).
+\item[pack-time heap] The critical heap as the packer sees it: atoms whose pack-time criticality $pc$ is at least 0.90, from VPR's own timing analysis before packing, in which every net between logic blocks has one delay.
+\item[post-route heap] The critical heap of the routed design: atoms whose criticality $rc$ is at least 0.90 in the 1000-path timing report.
+\item[stale pick] A molecule the packer adds to a cluster on a pack-time criticality of at least 0.90 that holds no atom of the post-route heap; the packer's view of what was critical was out of date or wrong.
+\item[exception HDL pattern] A detectable HDL construct, found before packing, for which grouping by HDL structure is a bad packing hint or for which the greedy pick is known to go wrong (for example a parallel bus word whose bits share no dataflow).
 \item[seed] A placement file given to VPR to start the anneal from, instead of its own start; soft seeds may be left by the anneal and hard seeds are floorplan regions it must keep.
 \item[Urd] The provenance seed: its clusters are the HDL modules.
 \item[Verdandi] The recovered seed: clusters found from the flat netlist alone (Loki~III L2: Louvain, spectral, affinity propagation, $k$-means)~\cite{loki3}.
