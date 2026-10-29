@@ -29,6 +29,8 @@ BOOT_TOP = 10000
 BOOT_SEED = 20261029
 TOP = 40
 MIN_VALID = 0.7
+MAX_MODE_SHARE = 0.95  # a feature whose commonest value covers more than this share of rows is dropped as degenerate
+ALIASES: dict = {}  # kept feature -> identical features dropped (filled by clean())
 
 
 # ---------------------------------------------------------------------------------------------- labels
@@ -180,7 +182,8 @@ def build_matrices(builds: list, with_mimir: bool, luts: bool, shuffles=(1, 2, 3
                         wide[r["cluster"]][f"{v}:{k}"] = val
                 base = wide
                 info[b.name] = {"clusters": b.K, "seed_source": lab["seed_source"], "rank_source": lab["rank_source"],
-                                "stock_net_identical_across_vpr_seeds": True, "stock_runs": lab["n_stock_runs"]}
+                                "stock_net_identical_across_vpr_seeds": True, "stock_runs": lab["n_stock_runs"],
+                                "comb_loop_edges_cut_in_Dprime": b.loop_edges_cut}
             info[b.name]["stock_net_identical_across_vpr_seeds"] &= lab["net_identical_across_seeds"]
             for c, lb in lab["clusters"].items():
                 row = {"build": b.name, "design": Path(d).parent.name, "cons": Path(d).name, "shuffle": s, "cluster": c}
@@ -240,9 +243,22 @@ def clean(X: np.ndarray, names: list) -> tuple:
         col = np.where(ok, col, med)
         if np.ptp(col) == 0:
             continue
+        _v, cnt = np.unique(col, return_counts=True)
+        if cnt.max() / len(col) > MAX_MODE_SHARE:  # near-constant: a handful of clusters decide the AUC (degenerate)
+            continue
         X[:, j] = col
         keep.append(j)
-    return X[:, keep], [names[j] for j in keep]
+    # identical columns (the same quantity reached through two regions or views) are kept once; aliases are recorded
+    seen: dict = {}
+    uniq = []
+    for j in keep:
+        key = np.round(X[:, j], 9).tobytes()
+        if key in seen:
+            ALIASES.setdefault(names[seen[key]], []).append(names[j])
+        else:
+            seen[key] = j
+            uniq.append(j)
+    return X[:, uniq], [names[j] for j in uniq]
 
 
 def stratify(X: np.ndarray, strata: np.ndarray) -> np.ndarray:
@@ -344,6 +360,7 @@ def mine(rows: list, feat_ok, ybin_key: str, ycont_key: str, onehot: str, dummy_
     if not rows:
         return {"n_rows": 0}
     X, names = feature_matrix(rows, feat_ok, onehot)
+    ALIASES.clear()
     X, names = clean(X, names)
     ybin = np.array([r[ybin_key] for r in rows], dtype=float)
     ycont = np.array([r[ycont_key] for r in rows], dtype=float)
@@ -413,8 +430,15 @@ def mine(rows: list, feat_ok, ybin_key: str, ycont_key: str, onehot: str, dummy_
             e["rho_ci90_design"] = lohi(Rd, t)
             e["p_top"] = float(p_top[t])
             e["holm_top"] = float(holm_top[t])
+        e["aliases"] = ALIASES.get(nme, [])
         e["same_sign_own_foreign"] = bool(np.isfinite(a_own[j]) and np.isfinite(a_for[j]) and (a_own[j] - 0.5) * (a_for[j] - 0.5) > 0)
         table.append(e)
+    byname = {e["feature"]: e for e in table}
+    for e in table:
+        if e["feature"].startswith("r:") and "a:" + e["feature"][2:] in byname:
+            o = byname["a:" + e["feature"][2:]]
+            e["auc_with_dummies_view"] = o["auc"]
+            e["view_sign_flip_or_shift"] = bool((o["auc"] - 0.5) * (e["auc"] - 0.5) < 0 or abs(o["auc"] - e["auc"]) > 0.1)
     table.sort(key=lambda e: -(abs(e["auc"] - 0.5) + abs(e["rho"]) / 2) if np.isfinite(e["auc"]) else 0)
     best = {}
     for e in table:
@@ -460,40 +484,62 @@ def agreement(cl: dict, lu: dict) -> dict:
     return out
 
 
+def slim_level(L: dict, full: bool) -> dict:
+    out = {k: v for k, v in L.items() if k not in ("all", "ranking", "best_per_family", "best_per_region")}
+    out["ranking"] = L.get("ranking", [])[: (40 if full else 15)]
+    out["best_per_family"] = L.get("best_per_family", {})
+    out["best_per_region"] = L.get("best_per_region", {})
+    if full:
+        out["all"] = [{k: e[k] for k in ("feature", "family", "region", "auc", "rho", "q_auc", "q_rho", "artefact_dummies") if k in e}
+                      for e in L.get("all", [])]
+    return out
+
+
 def run(builds: list, out_json: Path, out_prefix: Path | None, with_mimir: bool, luts: bool) -> dict:
     m = build_matrices(builds, with_mimir, luts)
-    crows, lrows = m["clusters"], m["luts"]
-    for r in crows:
+    crows_all, lrows = m["clusters"], m["luts"]
+    print("features and labels done", len(crows_all), "cluster rows", len(lrows), "LUT rows", file=sys.stderr, flush=True)
+    for r in crows_all:
         r["y_exact"] = r["label:exact"]
         r["y_purity"] = r["label:purity"]
-    real_l = [r for r in lrows if not r["f:is_dummy"]]
-    for r in real_l:
+    # clusters holding the gnd or vcc generator are excluded from mining: VPR instantiates those LUT atoms itself (construction artefact,
+    # kept in the CSV with the column r:has_const_generator)
+    const_cl = {(r["build"], r["cluster"]) for r in crows_all if r["r:has_const_generator"]}
+    chain_cl = {(r["build"], r["cluster"]) for r in crows_all if r["r:chain"]}
+    crows = [r for r in crows_all if (r["build"], r["cluster"]) not in const_cl]
+    real_all = [r for r in lrows if not r["f:is_dummy"]]
+    for r in real_all:
         r["y_whole"] = 1.0 if r["label:mates_kept"] == 1.0 else 0.0
         r["y_kept"] = r["label:mates_kept"]
-    cl = mine(crows, lambda k: k.startswith(("r:", "a:")) and not k.startswith(("r:label", "a:label")), "y_exact", "y_purity", "",
-              "r:dummies", 1)
-    # the no-signal baseline of the plan: max pack-time criticality of the cluster
+    real_l = [r for r in real_all if (r["build"], r["cluster"]) not in const_cl]
+    cfeat = lambda k: k.startswith(("r:", "a:")) and not k.startswith(("r:label", "a:label")) and "has_const" not in k  # noqa: E731
+    lfeat = lambda k: k.startswith("f:") and k not in ("f:is_dummy", "f:inputs_declared", "f:po_driver")  # noqa: E731
+    cl = mine(crows, cfeat, "y_exact", "y_purity", "", "r:dummies", 1)
     base = next((e for e in cl.get("all", []) if e["feature"] == "r:crit_max"), None)
-    lu = mine(real_l, lambda k: k.startswith("f:") and k not in ("f:is_dummy", "f:inputs_declared", "f:po_driver"), "y_whole", "y_kept",
-              "f:fn_class", "f:fanin_dummy_share_d4", 2) if real_l else {"n_rows": 0}
+    print("cluster level mined", file=sys.stderr, flush=True)
+    cl_nc = mine([r for r in crows if (r["build"], r["cluster"]) not in chain_cl], cfeat, "y_exact", "y_purity", "", "r:dummies", 3)
+    lu = mine(real_l, lfeat, "y_whole", "y_kept", "f:fn_class", "f:fanin_dummy_share_d4", 2) if real_l else {"n_rows": 0}
+    lu_nc = mine([r for r in real_l if (r["build"], r["cluster"]) not in chain_cl], lfeat, "y_whole", "y_kept", "f:fn_class",
+                 "f:fanin_dummy_share_d4", 4)
     dummy_l = [r for r in lrows if r["f:is_dummy"]]
     dsum = {}
-    if dummy_l and real_l:
+    if dummy_l and real_all:
         dsum = {"n_dummy_luts": len(dummy_l), "mates_kept_dummy": float(np.nanmean([r["label:mates_kept"] for r in dummy_l])),
-                "mates_kept_real": float(np.nanmean([r["y_kept"] for r in real_l]))}
+                "mates_kept_real": float(np.nanmean([r["y_kept"] for r in real_all]))}
     res = {"designs": sorted({r["design"] for r in crows}), "builds": m["info"], "n_builds": len(m["info"]),
            "register_row": "MEASUREMENT (pointer, 3 pilot designs; real mining on the round 9 full set)",
-           "baseline_max_crit_cluster": base, "cluster_level": cl, "lut_level": lu, "dummy_luts": dsum,
+           "excluded_const_generator_clusters": len(const_cl), "chain_clusters": len(chain_cl),
+           "baseline_max_crit_cluster": base, "cluster_level": cl, "lut_level": lu,
+           "cluster_level_no_chain_clusters": cl_nc, "lut_level_no_chain_clusters": lu_nc, "dummy_luts": dsum,
            "agreement": agreement(cl, lu) if lu.get("n_rows") else {}}
     out_json.parent.mkdir(parents=True, exist_ok=True)
     slim = json.loads(json.dumps(res, default=lambda o: None if o is None else str(o)))
-    for lvl in ("cluster_level", "lut_level"):
-        if "all" in slim.get(lvl, {}):
-            slim[lvl]["all"] = [{k: e[k] for k in ("feature", "family", "region", "auc", "rho", "q_auc", "q_rho", "artefact_dummies")}
-                                for e in slim[lvl]["all"]]
+    for lvl, full in (("cluster_level", True), ("lut_level", True), ("cluster_level_no_chain_clusters", False),
+                      ("lut_level_no_chain_clusters", False)):
+        slim[lvl] = slim_level(slim.get(lvl, {}), full)
     out_json.write_text(json.dumps(slim, indent=1, sort_keys=True, allow_nan=True))
     if out_prefix:
-        sf.write_csv_gz(Path(str(out_prefix) + "-clusters.csv.gz"), crows)
+        sf.write_csv_gz(Path(str(out_prefix) + "-clusters.csv.gz"), crows_all)
         if lrows:
             sf.write_csv_gz(Path(str(out_prefix) + "-luts.csv.gz"), lrows)
     return res

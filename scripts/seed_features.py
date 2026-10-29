@@ -565,13 +565,15 @@ class Build:
             for c in range(K):
                 mem = [v for v in range(len(cl)) if cl[v] == c and inview(v)]
                 memset = set(mem)
+                has_const = int(any(cl[v] == c and self.is_const[v] for v in range(len(cl))))
                 r = {"build": self.name, "cluster": c, "view": view, "K": K, "n_vertices": len(mem),
-                     "weight": sum(self.w[v] for v in mem), "dummies": sum(1 for v in range(len(cl)) if cl[v] == c and self.is_dummy[v])}
+                     "has_const_generator": has_const,  # gnd/vcc are LUT atoms VPR instantiates itself: a construction artefact
+                     "weight": sum(self.w[v] for v in mem) + (has_const if view == "a" else 0), "dummies": sum(1 for v in range(len(cl)) if cl[v] == c and self.is_dummy[v])}
                 r["pin_pressure"] = len(ext_in[c]) / 40
                 r["ext_nets"] = len(ext_in[c]) + len(ext_out[c])
                 r["internal_nets"] = len(internal[c])
                 r["tightness"] = r["ext_nets"] / max(1, len(internal[c]))
-                r["real_fill"] = r["weight"] / 10
+                r["real_fill"] = (r["weight"] - (has_const if view == "a" else 0)) / 10
                 r["neighbours"] = len(nb[c])
                 r["chain"] = int(any(self.w[v] > 1 for v in mem))
                 # largest internal component
