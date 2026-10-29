@@ -1,9 +1,7 @@
-% The Norns III paper draft: seeded simulated-annealing placement from provenance and
-% recovered clusters. IEEEtran conference class; compiles with pdfLaTeX (Overleaf) and BibTeX.
-% Style and figures follow the Odin III paper (shared TikZ palette, IMAGE/odin3-tikz-styles.tex).
-% Numbers trace to the experiment records in this repository (docs/plan/norns-experiment.md and
-% the run logs); gaps are marked with \todo{} and filled as runs land. Status as of 2026-10-28: rounds one to
-% eight (round eight: docs/plan/placers.md Sections 9 and 10, nornsIII #14 and #15), the suite tree (IMAGE/fig_yggdrasil.tex).
+% The Norns III paper: a packer that keeps the HDL's structure, a known-optimum yardstick and the leak it
+% found. Rewritten 2026-10-28 as hypothesis -> experiment -> verdict (docs/paper/hypotheses.md is the register).
+% IEEEtran conference class; compiles with pdfLaTeX (Overleaf) and BibTeX. Style and figures follow the Odin III
+% paper (shared TikZ palette, IMAGE/odin3-tikz-styles.tex). Numbers trace to committed files (comments at the number).
 \documentclass[conference]{IEEEtran}
 
 \usepackage{cite}
@@ -20,15 +18,18 @@
 \input{IMAGE/odin3-tikz-styles}
 
 \newcommand{\code}[1]{\texttt{#1}}
+% Run-in heading (IEEEtran's \paragraph is numbered and adds a colon).
+\newcommand{\pp}[1]{\par\vspace{3pt}\noindent\textit{#1}\ }
+% Glossary: run-in terms, no hanging label column.
+\newenvironment{gloss}{\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\labelwidth}{0pt}\setlength{\labelsep}{0pt}\setlength{\itemindent}{0pt}\setlength{\itemsep}{1pt}\setlength{\parsep}{0pt}\setlength{\topsep}{2pt}\renewcommand{\makelabel}[1]{\textbf{##1}\hspace{0.5em}}}}{\end{list}}
 % A visible marker for numbers not yet measured.
 \newcommand{\todo}[1]{\textbf{[TODO: #1]}}
 \lstset{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true,
         frame=single, framesep=2pt, xleftmargin=3pt, xrightmargin=3pt,
         aboveskip=4pt, belowskip=4pt}
 
-\title{The Norns~III: Seeding Simulated-Annealing Placement with Provenance and Recovered
-Clusters\\
-How hot can the anneal start before it destroys a good initial placement?}
+\title{The Norns~III: Packing with the HDL's Structure,\\
+a Known-Optimum Yardstick, and the Leak It Found}
 
 \author{\IEEEauthorblockN{Peter Jamieson}
 \IEEEauthorblockA{Electrical and Computer Engineering, Miami University\\
@@ -39,477 +40,26 @@ jamiespa@miamioh.edu}}
 \maketitle
 
 \begin{abstract}
-Simulated annealing is the workhorse of FPGA placement, and it starts from an
-initial placement that the anneal then destroys and rebuilds. What if the
-initial placement carried real information -- the HDL hierarchy a
-provenance-tracked front end kept, or the clusters a graph analysis
-recovered from the flat netlist? This paper asks whether such seeds improve
-placement, and, because the anneal's early phase can erase any seed, at what
-initial temperature the seed's advantage dies. The seeds come from Odin~III's
-provenance hierarchy and from Loki~III's L2 clusterings (Louvain, spectral,
-affinity propagation, k-means); the die-level arrangement of clusters comes
-from a cut-weighted quotient-graph layout; and the seeds enter VPR through
-its initial-placement and floorplanning-constraint interfaces, with VPR's
-stock checkpointing flag (on by default, following RLPlace) enabled
-throughout and an off sweep as the control arm. We report
-seed retention at scale~1 and at twice each design's crossover, quality of
-results against an unseeded baseline, and the largest tested temperature
-scale at which each seed still helps -- the recipe a clustering-based
-initial placement should be used with. A second round adds bitwise seeds
-(Odin~III word membership laid out as bit-sliced runs), a random start and a
-coarse-random arm, and two structure analyses that need no placement run; each
-hypothesis is reported with its deciding number, and an appendix keeps the
-research log. Rounds one and two are over 15 designs with one VPR seed per configuration. A third round asks whether VPR's packing step dilutes the HDL structure, builds a packer (a copy of VPR's
-AAPack clusterer with a provenance-affinity gain term) and tests it against the stock packer on 15 designs with three VPR seeds per
-configuration, adds the top-level I/O buses as words, and reads the annealed placement against provenance; its decision rules were
-committed before any measurement (one later amendment, to the proximity analysis, is recorded). Affinity packing raises word purity without
-growing the CLB count, but routed wirelength is slightly worse than the stock packer's and that comparison is inconclusive.
-\input{r4-abstract}
-\input{r5-abstract}
-\input{r6-abstract}
-\input{r7-abstract}
-\input{r8-abstract}
+Before an FPGA design is placed on a chip, the grouping the designer wrote down in the source is mostly lost. This paper tests, one hypothesis and one experiment at a time, whether keeping it helps. It contributes (1) a packer, a copy of VPR's own, with a bonus for keeping the pieces of one HDL register together; (2) a yardstick of designs built so that the best grouping is known, which shows that the standard packer uses 22\% more wire than the known grouping over all topologies and 49\% more on meshes and trees; and (3) a finding about method. The packer's first measured gain (wirelength 0.902 of stock) was a leak: the input file already equalled the answer. Re-run with registers that cut across the blocks, the packer used 1.65 to 2.51 times the wire of the standard packer at every register width we tried, and with perfectly aligned registers it used 0.669 of it. Near-critical connections are kept inside tiles more often than connections in general, on 9 designs. A sweep of VPR options adds eight area and speed effects. Starting placement from the designer's grouping, the idea this work began with, has no measured gain. Speed is judged by the critical-path delay and by near-critical paths; power is not measured. Of 62 hypotheses, 14 are useful, 9 possibly good, 21 inconclusive and 17 dismissed; five ideas are untested.
 \end{abstract}
 
 \begin{IEEEkeywords}
-FPGA placement, simulated annealing, provenance, clustering, VTR
+FPGA packing, placement, provenance, known-optimum benchmarks, VTR
 \end{IEEEkeywords}
 
-% ==========================================================================================
-\section{Introduction}
-\label{sec:intro}
+\input{n-intro}
 
-VPR's simulated-annealing placer starts from an initial placement and anneals
-it: the schedule begins hot enough to move anything, and the early phase
-rearranges the circuit wholesale. The question this paper asks is whether the
-initial placement can be made to \emph{mean} something, and how much of that
-meaning survives the anneal. Gharibian et al. showed that system-level
-structure recovered from a flat netlist correlates with placement
-locality~\cite{gharibian2010finding,gharibian2013analyzing,gharibian2014identifying}.
-Odin~III keeps the provenance link that makes recovery unnecessary for the
-hierarchy~\cite{gharibian2010finding}, and Loki~III recovers clusters from the
-flat netlist without a language model. RLPlace~\cite{elgammal2022rlplace}
-showed that the anneal itself can be improved -- directed moves chosen by a
-reinforcement-learning agent and checkpointing that prevents oscillation --
-starting from VTR's analytic placement. This paper connects those lines: the
-seed carries the structure, the anneal is measured for how much of it the
-seed can keep, and the largest tested temperature scale at which the
-advantage survives is reported as data, not tuned away.
+\input{n-background}
 
-The contributions are: (1) a seeding methodology -- provenance hierarchy and
-four recovered clusterings, arranged on the die by a quotient-graph layout,
-entering VPR through its initial-placement and constraint interfaces, with
-VPR's stock checkpointing enabled and its off sweep as the control arm;
-(2) the crossover sweep, which calibrates the
-highest useful initial temperature per design against the best placement
-any seed achieves; (3) the retention and quality numbers per seed, with the
-full-seed versus inter-cluster-only split, which measures sensitivity to the
-intra-cluster order; (4) a second round that adds bitwise (word and bit-slice)
-seeds, a random-start and a coarse-random arm that separate the clustering from
-the coarse layout, and structure analyses of when seeding helps
-(Sections~\ref{sec:r2-method} and~\ref{sec:r2-results}), with the research log in
-the appendix; (5) rounds three to seven, which test whether VPR's packer dilutes the
-HDL structure, build clustering benchmarks whose optimum is known by construction, remove
-a leak from them, and run a placement corpus with a held-out hindsight-clustering gap
-(Sections~\ref{sec:r3-method} to~\ref{sec:r7-results}); and (6) round eight, which places the same designs with
-nextpnr's analytic and annealing placers through VPR's flat-placement file, per family, with
-a run record per run (Section~\ref{sec:r8-results}).
+\input{n-innovations}
 
-Figure~\ref{fig:yggdrasil} places The Norns~III in the suite. Yggdrasil~III is drawn as a tree. Odin~III is the trunk, and the provenance hierarchy that seeds the placement comes from its one IR. The Norns~III is a side branch, a tool and experiment for placement with provenance, next to Loki~III (reverse engineering, whose L2 clusterings are the recovered seeds), Leman~Russ~III and Verdandi~III. It runs Odin~III and VPR as programs and changes neither. M\'{\i}mir~III, the circuit knowledge base, hangs from the canopy as the fruit, and the Norns' run records are among what it stores. Urdarbrunnr, the well of FPGA CAD and its views (VTR and VPR, nextpnr, DREAMPlaceFPGA, OpenPARF), feeds The Norns~III.
+\input{n-method}
 
-\begin{figure*}[tp]
-\centering
-\odinfit{\textwidth}{\input{IMAGE/fig_yggdrasil}}
-\caption{Yggdrasil~III drawn as a tree, and where The Norns~III sits in it. The trunk is Odin~III (\protect\url{https://github.com/drpaj12/odin3}); the roots are its inputs and the tools it links to, and three wells hold outside work. The oracles stand beside the trunk. The canopy holds Wyrd~III (\protect\url{https://github.com/drpaj12/wyrd}), Bifrost~III and Midgard~III, and the fruit, M\'{\i}mir~III (\protect\url{https://github.com/drpaj12/mimirIII}). Side branches carry tools and experiments: Loki~III (\protect\url{https://github.com/drpaj12/loki}), Leman~Russ~III, The Norns~III (\protect\url{https://github.com/drpaj12/nornsIII}, this paper) and Verdandi~III (\protect\url{https://github.com/drpaj12/verdandiIII}). The hub is \protect\url{https://github.com/drpaj12/YggdrasilIII}.}
-\label{fig:yggdrasil}
-\end{figure*}
+\input{n-experiments}
 
-\section{Background}
-\label{sec:background}
+\input{n-discussion}
 
-\subsection{Simulated annealing placement and RLPlace}
-
-VPR places by simulated annealing from an analytic initial
-placement~\cite{luu2014vtr7,murray2020vtr8}. The anneal's moves are mostly
-random; its early phase can undo any structure the start carried. RLPlace
-improves the anneal rather than the start: a K-armed bandit selects among
-directed move types (simple moves and swaps, bounded centroid, median,
-critical-path moves), and checkpointing periodically saves the best placement
-so oscillation cannot throw it away~\cite{elgammal2022rlplace}. Our experiment
-keeps the anneal as-is (VPR already ships RLPlace-style checkpointing, on by
-default) and changes the start instead; the checkpointing prediction -- that
-save-best/restore extends the useful temperature range -- is one of the
-hypotheses we test.
-
-\subsection{The seeds}
-
-The provenance hierarchy (Urd) is the module structure Odin~III records on
-every netlist object; it needs no recovery. Urd has a single cluster only on
-sha and stereovision3, two on diffeq1 and diffeq2 (their one module plus a
-flat group), and one per populated module plus a flat group (3 to 23) on the
-other designs, so
-its signal is degenerate on the two one-cluster designs. The recovered
-clusters (Verdandi)
-are Loki~III L2 partitions: Louvain, spectral, affinity propagation and
-k-means at several $k$, scored in the Loki~III paper~\cite{loki3} against the
-known hierarchy. Agent default: Norns builds the Loki L0 graph.json from the
-same Odin~III BLIF, because Loki's key.json uses Odin API names that do not
-join to VPR atom names; the clustering code is Loki's.
-The two seed families differ exactly in the question's terms: provenance is
-the structure the designer wrote, clusters are the structure the flat netlist
-still shows.
-
-\section{Methodology}
-\label{sec:method}
-
-\subsection{Seed construction}
-
-Each seed is a partition of the placed blocks. Its die-level arrangement
-comes from the quotient graph: contract each cluster to a node, weight edges
-by inter-cluster net cuts, lay the quotient out by a coarse force-directed
-solve, and scale it to the die. Inside a cluster, blocks take the seed's
-internal order, or a shuffle in the inter-cluster-only arm; the two arms
-differ only in that intra-cluster order, not in the coarse cluster layout.
-
-\subsection{Seed construction in detail}
-\label{sec:seed-detail}
-
-\textbf{One die, one netlist.} Every seed targets the same die: VPR's
-\code{k6\_frac\_N10\_frac\_chain\_mem32K\_40nm} architecture with six-input
-LUTs (K~=~6). The netlist is the VTR-dialect BLIF that Odin~III's front end
-writes for each design: \code{read\_verilog --nolatches --vtr-compat},
-\code{proc}, \code{fsm}, \code{opt}, \code{flatten}, \code{opt -full},
-\code{wreduce}, \code{hardmap}, \code{lower}, \code{abc --lut 6},
-\code{stats}, and \code{write\_blif --vtr --lut-k 6 --name-style provenance}.
-Each configuration is one deterministic VPR run (\code{--seed 1}). The
-unseeded baseline run is the comparison point and also supplies the seed
-builders: its analytic initial placement (\code{initial.place}) gives every
-soft seed legal slots and its fine order, and its \code{final.flat\_place} is
-the reference the retention metric uses.
-
-\textbf{Coarse layout.} Every soft seed shares one die-level arrangement, the
-quotient-graph layout. Each cluster is contracted to one node and each pair of
-clusters is weighted by the number of nets cut between them; the weighted
-quotient graph is laid out by a force-directed solve
-(\code{networkx.spring\_layout}, fixed seed), and the embedding is scaled onto
-the die's logic-slot bounding box. Each cluster then takes the free CLB slots
-nearest its laid-out point, nearest first. Clusters that exchange many nets
-therefore start close together, and the die fills in cluster-sized groups
-instead of a scatter.
-
-\textbf{Fine order.} The soft arm has two variants that differ only inside a
-cluster. \code{Full} keeps the baseline analytic order: a cluster's blocks
-keep their relative analytic positions when they are assigned the cluster's
-slots. \code{Inter} shuffles the intra-cluster order under a fixed shuffle
-seed, so only the inter-cluster structure survives; because the coarse
-cluster layout is identical in the two variants, the pair isolates the fine
-order. The hard arm has no fine-order choice: it hands VPR one
-\code{PartitionRegion} per cluster, sized from the full seed's slots and
-expanded until it holds the cluster's logic (and nudged to cover a memory or
-multiplier site the cluster needs), and VPR's placement orders the blocks
-inside each region.
-
-\textbf{Placement macros.} Every seed honours the die's placement macros: I/O
-pads never move (their I/O sites are fixed by the architecture),
-\code{mult\_36} macros stay anchored on their tile footprint, and an adder
-carry chain moves as one vertical run in a single column, head at the top
-(VPR places a chain as a direct vertical macro). Chains are assigned slots
-before the nearest-first fill, so a chain is never split.
-
-\textbf{The seed families.} The Urd seed is the provenance hierarchy made
-explicit: Odin~III writes each block's HDL module into its netlist name, the
-seed builder reads that module from the BLIF, and each populated module
-becomes one cluster; blocks that carry no module name join one flat cluster.
-Urd is one cluster on sha and stereovision3, two on diffeq1 and diffeq2 (one
-module plus the flat group), and one per populated module plus the flat group
-on the other designs. The rationale is the designer's
-locality: modules are the units the designer grouped, and logic inside a
-module was written to communicate (shared words, state, control), so a module
-cluster concentrates the connectivity the placer is paid to shorten. That is
-the hypothesis the Urd arm tests.
-
-The Verdandi seeds are Loki~III's L2 clusterings of the flat netlist:
-Louvain, spectral, affinity propagation, and k-means at $k$, $2k$ and $4k$,
-with $k$ the design's module count (two where the design has one module).
-Norns builds the L0 \code{graph.json} the clusterings read from the same
-Odin~III BLIF, because Loki's \code{key.json} uses Odin API names that do not
-join to VPR atom names; the clustering code is Loki's. A recovered cluster
-approximates the provenance grouping from connectivity alone, so comparing
-Urd with Verdandi isolates what the HDL structure adds over the graph.
-
-\textbf{Why a seed should beat a random start.} A random placement scatters
-communicating logic across the die; the quotient layout puts each cluster's
-logic together and puts clusters that exchange nets next to each other, so
-the anneal starts from the structure it is meant to find and refines from
-there. The experiment tests that mechanism rather than assuming it, and it
-compares against VPR's analytic start, which already respects connectivity,
-not against a random placement. Two measurements report what the seed did:
-retention, the fraction of a seed's CLBs found inside its seed cluster's
-region at exit, has medians 0.68 (full) and 0.70 (inter) at VPR's own start
-temperature and 0.52--0.74 per family at twice the crossover; and the
-crossover sweep finds the largest tested temperature scale at which the seed
-still wins, the point where its contribution stops surviving the anneal.
-
-\textbf{What the HDL constructs say about a good start.} HDL modules, buses,
-datapath words and finite-state machines group logic that communicates: a bus
-is one word fanned out to every consumer, a datapath chain is a dataflow
-line, and an FSM's next-state logic and registers exchange signals every
-cycle. Provenance preserves that grouping in the netlist, so a seed built
-from it starts the placer with the designer's locality already on the die;
-L2 clusters try to rediscover it from connectivity alone, and this
-experiment measures how well that substitute places, not how closely the
-clusters match the modules. That is why Urd
-and Verdandi are the arms, and why the paper asks whether recovered structure
-is interchangeable with provenance.
-
-\subsection{Injection}
-
-Seeds enter VPR two ways, both already in the pinned build (v8.0.0+18416):
-soft, as an initial placement file (\code{--read\_initial\_place\_file}) that
-the anneal is free to move away from; and hard, as floorplanning constraints
-(\code{--read\_vpr\_constraints}) with one PartitionRegion per cluster, which
-the anneal cannot violate at any temperature. The hard arm constrains the
-regions only, so the anneal chooses the fine placement inside each one (one
-hard variant, no full/inter split). \code{--write\_initial\_place\_file}
-dumps VPR's own analytic start for the baseline study. VPR's placement
-macros are respected: I/O pads and the multiplier tiles stay anchored, and
-carry chains move as one vertical run. The seeds are built from an Odin~III
-provenance BLIF and Loki~III's clusterings of the same netlist, arranged by
-a cut-weighted quotient-graph layout with \code{networkx} (spring layout,
-fixed seed). Building the seed files also needs VPR's unseeded baseline
-placement for legal slots, so each design's baseline run precedes its seeds.
-
-\subsection{The crossover sweep}
-
-The calibration loop follows the data, in order. First, run every seed and
-keep the best final placement $P^*$ (and which seed made it). Second,
-cold-start a fresh anneal from $P^*$ and sweep the initial temperature
-upward; the crossover is the largest tested scale at which the cold start
-still routes shorter than the unseeded run at the same scale, a lower bound
-on the true fall point when the sweep stops at its cap. The sweep is run once
-per design, so $S$ is design-level and identical across that design's seeds.
-The temperature is reported as a multiple $S$ of VPR's automatic
-start-temperature estimate. Third, run every seed at twice the design's
-crossover against an unseeded run at the same temperature: whether the seed
-still wins there tests how much of its advantage survives a hot restart. The
-checkpointing arm repeats the sweeps with VPR's checkpointing
-disabled; per RLPlace, the crossover should move hotter when it is on.
-
-\subsection{Metrics and data}
-
-Per run: seed retention (fraction of cluster CLBs still inside their seed
-cluster's region at exit; mean displacement from the seed coordinate), routed
-wirelength, critical-path delay, minimum channel width, placement runtime,
-and the per-temperature cost curve. Designs are the 15 VTR benchmarks that
-fit the development machine, smallest first, one run at a time under the
-heavy lock. Every number in this paper traces to a kept record; large data
-keeps its scripts.
-
-\subsection{Benchmarks}
-\label{sec:benchmarks}
-
-Table~\ref{tab:benchmarks} reports each design's construction and its
-post-technology-mapping size. The module count is the front end's, while the
-CLB count and the grid are VPR's own numbers for the packed netlist, so the
-table describes the designs as the experiment actually places them.
-
-% BEGIN tab:benchmarks prose
-The 15 designs span two orders of magnitude after technology mapping:
-from 13 CLBs (ch\_intrinsics) to 1956 (stereovision2),
-4843 CLBs in total. The mean is 322.9 CLBs and the median 125;
-the mean sits well above the median because three stereovision designs carry most of the logic.
-VPR auto-sizes a square grid to the packed netlist, with a mean side of 27.2 tiles
-(median 20) and a mean of 1076.4 grid tiles (median
-400). Grid size follows the largest resource demand, not the CLB count:
-I/O-heavy and memory-heavy designs such as mkDelayWorker32B get a large die for few CLBs.
-% END tab:benchmarks prose
-
-\begin{table*}[t]
-\caption{Benchmark construction and post-technology-mapping size. All fifteen
-designs are from the VTR~8.0 benchmark set
-(\code{vtr\_flow/benchmarks/verilog}). Modules is the front end's module
-count, CLBs the \code{clb} blocks VPR packs, Memory and Mult the memory and
-\code{mult\_36} blocks, and Grid the auto-sized device grid with its tile
-count in parentheses. Sizes are read from each design's baseline run log and
-kept in \code{data/benchmark-sizes.json}.}
-\label{tab:benchmarks}
-\centering
-\footnotesize
-\begin{tabular}{@{}l l r r r r c@{}}
-\toprule
-Design & Suite & Modules & CLBs & Memory & Mult & Grid (tiles) \\
-\midrule
-ch\_intrinsics & VTR 8.0 & 2 & 13 & 1 & 0 & $10\times$10 (100) \\
-stereovision3 & VTR 8.0 & 1 & 15 & 0 & 0 & $7\times$7 (49) \\
-diffeq2 & VTR 8.0 & 1 & 22 & 0 & 5 & $16\times$16 (256) \\
-diffeq1 & VTR 8.0 & 1 & 37 & 0 & 5 & $16\times$16 (256) \\
-mkPktMerge & VTR 8.0 & 7 & 21 & 15 & 0 & $28\times$28 (784) \\
-raygentop & VTR 8.0 & 15 & 143 & 1 & 6 & $19\times$19 (361) \\
-sha & VTR 8.0 & 1 & 142 & 0 & 0 & $17\times$17 (289) \\
-boundtop & VTR 8.0 & 13 & 54 & 1 & 0 & $15\times$15 (225) \\
-mkSMAdapter4B & VTR 8.0 & 8 & 125 & 5 & 0 & $20\times$20 (400) \\
-or1200 & VTR 8.0 & 16 & 252 & 2 & 1 & $27\times$27 (729) \\
-stereovision0 & VTR 8.0 & 25 & 707 & 0 & 0 & $33\times$33 (1089) \\
-stereovision1 & VTR 8.0 & 16 & 788 & 0 & 43 & $40\times$40 (1600) \\
-mkDelayWorker32B & VTR 8.0 & 16 & 74 & 43 & 0 & $50\times$50 (2500) \\
-stereovision2 & VTR 8.0 & 24 & 1956 & 0 & 192 & $82\times$82 (6724) \\
-blob\_merge & VTR 8.0 & 2 & 494 & 0 & 0 & $28\times$28 (784) \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\begin{figure}[t]
-\centering
-\odinfit{\columnwidth}{\input{IMAGE/fig_norns}}
-\caption{The Norns~III experiment. Seeds from provenance and recovered
-clusters, arranged by a quotient-graph layout, enter VPR softly (initial
-placement) or hard (constraints). The crossover sweep cold-starts from the
-best placement and raises the initial temperature until the seed's advantage
-dies or the sweep reaches its cap; the checkpointing arm (VPR's stock flag,
-on vs off) tests whether save-best/restore extends the range.}
-\label{fig:norns}
-\end{figure}
-
-\input{r2-method}
-
-\input{r3-method}
-
-\input{r4-method}
-
-\input{r5-method}
-
-\input{r6-method}
-\input{r7-method}
-
-\section{Results}
-\label{sec:results}
-
-\begin{table}[t]
-\caption{Geomean quality ratios vs the unseeded baseline, per seed family,
-for the soft initial-placement arm; the inter-cluster-only row shuffles the
-order inside each cluster and pools all seven seed families, and the k-means
-row pools $k$, $2k$ and $4k$. Below 1.0 is better. The hard-constraint arm is
-discussed in the text.}
-\label{tab:qor}
-\centering
-\footnotesize
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Seed & Wirelength & Delay & Chan. width & Runtime \\
-\midrule
-Urd (hierarchy) & 1.029 & 1.004 & 0.958 & 1.068 \\
-Louvain & 1.008 & 0.982 & 0.980 & 1.091 \\
-Spectral & 1.006 & 0.993 & 0.968 & 1.098 \\
-Affinity propagation & 1.002 & 1.003 & 0.982 & 1.086 \\
-k-means ($k$, $2k$, $4k$) & 1.006 & 0.985 & 0.975 & 1.088 \\
-Inter-cluster only & 1.015 & 0.981 & 0.987 & 1.102 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\caption{The crossover sweep, per seed family: the largest tested scale $S$
-of VPR's automatic start-temperature estimate at which the cold start from
-$P^*$ (the best placement over all seeds) still routes shorter than an
-unseeded run at the same $S$, and the seed's median retention at the hot step
-($2S$). $S$ is design-level (one sweep per design), so it is identical across
-families; where the sweep stopped at its cap, $S$ is a lower bound.}
-\label{tab:crossover}
-\centering
-\footnotesize
-\begin{tabular}{@{}lrr@{}}
-\toprule
-Seed & Crossover $S$ & Retention \\
-\midrule
-Urd (hierarchy) & 16$\times$ & 0.744 \\
-Louvain & 16$\times$ & 0.520 \\
-Spectral & 16$\times$ & 0.635 \\
-Affinity propagation & 16$\times$ & 0.564 \\
-k-means ($k$, $2k$, $4k$) & 16$\times$ & 0.667 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The 15 completed designs give the ratios of Table~\ref{tab:qor}. Soft seeds
-stay within a few percent of the unseeded baseline in routed wirelength
-(1.009 for the full seed, 1.015 for the inter-cluster-only arm, both pooled
-over all seven seed families) while cutting the minimum channel width to 0.973 and
-costing 1.087 in placement runtime (both also pooled). The hard arm is worse on
-average (geomean 1.088 over the 104 runs that completed; 14 of those
-still beat the baseline, and stereovision3's hard geomean is 0.906), but not uniformly: one
-blob\_merge k-means$_{2k}$ run is missing from the arm because VPR's initial placement could
-not fit 9 CLBs inside its regions (the constraints are too tight, not a packing failure).
-Fixed regions may block the anneal's fine moves across cluster borders -- a hypothesis the
-aggregate numbers are consistent with. No single seed family dominates: Urd is the worst full
-seed in soft wirelength (1.029) and the best hard seed (1.062 against
-1.075-1.120 for the recovered families). Retention at
-scale~1 is 0.68 of a seed's cluster CLBs (full) and 0.70 (inter).
-
-\input{r2-results}
-
-\input{r3-results}
-
-\input{r4-results}
-
-\input{r5-results}
-
-\input{r6-results}
-\input{r7-results}
-\input{r8-results}
-
-\section{Discussion}
-\label{sec:discussion}
-
-Three observations. First, the seed families span a narrow band but are not
-interchangeable: provenance (Urd) is the worst full seed in the soft arm (1.029) and the best in
-the hard arm, so it is not consistently better or worse than recovered clusters. The full and
-inter-cluster-only arms differ by 0.6\% in pooled wirelength
-(1.009 vs 1.015); round one has no arm that randomizes the coarse cluster layout;
-the round-two permuted-cluster and random-start arms (Section~\ref{sec:r2-results}) measure it. Second, VPR's checkpointing does not separate the crossover in the
-measured range: the two sweeps find the same scale on 14 of the 15 designs where both found one, and the control extends it on stereovision0 (control 32 vs 16). RLPlace's prediction that checkpointing extends the useful
-range is therefore not observed on these designs; if it holds, its effect is smaller than the
-between-design variation. Third, the safe recipe is
-to cold-start from a cluster-derived placement at a temperature scale at or below the crossover,
-which is a multiple of VPR's own estimate; above it the seed's retention is still high per family
-(medians 0.52-0.74 at twice the crossover, individual runs
-0.21-1.00) but it wins only 57 of
-105 head-to-heads against an unseeded run at the same temperature -- the coarse structure
-survives the anneal, the advantage does not.
-
-\input{r2-discussion}
-
-\input{r3-discussion}
-
-\input{r4-discussion}
-
-\input{r5-discussion}
-
-\input{r6-discussion}
-\input{r7-discussion}
-
-\section{Conclusion}
-\label{sec:conclusion}
-
-Seeding VPR's anneal is worth it only as a calibrated cold start: at
-VPR's own start temperature the cluster layouts and the provenance hierarchy place at parity
-with the analytic start, but from a good final placement they keep winning when the anneal is
-restarted hotter, up to the largest tested scale that still wins -- a lower bound on the fall
-point where the sweep hit its cap. The recipe is that crossover table,
-not a seed-specific tuning: start at or below it, and expect the seed to inform the coarse
-placement while the anneal supplies the fine one.
-
-\input{r2-conclusion}
-
-\input{r2-appendix}
-
-\input{r3-appendix}
-
-\input{r4-appendix}
-
-\input{r5-appendix}
-
-\input{r6-appendix}
-\input{r7-appendix}
+\input{n-log}
 
 \bibliographystyle{IEEEtran}
 \bibliography{joined}

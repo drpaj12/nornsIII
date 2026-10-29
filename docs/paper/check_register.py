@@ -49,7 +49,9 @@ def read_rows(text: str) -> tuple[list[tuple[str, str]], list[str]]:
         if word:
             rows.append((cells[0], word))
         else:
-            problems.append(f"{cells[0]}: verdict cell starts with '{cells[column][:30]}'")
+            problems.append(
+                f"{cells[0]}: verdict cell starts with '{cells[column][:30]}'"
+            )
     return rows, problems
 
 

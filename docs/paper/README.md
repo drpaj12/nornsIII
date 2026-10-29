@@ -10,3 +10,5 @@ the hub's `images/src/` files (Yggdrasil III hub, `drpaj12/YggdrasilIII`). `make
 `docs/paper`) writes `IMAGE/blind/fig_yggdrasil.tex`, the same figure with the suite and tool names, the three
 wells and the self-cited baseline replaced by placeholders, as the Odin III paper's `make_blind.py` does. No
 build uses it yet (there is no blind build of this paper).
+
+Step 2 (2026-10-28): `norns.tex` is now the hypothesis, experiment, verdict rewrite and inputs `n-*.tex`. The legacy `r2-*` to `r8-*.tex` files are no longer inputs (kept as the pre-restructure text). Gates: `python3 docs/paper/check_terms.py --tex docs/paper/norns.tex` (0 violations), `python3 docs/paper/check_register.py` (verdict counts), `python3 -m unittest discover -s tests`. Build: `tectonic -X compile build/norns-local.tex -Z search-path=docs/paper` (the wrapper selects OT1 fonts).

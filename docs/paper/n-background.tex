@@ -1,0 +1,80 @@
+\section{Background}
+\label{sec:background}
+
+This section defines every term of the paper once, in dependency order, so that no term is used before its definition. The basic definitions follow the order and the wording of the FPGA and CAD background chapters of two University of Toronto theses of the same research line~\cite{jamiesonthesis,luu2014thesis}: the soft logic fabric and the basic logic element, the three CAD stages that follow synthesis, and (from Luu) timing criticality. The terms that are the paper's own come after them.
+
+\subsection{Glossary}
+\label{sec:glossary}
+
+\begin{gloss}
+% Each definition is on one line; check_terms.py reads these lines (docs/paper/terms.md).
+\item[FPGA] A chip made of many small programmable logic blocks joined by programmable wires; a design is loaded onto it~\cite{jamiesonthesis}.
+\item[netlist] A list of the logic gates of a design and the wires between them~\cite{jamiesonthesis}.
+\item[HDL] Hardware description language: the Verilog text a designer writes.
+\item[LUT] Look-up table: the small memory that implements any logic function of a few inputs~\cite{jamiesonthesis,luu2014thesis}.
+\item[$K$] The number of inputs of a LUT; here $K=6$.
+\item[BLE] Basic logic element: one LUT with its flip-flop~\cite{jamiesonthesis,luu2014thesis}.
+\item[cluster] A set of netlist blocks that are meant to belong together; a clustering is a partition of the netlist into clusters.
+\item[CLB] Configurable logic block: a group of 10 BLEs placed as one unit (a logic block or soft logic cluster tile in the theses).
+\item[module] One HDL module, the unit of the design hierarchy.
+\item[provenance] The record kept on every netlist object of which HDL text, and which module, it came from.
+\item[word] A group of netlist blocks that are the bits of one HDL vector (a register, an adder or a bus).
+\item[io-word] A word made from a top-level input or output bus, extended inward to the logic next to it.
+\item[placement] The choice of which site on the chip each block occupies; a placer makes it~\cite{jamiesonthesis}.
+\item[routing] The choice of which wire segments connect the placed blocks; the router makes it~\cite{jamiesonthesis}.
+\item[VPR] The place-and-route program of the VTR flow~\cite{rose2012vtr,luu2014vtr7,murray2020vtr8}.
+\item[wirelength] The total length of the routed wires of a design (WL); lower means less routing area and usually less delay.
+\item[critical path] The slowest register-to-register path of a design; it sets the clock speed.
+\item[CPD] Critical-path delay: the delay of the critical path, in nanoseconds.
+\item[slack] How much earlier than required a signal arrives; negative slack means the clock is too fast. VPR normalises slack by the CPD~\cite{luu2014thesis}.
+\item[near-critical] A path (or connection) whose delay is within a stated fraction of the CPD; criticality is $1-\text{slack}/\text{CPD}$~\cite{luu2014thesis}, and VPR~9 relaxes it per timing constraint~\cite{wainberg2015relaxed}.
+\item[channel width] The number of routing tracks per channel; a smaller routable width needs less wire area.
+\item[packing] The step that groups LUTs and flip-flops into CLBs before placement; VPR's packer is AAPack~\cite{jamiesonthesis,luu2014thesis}.
+\item[simulated annealing] A placement search that accepts worse moves at a falling temperature, to escape bad layouts.
+\item[analytic placement] A placement computed by solving a smooth wirelength model; VPR's starting point for the anneal~\cite{murray2020vtr8}.
+\item[affinity packing] The Norns packer: a copy of VPR's packer with a bonus $\beta$ for adding atoms of the same word or module to a CLB (the affinity file names the group of each atom).
+\item[purity] The share of a CLB's labelled atoms that carry its most common word (or module), atom-weighted over CLBs.
+\item[split factor] How many CLBs a word spans, divided by the fewest CLBs that could hold it; 1.0 is best.
+\item[known-optimum yardstick] A design built from blocks that each fill exactly one CLB, so the intended clustering is known by construction; it is an optimum for CLB count only and not a proven best placement.
+\item[alignment] How closely the HDL words match the blocks of a yardstick design: 1 means each word is one block, 0 means each word holds about ten blocks' bits.
+\item[leak] A gain that exists only because the input file (the word file) already equals the answer (the block partition).
+\item[pairing class] The class of a pair of atoms in one CLB: series-critical, series-noncritical, shared-input, orthogonal or filler.
+\item[seed] A placement file given to VPR to start the anneal from, instead of its own start; soft seeds may be left by the anneal and hard seeds are floorplan regions it must keep.
+\item[Urd] The provenance seed: its clusters are the HDL modules.
+\item[Verdandi] The recovered seed: clusters found from the flat netlist alone (Loki~III L2: Louvain, spectral, affinity propagation, $k$-means)~\cite{loki3}.
+\item[quotient layout] A die layout of clusters: contract each cluster to a node, weight edges by cut nets, lay the small graph out and scale it to the die.
+\item[scale $S$] The anneal's start temperature as a multiple of VPR's own automatic estimate.
+\item[crossover] The largest tested scale $S$ at which a seeded cold start still routes shorter than an unseeded run.
+\item[retention] The fraction of a seed's CLBs still inside the seed cluster's region when the anneal ends.
+\item[hindsight clustering] The stock clustering with atoms moved or swapped between neighbouring CLBs according to where the best stock placement put them.
+\item[flat-placement file] VPR's one-line-per-atom placement file (\code{--read\_flat\_place}), through which an outside placer enters VPR.
+\item[nextpnr] An open-source FPGA placer with an analytic mode (HeAP) and an annealing mode (SA)~\cite{gort2012heap,shah2019nextpnr}.
+\item[reread control] The control that reads VPR's own final placement back into the default flow.
+\item[rule H0] Adders, multipliers, RAMs and pads are fixed at VPR's analytic positions for the external placers.
+\item[run record] A \code{mimir-run.json} written for each VPR or nextpnr run: commands, tool commits, parameters with their source, hashes.
+\item[geomean ratio] The geometric mean over designs of variant over reference; below 1 favours the variant for a lower-is-better metric.
+\item[sign test] An exact two-sided test on how many designs improve; ties are left out.
+\item[Wilcoxon test] A rank test of the paired per-design differences (one-sided where the text says so).
+\item[Holm adjustment] The correction of p-values for several simultaneous tests.
+\item[bootstrap interval] A confidence interval from resampling the designs.
+\item[verdict rule] The numeric rule that maps a result to supported, not supported or inconclusive.
+\end{gloss}
+
+Three more terms are used as plain words and need no entry: \emph{area} is the LUT count, the CLB count, the die grid and the channel width; \emph{speed} is the CPD and the near-critical statistics; \emph{power} is not measured (Section~\ref{sec:metrics}).
+
+\subsection{Concepts}
+
+The flow runs in this order. The front end reads the HDL and writes a netlist (here Odin~III, with the provenance record on every object). Packing groups the netlist into CLBs. Placement puts the CLBs and the fixed blocks on the die: VPR starts from an analytic placement and refines it by simulated annealing. Routing connects the placed blocks, and timing analysis reports slack and the CPD~\cite{rose2012vtr,luu2014vtr7,murray2020vtr8}. The designer's grouping is a property of the HDL. It can be lost at each step: the front end may drop the register boundaries, packing mixes registers in a CLB for connectivity, and the anneal moves CLBs freely.
+
+Two earlier lines of work connect to this question. Gharibian et al.\ recovered system-level structure from flat netlists and showed that it correlates with placement locality~\cite{gharibian2010finding,gharibian2013analyzing,gharibian2014identifying}. Cong, Romesis and Xie built placement problems with known optima to measure how far placers are from them~\cite{Cong03tpeko}; our yardstick follows that idea for packing. RLPlace improves the anneal itself with directed moves and checkpointing~\cite{elgammal2022rlplace}; we leave the anneal as it is.
+
+\subsection{Where the Norns sits in the suite}
+
+Figure~\ref{fig:yggdrasil} places The Norns~III in the suite. Yggdrasil~III is drawn as a tree. Odin~III is the trunk, and the provenance record that the packer uses comes from its one IR. The Norns~III is a side branch, a tool and experiment for placement with provenance, next to Loki~III (reverse engineering, whose L2 clusterings are the recovered seeds), Leman~Russ~III and Verdandi~III. It runs Odin~III and VPR as programs and changes neither. M\'{\i}mir~III, the circuit knowledge base, hangs from the canopy as the fruit, and the Norns' run records are among what it stores. Urdarbrunnr, the well of FPGA CAD and its views (VTR and VPR, nextpnr, DREAMPlaceFPGA, OpenPARF), feeds The Norns~III.
+
+\begin{figure*}[tp]
+\centering
+\odinfit{\textwidth}{\input{IMAGE/fig_yggdrasil}}
+\caption{Yggdrasil~III drawn as a tree, and where The Norns~III sits in it. The trunk is Odin~III (\protect\url{https://github.com/drpaj12/odin3}); the roots are its inputs and the tools it links to, and three wells hold outside work. The oracles stand beside the trunk. The canopy holds Wyrd~III (\protect\url{https://github.com/drpaj12/wyrd}), Bifrost~III and Midgard~III, and the fruit, M\'{\i}mir~III (\protect\url{https://github.com/drpaj12/mimirIII}). Side branches carry tools and experiments: Loki~III (\protect\url{https://github.com/drpaj12/loki}), Leman~Russ~III, The Norns~III (\protect\url{https://github.com/drpaj12/nornsIII}, this paper) and Verdandi~III (\protect\url{https://github.com/drpaj12/verdandiIII}). The hub is \protect\url{https://github.com/drpaj12/YggdrasilIII}.}
+\label{fig:yggdrasil}
+\end{figure*}

@@ -2,27 +2,18 @@
 
 Order requested in the brief. Every current section is mapped (keep / move / shrink to a log row / drop) so nothing is lost silently. Paper text is not edited in this step.
 
-## New structure
+## New structure (as built in step 2; norns.tex inputs n-*.tex)
 
-0. Abstract: plain-English problem, the innovations with their USEFUL hypotheses only, one sentence on what was dismissed.
-1. Introduction.
-   - Problem in plain English (placement starts from a layout; does the designer's structure help; where is it lost).
-   - The innovations in plain English (innovations.md 1 to 8, shortened).
-   - Contributions: the USEFUL hypotheses H8, H9a-word/H9a-wordio, H10a, H17c, H20/H25/H19/H32, H33, H35, H36 and the honest INCONCLUSIVE answers R1a, R1e, R7a.
-2. Background (terms in dependency order, terms.md): FPGA, netlist, HDL, LUT, K, BLE, CLB, provenance, placement, routing, wirelength, critical path, CPD, slack, near-critical, VPR, packing, simulated annealing, seed.
-3. The innovation (plain English, then technical): the packer with HDL affinity; the known-optimum benchmarks; the pair-class census; seeding and the crossover as the baseline idea that did not pay.
-4. Methodology: setup (15 VTR designs, architecture, VPR/VTR 9 commit), metrics: area (logic CLB count, grid, channel width), speed (routed WL, CPD, and near-critical statistics: only H17c exists today), power (not measured in any round); statistics (geomean ratio, sign test, Wilcoxon, Holm, bootstrap, permutation null); decision rules and what is pre-registered (round 3 to 6) versus reconstructed (rounds 1, 2 H2, 7, 8); data: the Mimir dataset and what provenance adds (section "Mimir as the instrument" below).
-5. Experiments, one subsection per USEFUL or INCONCLUSIVE hypothesis kept in the main paper: hypothesis, experiment, result, verdict.
-   - 5.1 Does packing dilute structure (H8, H10a, H9a-word/wordio).
-   - 5.2 Room for a better packer (H25/H19, H20, H32).
-   - 5.3 When does HDL-aware packing pay (H33, H35, H36; H34a-d and H37 as the limits).
-   - 5.4 What gets clustered on critical paths (H17a measurement, H17c).
-   - 5.5 Does seeding help at VPR's temperature (R1a, R1b, R1e, H4; INCONCLUSIVE/DISMISSED answers to the opening question).
-   - 5.6 Is the hierarchy physical (H1, H11; INCONCLUSIVE).
-   - 5.7 Headroom by hindsight (R7a) and other placers (R8a, R8b).
-6. Discussion and limits: single VPR seed in rounds 1-2, 15 small designs, leak, chain control failure (H37), no power, H0 bias, erratum (carry chains absent in round-3 affinity files).
-7. Conclusion.
-Appendix A: research log, every hypothesis incl. DISMISSED, one row each (hypotheses.md rows with verdict DISMISSED or not in main paper; the dated thought-pattern log stays here).
+Changes to the step-1 outline from Peter's decisions: seeding is a negative baseline (decision 4); the paper is re-centred on the packer, the known-optimum yardstick and the leak finding; H22 is withdrawn and replaced by H22' (decision 2); H37 is reported per alignment level (decision 5); E10 is added; fragile rows are POSSIBLY GOOD (decision 1); no pre-registration wording in the paper (decision 7); a glossary built from terms.md sits in Background (decision 8); untested hypotheses are a Future work section (decision 10).
+
+0. Abstract (norns.tex).
+1. Introduction (n-intro.tex): problem in plain English, what good means (area, speed = critical and near-critical, power not measured), the Mimir data, the five innovations in plain English, contributions with their hypotheses.
+2. Background (n-background.tex): glossary in dependency order (terms.md), concepts, related work, the suite tree (Fig. 1).
+3. The Innovations (n-innovations.tex): packer; yardstick; the leak; pair-class census and near-critical statistic; seeding baseline (Fig. 2); outside placers and run records. Plain English then technical.
+4. Methodology (n-method.tex): setup, benchmarks table, metrics (area, speed, power), verdicts, statistics, Mimir as the instrument.
+5. Experiments (n-experiments.tex): scatter (H8, H10a, H9a); room (H24, H27, H29-H31, H25/H19, H32, H20); with the leak (H33, H36, H35, H34, H22, H23); realistic words (H22', H37 per level); near-critical (H17a, H17c); E10; seeding (R1, H4); hierarchy (H11); hindsight and other placers (R7a, R8a, R8b).
+6. Discussion and limits, Future work (U1 to U5), Conclusion (n-discussion.tex).
+Appendix A: research log, every hypothesis, one row each (n-log.tex, 62 rows).
 
 ## Mapping of the current paper
 
@@ -58,3 +49,7 @@ Hypotheses that need Mímir data (provenance-linked placement and timing): H1, H
 What Mímir holds today (mimir/schema.py:130-140; mimir/importers/norns.py:15-50): `structure_mapping` rows per (design, structure_id, run_id, level) with `bbox_x0..y1`, `spread` (placed footprint of an HDL structure's CLBs) and `crit_share` (the structure's share of path 1's data delay, only with a timing-attribution run), `lost_at_pass`, `joined_with`; the Norns importer maps the run fields to `vpr.wirelength`, `vpr.chan_width`, `vpr.cpd`, `vpr.worst_slack`, `vpr.logic_clbs`, `vpr.place_time`, `vpr.bb_cost_*`, `norns.purity`, `norns.reproduction`, `norns.cut`, `norns.retention`, `norns.critical_matched_delay_share`, `norns.objective` and others.
 
 What is missing: (1) near-critical statistics per HDL object (only path 1 gives `crit_share`; no share over the top-k or within-10% paths, so H17c cannot be recomputed from Mímir); (2) power: no power metric exists in the schema or the Norns importer (power was never measured); (3) worst slack per structure; (4) round 1-2 per-run records predate the run-record format (VTR commit unknown for them).
+
+## Step 2 note on the mapping
+
+The legacy files r2-*.tex to r8-*.tex (and their appendices with the dated rule changes) are no longer inputs of norns.tex. They are kept in the repository as the pre-restructure text; the register (hypotheses.md) and docs/plan/ hold every rule, date and number. The old Table qor is kept (Table 4 of the paper); the old crossover table and the old method detail on seed construction are reduced to the paragraphs of Sections 3.5 and 5.7. The old Results text for rounds one to seven is replaced by the experiment subsections of Section 5.

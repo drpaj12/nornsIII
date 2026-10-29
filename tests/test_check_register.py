@@ -1,5 +1,6 @@
 """Tests for docs/paper/check_register.py (stdlib only). Run from the repo root:
-    python3 tests/test_check_register.py"""
+python3 tests/test_check_register.py"""
+
 import sys
 import unittest
 from pathlib import Path
@@ -26,7 +27,8 @@ class CheckRegister(unittest.TestCase):
         rows, problems = cr.read_rows(TABLE)
         self.assertEqual(problems, [])
         self.assertEqual(
-            [w for _, w in rows], ["USEFUL", "POSSIBLY GOOD", "INCONCLUSIVE", "DISMISSED"]
+            [w for _, w in rows],
+            ["USEFUL", "POSSIBLY GOOD", "INCONCLUSIVE", "DISMISSED"],
         )
 
     def test_bad_verdict(self) -> None:
