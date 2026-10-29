@@ -1,0 +1,54 @@
+\section{The Innovations}
+\label{sec:innovations}
+
+Each subsection gives the idea in plain English first and the technical description second. Which experiments support each innovation is in Section~\ref{sec:experiments}.
+
+\subsection{A packer that keeps the HDL's registers together}
+\label{sec:i-packer}
+
+\pp{Plain English.} Before placement, a tool packs small pieces of logic into tile-sized groups. The standard packer chooses pieces that share wires. It does not know that eight flip-flops are the eight bits of one register, so it can scatter them over many tiles even though they will be read and written together. Our packer is a copy of the standard one that adds a bonus for putting pieces of the same register, bus or module into the same tile.
+
+\pp{Technical.} The Norns packer is a patch to VPR's AAPack clusterer (VTR commit \code{3c9a4d23b2}, 8 changed files, 536 added lines; \code{patches/}). Each atom carries a group id read from the affinity file (\code{--norns\_affinity}); the group is the module, the word, or the word with io-words (source \emph{module}, \emph{word}, \emph{word+io}). A CLB's dominant group is the plurality group of its atoms so far. A candidate molecule gains $+\beta$ (\code{--norns\_affinity\_weight}) for every atom in that group, and up to 30 unclustered members of the group are proposed as candidates, because the bits of a word are parallel and no net links them. The stock gain lies in $[0,1]$, so $\beta$ is in the units of one connected atom. Legality stays with AAPack's legaliser. With the option absent or $\beta=0$ the packer must write a \code{.net} byte-identical to stock; this was checked on 60 comparisons over 15 designs before any experiment. Words come from Odin~III's provenance record; io-words extend a top-level bus inward over LUT and flip-flop atoms (two hops past the atom next to the pad, through nets of fanout at most 16).
+% Source: r3-method.tex; docs/plan/round3.md.
+
+\subsection{A yardstick with a known best grouping}
+\label{sec:i-yardstick}
+
+\pp{Plain English.} To know whether a packer is good we need designs where the best grouping is known. We build designs out of blocks that each exactly fill one tile, wired as chains, meshes, trees or random graphs, so the intended grouping is known. It is an optimum for tile count only; it is not a proven best placement. The same logic can be written in the HDL with its registers lined up with the blocks, or deliberately misaligned, and that turns out to matter a great deal (Section~\ref{sec:i-leak}).
+
+\pp{Technical.} A block is 10 six-input functions, each feeding a flip-flop (ten logic elements of the \code{k6\_frac\_N10} architecture, so exactly one CLB), with dense internal connections and at most two external inputs per function; the CLB count $B$ is an exact lower bound reached by the block partition. A generator (\code{gen/r5gen.py}, seed 20261026) writes 72 designs: four topologies (chain, mesh, tree, random sparse), nine sizes $B=4$ to $1024$, two styles (\code{dp}: a datapath slice whose HDL has the vector \code{r[9:0]}; \code{ctl}: scalar registers), at two levels (NL: the netlist written directly as BLIF; HDL: the same specification as Verilog through Odin~III). The \emph{known} arm hands the block partition to the Norns packer as affinity groups with $\beta=100$; the ratios in this paper are against the placement VPR produces from that clustering, so they are a yardstick and not a bound. A second generator (\code{gen/r6gen.py}) fixes the logic and varies only the HDL declarations: at alignment $a$ a fraction $1-a$ of each block's flip-flops is displaced into other words, at $a\in\{0,0.25,0.5,0.75,1\}$ for mesh, tree and chain with seven sizes (105 designs). The idea follows Cong, Romesis and Xie~\cite{Cong03tpeko}.
+
+\subsection{A leak found by the yardstick}
+\label{sec:i-leak}
+
+\pp{Plain English.} In our first test of the packer on the yardstick designs, the packer used about ten percent less wire than the standard packer. That looked like a result. It was not. In those designs the file that tells the packer which pieces belong together was written from the same blocks that define the best grouping, so the packer was handed the answer. Removing the answer and giving the packer registers that cut across the blocks, the packer used between 65\% and 150\% \emph{more} wire. We report this as a finding about method: always check what the tool is given, and build the yardstick so that the hint can be dialled from perfect to useless.
+
+\pp{Technical.} The \emph{leak} is word-file purity against the blocks near 1: 0.9998 in the \code{dp} designs, and the original gain over 63 designs came only from the 18 mesh and tree \code{dp} designs among them (docs/plan/round8-h22.md). The alignment ladder of the previous subsection varies the purity from 1 to 0.1. The H22$'$ re-run replaces the HDL register declarations by word buses of width $w\in\{4,8,16,32\}$ over a random permutation of the flip-flops (no width is a multiple of 10, so words cut across blocks), for mesh and tree (test) and chain (control), seven sizes each: 84 designs, arms stock, norns ($\beta=4$) and known, three seeds (\code{gen/r8gen.py}).
+
+\subsection{What the standard packer keeps together on slow paths}
+\label{sec:i-census}
+
+\pp{Plain English.} A direct count of which kinds of pairs of logic pieces the standard packer puts in one tile: pairs on a slow path in series, pairs that share an input, and pairs that merely fill space. We also ask whether the connections that are almost as slow as the slowest are kept inside tiles more often than average connections.
+
+\pp{Technical.} A log-only census in the packer (\code{--norns\_pack\_census}) records, for every molecule added to a CLB, the candidate source and the gain terms. Every pair of LUT, flip-flop and adder atoms in one CLB falls in the first applicable pairing class: series-critical (a local net of fanout at most 32 from one to the other, pack-time sink criticality at least 0.5), series-noncritical, shared-input, orthogonal (same word, or sinks of one broadcast net), filler. Fifty random packings with the same CLB sizes give the chance level. Post-route criticality comes from Odin~III's critical-path attribution of the routed runs. Near-critical connections are those within 10\% of the CPD in the routed report.
+
+\subsection{Starting placement from the designer's grouping (a negative baseline)}
+\label{sec:i-seed}
+
+\pp{Plain English.} The simplest use of the designer's grouping is to give the placer a rough starting layout that keeps the groups together, and then let the heated search refine it. We ask how hot the search may start before it throws that layout away. This was the first idea of the Norns work. Its experiments are negative, and it is kept as the baseline that the packer is compared against in spirit.
+
+\pp{Technical.} A seed is a partition of the placed blocks: the provenance hierarchy (Urd) or a Loki~III L2 clustering (Verdandi: Louvain, spectral, affinity propagation, $k$-means at $k$, $2k$, $4k$ with $k$ the module count). The quotient layout puts clusters on the die; each cluster takes the free CLB slots nearest its laid-out point. A soft seed enters VPR as an initial placement file (\code{--read\_initial\_place\_file}); a hard seed as one \code{PartitionRegion} per cluster (\code{--read\_vpr\_constraints}); pads and multiplier tiles stay anchored and carry chains move as one vertical run. The crossover sweep cold-starts the anneal from $P^*$, the best final placement over all seeds, raises the scale $S$ and finds the crossover; all seeds are then run at $2S$ against an unseeded run at the same temperature (Figure~\ref{fig:norns}).
+
+\begin{figure}[t]
+\centering
+\odinfit{\columnwidth}{\input{IMAGE/fig_norns}}
+\caption{The seeding baseline. Seeds from provenance and recovered clusters, arranged by a quotient-graph layout, enter VPR softly (initial placement) or hard (constraints). The crossover sweep cold-starts from the best placement and raises the initial temperature until the seed's advantage dies or the sweep reaches its cap.}
+\label{fig:norns}
+\end{figure}
+
+\subsection{Outside placers and run records}
+\label{sec:i-tools}
+
+\pp{Plain English.} To tell whether a finding belongs to VPR or to placement in general, we run a placer from outside the VTR tools, feed its result back into VPR, and let VPR route and time it, so every placer is judged by the same router and timer. Every run writes a record of what was run and where each parameter came from, so M\'{\i}mir can store it.
+
+\pp{Technical.} A converter writes the outside placement (nextpnr HeAP or SA) in the flat-placement file format (\code{--read\_flat\_place}); a reread control reads VPR's own final placement back, and each ratio is within a family (analytic with analytic, annealing with annealing). Rule H0 fixes adders, multipliers, RAMs and pads at VPR's analytic positions, so the outside placers inherit part of VPR's solution and nextpnr has no timing model (both biases are in every table caption). Each run writes a \code{mimir-run.json} (\code{scripts/runrecord.py}).

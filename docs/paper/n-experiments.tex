@@ -1,0 +1,161 @@
+\section{Experiments}
+\label{sec:experiments}
+
+Each subsection states one hypothesis, the experiment, the result and the verdict. Numbers are from the files named in the comments of this source and in \code{docs/paper/hypotheses.md}. Tests that were not decided by the numbers are \textsc{inconclusive}; the full list, including every \textsc{dismissed} hypothesis, is in Appendix~\ref{sec:log}.
+
+\subsection{Does the standard packer scatter the HDL's registers? (H8, H10a, H9a)}
+\label{sec:e-scatter}
+
+\pp{Hypothesis (H8).} The standard packer scatters the words of the HDL across CLBs: median word purity at most 0.80 and median split factor at least 1.5.
+\pp{Experiment.} The 15 designs of Table~\ref{tab:benchmarks}, stock packing, word purity and split factor against a null that assigns the same atoms at random to CLBs of the same sizes (50 samples).
+\pp{Result.} Median word purity 0.63 and median split factor 4.00; purity is above the random null on 15 of 15 designs. % data/analysis/r3-results.json H8: median_share 0.6255, median_split 4.0, above_null 15
+\pp{Verdict.} \textsc{useful}.
+
+\pp{Hypothesis (H10a).} Io-words give a word to LUTs that the front end's words left without one.
+\pp{Experiment and result.} On the same 15 designs, the median gain in the share of LUTs that carry a label is 24.1\%, positive on 15 of 15 designs. % r3-results.json H10a median_gain 0.2411, positive 15
+\pp{Verdict.} \textsc{useful}.
+
+\pp{Hypothesis (H9a-word, H9a-wordio).} The Norns packer raises word purity with at most 5\% CLB growth.
+\pp{Experiment.} 15 designs, three VPR seeds, source word and source word+io, $\beta$ from a grid chosen on the four smallest designs (which read only purity and CLB count).
+\pp{Result.} Purity rises by 0.111 (word) and 0.104 (word+io), and by 0.120 and 0.124 without the four grid-choice designs; CLB count change 0.0\%; Holm-adjusted Wilcoxon $p<0.001$ for both. % hypotheses.md H9a-word, H9a-wordio; r3-results.json H9a
+\pp{Verdict.} \textsc{useful}, as a mechanism check: purity is not an end metric. (Source module: purity gain 0.000, \textsc{inconclusive}.)
+
+\subsection{How much room is there for a better packer? (H24, H27, H29--H31, H25/H19, H32, H20)}
+\label{sec:e-room}
+
+\pp{Hypotheses.} The yardstick is exact: synthesis keeps the construction and the \emph{known} arm reproduces the intended blocks (H24, H27, H29, H30, H31). The standard packer is worse than the known clustering by at least 5\% (H25, H19, H32). The Norns packer is still worse than the known clustering (H20).
+\pp{Experiment.} The yardstick designs of Section~\ref{sec:i-yardstick}: 72 designs at the netlist level, 63 of the 72 at the HDL level that the label rule keeps, 105 alignment designs, arms stock, norns and known, three VPR seeds.
+\pp{Result.} The known arm reproduces the blocks exactly (mean reproduction 1.000, 189 HDL runs and 216 netlist runs); the alignment manipulation works (Spearman 0.988 between designed alignment and measured purity; purity 0.100 at $a=0$ and 1.000 at $a=1$) and synthesis keeps the construction on 105 of 105 alignment designs. % r5-results.json repro_HDL, repro_NL; r6-results.json keep, repro, align
+Stock over known, geometric mean: on the 72 netlist designs CLB 1.073, WL 1.220 [1.168, 1.275] (90\% interval), CPD 1.093; on the 63 HDL designs CLB 1.073, WL 1.219, CPD 1.082; on the mesh and tree alignment designs (14 cells) CLB 1.152, WL 1.489 [1.394, 1.591], CPD 1.181; Holm $p<0.001$ throughout. % hypotheses.md H25/H19, H32; r6-results.json room
+The room depends on the topology: the stock WL ratio is 1.42 to 1.53 on mesh and tree and close to 1.0 on chain and random graphs, so the pooled 1.22 mixes designs with room and designs without. % r5-results.tex exploratory paragraph: NL stock mesh 1.423, tree 1.522, chain 1.004, rand 1.019; HDL stock mesh 1.444, tree 1.528, chain 1.027, rand 1.011
+For the Norns packer on the 63 HDL designs, WL is still 1.099 [1.057, 1.147] of the known clustering (Holm $p=0.003$); CLB (1.031) and CPD (1.032) are \textsc{inconclusive}. % r5-results.tex H20
+These HDL designs include the \code{dp} designs whose word file is the leak (Section~\ref{sec:e-leak}), so H20 describes the packer with the hint; it does not say how much room remains with realistic words.
+\pp{Verdict.} \textsc{useful} (validity, H25/H19, H32, and H20 for WL). Limits of the yardstick are in Section~\ref{sec:limits}.
+
+\subsection{Does the packer pay when the words equal the blocks? The leak (H33, H36, H35, H34, H22, H23)}
+\label{sec:e-leak}
+
+\pp{Hypotheses.} (H33) With words equal to the blocks the Norns packer beats stock. (H36) Its gain grows with the measured alignment. (H35) It makes WL worse by at least 2\% when the words do not match the blocks. (H34) It beats stock at each alignment below 1. (H22) On the 63 HDL designs of the first yardstick round it beats stock.
+\pp{Experiment.} The 105 alignment designs; 14 designs per alignment level (mesh and tree, seven sizes); Norns over stock, three seeds.
+\pp{Result.} At $a=1$ (words equal blocks) Norns/stock is CLB 0.870, WL 0.669 [0.627, 0.713], CPD 0.841 (H33). % r6-results.json leak_a1
+Below 1 it is worse: WL 2.034, 2.038, 1.731 and 1.218 of stock at $a=0$, 0.25, 0.5 and 0.75 (Holm $p<0.001$ for harm at every level; H35), so no leak-free level shows a gain (H34). % r6-results.json hurt
+The slope of the WL ratio on the measured alignment is negative in 14 of 14 cells (median $-1.317$; $-0.786$ on the leak-free levels only; Holm $p<0.001$; H36). % r6-results.json dose, dose_leakfree_variant
+The first yardstick round had reported WL 0.902 [0.866, 0.936] of stock on 63 HDL designs (H22). % r5-results.json close_HDL
+That gain sits only in the \code{dp} designs, whose word file equals the block partition (purity 0.9998), and is zero in the 27 \code{ctl} designs, where the Norns \code{.net} equals the stock \code{.net} on 27 of 27; the purity gain is zero when the HDL has no vector (median difference 0.000; H23). % r5-results.json leak_HDL, h23; round8-h22.md
+\pp{Verdicts.} H33, H36, H35: \textsc{useful}; H33 is an upper bound, because the words equal the blocks, and H35 is a finding about harm. H34: \textsc{dismissed}. H23: \textsc{dismissed} as stated. H22: \textsc{dismissed}: its gain is withdrawn as a result. It was an oracle leak and is reported here only as a finding about method.
+
+\subsection{With realistic words, does the packer reduce wirelength? (H22$'$, H37)}
+\label{sec:e-h22p}
+
+\pp{Hypothesis (H22$'$).} With bus words that do not mirror the CLB partition, the Norns packer reduces WL against stock.
+\pp{Experiment.} 84 generated designs (Section~\ref{sec:i-leak}): mesh and tree, four word widths $w$, seven sizes (14 designs per width), and chain controls (seven per width); arms stock, norns ($\beta=4$) and known; three seeds; 798 runs, all completed. Two controls ran first: at $\beta=0$ the Norns \code{.net} must equal stock's (28 of 28 chain designs byte-identical), and at alignment 1 on chain Norns/stock must be about 1.00 (1.003 [0.993, 1.013]; both passed). The hypothesis is supported if the WL geometric mean is at most 0.99 with Holm $p<0.05$, and not supported if it is at least 1.00 or its 90\% interval lies inside [0.98, 1.02].
+\pp{Result.} Table~\ref{tab:h22p}. The packer raises WL by 65\% to 150\% at every width, and CPD by 33\% to 41\%; Holm-adjusted $p=1.0$ at every width. It reduces the CLB count by 2.7\% and 5.4\% at $w=16$ and 32 (Holm $p=0.0015$, $0.0010$) and raises it at $w=4$ and 8; a CLB result never changed the WL verdict. The chain control fails at every width, so no mesh or tree figure may be read as a gain. The known grouping reaches 0.672 of stock WL on mesh and tree at every width: the headroom is real, and realistic words do not reach it.
+
+\begin{table}[t]
+\caption{H22$'$: Norns over stock, mesh and tree pooled (14 designs per width), geometric mean with the 90\% bootstrap interval; and the chain control (7 designs). Below 1 favours Norns. Source: \code{data/analysis/r8-results.json}.}
+\label{tab:h22p}
+\centering
+\footnotesize
+\begin{tabular}{@{}rcccr@{}}
+\toprule
+$w$ & WL [90\%] & CPD & CLB & chain WL \\
+\midrule
+4 & 1.652 [1.525, 1.809] & 1.329 & 1.033 & 3.575 \\
+8 & 2.011 [1.824, 2.237] & 1.371 & 1.012 & 5.604 \\
+16 & 2.349 [2.125, 2.609] & 1.380 & 0.973 & 7.969 \\
+32 & 2.505 [2.247, 2.802] & 1.407 & 0.946 & 9.497 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\pp{The chain control, per alignment level (H37).} The first control, pooled over alignment levels, gave Norns/stock 4.15 on 35 chain designs, and was read as a failed control. The pooled number averages over levels. Per level (chain, WL Norns/stock, $n=7$ each): $a=0$ 8.71, $a=0.25$ 8.37, $a=0.5$ 6.19, $a=0.75$ 2.72 and $a=1$ 1.003. % r8-results.json h37_per_level
+At $a=1$ the packer leaves chain unchanged. The harm grows as word purity falls (median purity 0.10, 0.26, 0.51, 0.75, 1.00). The pooled control was ill-posed: chain has no headroom, not no effect, and a packer that follows misaligned words is expected to do harm there. The H22$'$ word files have median purity 0.26 at $w=4$ down to 0.07 at $w=32$, and the harm grows with $w$ in the same way. The mechanism is consistent with the packer pulling flip-flops of different blocks into one CLB because they share a word; it was not measured directly (no per-CLB mixing was counted, and width, purity and words per block change together).
+\pp{Verdicts.} H22$'$: \textsc{dismissed} (not confirmed at any of the four widths). H37: \textsc{dismissed}, as a control that was ill-posed; the per-level figures above replace it. Not tried: a smaller $\beta$, words that only partly agree with the blocks, and real HDL words (Section~\ref{sec:future}).
+
+\subsection{Are near-critical connections kept inside CLBs? (H17c)}
+\label{sec:e-census}
+
+\pp{Measurement (H17a, not a hypothesis).} Over 15 designs with stock packing, the median share of CLB pairs that are series-critical is 4.0\%, shared-input or orthogonal 32.0\%, and series-noncritical or filler 64.4\%. % r4-results.json n17 H17a median_SC 0.0403, median_SI_OR 0.3200, median_SN_FL 0.6443
+\pp{Hypothesis (H17c).} Near-critical edges (within 10\% of the CPD) cross CLB boundaries less often than edges in general under the standard packer.
+\pp{Experiment.} The 9 designs with at least 20 near-critical hops, routed timing reports.
+\pp{Result.} Median rate ratio 0.652 (near-critical over all edges), one-sided Wilcoxon $p=0.027$. % r4-results.json n17 H17c
+\pp{Verdict.} \textsc{possibly good}. It passes the rule as written, on 9 designs; it would fail a minimum of 12 designs that was not part of the rule text, and the design set is small. It is the only near-critical statistic in this paper. The Norns packer does not change the series-critical share (median change $-0.003$; H17b, \textsc{dismissed}).
+
+\subsection{What do VPR's options do to area and speed? (E10)}
+\label{sec:e10}
+
+\pp{Hypotheses.} Nine one-factor hypotheses around the base flow (the annealing placer, the default ABC script, $K=6$, the \code{k6\_frac} architecture): two other ABC scripts; $K=4$ (which also removes the hard blocks); the EArch architecture; unrelated clustering forced on and forced off; VPR's analytic placer; nextpnr HeAP and SA through the flat-placement file.
+\pp{Experiment.} 35 designs (20 MCNC, 15 from Table~\ref{tab:benchmarks}), three seeds, one factor against the base. The comparisons were fixed, no thresholds were. We call a measure supported only if its 95\% design-bootstrap interval excludes 1.000 \emph{and} its Holm-adjusted $p$ (36 tests) is below 0.05.
+\pp{Result.} Table~\ref{tab:e10}. The area and speed measures move in different directions. The area-oriented ABC script lowers the LUT count by 3.0\% and raises the CPD by 14.1\%. The EArch architecture lowers the CLB count by 14.5\% and raises WL by 16.0\%. Unrelated clustering lowers the CLB count by 7.6\% with no supported change in CPD or WL. The analytic and nextpnr placers lower WL by 4.3\% to 5.0\% and raise the CLB count by 3.1\% to 4.0\%, with the CPD not decided. Forcing unrelated clustering off changes nothing: all four ratios are exactly 1.000. % data/e10/ratios.csv, docs/plan/e10-hypotheses.md
+\pp{Verdict.} Eight of the nine are \textsc{possibly good}: each has at least one measure that survives the adjustment, but the verdict rule is post hoc, the design set is not a sample of a population, $K=4$ is confounded with the removal of the hard blocks, and the external placers inherit VPR's hard blocks and pads (rule H0) and nextpnr has no timing model. The last (forced off) is \textsc{dismissed} as a no-op. Measures whose interval excludes 1.000 but whose Holm $p$ is not below 0.05 (for example the LUT count and CPD of ABC script 1) are \textsc{inconclusive}.
+
+\begin{table*}[t]
+\caption{E10: ratio of each level to the base flow (annealing placer), geometric mean over designs; * marks a measure whose 95\% interval excludes 1.000 and whose Holm $p<0.05$ (supported); = marks a byte-identical ratio. Below 1 is better. $n=35$ except $K=4$ (33--34) and the nextpnr arms (30 on CLBs, CPD and WL). Source: \code{data/e10/ratios.csv}.}
+\label{tab:e10}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Level & LUTs & CLBs & CPD & WL \\
+\midrule
+ABC script 1 (rewriting) & 1.103 & 1.114* & 1.027 & 1.113* \\
+ABC script 2 (area-oriented) & 0.970* & 0.970 & 1.141* & 0.985 \\
+$K=4$ architecture & 1.974* & 5.320* & 1.488* & 1.288 \\
+EArch architecture & 1.000= & 0.855* & 1.004 & 1.160* \\
+unrelated clustering on & 1.000= & 0.924* & 0.996 & 1.001 \\
+unrelated clustering off & 1.000= & 1.000= & 1.000= & 1.000= \\
+VPR analytic placer & 1.000= & 1.040* & 1.005 & 0.957* \\
+nextpnr HeAP & 1.000= & 1.032* & 1.011 & 0.950* \\
+nextpnr SA & 1.000= & 1.031* & 1.018 & 0.955* \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Does starting placement from the designer's grouping help? (R1, H4)}
+\label{sec:e-seed}
+
+\pp{Hypothesis (R1a).} A seeded start gives better placement than VPR's own analytic start when the anneal begins at VPR's own temperature.
+\pp{Experiment.} The 15 designs of Table~\ref{tab:benchmarks}; seven seed families (Urd and six recovered, Section~\ref{sec:i-seed}) in a soft arm with the full intra-cluster order or shuffled; one VPR seed.
+\pp{Result.} Table~\ref{tab:qor}. Soft seeds stay within a few percent of the baseline: geomean WL 0.997 to 1.029 across families, 1.009 pooled, with the channel width lower (0.947 to 0.994) and the placement runtime 1.07 to 1.09 times longer. % hypotheses.md R1a; norns.tex tab:qor (earlier version); EXP:25-72
+Hard floorplan regions are worse (geomean WL 1.088 over 104 runs; R1c, \textsc{dismissed}). The crossover sweep finds a median crossover of $16\times$ (range $4\times$ to $256\times$), and at twice the crossover the seeds win only 57 of 105 head-to-heads against an unseeded run at the same temperature (R1e). The best placement over all seeds, $P^*$, is the best of about 20 placements and no control restarts the anneal with equal effort, so part of the crossover may be selection. A random start is as good as any seed: with Urd the WL ratio is 0.997 from a random start, 1.020 from permuted clusters and 1.029 from the quotient layout (H4, \textsc{dismissed}).
+\pp{Verdict.} R1a and R1e: \textsc{inconclusive}. The honest answer is that seeding at VPR's own temperature has no measured gain on 15 designs and one VPR seed, and this is why the paper moved to the packer.
+
+\begin{table}[t]
+\caption{Seeding baseline: geomean quality ratios against the unseeded baseline, soft arm (15 designs, one VPR seed); the inter-cluster-only row shuffles the order inside each cluster and pools all seven families, and the $k$-means row pools $k$, $2k$ and $4k$. Below 1.0 is better. Source: \code{docs/plan/EXPERIMENT.md} (round one).}
+\label{tab:qor}
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Seed & Wirelength & Delay & Chan. width & Runtime \\
+\midrule
+Urd (hierarchy) & 1.029 & 1.004 & 0.958 & 1.068 \\
+Louvain & 1.008 & 0.982 & 0.980 & 1.091 \\
+Spectral & 1.006 & 0.993 & 0.968 & 1.098 \\
+Affinity propagation & 1.002 & 1.003 & 0.982 & 1.086 \\
+$k$-means ($k$, $2k$, $4k$) & 1.006 & 0.985 & 0.975 & 1.088 \\
+Inter-cluster only & 1.015 & 0.981 & 0.987 & 1.102 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Is the hierarchy physical on the chip? (H11)}
+\label{sec:e-hier}
+
+\pp{Hypothesis.} CLB pairs of the same word, or of the same module, sit closer on the annealed placement than their net connectivity alone predicts.
+\pp{Experiment.} Stock packing, analytic start, three VPR seeds; the stratified mean distance difference of related over unrelated pairs as a fraction of the unrelated distance (negative is closer), against a permutation null.
+\pp{Result.} Same-word median $-0.176$ ($p=0.017$; 9 of 12 designs sign-consistent, 12 required); same-module median $-0.188$ ($p<0.001$; 10 of 11, 12 required). % hypotheses.md H11; r3-results.tex
+\pp{Verdict.} \textsc{inconclusive}: the pairs are closer, but the count of designs that the rule requires cannot be reached on the 11 or 12 designs that qualify.
+
+\subsection{How much would hindsight gain, and do other placers agree? (R7a, R8a, R8b)}
+\label{sec:e-hind}
+
+\pp{Hypothesis (R7a).} Re-clustering according to where the best stock placement put atoms lowers WL$\times$CPD on held-out seeds.
+\pp{Experiment.} 1660 VPR runs; the arm is chosen on seeds 1--5 and measured on seeds 6--10; 15 designs, 8 with a chosen arm.
+\pp{Result.} Held-out median WL gap 0.987, CPD gap 0.994, CLB gap 1.026; the objective interval lies above 1 on 1 of 8 designs (7 borderline); 7 of the 15 designs are imputed as 1. % r7-abstract.tex; r7-results.tex
+\pp{Verdict.} \textsc{inconclusive}: little evidence of room that a better clustering with hindsight would capture.
+
+\pp{Hypotheses (R8a, R8b).} nextpnr HeAP lands where VPR's analytic placer does, and nextpnr SA places with equal or less wirelength than VPR's annealer.
+\pp{Experiment.} 13 eligible designs, seeds 4--6 held out, ratios within a family against the reread control, design bootstrap.
+\pp{Result.} HeAP over reread: WL 1.001 [0.984, 1.019], CPD 1.027 [1.009, 1.046], WL$\times$CPD 1.028 [0.996, 1.061]. SA over reread: WL 0.947 [0.919, 0.975], CPD 1.003 [0.973, 1.039], WL$\times$CPD 0.952 [0.909, 1.003]. % r8-results.tex tab:r8family; placers.md Section 10.9 as corrected by 10.10
+\pp{Verdict.} Both \textsc{inconclusive}: the WL$\times$CPD intervals include 1; rule H0 means the outside placers inherit VPR's hard blocks and pads; neither outside placer is timing-driven.

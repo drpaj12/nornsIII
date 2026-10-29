@@ -1,0 +1,38 @@
+\section{Discussion and Limits}
+\label{sec:discussion}
+
+\pp{What the experiments say.} The designer's grouping is physically real on the chip (H11, \textsc{inconclusive} by the letter of the rule), and the standard packer loses it (H8). A packer that is told the grouping can keep it (H9a), and when the grouping is exactly the right clustering it uses far less wire (H33: 0.669 of stock). But the same packer, handed registers that cut across the blocks, makes wirelength worse by 65\% to 150\% (H22$'$), and the harm falls as the registers line up with the blocks (H37 per level, H35, H36). The known-optimum yardstick shows the room is real: the known grouping reaches 0.672 of stock wirelength on meshes and trees at every register width (H22$'$) and the standard packer is 1.49 times it (H32). The honest reading is that in these experiments the gain appeared only when the hint was perfect: no alignment below 1 showed one, and our packer at $\beta=4$ does not degrade gracefully.
+
+\pp{The leak as a method lesson.} The original gain (0.902 of stock) was real arithmetic on a flawed input: the word file was the answer. The yardstick caught it because it lets us dial the alignment, and because we reran with words that cut across blocks. A packer or placer claim on constructed benchmarks should always be accompanied by a control in which the hint is useless and one in which it is perfect.
+
+\pp{Multi-metric view.} Area and speed move in different directions: the area-oriented ABC script lowers the LUT count and raises the CPD (E10); the outside placers lower WL and raise the CLB count; the packer lowers CLBs at wide words and raises WL and CPD (H22$'$). A result on one metric is not a result on the problem. Speed is judged here by the CPD and, only once, by the near-critical statistic (H17c). Power is not measured.
+
+\subsection{Limits}
+\label{sec:limits}
+
+\begin{itemize}
+\item \textbf{Few, small designs.} The real designs are 15 small VTR circuits; the seeding baseline used one VPR seed per configuration. Intervals are over this set of designs and not over a population.
+\item \textbf{Constructed designs.} The yardstick designs and the H22$'$ words are generated. The word layout of H22$'$ is a random permutation, the extreme of misalignment; real buses may lie between that and the leak, and are untested (Section~\ref{sec:future}).
+\item \textbf{The yardstick is a clustering optimum.} It is exact for CLB count and not a proven placement optimum. Synthesis keeps the construction in only 32 of 72 HDL designs under the original label rule (63 under an amended rule), and the netlist-level zero-violation check passes on 37 of 72 (H18, H28, \textsc{dismissed} by their literal rules); the analysis uses the 63 designs the amended rule keeps, and the netlist-level variants chosen after the data are labelled.
+\item \textbf{An erratum.} The affinity files of the first packer experiments left out every adder (carry-chain) atom; H9 and H10 describe a packer that did not see carry chains. The later experiments (H22$'$ and the alignment designs) use corrected files.
+\item \textbf{Near-critical evidence is thin.} H17c has 9 designs and \textsc{possibly good}; M\'{\i}mir cannot yet recompute it (Section~\ref{sec:mimir}).
+\item \textbf{Outside placers.} Rule H0 and the lack of a timing model in nextpnr bias every comparison against VPR's own placers.
+\item \textbf{E10.} The verdict rule is post hoc, $K=4$ is confounded with the removal of the hard blocks, and some arms exclude designs where a run failed.
+\item \textbf{Power} is not measured.
+\end{itemize}
+
+\section{Future Work: Untested Hypotheses}
+\label{sec:future}
+
+Five ideas have no result yet. Each is stated with the one experiment it needs.
+
+\pp{U1: a smaller $\beta$.} A smaller affinity weight may keep words without the harm seen at $\beta=4$ on misaligned words. Experiment: re-run H22$'$ on the same 84 designs over a ladder of $\beta$ below 4 with the same rule.
+\pp{U2: partly aligned words.} Words that agree only partly with the blocks, may give a gain or a smaller harm. Experiment: re-run H22$'$ with words drawn at a controlled partial alignment on the realistic bus layout.
+\pp{U3: real HDL words.} Real HDL words may behave like the constructions. Experiment: run stock and norns on the 15 VTR designs with the word files as written and test WL with the H22$'$ rule.
+\pp{U4: crossover versus selection.} The crossover of the seeding baseline may reflect the seed and not selection of the best of about 20 placements. Experiment: an equal-effort control that restarts the anneal from the best of $N$ unseeded runs.
+\pp{U5: packing for near-critical paths.} A packer that weights near-critical connections may improve the near-critical statistics. Experiment: per-object near-critical statistics in M\'{\i}mir (the top-$k$ or within-10\% paths) and a packer arm that uses them.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Keeping the designer's grouping through packing is a sound idea and a measurable one: the standard packer scatters the source's registers, a packer with an affinity bonus keeps them, and a yardstick with a known best grouping shows real room. But we could not show a gain from it. The one gain we measured came from a leak, and with realistic registers the packer used more wire at every setting we ran. Starting placement from the designer's grouping gave no measured benefit either. What the work does deliver is the instrument: the yardstick with an adjustable hint, the controls that expose a leak, and the run records that M\'{\i}mir stores so that area, speed and, once it is measured, power can be traced back to the HDL that caused them.
