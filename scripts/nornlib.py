@@ -491,6 +491,29 @@ def keep_inputs(design: str, blif: Path, name_map: Path | None) -> dict[str, Any
     return out
 
 
+_ODIN_TOP = re.compile(r"stats: design: modules \d+, top (\S+)")
+
+
+def top_of_blif(blif: Path, name_map: Path | None, design: str) -> str:
+    """The top module Odin III synthesised the blif from: odin.log beside the blif, else the module most
+    name-map entries sit under, else the design name. The design name alone is wrong for files whose top
+    module is named otherwise (diffeq1: diffeq_paj_convert); every node then comes out unmatched."""
+    log = blif.parent / "odin.log"
+    if log.is_file():
+        m = _ODIN_TOP.search(log.read_text(errors="replace"))
+        if m:
+            return m.group(1).strip("'\"")
+    if name_map is not None and name_map.is_file():
+        mods: dict[str, int] = {}
+        for ln in name_map.read_text(errors="replace").splitlines():
+            f = ln.split("\t")
+            if len(f) > 1 and not ln.startswith("#"):
+                mods[f[1]] = mods.get(f[1], 0) + 1
+        if mods:
+            return max(mods, key=lambda k: mods[k])
+    return design
+
+
 def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Path,
                counts: dict[str, int]) -> tuple[bool, str]:
     """Run odin3-timing over a small flow directory pointing at the run; xz the attribution to dest."""
@@ -500,7 +523,7 @@ def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Pat
     flow = vpr_cwd / "keep-flow"
     ensure_dir(flow / "timing")
     (flow / "timing" / "inputs.json").write_text(json.dumps(
-        {"top": design, "blif": str(blif), "name_map": str(name_map), "vpr_run_dir": str(vpr_cwd),
+        {"top": top_of_blif(blif, name_map, design), "blif": str(blif), "name_map": str(name_map), "vpr_run_dir": str(vpr_cwd),
          "paths_requested": KEEP_NPATHS}, indent=1, sort_keys=True))
     r = subprocess.run([str(tool), str(flow)], capture_output=True, text=True, check=False)
     att = flow / "timing" / "attribution.json"
