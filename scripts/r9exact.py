@@ -154,6 +154,18 @@ def inputs_ok(net: Path, text: str) -> bool:
     return pis <= have
 
 
+def const_po_buffers(blif: Path, aff: Path, packed_atoms: set) -> list:
+    """[(input const net, output net)] of the unlabelled `.names gnd o` buffers (primary outputs driven by a constant) that the stock
+    packing of the full netlist keeps as LUT atoms (VPR absorbs some of them)."""
+    lab = {ln.split("\t")[0] for ln in aff.read_text().splitlines()}
+    stm = statements(blif.read_text().split(".end")[0] + ".end\n")
+    pos = set()
+    for kind, a, b, s in stm:
+        if kind == "outputs":
+            pos.update(a)
+    return [(b[0], a[0]) for kind, a, b, s in stm if kind == "names" and len(b) == 1 and b[0] in rb.CONST and a[0] in pos and a[0] not in lab and a[0] in packed_atoms]
+
+
 def pack_alone(text: str, d: Path, tag: str) -> tuple:
     """Pack one cluster alone. Returns (net path, variant index) for the first variant that gives exactly one logic CLB."""
     d.mkdir(parents=True, exist_ok=True)
@@ -178,16 +190,13 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
 def build_exact(design: str, cons: str, sh: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
     blif, aff = shd / "design.blif", shd / "affinity.tsv"
-    rec_p = shd / "exact10.json"
-    if rec_p.is_file() and (shd / "exact10" / "design.net").is_file():
+    rec_p = shd / "exact13.json"
+    if rec_p.is_file() and (shd / "exact13" / "design.net").is_file():
         return json.loads(rec_p.read_text())
     full = rb.run_vpr_pack(blif, shd / "pack")
     ftree = ET.parse(full)
-    real_const = set()  # constant nets that the stock packing routes into a CLB input pin (the others are folded into the logic by VPR)
-    for t in ftree.getroot().findall("block"):
-        if t.get("instance", "").startswith("clb["):
-            for p in t.find("inputs").findall("port"):
-                real_const |= set(p.text.split()) & set(rb.CONST)
+    # constant nets VPR sees as real nets: those the design file defines with an explicit generator (`.names gnd`); the others are folded away
+    real_const = {ln.split()[1] for ln in blif.read_text().splitlines() if ln.startswith(".names ") and len(ln.split()) == 2 and ln.split()[1] in rb.CONST}
     cb = cluster_blifs(blif, aff, real_const)
     k = len(cb)
     clbs, variants, bad = [], {}, []
@@ -198,7 +207,23 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
             continue
         variants[c] = v
         clbs.append((c, net))
-    rec = {"K": k, "packed_alone": len(clbs), "unpackable": bad, "variants_used": variants}
+    # constant-driven primary outputs (`.names gnd o`) that VPR keeps as LUT atoms but that belong to no cluster of C: packed in CLBs of their own
+    extra = []
+    bufs = const_po_buffers(blif, aff, {x.get("name") for x in ftree.getroot().iter("block") if not x.findall("block")})
+    todo = [bufs[i:i + 20] for i in range(0, len(bufs), 20)]
+    while todo:
+        grp = todo.pop(0)
+        pis = ["clk"] + sorted({i for i, _o in grp if i in real_const})
+        txt = "\n".join([".model xb", ".inputs " + " ".join(pis), ".outputs " + " ".join(o for _i, o in grp)]
+                         + [f".names {i} {o}\n1 1" for i, o in grp] + [".end"]) + "\n"
+        net, _v = pack_alone(txt, shd / "exact_parts", f"xb{len(extra)}_{len(grp)}")
+        if net is not None:
+            extra.append(net)
+        elif len(grp) > 1:
+            todo += [grp[: len(grp) // 2], grp[len(grp) // 2:]]
+        else:
+            bad.append(f"xb_{grp[0][1]}")
+    rec = {"K": k, "packed_alone": len(clbs), "unpackable": bad, "variants_used": variants, "extra_const_po_clbs": len(extra)}
     if bad:
         rec["ok"] = False
         rec_p.write_text(json.dumps(rec, indent=1, sort_keys=True))
@@ -229,6 +254,8 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
     for b in tops:
         root.remove(b)
     final = []
+    for net in extra:
+        final.append(next(x for x in ET.parse(net).getroot().findall("block") if x.get("instance", "").startswith("clb[")))
     for _c, net in clbs:
         final.append(next(x for x in ET.parse(net).getroot().findall("block") if x.get("instance", "").startswith("clb[")))
     final += constclb + nonclb
@@ -236,7 +263,7 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
         blk.set("instance", blk.get("instance").split("[")[0] + f"[{i}]")
         root.append(blk)
     rec["const_clbs"] = len(constclb)
-    od = shd / "exact10"
+    od = shd / "exact13"
     od.mkdir(exist_ok=True)
     tree.write(od / "design.net")
     rec["ok"] = True
@@ -248,13 +275,13 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
 
 def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
-    cwd = shd / "exact10_run" / f"s{seed}"
+    cwd = shd / "exact13_run" / f"s{seed}"
     mp = cwd / "metrics.json"
     if mp.is_file():
         return json.loads(mp.read_text())
     cwd.mkdir(parents=True, exist_ok=True)
     blif = shd / "design.blif"
-    flags = ["--net_file", str(shd / "exact10" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
+    flags = ["--net_file", str(shd / "exact13" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
     cmd = ["prlimit", f"--as={rr.MEM_BYTES}", "flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(blif), "--place", "--route", "--analysis"] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:
@@ -275,7 +302,7 @@ def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
         struct = json.loads((base / "struct.json").read_text())
         struct["cut_star_C"] = json.loads((base / "build.json").read_text())["cut_star_C"]
         vatoms = json.loads((shd / "vatoms.json").read_text())
-        rec.update(rr.pack_metrics(shd / "exact10" / "design.net", aff, struct, vatoms))
+        rec.update(rr.pack_metrics(shd / "exact13" / "design.net", aff, struct, vatoms))
     else:
         rec["error"] = "timeout" if rc == -9 else "see vpr.out"
     mp.write_text(json.dumps(rec, sort_keys=True))
