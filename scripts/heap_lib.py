@@ -248,7 +248,7 @@ def comb_levels(g):
         best = 0
         for n in ins:
             d = na.get(_resolve(n, al))
-            base = lv[d] if d in comb else 0
+            base = lv.get(d, 0) if d in comb else 0
             add = 1
             if kind == "adder" and n == cn and d in comb and comb[d][0] == "adder":
                 add = 0
@@ -295,3 +295,29 @@ def assign_cones(g, lv):
                     stack.append(d)
         size[key] = n
     return group, size
+
+
+def adder_chains(g):
+    """{adder atom: (position, length)} along its carry chain (position 0 = the head, whose carry-in is not driven by an adder)."""
+    comb, na, al, cin = g["comb"], g["net_atom"], g["alias"], g["cin"]
+    nxt, heads = {}, []
+    for a, (k, _ins) in comb.items():
+        if k != "adder":
+            continue
+        d = na.get(_resolve(cin[a], al)) if a in cin else None
+        if d in comb and comb[d][0] == "adder" and d != a:
+            nxt.setdefault(d, []).append(a)
+        else:
+            heads.append(a)
+    out = {}
+    for h in heads:
+        chain, cur, seen = [h], h, {h}
+        while cur in nxt and nxt[cur]:
+            cur = sorted(nxt[cur])[0]
+            if cur in seen:
+                break
+            seen.add(cur)
+            chain.append(cur)
+        for i, a in enumerate(chain):
+            out[a] = (i, len(chain))
+    return out

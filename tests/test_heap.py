@@ -113,14 +113,18 @@ class Netlist(unittest.TestCase):
         self.assertEqual((grp["w"], grp["x"], grp["z"]), ("out:o1", "out:o1", "out:o2"))
         self.assertEqual(size["q"], 0)
 
+    CHAIN = "\n".join([".model m", ".inputs a b c d", ".outputs s",
+                        ".subckt adder a[0]=a b[0]=b cin[0]=c cout[0]=c1 sumout[0]=s0",
+                        ".subckt adder a[0]=d b[0]=d cin[0]=c1 cout[0]=c2 sumout[0]=s", ".end", ""])
+
     def test_carry_chain_counts_once(self):
-        t = (".model m\n.inputs a b c d\n.outputs s\n"
-             ".subckt adder a[0]=a b[0]=b cin[0]=c cout[0]=c1 sumout[0]=s0\n"
-             ".subckt adder a[0]=d b[0]=d cin[0]=c1 cout[0]=c2 sumout[0]=s\n.end\n").replace("\\n", "\n")
-        g = hl.parse_blif_graph(t)
+        g = hl.parse_blif_graph(self.CHAIN)
         self.assertEqual(len(g["comb"]), 2)
-        lv = hl.comb_levels(g)
-        self.assertEqual(sorted(lv.values()), [1, 1])
+        self.assertEqual(sorted(hl.comb_levels(g).values()), [1, 1])
+
+    def test_adder_chain_positions(self):
+        g = hl.parse_blif_graph(self.CHAIN, {"c1", "c2"})
+        self.assertEqual(sorted(hl.adder_chains(g).values()), [(0, 2), (1, 2)])
 
 
 class Bins(unittest.TestCase):

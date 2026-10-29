@@ -1,0 +1,518 @@
+{
+ "blob_merge": {
+  "heap_atoms": 81,
+  "heap_atoms_with_line": 78,
+  "top": [
+   {
+    "atoms": 32,
+    "enrichment": 44.11899038461539,
+    "heap_atoms": 11,
+    "line": "blob_merge.v:1566"
+   },
+   {
+    "atoms": 28,
+    "enrichment": 41.25412087912088,
+    "heap_atoms": 9,
+    "line": "blob_merge.v:1535"
+   },
+   {
+    "atoms": 26,
+    "enrichment": 39.49112426035503,
+    "heap_atoms": 8,
+    "line": "blob_merge.v:1520"
+   },
+   {
+    "atoms": 24,
+    "enrichment": 42.78205128205128,
+    "heap_atoms": 8,
+    "line": "blob_merge.v:1505"
+   },
+   {
+    "atoms": 18,
+    "enrichment": 49.912393162393165,
+    "heap_atoms": 7,
+    "line": "blob_merge.v:1458"
+   },
+   {
+    "atoms": 22,
+    "enrichment": 40.83741258741259,
+    "heap_atoms": 7,
+    "line": "blob_merge.v:1489"
+   },
+   {
+    "atoms": 20,
+    "enrichment": 32.08653846153845,
+    "heap_atoms": 5,
+    "line": "blob_merge.v:1473"
+   },
+   {
+    "atoms": 30,
+    "enrichment": 17.112820512820512,
+    "heap_atoms": 4,
+    "line": "blob_merge.v:1551"
+   }
+  ]
+ },
+ "boundtop": {
+  "heap_atoms": 25,
+  "heap_atoms_with_line": 1,
+  "top": [
+   {
+    "atoms": 48,
+    "enrichment": 15.958333333333336,
+    "heap_atoms": 1,
+    "line": "boundtop.v:1717"
+   }
+  ]
+ },
+ "ch_intrinsics": {
+  "heap_atoms": 5,
+  "heap_atoms_with_line": 5,
+  "top": [
+   {
+    "atoms": 8,
+    "enrichment": 19.0,
+    "heap_atoms": 5,
+    "line": "ch_intrinsics.v:29"
+   }
+  ]
+ },
+ "diffeq1": {
+  "heap_atoms": 125,
+  "heap_atoms_with_line": 125,
+  "top": [
+   {
+    "atoms": 134,
+    "enrichment": 1.8913432835820896,
+    "heap_atoms": 60,
+    "line": "diffeq1.v:42"
+   },
+   {
+    "atoms": 230,
+    "enrichment": 0.5876869565217392,
+    "heap_atoms": 32,
+    "line": "diffeq1.v:40"
+   },
+   {
+    "atoms": 97,
+    "enrichment": 1.3934845360824741,
+    "heap_atoms": 32,
+    "line": "diffeq1.v:23"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 4.224,
+    "heap_atoms": 1,
+    "line": "diffeq1.v:19"
+   }
+  ]
+ },
+ "diffeq2": {
+  "heap_atoms": 100,
+  "heap_atoms_with_line": 69,
+  "top": [
+   {
+    "atoms": 134,
+    "enrichment": 1.3405797101449275,
+    "heap_atoms": 37,
+    "line": "diffeq2.v:60"
+   },
+   {
+    "atoms": 134,
+    "enrichment": 1.1231884057971013,
+    "heap_atoms": 31,
+    "line": "diffeq2.v:56"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 4.855072463768116,
+    "heap_atoms": 1,
+    "line": "diffeq2.v:44"
+   }
+  ]
+ },
+ "mkDelayWorker32B": {
+  "heap_atoms": 6,
+  "heap_atoms_with_line": 5,
+  "top": [
+   {
+    "atoms": 400,
+    "enrichment": 3.744,
+    "heap_atoms": 4,
+    "line": "mkDelayWorker32B.v:314"
+   },
+   {
+    "atoms": 313,
+    "enrichment": 1.1961661341853036,
+    "heap_atoms": 1,
+    "line": "mkDelayWorker32B.v:1005"
+   }
+  ]
+ },
+ "mkPktMerge": {
+  "heap_atoms": 60,
+  "heap_atoms_with_line": 60,
+  "top": [
+   {
+    "atoms": 153,
+    "enrichment": 1.4662309368191722,
+    "heap_atoms": 20,
+    "line": "mkPktMerge.v:191"
+   },
+   {
+    "atoms": 153,
+    "enrichment": 1.4662309368191722,
+    "heap_atoms": 20,
+    "line": "mkPktMerge.v:87"
+   },
+   {
+    "atoms": 153,
+    "enrichment": 0.9530501089324619,
+    "heap_atoms": 13,
+    "line": "mkPktMerge.v:82"
+   },
+   {
+    "atoms": 153,
+    "enrichment": 0.5131808278867103,
+    "heap_atoms": 7,
+    "line": "mkPktMerge.v:78"
+   }
+  ]
+ },
+ "mkSMAdapter4B": {
+  "heap_atoms": 26,
+  "heap_atoms_with_line": 21,
+  "top": [
+   {
+    "atoms": 232,
+    "enrichment": 6.715927750410509,
+    "heap_atoms": 16,
+    "line": "mkSMAdapter4B.v:1372"
+   },
+   {
+    "atoms": 39,
+    "enrichment": 9.987789987789988,
+    "heap_atoms": 4,
+    "line": "mkSMAdapter4B.v:1310"
+   },
+   {
+    "atoms": 60,
+    "enrichment": 1.623015873015873,
+    "heap_atoms": 1,
+    "line": "mkSMAdapter4B.v:802"
+   }
+  ]
+ },
+ "or1200": {
+  "heap_atoms": 250,
+  "heap_atoms_with_line": 239,
+  "top": [
+   {
+    "atoms": 139,
+    "enrichment": 7.644140754342133,
+    "heap_atoms": 77,
+    "line": "or1200.v:3643"
+   },
+   {
+    "atoms": 71,
+    "enrichment": 7.579822028404738,
+    "heap_atoms": 39,
+    "line": "or1200.v:3693"
+   },
+   {
+    "atoms": 349,
+    "enrichment": 1.5024876814808599,
+    "heap_atoms": 38,
+    "line": "or1200.v:3365"
+   },
+   {
+    "atoms": 66,
+    "enrichment": 6.481425129960695,
+    "heap_atoms": 31,
+    "line": "or1200.v:3362"
+   },
+   {
+    "atoms": 98,
+    "enrichment": 3.5201946887541626,
+    "heap_atoms": 25,
+    "line": "or1200.v:3641"
+   },
+   {
+    "atoms": 32,
+    "enrichment": 4.312238493723849,
+    "heap_atoms": 10,
+    "line": "or1200.v:3032"
+   },
+   {
+    "atoms": 32,
+    "enrichment": 3.8810146443514646,
+    "heap_atoms": 9,
+    "line": "or1200.v:2986"
+   },
+   {
+    "atoms": 32,
+    "enrichment": 3.0185669456066946,
+    "heap_atoms": 7,
+    "line": "or1200.v:1132"
+   }
+  ]
+ },
+ "raygentop": {
+  "heap_atoms": 74,
+  "heap_atoms_with_line": 74,
+  "top": [
+   {
+    "atoms": 144,
+    "enrichment": 8.169857357357357,
+    "heap_atoms": 38,
+    "line": "raygentop.v:333"
+   },
+   {
+    "atoms": 38,
+    "enrichment": 13.850284495021338,
+    "heap_atoms": 17,
+    "line": "raygentop.v:2726"
+   },
+   {
+    "atoms": 59,
+    "enrichment": 4.1978928080623,
+    "heap_atoms": 8,
+    "line": "raygentop.v:2723"
+   },
+   {
+    "atoms": 32,
+    "enrichment": 4.837415540540541,
+    "heap_atoms": 5,
+    "line": "raygentop.v:2711"
+   },
+   {
+    "atoms": 60,
+    "enrichment": 1.5479729729729732,
+    "heap_atoms": 3,
+    "line": "raygentop.v:419"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 30.959459459459463,
+    "heap_atoms": 1,
+    "line": "raygentop.v:339"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 30.959459459459463,
+    "heap_atoms": 1,
+    "line": "raygentop.v:336"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 30.959459459459463,
+    "heap_atoms": 1,
+    "line": "raygentop.v:337"
+   }
+  ]
+ },
+ "sha": {
+  "heap_atoms": 134,
+  "heap_atoms_with_line": 134,
+  "top": [
+   {
+    "atoms": 1739,
+    "enrichment": 0.4426630504750543,
+    "heap_atoms": 42,
+    "line": "sha.v:127"
+   },
+   {
+    "atoms": 132,
+    "enrichment": 4.304387155133424,
+    "heap_atoms": 31,
+    "line": "sha.v:138"
+   },
+   {
+    "atoms": 359,
+    "enrichment": 1.5316176776285702,
+    "heap_atoms": 30,
+    "line": "sha.v:148"
+   },
+   {
+    "atoms": 33,
+    "enrichment": 16.66214382632293,
+    "heap_atoms": 30,
+    "line": "sha.v:2089"
+   },
+   {
+    "atoms": 32,
+    "enrichment": 0.5727611940298507,
+    "heap_atoms": 1,
+    "line": "sha.v:131"
+   }
+  ]
+ },
+ "stereovision0": {
+  "heap_atoms": 132,
+  "heap_atoms_with_line": 115,
+  "top": [
+   {
+    "atoms": 120,
+    "enrichment": 45.29565217391304,
+    "heap_atoms": 30,
+    "line": "stereovision0.v:887"
+   },
+   {
+    "atoms": 288,
+    "enrichment": 15.727657004830917,
+    "heap_atoms": 25,
+    "line": "stereovision0.v:3097"
+   },
+   {
+    "atoms": 25,
+    "enrichment": 108.7095652173913,
+    "heap_atoms": 15,
+    "line": "stereovision0.v:3301"
+   },
+   {
+    "atoms": 25,
+    "enrichment": 94.21495652173914,
+    "heap_atoms": 13,
+    "line": "stereovision0.v:3229"
+   },
+   {
+    "atoms": 252,
+    "enrichment": 7.189786059351277,
+    "heap_atoms": 10,
+    "line": "stereovision0.v:1201"
+   },
+   {
+    "atoms": 526,
+    "enrichment": 3.1000826582906265,
+    "heap_atoms": 9,
+    "line": "stereovision0.v:830"
+   },
+   {
+    "atoms": 1015,
+    "enrichment": 1.428040265581495,
+    "heap_atoms": 8,
+    "line": "stereovision0.v:1191"
+   },
+   {
+    "atoms": 25,
+    "enrichment": 36.23652173913044,
+    "heap_atoms": 5,
+    "line": "stereovision0.v:3187"
+   }
+  ]
+ },
+ "stereovision1": {
+  "heap_atoms": 202,
+  "heap_atoms_with_line": 202,
+  "top": [
+   {
+    "atoms": 5248,
+    "enrichment": 2.633323774450616,
+    "heap_atoms": 148,
+    "line": "stereovision1.v:1371"
+   },
+   {
+    "atoms": 1112,
+    "enrichment": 3.1909145950566282,
+    "heap_atoms": 38,
+    "line": "stereovision1.v:1848"
+   },
+   {
+    "atoms": 2624,
+    "enrichment": 0.569367302583917,
+    "heap_atoms": 16,
+    "line": "stereovision1.v:1338"
+   }
+  ]
+ },
+ "stereovision2": {
+  "heap_atoms": 2559,
+  "heap_atoms_with_line": 2559,
+  "top": [
+   {
+    "atoms": 990,
+    "enrichment": 6.50047248570109,
+    "heap_atoms": 453,
+    "line": "stereovision2.v:1486"
+   },
+   {
+    "atoms": 942,
+    "enrichment": 6.31895172029281,
+    "heap_atoms": 419,
+    "line": "stereovision2.v:1542"
+   },
+   {
+    "atoms": 942,
+    "enrichment": 5.489495050564637,
+    "heap_atoms": 364,
+    "line": "stereovision2.v:1716"
+   },
+   {
+    "atoms": 1477,
+    "enrichment": 2.635433028992421,
+    "heap_atoms": 274,
+    "line": "stereovision2.v:1474"
+   },
+   {
+    "atoms": 1476,
+    "enrichment": 2.3292222253992763,
+    "heap_atoms": 242,
+    "line": "stereovision2.v:1530"
+   },
+   {
+    "atoms": 768,
+    "enrichment": 4.032526133255177,
+    "heap_atoms": 218,
+    "line": "stereovision2.v:1602"
+   },
+   {
+    "atoms": 1464,
+    "enrichment": 1.8243102133902205,
+    "heap_atoms": 188,
+    "line": "stereovision2.v:1704"
+   },
+   {
+    "atoms": 750,
+    "enrichment": 2.3866635404454866,
+    "heap_atoms": 126,
+    "line": "stereovision2.v:1833"
+   }
+  ]
+ },
+ "stereovision3": {
+  "heap_atoms": 32,
+  "heap_atoms_with_line": 28,
+  "top": [
+   {
+    "atoms": 52,
+    "enrichment": 1.786401098901099,
+    "heap_atoms": 9,
+    "line": "stereovision3.v:144"
+   },
+   {
+    "atoms": 10,
+    "enrichment": 8.257142857142856,
+    "heap_atoms": 8,
+    "line": "stereovision3.v:102"
+   },
+   {
+    "atoms": 98,
+    "enrichment": 0.7372448979591837,
+    "heap_atoms": 7,
+    "line": "stereovision3.v:83"
+   },
+   {
+    "atoms": 35,
+    "enrichment": 0.8846938775510204,
+    "heap_atoms": 3,
+    "line": "stereovision3.v:1029"
+   },
+   {
+    "atoms": 1,
+    "enrichment": 10.321428571428571,
+    "heap_atoms": 1,
+    "line": "stereovision3.v:141"
+   }
+  ]
+ }
+}
