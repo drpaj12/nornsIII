@@ -13,10 +13,14 @@ Every number in the paper traces to a JSON record this module writes (or parses)
 
 from __future__ import annotations
 
+import gzip
+import hashlib
 import json
+import lzma
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -378,6 +382,172 @@ def run_vpr(blif: Path, cwd: Path, extra: list[str], log: Path,
             timeout: int | None = None) -> int:
     """One VPR run under the heavy lock; the log is the caller's record."""
     return run(vpr_command(blif, extra), cwd=cwd, stdout=log, timeout=timeout)
+
+
+# ---- keep timing (purpose: Mimir fills timing_path / hdl_edge for Norns runs; hub RQ W Q3.3, speed)
+KEEP_NPATHS = 1000  # --timing_report_npaths of every kept-timing VPR run (200 and 1000 give the same placement, docs/keep-timing.md)
+
+
+KEEP_ARTIFACTS = (("timing_report_gz", "report_timing.setup.rpt.gz"), ("timing_attribution", "attribution.json.xz"),
+                  ("keep_timing", "keep-timing.json"))  # run-record roles of the files keep_timing writes
+
+
+def kept_artifacts(keep: dict[str, Any] | None) -> list[tuple[str, str]]:
+    """(role, file name) of the files this run's keep_timing result says it wrote; nothing from a stale directory."""
+    if not keep or not keep.get("keep_timing"):
+        return []
+    out = []
+    if "report_bytes" in keep:
+        out.append(KEEP_ARTIFACTS[0])
+    if keep.get("attribution"):
+        out.append(KEEP_ARTIFACTS[1])
+    out.append(KEEP_ARTIFACTS[2])
+    return out
+
+
+def keep_timing_on() -> bool:
+    """On by default; NORNS_KEEP_TIMING=0 turns it off."""
+    return os.environ.get("NORNS_KEEP_TIMING", "1") != "0"
+
+
+def npaths(default: int) -> int:
+    """Paths a run asks VPR to report: KEEP_NPATHS with the switch on, else the caller's own number."""
+    return KEEP_NPATHS if keep_timing_on() else default
+
+
+def file_sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _compress(src: Path, dst: Path, opener: Any) -> int:
+    ensure_dir(dst.parent)
+    with src.open("rb") as fi, opener(dst, "wb") as fo:
+        shutil.copyfileobj(fi, fo)
+    return dst.stat().st_size
+
+
+_HOME_RX = re.compile(r"/home/[^/\s\"':,;()<>]+")  # as mimir/scrub.py _HOME
+
+
+def scrub_roots() -> list[tuple[str, str]]:
+    """(root, token) pairs, longest root first. Token spellings follow the Mimir scrubber
+    (mimir/mimir/structcli.py make_scrub: "$VTR_ROOT", "$WS"; mimir/mimir/scrub.py Scrubber: longest root first,
+    then any other /home/<user> path). Copied here, not imported: Norns does not depend on Mimir."""
+    pairs = [(str(VTR_ROOT).rstrip("/"), "$VTR_ROOT"), (str(WS_ROOT).rstrip("/"), "$WS")]
+    return sorted(pairs, key=lambda x: -len(x[0]))
+
+
+def scrub_text(text: str, counts: dict[str, int] | None = None) -> str:
+    """Rewrite VTR root -> $VTR_ROOT, workspace root -> $WS, any other home dir -> ~ (counts: occurrences per token)."""
+    for root, token in scrub_roots():
+        n = text.count(root)
+        if n:
+            text = text.replace(root, token)
+            if counts is not None:
+                counts[token] = counts.get(token, 0) + n
+    text, n = _HOME_RX.subn("~", text)
+    if n and counts is not None:
+        counts["~"] = counts.get("~", 0) + n
+    return text
+
+
+def _compress_scrubbed(src: Path, dst: Path, counts: dict[str, int]) -> int:
+    """xz of src with scrub_text applied line by line (a path never spans lines; JSON from odin3-timing is read whole)."""
+    ensure_dir(dst.parent)
+    with src.open("r", encoding="utf-8", errors="surrogateescape", newline="") as fi, \
+            lzma.open(dst, "wt", encoding="utf-8", errors="surrogateescape", newline="") as fo:
+        for line in fi:
+            fo.write(scrub_text(line, counts))
+    return dst.stat().st_size
+
+
+def keep_store() -> Path:
+    """Where each (design, blif sha256) input pair is kept once; NORNS_KEEP_STORE overrides."""
+    return Path(os.environ.get("NORNS_KEEP_STORE", str(RUNS / "_keep-inputs")))
+
+
+def odin_timing_tool() -> Path:
+    tree = Path(os.environ.get("NORNS_ODIN_TREE", str(ODIN3_ROOT)))
+    return tree / "tools" / "flow" / "odin3-timing"
+
+
+def keep_inputs(design: str, blif: Path, name_map: Path | None) -> dict[str, Any]:
+    """Keep blif + name map once per (design, blif sha256) in the store; return their sha256 and sizes."""
+    sha = file_sha256(blif)
+    out: dict[str, Any] = {"blif_sha256": sha, "map_sha256": None}  # shas are of the original files, kept copies are path-scrubbed
+    counts: dict[str, int] = {}
+    out["_rewritten"] = counts
+    d = keep_store() / design / sha
+    if not (d / f"{design}.blif.xz").is_file():
+        out["blif_bytes"] = _compress_scrubbed(blif, d / f"{design}.blif.xz", counts)
+    if name_map is not None and name_map.is_file():
+        out["map_sha256"] = file_sha256(name_map)
+        if not (d / f"{design}.blif.names.xz").is_file():
+            out["map_bytes"] = _compress_scrubbed(name_map, d / f"{design}.blif.names.xz", counts)
+    return out
+
+
+def _attribute(vpr_cwd: Path, design: str, blif: Path, name_map: Path, dest: Path,
+               counts: dict[str, int]) -> tuple[bool, str]:
+    """Run odin3-timing over a small flow directory pointing at the run; xz the attribution to dest."""
+    tool = odin_timing_tool()
+    if not tool.is_file():
+        return False, f"odin3-timing not found at {tool.name}"
+    flow = vpr_cwd / "keep-flow"
+    ensure_dir(flow / "timing")
+    (flow / "timing" / "inputs.json").write_text(json.dumps(
+        {"top": design, "blif": str(blif), "name_map": str(name_map), "vpr_run_dir": str(vpr_cwd),
+         "paths_requested": KEEP_NPATHS}, indent=1, sort_keys=True))
+    r = subprocess.run([str(tool), str(flow)], capture_output=True, text=True, check=False)
+    att = flow / "timing" / "attribution.json"
+    if r.returncode != 0 or not att.is_file():
+        return False, (r.stderr or r.stdout).strip().splitlines()[-1][:200] if (r.stderr or r.stdout).strip() else f"rc {r.returncode}"
+    _compress_scrubbed(att, dest, counts)  # every string field, spans included
+    return True, ""
+
+
+def keep_timing(run_dir: Path, vpr_cwd: Path, design: str, blif: Path, name_map: Path | None = None) -> dict[str, Any]:
+    """Keep the timing evidence of one finished VPR run (report gz, attribution xz, blif + name map once);
+    returns the fields the caller adds to its run record, and writes them to run_dir/keep-timing.json."""
+    if not keep_timing_on():
+        return {"keep_timing": False}
+    rec: dict[str, Any] = {"keep_timing": True, "paths_requested": KEEP_NPATHS, "paths_kept": 0,
+                           "attribution": False, "blif_sha256": None, "map_sha256": None}
+    ensure_dir(run_dir)
+    rpt = vpr_cwd / "report_timing.setup.rpt"
+    if rpt.is_file():
+        rec["report_bytes"] = _compress(rpt, run_dir / "report_timing.setup.rpt.gz", gzip.open)
+        rec["paths_kept"] = sum(1 for ln in rpt.read_text(errors="replace").splitlines() if ln.startswith("#Path "))
+    else:
+        rec["note"] = "no report_timing.setup.rpt"
+    counts: dict[str, int] = {}
+    if blif.is_file():
+        inp = keep_inputs(design, blif, name_map)
+        for k, v in inp.pop("_rewritten").items():
+            counts[k] = counts.get(k, 0) + v
+        rec.update(inp)
+    if rec["map_sha256"] is None:
+        rec["attribution_note"] = "no name map for this call site: report kept only"
+    elif rpt.is_file() and name_map is not None:
+        ok, why = _attribute(vpr_cwd, design, blif, name_map, run_dir / "attribution.json.xz", counts)
+        rec["attribution"] = ok
+        if ok:
+            rec["attribution_bytes"] = (run_dir / "attribution.json.xz").stat().st_size
+        else:
+            rec["attribution_note"] = why
+    rec["paths_rewritten"] = {t: counts.get(t, 0) for t in ("$VTR_ROOT", "$WS", "~")}
+    (run_dir / "keep-timing.json").write_text(json.dumps(rec, indent=1, sort_keys=True) + "\n")
+    return rec
+
+
+def name_map_of(blif: Path) -> Path | None:
+    """The Odin III name map written beside a blif (<top>.blif.names), if any."""
+    m = blif.with_name(blif.name + ".names")
+    return m if m.is_file() else None
 
 
 def odin_env() -> dict[str, str]:

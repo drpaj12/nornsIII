@@ -60,7 +60,7 @@ _LAST = re.compile(r"(-?[0-9.]+)\s*$")
 
 
 def parse_report(path: Path) -> list[dict[str, Any]]:
-    """Paths of a VPR setup timing report: [{'arrival', 'slack', 'nodes': [(atom, port, type, incr)]}]."""
+    """Paths of a VPR setup timing report (callers keep the first NPATHS: the kept report may hold more): [{'arrival', 'slack', 'nodes': [(atom, port, type, incr)]}]."""
     paths: list[dict[str, Any]] = []
     cur: dict[str, Any] | None = None
     in_data = False

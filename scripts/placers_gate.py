@@ -42,7 +42,7 @@ SA = ["--pack", "--place", "--route", "--analysis"]
 def vpr(tag, flags, seed, write=None, read=None):
     cwd = WORK / tag
     nl.ensure_dir(cwd)
-    flags = flags + ["--seed", str(seed), "--timing_report_npaths", "200", "--route_file", "/dev/null"]
+    flags = flags + ["--seed", str(seed), "--timing_report_npaths", str(nl.npaths(200)), "--route_file", "/dev/null"]
     if write:
         flags += ["--write_flat_place", str(cwd / write)]
     if read:
@@ -56,6 +56,8 @@ def vpr(tag, flags, seed, write=None, read=None):
         m = rx.search(text)
         rec[k] = float(m.group(1)) if m else None
     rec["routed_ok"] = "Circuit successfully routed" in text
+    if rc == 0:
+        rec["keep"] = nl.keep_timing(cwd, cwd, DESIGN, BLIF, nl.name_map_of(BLIF))
     rec["reader_warnings"] = len(re.findall(r"Flat placement file, line", text))
     m = re.search(r"FPGA sized to (\d+) x (\d+)", text)
     rec["grid"] = [int(m.group(1)), int(m.group(2))] if m else None

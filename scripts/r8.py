@@ -209,7 +209,7 @@ def vpr_run(design: str, arm: str, cwd: Path, flags: list[str], seed: int) -> tu
     return rc, argv, secs, rss
 
 
-def write_record(design: str, arm: str, seed: int, cwd: Path, argv: list[str], rc: int, secs, rss, aff: Path | None) -> None:
+def write_record(design: str, arm: str, seed: int, cwd: Path, argv: list[str], rc: int, secs, rss, aff: Path | None, keep: dict | None = None) -> None:
     blif = matrix.blif_of(design)
     stock = arm == "stock"
     vkey = "vpr_stock" if stock else "vpr_norns"
@@ -230,6 +230,8 @@ def write_record(design: str, arm: str, seed: int, cwd: Path, argv: list[str], r
         for role, name in (("vpr_out", "vpr.out"), ("flat_place", "final.flat_place"), ("initial_place", "initial.place"),
                            ("timing_report", "report_timing.setup.rpt")):
             r.add_artifact(role, cwd / name)
+        for role, name in nl.kept_artifacts(keep):  # only what this run's keep_timing wrote
+            r.add_artifact(role, cwd / name)
         r.write(cwd / "mimir-run.json", required_inputs=("netlist", "arch"), required_artifacts=("vpr_out", "flat_place"))
     except rr.HostMapError as exc:
         print(f"run record NOT written for {run_id}: {exc}", file=sys.stderr, flush=True)
@@ -242,7 +244,7 @@ def arm_run(design: str, arm: str, seed: int) -> dict:
         return nl.read_json(nl.runs_dir(design, "r8", tag(arm, seed), "metrics.json"))
     cwd = nl.runs_dir(design, "r8", tag(arm, seed))
     nl.ensure_dir(cwd)  # an unfinished earlier directory is reused (VPR overwrites); nothing is deleted
-    flags = ["--seed", str(seed), "--timing_report_npaths", str(NPATHS),
+    flags = ["--seed", str(seed), "--timing_report_npaths", str(nl.npaths(NPATHS)),
              "--write_initial_place_file", str(cwd / "initial.place"),
              "--write_flat_place", str(cwd / "final.flat_place")] + aff_flags(design, arm)
     if b_of(design) > ROUTE_KEEP_MAX_B:
@@ -265,6 +267,7 @@ def arm_run(design: str, arm: str, seed: int) -> dict:
             w, h = nl.grid_size(nl.Place(init))
             rec["grid"] = [w, h]
         rec.update(rl.packing_vs_blocks(design, cwd / "final.flat_place"))
+        rec["keep"] = nl.keep_timing(cwd, cwd, design, matrix.blif_of(design), nl.name_map_of(matrix.blif_of(design)))
         m = re.search(r"Norns affinity: (\d+) of (\d+) file entries matched atoms, (\d+) groups", text)
         rec["affinity_matched"] = [int(m.group(1)), int(m.group(2)), int(m.group(3))] if m else None
     else:
@@ -272,7 +275,7 @@ def arm_run(design: str, arm: str, seed: int) -> dict:
     rec["peak_rss_mib"] = rss
     nl.write_json(cwd / "metrics.json", rec)
     aff = None if arm == "stock" else Path(argv[argv.index("--norns_affinity") + 1])
-    write_record(design, arm, seed, cwd, argv, rc, secs, rss, aff)
+    write_record(design, arm, seed, cwd, argv, rc, secs, rss, aff, rec.get("keep"))
     RUNS_JSONL.parent.mkdir(parents=True, exist_ok=True)
     with RUNS_JSONL.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(rec, sort_keys=True) + "\n")

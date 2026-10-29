@@ -76,7 +76,7 @@ def run_arm(design: str, arm: str, seed: int, aff: Path | None = None, census: b
     sc = scratch_root() / design / f"{arm}.s{seed}"
     nl.ensure_dir(sc)
     nl.ensure_dir(rd)
-    flags = ["--seed", str(seed), "--timing_report_npaths", str(lib.NPATHS), "--route_file", "/dev/null",
+    flags = ["--seed", str(seed), "--timing_report_npaths", str(nl.npaths(lib.NPATHS)), "--route_file", "/dev/null",
              "--write_initial_place_file", str(sc / "initial.place"), "--write_flat_place", str(sc / "final.flat_place")]
     if census:
         flags += ["--norns_pack_census", str(sc / "census.tsv")]
@@ -108,8 +108,10 @@ def run_arm(design: str, arm: str, seed: int, aff: Path | None = None, census: b
         import r3lib
         groups = r3lib.logic_groups(rd / "final.flat_place")
         rec["logic_clbs"] = len(groups)
-        paths = lib.parse_report(sc / "report_timing.setup.rpt")
+        paths = lib.parse_report(sc / "report_timing.setup.rpt")[:lib.NPATHS]  # the analysis keeps the 200 worst; the kept report holds more
         rec["paths_in_report"] = len(paths)
+        blif = blif_of(design)
+        rec["keep"] = nl.keep_timing(rd, sc, design, blif, nl.name_map_of(blif))
         with gzip.open(rd / "paths.json.gz", "wt") as fh:
             json.dump([{"arrival": p["arrival"], "slack": p["slack"], "nodes": p["nodes"]} for p in paths], fh)
         if census and (sc / "census.tsv").is_file():
