@@ -238,3 +238,49 @@ written (VPR was run only on cleaned D, on single clusters, and on written files
    Bootstrap detail: "interval excludes 0 after Holm" is read as the Holm-adjusted two-sided bootstrap p < 0.10.
 9. The independent partitioner check can be vacuous when no METIS partition satisfies the pin limits (diffeq1); the record carries
    `metis_legal` and the best pin-illegal cut, and the report states which. The perturbation search (`shake`) is always legal.
+
+## Entry 2026-10-29 (b): stage 3a, the exact arm (method choice; written before any full-set run)
+
+Why. In the pilot the `known` arm (Norns packer told C, beta 100) reproduced C only 0.40 to 0.80 of the time (purity 0.89 to 0.97), so
+stock/known measured the gap to the Norns mechanism, not to C. The aim of 3a is an arm in which VPR places and routes exactly C,
+so that wirelength and critical-path delay OF C ITSELF are measured and `stock/exact` is a ratio to C.
+
+Candidates read in VPR 3c9a4d23 (`vpr/src/base/read_options.cpp`): `--net_file` (:2071), `--read_vpr_constraints` (:2120),
+`--read_flat_place` (:2134). Constraints and flat placement guide or limit where blocks go; neither is documented to force a packer to
+form a given partition, and raising beta is a soft pull that the pilot already shows is not exact. `--net_file` skips packing and
+loads a packed netlist, so the clusters are whatever the file says.
+
+Method chosen: build the packed netlist from VPR's own packings of the single clusters. (1) Cut the shuffled `design.blif` into one
+netlist per cluster of C (nets from outside become pads, nets to outside become outputs). (2) Pack each alone with the stock binary
+(AAPack, seed 1); this gives VPR's own legal intra-cluster routing for that cluster. The first packer variant that gives one logic CLB
+and puts every external input on a CLB pin is used (variant 0 is the default options; the others, listed in `scripts/r9exact.py`,
+change clustering options only: alpha, connection or timing driven off, unrelated clustering, seed type, pin utilisation). (3) Copy
+those CLB blocks into one `.net` file whose header, pads and hard blocks come from the stock packing of the full shuffled netlist
+(same atom netlist, so the file's netlist hash matches), numbering the blocks as VPR requires. (4) Run `vpr --net_file ... --place
+--route --analysis` (VPR seeds 1 to 3). Nothing about C is approximate: purity is 1 and the logic CLBs are K by construction, and the
+check is that VPR loads the file against the BLIF and routes it. The constant generators `gnd` and `vcc` are CLBs of their own in the
+stock packing of the full netlist, so every flow reports K plus those 1 or 2 CLBs; they are copied unchanged and left out of purity
+(they are in no cluster of C in the packed file). The shipped statistics report `logic_clbs` as VPR prints it and `clbs - const_clbs`.
+
+Acceptance (set before the full set): CLBs = K and purity >= 0.95 on the three pilot designs, both constructions, all 3 shuffles.
+If a cluster cannot be packed alone by any variant, that design has no exact arm and is listed; if the method failed on the pilot,
+stock/K (area, exact) would stay primary and WL and CPD would be stated against the Norns `known` arm.
+
+Why this is a fair "C placed and routed" measure, and where it is not. The placer and router are VPR's own, run from C; they are free to
+find a good or poor placement of C's clusters (3 VPR seeds, 3 shuffles). The intra-cluster packing of each cluster is the one VPR's
+packer finds for it alone, which is a legal packing, but not the only one; pin assignment inside a cluster could change timing a little.
+`exact` is therefore an achievable point, not a bound: a packer can beat C in WL or CPD, and ratios below 1 are possible.
+
+Full set (3b), also fixed now. Designs: the 15 VTR Verilog designs (blob_merge, boundtop, ch_intrinsics, diffeq1, diffeq2,
+mkDelayWorker32B, mkPktMerge, mkSMAdapter4B, or1200, raygentop, sha, stereovision0 to 3) and the 20 MCNC designs (alu4, apex2, apex4,
+bigkey, clma, des, diffeq, dsip, elliptic, ex1010, ex5p, frisc, misex3, pdc, s298, s38417, s38584.1, seq, spla, tseng), the E10 base
+netlists, ordered by LUT-plus-flip-flop count, smallest first. Per design: own and foreign construction, shuffles 1 to 3 plus the
+`ordered` control (stock only), VPR seeds 1 to 3, arms stock, known and exact. A design that cannot be built within the memory cap or
+in a day of generator time is listed with the reason, not dropped silently. For the large designs the independent partitioner check is
+run with fewer seeds (the count is stored in the build record) and this is said where it applies.
+Statistics: the design is the unit. Per design the ratio is the geometric mean over the 9 (shuffle, seed) pairs; the pooled value is the
+geometric mean over designs; the interval is a bootstrap over designs (10000 resamples, seed 20261029, percentile, 90 percent); Holm
+over the metrics CLB, WL, CPD. Verdicts by the same room rule. The primary ratios are stock/K (CLBs, exact) and stock/exact (WL and CPD);
+stock/known is reported beside them. Self-bias: per design log(stock/exact) on own minus on foreign, pooled and bootstrapped over
+designs. Comparison with round 5 (CLB 1.073, WL 1.220, CPD 1.093 on 72 synthetic designs) in one table.
+Weekly meter is checked between steps; the work stops and reports at a weekly figure of 85 percent.
