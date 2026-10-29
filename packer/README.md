@@ -102,3 +102,22 @@ same checkout, overlays `packer/vpr/`, configures with the stock flags (release,
 Round 5 (docs/plan/round5.md) uses this packer unchanged: no file under `packer/vpr/` changed after round 4 (`DIFFSTAT.txt` and
 `VTR_COMMIT` are current). The `known` arm is this binary with `--norns_affinity <block membership>`,
 `--norns_affinity_weight 100` and `--norns_proposal_count queued`; the `norns` arm is the round-4 headline configuration.
+
+## H-refresh (docs/plan/refresh-crit.md, 2026-10-29)
+
+Option `--norns_refresh_crit <k>` (default 0 = stock; with 0 the `.net` is byte-identical to the stock sweep, gate in
+`docs/plan/refresh-crit.md`). After every k-th closed cluster (io and hard-block clusters count) the packer sets the arc delays of the
+nets of the atoms of the clusters closed since the last refresh and re-runs the pre-cluster timing:
+
+* an arc whose driver and sink atoms are in the same cluster gets VPR's intra-cluster routing estimate for pins of different molecules
+  (`PreClusterDelayCalculator::calc_inter_molecule_chain_delay`, reached through the new public wrapper `norns_intra_cluster_delay`);
+* an arc cut by the closed cluster (output sinks outside it, inputs driven from outside it) gets the inter-cluster estimate (kept at construction
+  in `PreClusterTimingManager::inter_cluster_delay_`; VPR's initial value for every arc);
+* the edges of the changed arcs are invalidated (incremental timing) and `update()` runs (`PreClusterTimingManager::norns_refresh_timing`);
+* the candidate selector already reads `setup_pin_criticality` live (no cache); the seed selector sorted the seeds once in its constructor, so
+  `GreedySeedSelector::norns_refresh_seed_gains` re-computes the seed gains and stable-sorts the seeds not yet proposed (the constructor shares the code,
+  `sort_seeds(first, ...)`; first = 0 is the stock sort). Gains of molecules already in a candidate queue are not refreshed (stock behaviour).
+* `vpr.out` gets `Norns refresh: k=<k> refreshes=<n> time=<s> s` when packing ends (only with k > 0).
+
+Files: `src/pack/greedy_clusterer.cpp` (hook after each closed cluster, `norns_refresh_criticality`), `greedy_seed_selector.cpp/.h`,
+`src/timing/PreClusterTimingManager.cpp/.h`, `PreClusterDelayCalculator.h` (wrapper only), option files as before.

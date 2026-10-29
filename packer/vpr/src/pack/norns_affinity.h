@@ -70,6 +70,17 @@ ProposalStats& proposal_stats();
 void set_census_options(const std::string& census_file, bool count_queued);
 bool count_queued();
 
+/// @brief H-refresh options: k > 0 refreshes the pre-cluster criticality after every k-th closed cluster (0 = stock).
+void set_refresh_options(int k);
+int refresh_k();
+
+/// @brief Log-only counters of the refresh (count and seconds spent in arc setting, timing update and seed re-sort).
+struct RefreshStats {
+    unsigned long long refreshes = 0;
+    double seconds = 0.0;
+};
+RefreshStats& refresh_stats();
+
 /// @brief Candidate source codes of the census (where a molecule entered the candidate queue).
 enum CensusSource {
     SRC_SEED = 0,

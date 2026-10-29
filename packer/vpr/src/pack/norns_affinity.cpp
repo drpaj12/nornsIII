@@ -37,6 +37,12 @@ std::ofstream g_census_stream;
 unsigned long long g_cluster_seq = 0;
 } // namespace
 
+static int g_refresh_k = 0;
+static RefreshStats g_refresh_stats;
+void set_refresh_options(int k) { g_refresh_k = k < 0 ? 0 : k; }
+int refresh_k() { return g_refresh_k; }
+RefreshStats& refresh_stats() { return g_refresh_stats; }
+
 void set_census_options(const std::string& census_file, bool count_queued) {
     g_census_file = census_file;
     g_count_queued = count_queued;

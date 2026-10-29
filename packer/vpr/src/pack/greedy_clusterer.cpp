@@ -38,6 +38,7 @@
 
 #include "norns_affinity.h" // Norns III census status hook
 #include "greedy_clusterer.h"
+#include <chrono>
 #include <cstdio>
 #include <map>
 #include <string>
@@ -54,6 +55,7 @@
 #include "physical_types.h"
 #include "prepack.h"
 #include "logical_ram_infer.h"
+#include "PreClusterTimingManager.h"
 #include "vpr_context.h"
 #include "vtr_math.h"
 
@@ -73,6 +75,18 @@ struct t_cluster_progress_stats {
 };
 
 } // namespace
+
+static void norns_refresh_criticality(const AtomNetlist& atom_netlist_,
+                                      const std::unordered_set<AtomNetId>& is_clock_,
+                                      const t_packer_opts& packer_opts_,
+                                      const t_arch& arch_,
+                                      const PreClusterTimingManager& pre_cluster_timing_manager_,
+                                      const std::vector<AtomBlockId>& atoms,
+                                      const ClusterLegalizer& cluster_legalizer,
+                                      const Prepacker& prepacker,
+                                      GreedySeedSelector& seed_selector,
+                                      const t_molecule_stats& max_molecule_stats,
+                                      const RamMapper& ram_mapper);
 
 GreedyClusterer::GreedyClusterer(const t_packer_opts& packer_opts,
                                  const AtomNetlist& atom_netlist,
@@ -154,6 +168,11 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
     // Pick the first seed molecule.
     PackMoleculeId seed_mol_id = seed_selector.get_next_seed(cluster_legalizer);
 
+    // Norns III H-refresh (--norns_refresh_crit k, 0 = off): atoms of the clusters closed since the last refresh.
+    const int norns_refresh_k = pre_cluster_timing_manager_.is_valid() ? norns::refresh_k() : 0;
+    std::vector<AtomBlockId> norns_pending_atoms;
+    int norns_pending_clusters = 0;
+
     /****************************************************************
      * Clustering
      *****************************************************************/
@@ -221,14 +240,78 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
                           attraction_groups,
                           cluster_legalizer);
 
+        if (norns_refresh_k > 0) {
+            // Remember the atoms of the closed cluster (cluster ids may be renumbered by a later compress()).
+            for (PackMoleculeId mol_id : cluster_legalizer.get_cluster_molecules(new_cluster_id)) {
+                for (AtomBlockId blk : prepacker.get_molecule(mol_id).atom_block_ids) {
+                    if (blk.is_valid()) norns_pending_atoms.push_back(blk);
+                }
+            }
+            if (++norns_pending_clusters >= norns_refresh_k) {
+                norns_refresh_criticality(atom_netlist_, is_clock_, packer_opts_, arch_, pre_cluster_timing_manager_, norns_pending_atoms, cluster_legalizer, prepacker, seed_selector, max_molecule_stats, ram_mapper);
+                norns_pending_atoms.clear();
+                norns_pending_clusters = 0;
+            }
+        }
+
         // Pick new seed.
         seed_mol_id = seed_selector.get_next_seed(cluster_legalizer);
+    }
+
+    if (norns_refresh_k > 0) {
+        VTR_LOG("Norns refresh: k=%d refreshes=%llu time=%.3f s\n", norns_refresh_k, norns::refresh_stats().refreshes, norns::refresh_stats().seconds);
     }
 
     // If this architecture has LE physical block, report its usage.
     report_le_physical_block_usage(cluster_legalizer);
 
     return num_used_type_instances;
+}
+
+static void norns_refresh_criticality(const AtomNetlist& atom_netlist_,
+                                      const std::unordered_set<AtomNetId>& is_clock_,
+                                      const t_packer_opts& packer_opts_,
+                                      const t_arch& arch_,
+                                      const PreClusterTimingManager& pre_cluster_timing_manager_,
+                                      const std::vector<AtomBlockId>& atoms,
+                                      const ClusterLegalizer& cluster_legalizer,
+                                      const Prepacker& prepacker,
+                                      GreedySeedSelector& seed_selector,
+                                      const t_molecule_stats& max_molecule_stats,
+                                      const RamMapper& ram_mapper) {
+    auto t0 = std::chrono::steady_clock::now();
+    // The manager is a non-const object in vpr_api.cpp; the packer holds it by const reference.
+    PreClusterTimingManager& timing = const_cast<PreClusterTimingManager&>(pre_cluster_timing_manager_);
+    for (AtomBlockId blk : atoms) {
+        LegalizationClusterId cluster = cluster_legalizer.get_atom_cluster(blk);
+        // Inputs: the driver in the same closed cluster makes the arc intra-cluster; any other driver (another cluster
+        // or not yet packed) leaves it inter-cluster.
+        for (AtomPinId in_pin : atom_netlist_.block_input_pins(blk)) {
+            AtomNetId net = atom_netlist_.pin_net(in_pin);
+            if (!net.is_valid() || is_clock_.count(net)) continue;
+            AtomPinId driver = atom_netlist_.net_driver(net);
+            if (!driver.is_valid()) continue;
+            if (cluster_legalizer.get_atom_cluster(atom_netlist_.pin_block(driver)) == cluster) {
+                timing.norns_set_intra_cluster_arc(in_pin);
+            } else {
+                timing.norns_set_inter_cluster_arc(in_pin);
+            }
+        }
+        // Outputs: sinks outside this cluster are cut by it (inter-cluster estimate); sinks inside are set by their own input side.
+        for (AtomPinId out_pin : atom_netlist_.block_output_pins(blk)) {
+            AtomNetId net = atom_netlist_.pin_net(out_pin);
+            if (!net.is_valid() || is_clock_.count(net)) continue;
+            for (AtomPinId sink : atom_netlist_.net_sinks(net)) {
+                if (cluster_legalizer.get_atom_cluster(atom_netlist_.pin_block(sink)) != cluster) {
+                    timing.norns_set_inter_cluster_arc(sink);
+                }
+            }
+        }
+    }
+    timing.norns_refresh_timing();
+    seed_selector.norns_refresh_seed_gains(atom_netlist_, prepacker, packer_opts_.cluster_seed_type, max_molecule_stats, arch_.models, pre_cluster_timing_manager_, ram_mapper);
+    norns::refresh_stats().refreshes++;
+    norns::refresh_stats().seconds += std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
 }
 
 LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_id,

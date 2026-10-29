@@ -2608,6 +2608,16 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .choices({"queued", "attempted"})
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_refresh_crit, "--norns_refresh_crit")
+        .help(
+            "Norns III: refresh the pre-cluster criticality while packing. After every k-th\n"
+            "cluster closes, the arc delays of the nets of the clusters closed since the last\n"
+            "refresh are set (intra-cluster estimate inside a cluster, inter-cluster estimate\n"
+            "across) and the pre-cluster timing is updated; the seed order is refreshed too.\n"
+            "0 (default): stock packing\n")
+        .default_value("0")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument<bool, ParseOnOff>(args.memoize_cluster_packings, "--memoize_cluster_packings")
         .help("Enables memoization of previously seen clusters during packing.\n"
               "\n"
