@@ -1,0 +1,154 @@
+{
+ "D": {
+  "degrees": {
+   "logic_nodes": 242,
+   "comb_in_degree": {
+    "n": 152,
+    "mean": 2.8684210526315788,
+    "median": 4.0,
+    "p90": 4,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 177,
+    "mean": 1.615819209039548,
+    "median": 1,
+    "p90": 2,
+    "max": 34
+   },
+   "net_fanout_all": {
+    "n": 252,
+    "mean": 1.8928571428571428,
+    "median": 1.0,
+    "p90": 2,
+    "max": 81
+   }
+  },
+  "rent_standard": {
+   "nodes": 242,
+   "note": "below the 512-node floor of the standard fit"
+  },
+  "rent_relaxed": {
+   "nodes": 242,
+   "p_mean": 0.7794468144977472,
+   "p_seeds": [
+    0.7760596220170696,
+    0.7728888585801562,
+    0.7893919628960159
+   ],
+   "r2_mean": 0.9990418960979929,
+   "points": [
+    3,
+    3,
+    3
+   ],
+   "relaxed_fit": true
+  }
+ },
+ "own": {
+  "degrees": {
+   "logic_nodes": 286,
+   "comb_in_degree": {
+    "n": 175,
+    "mean": 4.371428571428571,
+    "median": 6,
+    "p90": 6,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 221,
+    "mean": 2.7058823529411766,
+    "median": 1,
+    "p90": 5,
+    "max": 34
+   },
+   "net_fanout_all": {
+    "n": 296,
+    "mean": 2.793918918918919,
+    "median": 2.0,
+    "p90": 4,
+    "max": 81
+   }
+  },
+  "rent_standard": {
+   "nodes": 286,
+   "note": "below the 512-node floor of the standard fit"
+  },
+  "rent_relaxed": {
+   "nodes": 286,
+   "p_mean": 0.6100800409014674,
+   "p_seeds": [
+    0.6114368316167084,
+    0.6192798032082905,
+    0.5995234878794033
+   ],
+   "r2_mean": 0.992038706828173,
+   "points": [
+    4,
+    4,
+    4
+   ],
+   "relaxed_fit": true
+  },
+  "clusters_per_logic_net": {
+   "n": 85,
+   "mean": 1.5058823529411764,
+   "median": 1,
+   "p90": 2,
+   "max": 6
+  }
+ },
+ "foreign": {
+  "degrees": {
+   "logic_nodes": 286,
+   "comb_in_degree": {
+    "n": 175,
+    "mean": 4.371428571428571,
+    "median": 6,
+    "p90": 6,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 221,
+    "mean": 2.7058823529411766,
+    "median": 1,
+    "p90": 5,
+    "max": 34
+   },
+   "net_fanout_all": {
+    "n": 296,
+    "mean": 2.793918918918919,
+    "median": 2.0,
+    "p90": 4,
+    "max": 81
+   }
+  },
+  "rent_standard": {
+   "nodes": 286,
+   "note": "below the 512-node floor of the standard fit"
+  },
+  "rent_relaxed": {
+   "nodes": 286,
+   "p_mean": 0.5881412532551267,
+   "p_seeds": [
+    0.576265209534813,
+    0.5786248160978451,
+    0.6095337341327219
+   ],
+   "r2_mean": 0.9843699981846562,
+   "points": [
+    4,
+    4,
+    4
+   ],
+   "relaxed_fit": true
+  },
+  "clusters_per_logic_net": {
+   "n": 85,
+   "mean": 1.4941176470588236,
+   "median": 1,
+   "p90": 2,
+   "max": 7
+  }
+ }
+}

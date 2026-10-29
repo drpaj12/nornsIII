@@ -1,0 +1,145 @@
+{
+ "K": 22,
+ "K0": 478,
+ "K_vpr": 19,
+ "adders_D": 23,
+ "all_luts_6": true,
+ "atoms_not_in_clb": 0,
+ "bound_real_only": 20,
+ "carry_links_cut": 0,
+ "cells_real": 176,
+ "chains": [
+  4,
+  4,
+  5,
+  5,
+  5
+ ],
+ "clb_lower_bound": 22,
+ "const_generators": 2,
+ "construction": "own",
+ "cut_C": 490,
+ "cut_star_C": 12,
+ "cut_star_C0": 12,
+ "demand_padded": 220,
+ "demand_real": 191,
+ "demand_total_real": 191,
+ "design": "mkPktMerge",
+ "distinct_inputs": true,
+ "dummies": 29,
+ "evicted": 44,
+ "ffs_D": 18,
+ "full_clusters": true,
+ "hard_D": 459,
+ "hard_models": {
+  "dual_port_ram": 459
+ },
+ "hstar_nets": 60,
+ "independent": {
+  "below_C_found": false,
+  "cut_star_C": 12,
+  "metis_below_C": 0,
+  "metis_best_after_ls": 12,
+  "metis_best_legal": 32,
+  "metis_equal_C": 100,
+  "metis_full": 100,
+  "metis_legal": 100,
+  "metis_runs": 100,
+  "shake_below_C": 0,
+  "shake_best": 12,
+  "shake_equal_C": 9,
+  "shake_runs": 100
+ },
+ "legality": {
+  "clusters": 22,
+  "not_one_clb": [],
+  "one_clb": 22
+ },
+ "luts_D": 176,
+ "macros": 5,
+ "margin": {
+  "adjacent_swaps": 274,
+  "min_a": 1,
+  "min_a_pair_bound": 2,
+  "min_adjacent_swap_delta": 3,
+  "min_margin": 2,
+  "swaps_le_0_other": 0,
+  "swaps_le_0_with_const_cell": 0,
+  "swaps_with_delta_le_0": 0
+ },
+ "max_demand": 9,
+ "max_out_pins": 10,
+ "max_pins": 19,
+ "merged": 3,
+ "pin_excess_clusters": 0,
+ "pis": 311,
+ "pos": 156,
+ "reserve": 1,
+ "shuffles": {
+  "0": {
+   "atoms_labelled": 277,
+   "blif": "design.blif",
+   "expected_adders": 23,
+   "expected_ffs": 47,
+   "expected_luts_excl_const_generators": 205,
+   "sha256": "78050620e09dacca3975b9574bd4cdd0479a41c67972e050fad49dff3cd3f3d9"
+  },
+  "1": {
+   "atoms_labelled": 277,
+   "blif": "design.blif",
+   "expected_adders": 23,
+   "expected_ffs": 47,
+   "expected_luts_excl_const_generators": 205,
+   "sha256": "acb153ff53af7a84df25dbcda59564cfd878bd8a80ce0c57fb5b5e4f662a10e3"
+  },
+  "2": {
+   "atoms_labelled": 277,
+   "blif": "design.blif",
+   "expected_adders": 23,
+   "expected_ffs": 47,
+   "expected_luts_excl_const_generators": 205,
+   "sha256": "112e7433f0e67735a89233b1d660348b9674dff8b0b4047ccae8d792f03e6da1"
+  },
+  "3": {
+   "atoms_labelled": 277,
+   "blif": "design.blif",
+   "expected_adders": 23,
+   "expected_ffs": 47,
+   "expected_luts_excl_const_generators": 205,
+   "sha256": "17ab90d747f92b298a2577718d1d7d29284515378e6474aa6ddf8169e4e41d71"
+  }
+ },
+ "strengthen": {
+  "anchored": 161,
+  "doubled": 13,
+  "filled": 477,
+  "rewired_const_cut": 1,
+  "ring": 29
+ },
+ "structure_sig": "80307e4f37578d0b",
+ "unmet_cells": 0,
+ "vpr_atoms": {
+  "adder": 23,
+  "ff": 18,
+  "inpad": 311,
+  "lut": 178,
+  "memory_slice": 459,
+  "outpad": 156
+ },
+ "vpr_atoms_match": true,
+ "vpr_check_dprime": {
+  "expected_adder": 23,
+  "expected_ff": 47,
+  "expected_lut": 207,
+  "match": true,
+  "vpr": {
+   "adder": 23,
+   "ff": 47,
+   "inpad": 311,
+   "lut": 207,
+   "memory_slice": 459,
+   "outpad": 156
+  }
+ },
+ "wrappers": 0
+}

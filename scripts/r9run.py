@@ -85,8 +85,13 @@ def pack_metrics(net: Path, aff: dict, struct: dict, vatoms: list) -> dict:
             "labelled_atoms": total}
 
 
+def blif_sha(design: str, cons: str, sh: int) -> str:
+    return json.loads((OUT / design / cons / "build.json").read_text())["shuffles"][str(sh)]["sha256"]
+
+
 def run_dir(design: str, cons: str, sh: int, arm: str, seed: int) -> Path:
-    return OUT / design / cons / f"sh{sh}" / "run" / f"{arm}.s{seed}"
+    """Keyed by the hash of the input file, so a rebuilt design never reuses an earlier run."""
+    return OUT / design / cons / f"sh{sh}" / f"run-{blif_sha(design, cons, sh)[:10]}" / f"{arm}.s{seed}"
 
 
 def arm_run(design: str, cons: str, sh: int, arm: str, seed: int) -> dict:
@@ -111,7 +116,7 @@ def arm_run(design: str, cons: str, sh: int, arm: str, seed: int) -> dict:
             rc = subprocess.run(cmd, cwd=cwd, stdout=fh, stderr=subprocess.STDOUT, timeout=TIMEOUT, check=False).returncode
         except subprocess.TimeoutExpired:
             rc = -9
-    rec: dict = {"design": design, "cons": cons, "shuffle": sh, "arm": arm, "vseed": seed, "rc": rc}
+    rec: dict = {"design": design, "cons": cons, "shuffle": sh, "arm": arm, "vseed": seed, "rc": rc, "sha": blif_sha(design, cons, sh)}
     if rc == 0:
         rec.update(nl.Metrics(log).values)
         rec.pop("init_t", None)
@@ -190,9 +195,10 @@ def status(gm: float, lo: float, hi: float, p_adj: float) -> str:
     return "INCONCLUSIVE"
 
 
-def summary(designs: list) -> int:
+def summary(designs: list, json_path: str = "") -> int:
     runs = [json.loads(x) for x in (OUT / "runs.jsonl").read_text().splitlines() if x.strip()] if (OUT / "runs.jsonl").is_file() else []
-    runs = [r for r in runs if r["rc"] == 0 and (not designs or r["design"] in designs)]
+    runs = [r for r in runs if r["rc"] == 0 and (not designs or r["design"] in designs) and "sha" in r
+            and r["sha"] == blif_sha(r["design"], r["cons"], r["shuffle"])]
     by = collections.defaultdict(dict)
     for r in runs:
         by[(r["design"], r["cons"])][(r["shuffle"], r["arm"], r["vseed"])] = r
@@ -225,8 +231,26 @@ def summary(designs: list) -> int:
             out["ordered_stock"] = {"n": len(ordered), "purity": sum(r["purity"] for r in ordered) / len(ordered),
                                     "clbs": sum(r["logic_clbs"] for r in ordered) / len(ordered)}
         rows.append(out)
-    print(json.dumps(rows, indent=1))
+    if json_path:
+        Path(json_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(json_path).write_text(json.dumps(rows, indent=1, sort_keys=True))
+    print_table(rows)
     return 0
+
+
+def print_table(rows: list) -> None:
+    print("design cons n | K Kvpr dummies | CLB stock known (stock/K known/K) | cut/cutC stock known | purity stock known | repro known | "
+          "WL s/k [90% CI] | CPD s/k [90% CI] | status CLB WL CPD")
+    for r in rows:
+        s, k = r["stock"], r["known"]
+        f = lambda m: f"{r[m]['gm']:.3f} [{r[m]['lo']:.3f},{r[m]['hi']:.3f}]"  # noqa: E731
+        print(f"{r['design']} {r['cons']} {r['n']} | {r['K']} {r['K_vpr']} {r['dummies']} | {s['clbs']:.1f} {k['clbs']:.1f} "
+              f"({s['clbs'] / r['K']:.3f} {k['clbs'] / r['K']:.3f}) | {s['cut_ratio']:.3f} {k['cut_ratio']:.3f} | {s['purity']:.3f} {k['purity']:.3f} "
+              f"| {k['reproduction']:.3f} | WL {f('wirelength')} | CPD {f('cpd_ns')} | CLB {r['logic_clbs']['gm']:.3f} "
+              f"{r['logic_clbs']['status']} / {r['wirelength']['status']} / {r['cpd_ns']['status']}")
+        if "ordered_stock" in r:
+            o = r["ordered_stock"]
+            print(f"   ordered control (stock, cluster-by-cluster file): n={o['n']} purity {o['purity']:.3f} CLBs {o['clbs']:.1f}")
 
 
 def main(argv: list) -> int:
@@ -237,11 +261,12 @@ def main(argv: list) -> int:
     ap.add_argument("--shuffles", default="1,2,3")
     ap.add_argument("--seeds", default="1,2,3")
     ap.add_argument("--ordered", action="store_true")
+    ap.add_argument("--json", default="")
     a = ap.parse_args(argv)
     if a.mode == "arms":
         return arms(a.designs, a.cons.split(","), [int(x) for x in a.shuffles.split(",")], [int(x) for x in a.seeds.split(",")], a.ordered)
     if a.mode == "summary":
-        return summary(a.designs)
+        return summary(a.designs, a.json)
     print("unknown mode", file=sys.stderr)
     return 2
 

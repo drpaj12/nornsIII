@@ -1,0 +1,190 @@
+{
+ "D": {
+  "degrees": {
+   "logic_nodes": 676,
+   "comb_in_degree": {
+    "n": 176,
+    "mean": 3.1306818181818183,
+    "median": 3.0,
+    "p90": 3,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 523,
+    "mean": 4.892925430210325,
+    "median": 1,
+    "p90": 1,
+    "max": 156
+   },
+   "net_fanout_all": {
+    "n": 834,
+    "mean": 4.394484412470024,
+    "median": 1.0,
+    "p90": 1,
+    "max": 459
+   }
+  },
+  "rent_standard": {
+   "nodes": 676,
+   "p_mean": 0.51350522700097,
+   "p_seeds": [
+    0.5135770257518634,
+    0.5122204296316494,
+    0.5147182256193972
+   ],
+   "r2_mean": 0.9763198801189913,
+   "points": [
+    3,
+    3,
+    3
+   ],
+   "relaxed_fit": false
+  },
+  "rent_relaxed": {
+   "nodes": 676,
+   "p_mean": 0.5553324322202678,
+   "p_seeds": [
+    0.5526811752144334,
+    0.5550944535485478,
+    0.5582216678978221
+   ],
+   "r2_mean": 0.9919017896776438,
+   "points": [
+    5,
+    5,
+    5
+   ],
+   "relaxed_fit": true
+  }
+ },
+ "own": {
+  "degrees": {
+   "logic_nodes": 734,
+   "comb_in_degree": {
+    "n": 205,
+    "mean": 6.0,
+    "median": 6,
+    "p90": 6,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 581,
+    "mean": 5.623063683304647,
+    "median": 2,
+    "p90": 3,
+    "max": 156
+   },
+   "net_fanout_all": {
+    "n": 892,
+    "mean": 4.9024663677130045,
+    "median": 1.0,
+    "p90": 3,
+    "max": 459
+   }
+  },
+  "rent_standard": {
+   "nodes": 734,
+   "p_mean": 0.5805234205544848,
+   "p_seeds": [
+    0.5826295950736587,
+    0.5763110715161369,
+    0.5826295950736587
+   ],
+   "r2_mean": 0.9973969993101739,
+   "points": [
+    3,
+    3,
+    3
+   ],
+   "relaxed_fit": false
+  },
+  "rent_relaxed": {
+   "nodes": 734,
+   "p_mean": 0.565615108671137,
+   "p_seeds": [
+    0.5641440562898955,
+    0.5573393454787482,
+    0.5753619242447672
+   ],
+   "r2_mean": 0.9980520313529437,
+   "points": [
+    5,
+    5,
+    5
+   ],
+   "relaxed_fit": true
+  },
+  "clusters_per_logic_net": {
+   "n": 60,
+   "mean": 1.4666666666666666,
+   "median": 1.0,
+   "p90": 2,
+   "max": 18
+  }
+ },
+ "foreign": {
+  "degrees": {
+   "logic_nodes": 734,
+   "comb_in_degree": {
+    "n": 205,
+    "mean": 6.0,
+    "median": 6,
+    "p90": 6,
+    "max": 6
+   },
+   "net_fanout_logic_driven": {
+    "n": 581,
+    "mean": 5.623063683304647,
+    "median": 2,
+    "p90": 4,
+    "max": 156
+   },
+   "net_fanout_all": {
+    "n": 892,
+    "mean": 4.9024663677130045,
+    "median": 1.0,
+    "p90": 3,
+    "max": 459
+   }
+  },
+  "rent_standard": {
+   "nodes": 734,
+   "p_mean": 0.5672532824939519,
+   "p_seeds": [
+    0.5655416376198232,
+    0.5663606301451689,
+    0.5698575797168635
+   ],
+   "r2_mean": 0.9939524850819934,
+   "points": [
+    3,
+    3,
+    3
+   ],
+   "relaxed_fit": false
+  },
+  "rent_relaxed": {
+   "nodes": 734,
+   "p_mean": 0.5482696803925468,
+   "p_seeds": [
+    0.5453100298963469,
+    0.5422090907709247,
+    0.5572899205103687
+   ],
+   "r2_mean": 0.9966191144261742,
+   "points": [
+    5,
+    5,
+    5
+   ],
+   "relaxed_fit": true
+  },
+  "clusters_per_logic_net": {
+   "n": 60,
+   "mean": 1.35,
+   "median": 1.0,
+   "p90": 1,
+   "max": 19
+  }
+ }
+}

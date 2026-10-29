@@ -1,0 +1,191 @@
+{
+ "K": 42,
+ "K0": 449,
+ "K_vpr": 31,
+ "adders_D": 132,
+ "all_luts_6": true,
+ "atoms_not_in_clb": 0,
+ "bound_real_only": 37,
+ "carry_links_cut": 8,
+ "cells_real": 294,
+ "chains": [
+  33,
+  33,
+  33,
+  33
+ ],
+ "clb_lower_bound": 42,
+ "const_generators": 2,
+ "construction": "own",
+ "cut_C": 641,
+ "cut_star_C": 192,
+ "cut_star_C0": 149,
+ "demand_padded": 420,
+ "demand_real": 364,
+ "demand_total_real": 364,
+ "design": "diffeq1",
+ "distinct_inputs": true,
+ "dummies": 56,
+ "evicted": 95,
+ "ffs_D": 193,
+ "full_clusters": true,
+ "hard_D": 5,
+ "hard_models": {
+  "multiply": 5
+ },
+ "hstar_nets": 289,
+ "independent": {
+  "below_C_found": false,
+  "cut_star_C": 192,
+  "metis_below_C": 0,
+  "metis_best_after_ls": null,
+  "metis_best_legal": null,
+  "metis_best_pin_illegal": 251,
+  "metis_equal_C": 0,
+  "metis_full": 100,
+  "metis_legal": 0,
+  "metis_runs": 100,
+  "shake_below_C": 0,
+  "shake_best": 192,
+  "shake_equal_C": 1,
+  "shake_runs": 100
+ },
+ "legality": {
+  "clusters": 42,
+  "not_one_clb": [
+   [
+    0,
+    2,
+    2
+   ],
+   [
+    1,
+    2,
+    2
+   ],
+   [
+    2,
+    2,
+    2
+   ],
+   [
+    3,
+    2,
+    2
+   ],
+   [
+    4,
+    2,
+    2
+   ],
+   [
+    7,
+    2,
+    2
+   ],
+   [
+    30,
+    2,
+    2
+   ],
+   [
+    31,
+    2,
+    2
+   ],
+   [
+    32,
+    2,
+    2
+   ]
+  ],
+  "one_clb": 33
+ },
+ "luts_D": 294,
+ "macros": 12,
+ "margin": {
+  "adjacent_swaps": 3070,
+  "min_a": 0,
+  "min_a_pair_bound": 1,
+  "min_adjacent_swap_delta": 1,
+  "min_margin": 1,
+  "swaps_le_0_other": 0,
+  "swaps_le_0_with_const_cell": 0,
+  "swaps_with_delta_le_0": 0
+ },
+ "max_demand": 9,
+ "max_out_pins": 12,
+ "max_pins": 27,
+ "merged": 47,
+ "pin_excess_clusters": 0,
+ "pis": 162,
+ "pos": 96,
+ "reserve": 1,
+ "shuffles": {
+  "0": {
+   "atoms_labelled": 733,
+   "blif": "design.blif",
+   "expected_adders": 132,
+   "expected_ffs": 249,
+   "expected_luts_excl_const_generators": 350,
+   "sha256": "ef0a436892d1a0e57d12bbeafb9b218a515f1478262ef9d3a6d6d3189df5b33a"
+  },
+  "1": {
+   "atoms_labelled": 733,
+   "blif": "design.blif",
+   "expected_adders": 132,
+   "expected_ffs": 249,
+   "expected_luts_excl_const_generators": 350,
+   "sha256": "8405936fcc6af6f5029bfc1b46806b3e0b16f456d4adb21bf2a0058eb8ecfac5"
+  },
+  "2": {
+   "atoms_labelled": 733,
+   "blif": "design.blif",
+   "expected_adders": 132,
+   "expected_ffs": 249,
+   "expected_luts_excl_const_generators": 350,
+   "sha256": "25279c0452b570473b75f5eeadd7cb8e84dd54f8dd17ba338f8c92a49a6170e1"
+  },
+  "3": {
+   "atoms_labelled": 733,
+   "blif": "design.blif",
+   "expected_adders": 132,
+   "expected_ffs": 249,
+   "expected_luts_excl_const_generators": 350,
+   "sha256": "3edf27d91136d8b703776ca3f06adfbcd2edcdb5d41d131aa26e6c4a5d35d6f5"
+  }
+ },
+ "strengthen": {
+  "anchored": 251,
+  "doubled": 178,
+  "filled": 516,
+  "rewired_const_cut": 96,
+  "ring": 56
+ },
+ "structure_sig": "a3b4263c9ffece1c",
+ "unmet_cells": 3,
+ "vpr_atoms": {
+  "adder": 132,
+  "ff": 193,
+  "inpad": 162,
+  "lut": 296,
+  "mult_36x36": 5,
+  "outpad": 96
+ },
+ "vpr_atoms_match": true,
+ "vpr_check_dprime": {
+  "expected_adder": 132,
+  "expected_ff": 249,
+  "expected_lut": 352,
+  "match": true,
+  "vpr": {
+   "adder": 132,
+   "ff": 249,
+   "inpad": 162,
+   "lut": 352,
+   "mult_36x36": 5,
+   "outpad": 96
+  }
+ },
+ "wrappers": 0
+}
