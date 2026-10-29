@@ -252,6 +252,7 @@ def process(design):
     wd = nl.ensure_dir(WORK / design)
 
     def save():
+        dst.parent.mkdir(parents=True, exist_ok=True)  # a fresh NORNS_DATA root has no data/placers yet
         dst.write_text(json.dumps(out, indent=1) + "\n")
 
     def record(rec):
