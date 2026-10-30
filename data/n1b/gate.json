@@ -1,0 +1,431 @@
+{
+ "summary": {
+  "cases": 30,
+  "equal_absent": 30,
+  "equal_empty_list_and_dump": 30,
+  "vtr15": 15,
+  "dprime": 15
+ },
+ "results": [
+  {
+   "kind": "vtr15",
+   "design": "ch_intrinsics",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/ch_intrinsics/vpr_sa.s1/ch_intrinsics.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "stereovision3",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/stereovision3/vpr_sa.s1/stereovision3.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "mkPktMerge",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/mkPktMerge/vpr_sa.s1/mkPktMerge.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "diffeq2",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/diffeq2/vpr_sa.s1/diffeq2.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "diffeq1",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/diffeq1/vpr_sa.s1/diffeq1.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "boundtop",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/boundtop/vpr_sa.s1/boundtop.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "mkDelayWorker32B",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/mkDelayWorker32B/vpr_sa.s1/mkDelayWorker32B.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "mkSMAdapter4B",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/mkSMAdapter4B/vpr_sa.s1/mkSMAdapter4B.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "sha",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/sha/vpr_sa.s1/sha.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "raygentop",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/raygentop/vpr_sa.s1/raygentop.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "or1200",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/or1200/vpr_sa.s1/or1200.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "blob_merge",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/blob_merge/vpr_sa.s1/blob_merge.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "stereovision0",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/stereovision0/vpr_sa.s1/stereovision0.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "stereovision1",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/stereovision1/vpr_sa.s1/stereovision1.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "vtr15",
+   "design": "stereovision2",
+   "seed": 1,
+   "ref": "work/norns-keep-sweep-out/vpr/e10-base/stereovision2/vpr_sa.s1/stereovision2.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "ch_intrinsics",
+   "seed": 1,
+   "ref": "work/r9-out-v2/ch_intrinsics/own/sh0/run-22f10c9f19/stock.s1/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "ch_intrinsics",
+   "seed": 2,
+   "ref": "work/r9-out-v2/ch_intrinsics/own/sh0/run-22f10c9f19/stock.s2/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "ch_intrinsics",
+   "seed": 3,
+   "ref": "work/r9-out-v2/ch_intrinsics/own/sh0/run-22f10c9f19/stock.s3/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "stereovision3",
+   "seed": 1,
+   "ref": "work/r9-out-v2/stereovision3/own/sh0/run-265d11222e/stock.s1/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "stereovision3",
+   "seed": 2,
+   "ref": "work/r9-out-v2/stereovision3/own/sh0/run-265d11222e/stock.s2/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "stereovision3",
+   "seed": 3,
+   "ref": "work/r9-out-v2/stereovision3/own/sh0/run-265d11222e/stock.s3/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq2",
+   "seed": 1,
+   "ref": "work/r9-out-v2/diffeq2/own/sh0/run-bc85e747a5/stock.s1/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq2",
+   "seed": 2,
+   "ref": "work/r9-out-v2/diffeq2/own/sh0/run-bc85e747a5/stock.s2/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq2",
+   "seed": 3,
+   "ref": "work/r9-out-v2/diffeq2/own/sh0/run-bc85e747a5/stock.s3/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq1",
+   "seed": 1,
+   "ref": "work/r9-out-v2/diffeq1/own/sh0/run-9fbcd88fc2/stock.s1/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq1",
+   "seed": 2,
+   "ref": "work/r9-out-v2/diffeq1/own/sh0/run-9fbcd88fc2/stock.s2/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "diffeq1",
+   "seed": 3,
+   "ref": "work/r9-out-v2/diffeq1/own/sh0/run-9fbcd88fc2/stock.s3/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "clma",
+   "seed": 1,
+   "ref": "work/r9-out-v2/clma/own/sh0/run-bdc0a41a06/stock.s1/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "clma",
+   "seed": 2,
+   "ref": "work/r9-out-v2/clma/own/sh0/run-bdc0a41a06/stock.s2/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  },
+  {
+   "kind": "dprime_full",
+   "design": "clma",
+   "seed": 3,
+   "ref": "work/r9-out-v2/clma/own/sh0/run-bdc0a41a06/stock.s3/design.net",
+   "absent": {
+    "rc": 0,
+    "equal": true
+   },
+   "empty_list_and_dump": {
+    "rc": 0,
+    "equal": true
+   }
+  }
+ ]
+}
