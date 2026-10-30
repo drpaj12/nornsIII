@@ -37,17 +37,17 @@ These HDL designs include the \code{dp} designs whose word file is the leak (Sec
 
 \pp{Hypothesis (H38).} On real designs made into known-optimum yardsticks (Section~\ref{sec:i-yardstick-real}), the standard packer is worse than the known clustering by at least 5\% in CLBs, wire or delay. The rule is that of the synthetic yardstick: \emph{room} if the geometric mean of stock over known is at least 1.05 and the 90\% bootstrap interval of the mean log ratio excludes 0; \emph{no room} if the mean is at most 1.02 or the interval lies inside [0.98, 1.02]; otherwise inconclusive. With fewer than 12 designs no pooled claim is made.
 \pp{Experiment (pilot).} Three designs (ch\_intrinsics, diffeq1, mkPktMerge: 12 to 42 clusters, with memory slices and multipliers), each built with the own and the foreign clustering, three shuffles, three VPR seeds, arms stock and known (108 runs), plus 18 stock runs on the unshuffled \emph{ordered} files. Flow flags and architecture as the synthetic yardstick (VTR commit \code{3c9a4d23b2}~\cite{rose2012vtr,elgammal2025vtr9}). Table~\ref{tab:r9pilot}.
-\pp{Result.} The known arm needs 1.02 to 1.11 times the exact CLB count $K$ and reproduces 40\% to 80\% of the clusters; the standard packer needs 1.06 to 1.19 times $K$. The room is small on two designs and larger on the smallest: stock over known is 1.13 in CLBs and 1.09 to 1.14 in wire on ch\_intrinsics, between 1.007 and 1.075 on the other two, and the delay ratio is between 0.98 and 1.07 (room only on ch\_intrinsics with the own clustering). No design shows the 1.49 of the synthetic meshes and trees. The ordered control has stock purity within 0.06 of the shuffled arm on all six builds, higher by at most 0.04 and lower once (0.80 against 0.85 on ch\_intrinsics own), so file order gives the packer no visible advantage. The wire gap is larger on the foreign build than on the own build for all three designs (by 0.05, 0.03 and 0.01), which is the direction a small advantage to VPR on its own clustering would take, but three designs cannot separate self-bias from design. % data/r9/pilot-summary.json
+\pp{Result.} The known arm needs 1.02 to 1.11 times the exact CLB count $N_C$ and reproduces 40\% to 80\% of the clusters; the standard packer needs 1.06 to 1.19 times $N_C$. The room is small on two designs and larger on the smallest: stock over known is 1.13 in CLBs and 1.09 to 1.14 in wire on ch\_intrinsics, between 1.007 and 1.075 on the other two, and the delay ratio is between 0.98 and 1.07 (room only on ch\_intrinsics with the own clustering). No design shows the 1.49 of the synthetic meshes and trees. The ordered control has stock purity within 0.06 of the shuffled arm on all six builds, higher by at most 0.04 and lower once (0.80 against 0.85 on ch\_intrinsics own), so file order gives the packer no visible advantage. The wire gap is larger on the foreign build than on the own build for all three designs (by 0.05, 0.03 and 0.01), which is the direction a small advantage to VPR on its own clustering would take, but three designs cannot separate self-bias from design. % data/r9/pilot-summary.json
 \pp{Verdict.} \textsc{inconclusive} (3 designs; the rule needs 12). The row is the pilot and not the answer. The comparison with the synthetic yardstick is a pointer only: on these three designs the artificial regularity did not hide a larger gap.
 
 \begin{table}[t]
-\caption{H38 pilot: stock over known (geometric mean over 3 shuffles $\times$ 3 seeds) and CLB counts against the exact bound $K$. Status by the rule of the text: R room, N no room, I inconclusive. Source: \code{data/r9/pilot-summary.json}.}
+\caption{H38 pilot: stock over known (geometric mean over 3 shuffles $\times$ 3 seeds) and CLB counts against the exact bound $N_C$. Status by the rule of the text: R room, N no room, I inconclusive. Source: \code{data/r9/pilot-summary.json}.}
 \label{tab:r9pilot}
 \centering
 \footnotesize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llrrrrrr@{}}
 \toprule
-Design & C & $K$ & stock/$K$ & known/$K$ & CLB & WL & CPD \\
+Design & C & $N_C$ & stock/$N_C$ & known/$N_C$ & CLB & WL & CPD \\
 \midrule
 ch\_intrinsics & own & 12 & 1.19 & 1.06 & 1.13\,R & 1.09\,R & 1.06\,R \\
 ch\_intrinsics & foreign & 12 & 1.19 & 1.06 & 1.13\,R & 1.14\,R & 0.98\,N \\
@@ -59,7 +59,34 @@ mkPktMerge & foreign & 22 & 1.09 & 1.02 & 1.07\,R & 1.02\,N & 1.02\,N \\
 \end{tabular}
 \end{table}
 
-\pp{Full set.} \todo{round 9 full: 15 Verilog designs and 20 MCNC designs, own and foreign, table to be filled after the full-set pull request merges; the verdict of H38 is then re-stated on that table}
+\pp{Full set.} \emph{Plain English.} On 33 real designs the standard packer needs about 10\% more CLBs than the number of clusters $N_C$ of the known clustering, about a third more wire than the placement from that clustering, and a few per cent more delay. The own clustering (the one VPR's packer made) gives the standard packer no visible advantage over the foreign one. Two of the 35 designs (stereovision0, stereovision2) are not in the set: the generator did not finish on the second and was not started on the first.
+\pp{Experiment.} 13 VTR Verilog designs and 20 MCNC designs (33), each built with the own and the foreign clustering, three shuffles, three VPR seeds, arms stock and known (Norns packer told $C$), plus an exact arm that packs each cluster alone and assembles the clusters (25 of the 33 designs; the other eight have hard blocks, constants or chains the assembled netlist cannot hold). $N_C$ is a counting lower bound on the CLBs of $D'$; where VPR packs the written file with a few small LUT atoms the generator did not count, or sweeps adders, it is corrected to the demand of the netlist VPR packed ($N_C$ corrected, Section~\ref{sec:i-yardstick-real}). The design is the unit: geometric mean over designs, 90\% bootstrap interval over designs (10000 resamples), Holm over CLB, WL and CPD, rule as in the hypothesis. The stock arm is the Norns binary with no affinity file, which packs as the standard packer (its \code{.net} equals the stock \code{.net} on the 45 census runs of the critical-heap study; the gate was not repeated on the round 9 designs).
+\pp{Result.} Stock over $N_C$ is 1.108 [1.080, 1.149] in CLBs on the own clustering and 1.101 [1.073, 1.140] on the foreign one; with the corrected $N_C$ it is 1.103 [1.078, 1.137] and 1.096 [1.071, 1.130], and with the 13 designs whose atom counts differ left out it is 1.10 and 1.09. Against the exact arm (25 designs) stock needs 1.099 times the CLBs, 1.322 [1.278, 1.367] times the wire and 1.033 times the delay on the own clustering (1.087, 1.330 and 1.054 on the foreign one). Against the known arm (33 designs) the ratios are 1.059, 1.265 [1.223, 1.307] and 1.026 on the own clustering (1.056, 1.287, 1.042 on the foreign one). Every CLB and WL row has Holm $p<0.0001$ and passes the room rule; CPD is \textsc{inconclusive} against known (the mean lies between 1.02 and 1.05) and \textsc{inconclusive} (own) or room (foreign) against exact. The synthetic yardstick gave 1.073, 1.220 and 1.093 against the known arm (Section~\ref{sec:e-room}), so the real structure gives about the same area gap, a larger wire gap and a smaller delay gap. Table~\ref{tab:r9full}.
+\pp{Self-bias.} The own over foreign ratio of stock is 1.007 [0.999, 1.014] in CLBs against $N_C$ (Holm $p=0.14$); against the exact arm it is 1.011 in CLBs (Holm $p=0.011$), 0.994 in WL (p 0.55) and 0.980 [0.962, 0.997] in CPD (Holm $p=0.09$, which the rule counts as excluding 1); against known the WL ratio 0.983 does not survive Holm ($p=0.19$). Stock needs about 1\% more CLBs relative to the bound on its own clustering and reaches about 2\% closer to the exact delay on it; every row is within 2\%, far below the gaps above.
+\pp{Limits.} clma has $N_C=51$ against 100 CLBs for stock (1.95) and 96 for known: $C$ is not a strict local optimum there and the gap is not explained; without it stock over $N_C$ is 1.089 (own) and 1.081 (foreign). 13 designs are flagged because VPR's atom counts differ from the generator's by a few LUTs (the identity LUTs VPR absorbs, constants) or swept adders (stereovision1); a few builds add an external input pin to a cluster in the fill step, so for them the cluster graph is not kept exactly (the cut does not change). The exact arm covers the easier 25 designs. CPD is observed and not claimed optimal.
+\pp{Verdict.} H38 is \textsc{useful} (confirmed as a finding about the yardstick): the pooled stock over $N_C$ in CLBs is 1.10 with Holm $p<0.0001$ and an interval above 1, and the same holds for WL against known and exact. The evidence meets the test of \textsc{possibly good} (Holm $p<0.05$, interval excludes 1), but the label is kept for claims about a packer and this is a measurement of room; delay is \textsc{inconclusive}.
+
+\begin{table}[t]
+\caption{H38 full set: stock over reference (geometric mean over designs, 90\% bootstrap interval over designs). R room, I inconclusive by the rule of the text. Source: \code{data/r9/full-summary.json}.}
+\label{tab:r9full}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Ratio & C & $n$ & CLB & WL & CPD \\
+\midrule
+stock/$N_C$ & own & 33 & 1.108 [1.080, 1.149] R & -- & -- \\
+stock/$N_C$ & foreign & 33 & 1.101 [1.073, 1.140] R & -- & -- \\
+stock/$N_C$ corrected & own & 33 & 1.103 [1.078, 1.137] R & -- & -- \\
+stock/$N_C$ corrected & foreign & 33 & 1.096 [1.071, 1.130] R & -- & -- \\
+stock/exact & own & 25 & 1.099 [1.065, 1.146] R & 1.322 [1.278, 1.367] R & 1.033 [1.024, 1.042] I \\
+stock/exact & foreign & 25 & 1.087 [1.055, 1.136] R & 1.330 [1.280, 1.384] R & 1.054 [1.037, 1.076] R \\
+stock/known & own & 33 & 1.059 [1.049, 1.071] R & 1.265 [1.223, 1.307] R & 1.026 [1.014, 1.038] I \\
+stock/known & foreign & 33 & 1.056 [1.046, 1.066] R & 1.287 [1.243, 1.332] R & 1.042 [1.027, 1.062] I \\
+synthetic, stock/known & -- & 72 & 1.073 & 1.220 & 1.093 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Does the packer pay when the words equal the blocks? The leak (H33, H36, H35, H34, H22, H23)}
 \label{sec:e-leak}
