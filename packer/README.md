@@ -134,3 +134,12 @@ Two options, both stock when absent:
 
 Files: `src/pack/greedy_seed_selector.cpp/.h`, `norns_affinity.cpp/.h` (option storage), `base/read_options.cpp/.h`, `base/setup_vpr.cpp`.
 Gate (`scripts/hs0run.py gate`): the `.net` is byte-identical to stock with the options absent and with an empty list plus the dump.
+
+## Q-N1b (docs/plan/q-n1b-true-seed-oracle.md, 2026-10-30)
+
+Option `--norns_seed_oracle FILE` (stock when absent; lines `atom TAB cluster id`). In `GreedyClusterer::do_clustering`, per new cluster: the next stock seed
+names a cluster of C not yet handled; every unclustered molecule of that cluster is grown as a trial (`try_grow_cluster` with the file-static trial flag, which
+returns before finalizing), read, then rolled back with `destroy_cluster`, `compress` and the `num_used_type_instances` decrement; the best seed is committed
+(exact, else best Jaccard) and the stock seed is put back with `GreedySeedSelector::norns_set_seed_pos`. Log: `NORNS_ORACLE` lines and a summary line with
+`recheck_mismatch`. Not combinable with attraction groups, `--norns_seed_list` or `--norns_refresh_crit`. Gate: `.net` byte-identical to stock without the option
+(`python scripts/n1brun.py gate`, `data/n1b/gate.json`).

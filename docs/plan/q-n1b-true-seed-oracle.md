@@ -80,3 +80,54 @@ Per run kept: `metrics.json`, the oracle log (`NORNS_ORACLE` lines), `.net` gzip
 The trial uses the cluster-by-cluster state of the packing, so a cluster that is not exact because earlier clusters took some of its atoms counts as
 not rebuilt; this is part of the question (does stock plus the best seed rebuild C). Seeds are restricted to atoms of c; a seed outside c is not
 tried. Weights of the weekly meter stop the work at 100.
+
+## Results, 2026-10-30
+
+Plain English first. Giving stock VPR the answer key as a true seed oracle (try every atom of the next known cluster as seed, keep the one whose
+growth rebuilds the cluster) rebuilds only about a quarter of the known clusters exactly (25.5 percent of 3 x 33 designs' clusters; mean Jaccard
+0.61, median 0.62; quartiles 0.35 and 1.0, the 5th percentile 0.11). So for most
+known clusters NO seed makes stock's growth rebuild the cluster: the gap to the known optimum is mainly in growth (gain and closing), not in
+seeding. The best seeds do help a little: wirelength is 2.8 percent lower, area (CLBs) 1.2 percent lower, delay no better (0.7 percent
+worse, not significant). They close 11 percent of the log gap to N_C (stock/N_C 1.118, oracle/N_C 1.105), far from half.
+
+Hypothesis (Peter's): "For most known clusters there is a seed atom from which stock VPR's growth rebuilds the cluster exactly; seeding with it
+closes most of the area gap to N_C." Experiment as planned above: 33 designs x 3 VPR seeds, 99 oracle runs (all rc 0; `data/n1b/summary.json`,
+`python3 scripts/n1brun.py pool`), stock = the HS0 stock runs (reused after the gate: the new binary reproduces stock `.net` 30 of 30 with the option
+absent; gate `data/n1b/gate.json`). Trial growth with rollback was feasible (see above); `recheck_mismatch` = 0 on all 99 runs (every committed cluster has the
+atom count of the trial that chose it). Statistics: per design the geometric mean over the 3 VPR seeds of stock/oracle; pooled geometric mean over
+designs, 90 percent bootstrap over designs, Holm over the 3 metrics; wins and losses count designs where stock/oracle is above or below 1.
+
+Reported per metric, speed first (T-VPack, marquardt99cluster, also judged packing on speed and density):
+
+| metric (stock / oracle, above 1 = oracle better) | geomean (percent) | 90% CI | Holm p | wins / losses / ties of 33 | median | 10th - 90th percentile | label |
+|---|---|---|---|---|---|---|---|
+| speed: critical-path delay | 0.9928 (-0.7%) | [0.9826, 1.0035] | 0.253 | 13 / 20 / 0 | 0.990 | 0.964 - 1.021 | INCONCLUSIVE |
+| wirelength | 1.0280 (+2.8%) | [1.0171, 1.0397] | < 0.0001 | 25 / 8 / 0 | 1.029 | 0.996 - 1.069 | POSSIBLY GOOD |
+| area: CLB count | 1.0120 (+1.2%) | [1.0055, 1.0189] | 0.0052 | 23 / 6 / 4 | 1.010 | 0.983 - 1.035 | POSSIBLY GOOD |
+
+Per-design stock/oracle, sorted ascending (the sorted tables are also in `data/n1b/summary.json`, `distribution`).
+CPD: s38417 0.896, raygentop 0.941, diffeq 0.944, dsip 0.964, s38584.1 0.967, misex3 0.967, mkPktMerge 0.973, diffeq1 0.974, ex5p 0.974, tseng 0.979,
+seq 0.983, spla 0.983, elliptic 0.985, blob_merge 0.985, des 0.987, ex1010 0.989, sha 0.990, or1200 0.993, pdc 0.997, clma 0.998, mkSMAdapter4B 1.003,
+mkDelayWorker32B 1.006, alu4 1.006, bigkey 1.008, ch_intrinsics 1.011, s298 1.011, boundtop 1.012, diffeq2 1.015, apex2 1.015, frisc 1.021, apex4 1.025,
+stereovision3 1.047, stereovision1 1.135.
+WL: boundtop 0.954, sha 0.957, mkPktMerge 0.973, raygentop 0.996, clma 0.996, diffeq1 0.997, diffeq 0.997, spla 0.997, mkDelayWorker32B 1.002, dsip 1.009,
+bigkey 1.012, pdc 1.012, seq 1.014, elliptic 1.014, frisc 1.019, mkSMAdapter4B 1.024, stereovision1 1.029, or1200 1.029, s298 1.031, apex2 1.032,
+ch_intrinsics 1.039, des 1.040, s38584.1 1.043, alu4 1.046, apex4 1.047, blob_merge 1.054, ex5p 1.061, s38417 1.065, diffeq2 1.068, ex1010 1.069,
+stereovision3 1.075, misex3 1.079, tseng 1.172.
+CLB: boundtop 0.956, alu4 0.979, des 0.982, ex5p 0.982, apex4 0.991, s38417 0.993, ch_intrinsics 1.000, diffeq 1.000, mkPktMerge 1.000, s298 1.000, sha 1.006,
+elliptic 1.006, stereovision1 1.006, mkSMAdapter4B 1.006, blob_merge 1.007, apex2 1.008, clma 1.010, raygentop 1.010, dsip 1.013, ex1010 1.014, pdc 1.016,
+seq 1.018, s38584.1 1.018, frisc 1.019, diffeq1 1.022, mkDelayWorker32B 1.028, spla 1.028, or1200 1.030, bigkey 1.030, misex3 1.035, stereovision3 1.042,
+tseng 1.062, diffeq2 1.088.
+
+Where the gains sit. No clear size trend: the WL and CLB gains appear on small, mid and large designs alike (the two largest, blob_merge and
+stereovision1, gain 5 percent WL and 0.6 to 0.7 percent CLB; the largest CPD change, stereovision1 +13.5 percent, is one design). The share of
+clusters rebuilt exactly is high on the designs with regular arithmetic or word structure (mkPktMerge 0.82, diffeq2 0.61, mkDelayWorker32B 0.61,
+diffeq1 0.51) and lowest on the large-fanout MCNC logic (pdc 0.02, misex3 0.03, spla 0.03, seq 0.04, ex5p 0.00). Pooled exact share 0.255.
+
+Against N_C (CLB, geometric mean over designs): stock/N_C 1.118 [1.088, 1.158] (corrected N_C 1.113 [1.086, 1.148]); oracle/N_C 1.105
+[1.076, 1.144] (1.100 [1.074, 1.134]). Share of the log gap to N_C closed: 0.107 (HS0's rule-based oracle: 0.06).
+
+Verdict. The hypothesis is DISMISSED: the exact share is 0.255 (not "most"), and the CLB gap to N_C is closed by 11 percent, not "most" (rule: half). Per
+metric, as reported above: wirelength and area show small significant gains (POSSIBLY GOOD, 2.8 and 1.2 percent), delay is INCONCLUSIVE. The gap
+to the known optimum is mainly in growth (gain and closing), not seeding. A different growth, not a different seed rule, is where room remains. No
+follow-up question was started.

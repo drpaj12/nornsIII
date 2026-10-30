@@ -156,6 +156,14 @@ def pool(json_path: str) -> int:
         rev = pa < 0.05 and math.exp(hi) < 1.0
         res["tests"][m] = {"gap": math.exp(mean), "lo": math.exp(lo), "hi": math.exp(hi), "p_holm": pa, "p_holm_str": H.fmt_p(pa),
                            "verdict": "significant gain" if exists else ("REVERSED" if rev else "INCONCLUSIVE")}
+    # per-metric distribution of stock/oracle over designs (reporting order: speed, wirelength, area)
+    res["distribution"] = {}
+    for m in ("cpd_ns", "wirelength", "logic_clbs"):
+        rs = sorted(math.exp(r[f"{m}:gap"]) for r in rows)
+        q = lambda f: rs[min(len(rs) - 1, int(f * len(rs)))]  # noqa: E731
+        res["distribution"][m] = {"wins": sum(1 for x in rs if x > 1 + 1e-9), "losses": sum(1 for x in rs if x < 1 - 1e-9),
+                                  "ties": sum(1 for x in rs if abs(x - 1) <= 1e-9), "median": q(0.5), "p10": q(0.1), "p90": q(0.9),
+                                  "by_design": {r["design"]: math.exp(r[f"{m}:gap"]) for r in rows}}
     for k in ("stock_over_nc", "oracle_over_nc"):
         mean, lo, hi, _p = H.boot([r[f"clb:{k}"] for r in rows], rnd)
         res["extra"][k] = {"gm": math.exp(mean), "lo": math.exp(lo), "hi": math.exp(hi)}
@@ -178,6 +186,9 @@ def pool(json_path: str) -> int:
         Path(json_path).write_text(json.dumps(res, indent=1, sort_keys=True))
     print(f"designs pooled: {len(rows)}; exact share {exact_share}; recheck mismatches {mismatch}")
     print("jaccard", res["jaccard_quantiles"], res["jaccard_mean"])
+    for m in ("cpd_ns", "wirelength", "logic_clbs"):
+        d = res["distribution"][m]
+        print(f"{m:11s} wins/losses/ties {d['wins']}/{d['losses']}/{d['ties']} median {d['median']:.4f} p10 {d['p10']:.4f} p90 {d['p90']:.4f}")
     for k, v in res["tests"].items():
         print(f"{k:12s} stock/oracle {v['gap']:.4f} [{v['lo']:.4f}, {v['hi']:.4f}] Holm p {v['p_holm_str']} {v['verdict']}")
     for k, v in res["extra"].items():

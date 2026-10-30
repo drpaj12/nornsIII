@@ -291,3 +291,11 @@ Inter-cluster only & 1.015 & 0.981 & 0.987 & 1.102 \\
 \pp{Experiment.} 13 eligible designs, seeds 4--6 held out, ratios within a family against the reread control, design bootstrap.
 \pp{Result.} HeAP over reread: WL 1.001 [0.984, 1.019], CPD 1.027 [1.009, 1.046], WL$\times$CPD 1.028 [0.996, 1.061]. SA over reread: WL 0.947 [0.919, 0.975], CPD 1.003 [0.973, 1.039], WL$\times$CPD 0.952 [0.909, 1.003]. % r8-results.tex tab:r8family; placers.md Section 10.9 as corrected by 10.10
 \pp{Verdict.} Both \textsc{inconclusive}: the WL$\times$CPD intervals include 1; rule H0 means the outside placers inherit VPR's hard blocks and pads; neither outside placer is timing-driven.
+
+\subsection{Is there a seed that makes the packer rebuild the known clustering? (H-seed, H-seed-b)}
+\label{sec:e-seed}
+
+\pp{Hypothesis (H-seed-b).} For most known clusters there is a seed atom from which stock VPR's growth rebuilds the cluster exactly, and seeding with it closes most of the area gap to the known optimum $N_C$.
+\pp{Experiment.} The packer is given the known clustering of a round-9 design. At each new cluster it grows a trial cluster from every atom of the next known cluster with VPR's own gain and legality, undoes the trial, and commits the seed whose trial equals the known cluster (else the best Jaccard). 33 designs, 3 VPR seeds. As T-VPack~\cite{marquardt99cluster} we report speed and density separately, speed first. % docs/plan/q-n1b-true-seed-oracle.md; data/n1b/summary.json
+\pp{Result.} 25.5 percent of the known clusters are rebuilt exactly (mean Jaccard 0.61). Stock over oracle, geometric mean over designs with the 90 percent interval: critical-path delay 0.993 [0.983, 1.004] (oracle better on 13 of 33 designs), wirelength 1.028 [1.017, 1.040] (25 of 33), CLBs 1.012 [1.006, 1.019] (23 of 33). The oracle closes 11 percent of the log gap to $N_C$ (1.118 to 1.105).
+\pp{Verdict.} \textsc{dismissed}: most clusters cannot be rebuilt from any seed, so the gap is in growth, not seeding. Wirelength and CLBs gain a little (\textsc{possibly good}); delay is \textsc{inconclusive}. An earlier rule-based seed oracle (H-seed) found almost no gap and is \textsc{dismissed}.
