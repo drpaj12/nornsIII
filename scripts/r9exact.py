@@ -25,6 +25,9 @@ from pathlib import Path
 import r9build as rb
 import r9run as rr
 
+# exact15 = first generator (dangling adder sumout became a pad, which VPR rejects as an unknown net); exact16 = fixed (entry 2026-10-30)
+TAG = "exact16"
+
 VARIANTS = (
     (),
     ("--alpha_clustering", "0.5"),
@@ -140,6 +143,11 @@ def cluster_blifs(blif: Path, aff: Path, real_const: set) -> dict:
                     if any(r not in mset for r in rd) or n in pos or n in hard_nets:
                         pouts.add(n)
                     continue
+                if kind == "adder":
+                    # a dangling sumout: VPR sweeps the net in the full packing (the pin is `open`), so it is no pad here either
+                    if any(r not in mset for r in rd) or n in pos or n in hard_nets:
+                        pouts.add(n)
+                    continue
                 if any(r not in mset for r in rd) or n in pos or n in hard_nets or not rd:
                     pouts.add(n)
         out[c] = "\n".join([f".model c{c}", ".inputs " + clk + " " + " ".join(sorted(pis)), ".outputs " + " ".join(sorted(pouts))] + body + [".end"]) + "\n"
@@ -202,8 +210,8 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
 def build_exact(design: str, cons: str, sh: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
     blif, aff = shd / "design.blif", shd / "affinity.tsv"
-    rec_p = shd / "exact15.json"
-    if rec_p.is_file() and (shd / "exact15" / "design.net").is_file():
+    rec_p = shd / f"{TAG}.json"
+    if rec_p.is_file() and (shd / TAG / "design.net").is_file():
         return json.loads(rec_p.read_text())
     full = rb.run_vpr_pack(blif, shd / "pack")
     ftree = ET.parse(full)
@@ -279,7 +287,7 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
         blk.set("instance", blk.get("instance").split("[")[0] + f"[{i}]")
         root.append(blk)
     rec["const_clbs"] = len(constclb)
-    od = shd / "exact15"
+    od = shd / TAG
     od.mkdir(exist_ok=True)
     tree.write(od / "design.net")
     rec["ok"] = True
@@ -291,13 +299,13 @@ def build_exact(design: str, cons: str, sh: int) -> dict:
 
 def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
     shd = rb.OUT_ROOT / design / cons / f"sh{sh}"
-    cwd = shd / "exact15_run" / f"s{seed}"
+    cwd = shd / f"{TAG}_run" / f"s{seed}"
     mp = cwd / "metrics.json"
     if mp.is_file():
         return json.loads(mp.read_text())
     cwd.mkdir(parents=True, exist_ok=True)
     blif = shd / "design.blif"
-    flags = ["--net_file", str(shd / "exact15" / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
+    flags = ["--net_file", str(shd / TAG / "design.net"), "--seed", str(seed), "--timing_report_npaths", str(rr.NPATHS)]
     cmd = ["prlimit", f"--as={rr.MEM_BYTES}", "flock", "-x", rb.LOCK, str(rb.STOCK_VPR), str(rb.ARCH), str(blif), "--place", "--route", "--analysis"] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:
@@ -318,7 +326,7 @@ def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
         struct = json.loads((base / "struct.json").read_text())
         struct["cut_star_C"] = json.loads((base / "build.json").read_text())["cut_star_C"]
         vatoms = json.loads((shd / "vatoms.json").read_text())
-        rec.update(rr.pack_metrics(shd / "exact15" / "design.net", aff, struct, vatoms))
+        rec.update(rr.pack_metrics(shd / TAG / "design.net", aff, struct, vatoms))
     else:
         rec["error"] = "timeout" if rc == -9 else "see vpr.out"
     mp.write_text(json.dumps(rec, sort_keys=True))
@@ -329,6 +337,24 @@ def run_exact(design: str, cons: str, sh: int, seed: int) -> dict:
     return rec
 
 
+def successful_exact() -> set:
+    """{(design, cons, shuffle, seed)} with an exact run of rc 0 on the current input file (any generator tag)."""
+    out = set()
+    p = rb.OUT_ROOT / "runs.jsonl"
+    for ln in p.read_text(errors="replace").splitlines():
+        try:
+            r = json.loads(ln)
+        except ValueError:
+            continue  # a line torn by a crash
+        if r.get("arm") == "exact" and r.get("rc") == 0:
+            try:
+                if r["sha"] == rr.blif_sha(r["design"], r["cons"], r["shuffle"]):
+                    out.add((r["design"], r["cons"], r["shuffle"], r["vseed"]))
+            except (KeyError, FileNotFoundError):
+                continue
+    return out
+
+
 def main(argv: list) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("mode")
@@ -336,16 +362,21 @@ def main(argv: list) -> int:
     ap.add_argument("--cons", default="own,foreign")
     ap.add_argument("--shuffles", default="1,2,3")
     ap.add_argument("--seeds", default="1,2,3")
+    ap.add_argument("--only-missing", action="store_true", help="skip (design, cons, shuffle, seed) with a successful exact run on file")
     a = ap.parse_args(argv)
+    done = successful_exact() if a.only_missing else set()
     for d in a.designs:
         for c in a.cons.split(","):
             for sh in [int(x) for x in a.shuffles.split(",")]:
+                if a.only_missing and not [s for s in [int(x) for x in a.seeds.split(",")] if (d, c, sh, s) not in done]:
+                    continue
                 rec = build_exact(d, c, sh)
                 print(d, c, f"sh{sh}", "K", rec["K"], "packed_alone", rec["packed_alone"], "unpackable", rec["unpackable"],
                       "variants", sorted(set(rec["variants_used"].values())), flush=True)
                 if a.mode == "run" and rec["ok"]:
                     for s in [int(x) for x in a.seeds.split(",")]:
-                        run_exact(d, c, sh, s)
+                        if (d, c, sh, s) not in done:
+                            run_exact(d, c, sh, s)
     return 0
 
 

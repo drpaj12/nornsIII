@@ -44,6 +44,17 @@ class ClusterBlifs(unittest.TestCase):
         self.assertIn(".outputs q2", c1)  # a primary output
         self.assertNotIn(".names a b l0", c1)
 
+    def test_dangling_adder_sumout_is_no_pad(self) -> None:
+        blif = (".model t\n.inputs CLK a\n.outputs o\n.names a o\n1 1\n"
+                ".subckt adder a=a b=gnd cin=gnd cout=c1 sumout=s0\n.subckt adder a=a b=gnd cin=c1 cout=c2 sumout=s1\n.end\n")
+        with tempfile.TemporaryDirectory() as d:
+            b, a = Path(d) / "t.blif", Path(d) / "t.aff"
+            b.write_text(blif)
+            a.write_text("o\t0\nc1\t0\nc2\t0\n")
+            cb = ex.cluster_blifs(b, a, set())[0]
+        outs = next(ln for ln in cb.splitlines() if ln.startswith(".outputs")).split()[1:]
+        self.assertEqual(outs, ["o"])  # s0, s1 and c2 are dangling: VPR leaves the pins open
+
     def test_inputs_ok(self) -> None:
         with tempfile.TemporaryDirectory() as d:
             net = Path(d) / "x.net"
