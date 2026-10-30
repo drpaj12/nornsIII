@@ -68,7 +68,8 @@ record of everything below.
 Widening every LUT to 6 inputs makes a cluster that held 14 fractured small LUTs need 14 fle. So C is C0 repaired: while a
 cluster has demand above 10 or more than 40 distinct external input nets, evict its least-connected cell (never a macro unless
 only macros remain) to the cluster that shares most nets with it and has room, else to a new cluster. Consequence, stated up
-front: N_C (the CLB count of C) is at least the number of VPR clusters of D, and is reported next to it. Chains longer than 20
+front: N_C (the CLB count of C) is a lower bound on the CLB count of D' (the counting bound of Step B); it is not a bound on VPR's
+cluster count for the unpadded D (K_vpr), and can lie above or below it; both are reported side by side. Chains longer than 20
 adders do not fit one CLB (diffeq1 has four chains of 34): they are cut into segments of at most 20 adders, all but the last
 of even length; the carry link between segments (one net per cut) is removed and the next segment's carry-in is tied to
 ground. This is the nearest sound alternative to the brief's "keep whole chains in one cluster or drop the design"; the
@@ -94,7 +95,8 @@ mode (none was found).
 
 ### Step C: strengthen the inside (cut)
 
-All edits add sinks only inside a cluster; they never add a net that leaves a cluster and never add a cluster input pin.
+All edits add sinks only inside a cluster; they never add a net that leaves a cluster and never add a cluster input pin (one exception, the
+last-resort new pin of the fill step, added later and counted per design: entry 2026-10-30 (b), item 5).
 Done in this priority until the conditions below hold or nothing more can be done:
 1. Fill. A LUT with k < 6 distinct inputs gets 6-k inputs from nets driven inside its cluster (table: f XOR parity of the added
    inputs, so it depends on all six). Preference: a net driven by a dummy (a net that stays inside), then a net of a cell whose
@@ -159,7 +161,8 @@ cut of the foreign C and of the own C in D.
 
 ## Stage 2: arms, measures, rule
 
-Arms on every D' and D'' (3 shuffles each): `stock` (the stock `vpr`) and `known` (Norns binary, `--norns_affinity` = C's
+Arms on every D' and D'' (3 shuffles each): `stock` (the Norns binary run with no affinity file and `--norns_pack_census`, which packs as
+the stock `vpr`; see entry 2026-10-30 (b), item 4, for the evidence) and `known` (Norns binary, `--norns_affinity` = C's
 clusters over all logic atoms including dummies and wrappers, `--norns_affinity_weight 100`, `--norns_proposal_count queued`,
 the round-5 known arm). VPR seeds 1, 2, 3. One VPR at a time under the Norns VPR lock
 (`flock -x /tmp/claude-1000/norns-vpr.lock`). Per run: logic CLBs and CLBs/N_C, cut and cut/cut(C), purity vs C and reproduction
@@ -290,8 +293,9 @@ Weekly meter is checked between steps; the work stops and reports at a weekly fi
 Plain English first. On 33 real designs, with the clustering C known by construction (N_C clusters, every cluster full), VPR's stock packer
 needs about 10 percent more CLBs than N_C (own C 1.108, foreign C 1.101), and when its placement is compared with the placement and routing
 of C itself, stock wirelength is about 33 percent higher (n = 25 designs that have an exact arm) and critical path delay about 3 to 5 percent
-longer. The gap is not an artefact of C being VPR's own answer: the own/foreign difference is 1.01 in CLBs and not distinguishable from 1 in
-wirelength and delay. The real-structure gap is about the same size as the round-5 synthetic gap in area (stock/known 1.059 against 1.073)
+longer. The gap is not an artefact of C being VPR's own answer: the own/foreign difference is 1.01 in CLBs, wirelength shows none, and delay
+shows a small one (stock is about 2 percent closer to the exact arm on the own C, Holm p 0.09, which the plan rule counts as excluding 1;
+the stock/known wirelength difference of 1.7 percent does not survive Holm, p 0.19). The real-structure gap is about the same size as the round-5 synthetic gap in area (stock/known 1.059 against 1.073)
 and larger in wirelength (1.265 against 1.220); delay is smaller (1.026 against 1.093). So artificialness did not hide the gap; it slightly
 inflated the area and delay figures and slightly deflated the wirelength figure. Two designs (stereovision0, stereovision2) are not in the
 set (below).
@@ -334,17 +338,107 @@ Results (data/r9/full-summary.json; scripts/r9pool.py; design is the unit; geome
 |---|---|---|---|---|---|
 | stock / N_C | own | 33 | 1.108 [1.080, 1.149] ROOM | - | - |
 | stock / N_C | foreign | 33 | 1.101 [1.073, 1.140] ROOM | - | - |
+| stock / N_C(corrected), entry (b) | own | 33 | 1.103 [1.078, 1.137] ROOM | - | - |
+| stock / N_C(corrected), entry (b) | foreign | 33 | 1.096 [1.071, 1.130] ROOM | - | - |
+| stock / N_C, 13 flagged designs left out | own | 20 | 1.101 [1.084, 1.120] ROOM | - | - |
+| stock / N_C, 13 flagged designs left out | foreign | 20 | 1.093 [1.076, 1.111] ROOM | - | - |
 | stock / exact | own | 25 | 1.099 [1.065, 1.146] ROOM | 1.322 [1.278, 1.367] ROOM | 1.033 [1.024, 1.042] INCONCLUSIVE |
 | stock / exact | foreign | 25 | 1.087 [1.055, 1.136] ROOM | 1.330 [1.280, 1.384] ROOM | 1.054 [1.037, 1.076] ROOM |
 | stock / known | own | 33 | 1.059 [1.049, 1.071] ROOM | 1.265 [1.223, 1.307] ROOM | 1.026 [1.014, 1.038] INCONCLUSIVE |
 | stock / known | foreign | 33 | 1.056 [1.046, 1.066] ROOM | 1.287 [1.243, 1.332] ROOM | 1.042 [1.027, 1.062] INCONCLUSIVE |
 | round 5, stock / known, synthetic, 72 | - | 72 | 1.073 | 1.220 | 1.093 |
 
-Self-bias (own divided by foreign, per design, n = 33): stock/N_C 1.007 [0.999, 1.014]; stock/exact CLB 1.011 [1.005, 1.017] (Holm p 0.011),
-WL 0.994 [0.978, 1.009], CPD 0.980 [0.962, 0.997] (Holm p 0.09). Stock does very slightly better in CLBs on the own C; nothing else is
-distinguishable from 1. CPD is not claimed optimal (stage 1 decision): the exact arm is an achievable point, not a bound, and CPD verdicts
-are mostly INCONCLUSIVE because the gm lies between 1.02 and 1.05. Outlier: clma has N_C = 51 below VPR's own 82 clusters and stock/N_C
+Verdict labels. ROOM, NO ROOM and INCONCLUSIVE are the round-5 rule applied to a pooled ratio (ROOM: geometric mean at least 1.05 and Holm
+p below 0.10). They are working labels of this plan, not the paper's. The paper's label POSSIBLY GOOD needs Holm p below 0.05 and a 90
+percent interval that excludes 1 (Peter 2026-10-29), which is stricter; every ROOM row here has Holm p below 0.0001 and an interval above 1,
+so it passes the evidence test of that label (the label itself belongs to the paper's claim about a packer, not to this measurement).
+INCONCLUSIVE and NO ROOM map to no paper label.
+
+Self-bias (own divided by foreign, per design; n = 33 designs for the stock/N_C and stock/known rows, n = 25 for every stock/exact row, the
+designs with an exact arm; r9pool prints the per-metric n): stock/N_C 1.007 [0.999, 1.014] (Holm p 0.14); stock/exact (n = 25) CLB 1.011
+[1.005, 1.017] (Holm p 0.011), WL 0.994 [0.978, 1.009] (p 0.55), CPD 0.980 [0.962, 0.997] (Holm p 0.09, below 0.10, so by the plan rule
+it excludes 1); stock/known (n = 33) CLB 1.003 [0.997, 1.009], WL 0.983 [0.967, 0.998] (Holm p 0.19, not excluded after Holm), CPD 0.985
+[0.970, 1.000] (p 0.19). Stock needs about 1 percent more CLBs relative to the bound on the own C and reaches about 2 percent closer
+to the exact CPD on it; no other self-bias row excludes 1, and every row is within 2 percent, far below the 1.05 and 1.3 gaps. CPD is not claimed optimal (stage 1 decision): the exact arm is an achievable point, not a bound, and CPD verdicts
+are mostly INCONCLUSIVE because the gm lies between 1.02 and 1.05. Outlier: clma has N_C = 51 below VPR's own 82 clusters (on the unpadded D) and stock/N_C
 1.95 (known/N_C 1.88), so even the Norns known arm cannot reach C there; it enters every geometric mean (without it stock/N_C is 1.089 own and 1.081 foreign).
+See entry 2026-10-30 (b) for clma and for the corrected N_C.
 Caveats: 25 of 33 designs have the exact arm and the missing eight are the hard-block, constant-heavy and large ones, so the stock/exact rows
 describe the easier designs; the stock/known and stock/N_C rows cover all 33. The Norns known arm reproduces C 0.82 to 1.00 (purity).
 Rename: K is now N_C (cluster count) in this plan and in the r9pool output; JSON keys in build.json and the summary still say K.
+
+## Entry 2026-10-30 (b): review fixes (fix round for PR #30): atom mismatch, corrected N_C, new-pin fill, clma, stock arm binary
+
+Written after the full-set results above; no VPR run was made for it. Everything is computed from the existing run roots by
+`scripts/r9pool.py` (read only); the summary `data/r9/full-summary.json` is regenerated (the earlier numbers are reproduced to the digit,
+the new rows use a separate bootstrap stream of the same seed so they do not move). Tests: `tests/test_r9pool.py` (new), `test_r9.py`,
+`test_r9exact.py`.
+
+1. The atom check, what the mismatch is. `vpr_atoms_match` is a check of VPR's atom counts on the cleaned D (before padding) against the
+   generator's: LUTs within 0 to 2 above, flip-flops and adders equal. It is false for 12 designs (bigkey, boundtop, clma, dsip, elliptic,
+   mkDelayWorker32B, mkSMAdapter4B, raygentop, s38417, s38584.1, stereovision1, tseng); the D' check (`vpr_check_dprime.match`, VPR on the
+   written file against the generator) is false for the same 12 and or1200, 13 designs in all (the brief counted 14; the build records
+   give 12 and 13, listed by `r9pool.py` as FLAGGED). Causes, each checked against the written files and the `.net` of the shuffle-1 stock pack:
+   a. D side, 11 designs (all but clma): VPR has FEWER LUT atoms on D than the generator has cells (s38417 53, s38584.1 89, mkDelayWorker32B
+      245, mkSMAdapter4B 37, tseng 16, boundtop 5, raygentop 5, bigkey 4, dsip 4, elliptic 1, stereovision1 5; the sign in the brief was
+      the other way). The generator's clean-up leaves 1-input identity LUTs (`1 1` rows) that VPR's own clean-up absorbs: s38417 has exactly
+      53 of them, tseng 16, bigkey 4, dsip 4, elliptic 1 (equal to the shortfall; in s38584.1, mkDelayWorker32B and mkSMAdapter4B only
+      part of the identity LUTs are absorbed, the rest of the shortfall is not traced). The generator keeps them as cells, which
+      Step B and C widen to 6 inputs, so in D' they are real LUTs and VPR cannot absorb them. They are counted in N_C (as `atoms_not_in_clb`
+      in the own construction, each placed by the legaliser). Nothing is missing from the demand.
+   b. D' side, what VPR packs against what is counted in N_C: for 32 of the 33 designs VPR's LUT count on D' equals the generator's
+      count plus at most the two constant generators (`gnd`, `vcc`, 0-input LUT atoms; the build check subtracts the signed D shortfall of
+      item a from this, which is what made `vpr_check_dprime.match` false: a bookkeeping error of the check, not extra atoms). Two designs
+      differ from the generator in another way: clma has 45 more LUT atoms (45 primary outputs tied to a constant, written `.names gnd o`, which VPR keeps as 1-input LUTs in D';
+      entry (a) item 1 said VPR absorbs them, wrong for D'), and stereovision1 has fewer adders in VPR:
+      own 2151 against 2174 written (23 swept), foreign 1794 against 2174 (380 swept). The swept adders have no reader of their
+      sumout in the written file (fan-out 0, not a primary output), so VPR removes them with the unread tail of their chains; why Step C
+      left that many sumouts unread in stereovision1 is not traced. Flip-flops equal in every design.
+   c. So the 14 (13) are not designs whose packed netlist differs wildly from C's demand: the real differences are the small LUT atoms
+      (clma 45, the others 1 to 2, apex4 1, and designs not flagged, such as or1200, 2) and stereovision1's swept adders.
+2. Corrected N_C. N_C(corrected) = ceil(fle demand of the netlist VPR packed / 10): demand = every 6-input LUT as one fle + every other
+   LUT atom (constant generators, constant output buffers) as one fle (Kc, the plan's rule) or half an fle (Kc_half, valid even if VPR
+   pairs two small LUTs) + per carry chain ceil(surviving adders / 2). Kc differs from N_C in 17 of 66 builds (apex4 +1, boundtop +1,
+   mkDelayWorker32B +1, mkSMAdapter4B +1, raygentop +1, s38584.1 +1, or1200 +1 (Kc_half: 0), clma +5 (Kc_half +3), stereovision1 foreign
+   -18); in all other builds it equals N_C. Stock/N_C(corrected) = stock/N_C x N_C/Kc. Results (geometric mean over designs, 90 percent
+   bootstrap, Holm; the three variants are in the summary):
+
+   | ratio | C | n | original | corrected Kc | corrected Kc_half |
+   |---|---|---|---|---|---|
+   | stock / N_C | own | 33 | 1.108 [1.080, 1.149] | 1.103 [1.078, 1.137] | 1.104 [1.078, 1.141] |
+   | stock / N_C | foreign | 33 | 1.101 [1.073, 1.140] | 1.096 [1.071, 1.130] | 1.097 [1.071, 1.134] |
+   | same, 13 flagged designs left out | own | 20 | 1.101 [1.084, 1.120] | 1.101 [1.083, 1.119] | 1.101 [1.083, 1.119] |
+   | same, 13 flagged designs left out | foreign | 20 | 1.093 [1.076, 1.111] | 1.092 [1.076, 1.110] | 1.092 [1.076, 1.111] |
+
+   Every row has Holm p below 0.0001 and is ROOM. The verdicts do not change; the pooled gap moves by at most 0.005 (0.007 on the
+   half-fle variant), and without the flagged designs it is 1.10 own and 1.09 foreign. The stock/exact and stock/known rows are not
+   affected (they are ratios of two measured runs). Self-bias of stock/N_C(corrected): 1.006 [0.999, 1.013], Holm p 0.15.
+3. clma. N_C is a lower bound on the CLB count of D', so the VPR clusters of D (82, on the unpadded D) are not a floor for it. On D' stock
+   packs 100 CLBs against N_C 51 (1.95; corrected Kc 56: 1.79, Kc_half 54: 1.85); the gap is not explained. Known: Norns with C reaches
+   only 96, and C is not a strict local optimum there (`min_margin` 0, `unmet` 13 cells), so clma is flagged on the cut as well. D
+   of clma (450 LUTs after clean-up from 496 `.names` of the file, 26 flip-flops, 36 inputs, 82 outputs) is the E10 base netlist
+   (`work/norns-keep-sweep-out/netlists/base/clma/netlist/clma.blif`, Odin III with k = 6), after the generator's clean-up; it is not a
+   reduced mapping. Of its 82 outputs 45 are constants, which are the 45 extra LUT atoms of item 1b.
+4. The stock arm is the Norns binary. Every `stock` run in this PR is the Norns `vpr` binary with no `--norns_affinity` and with
+   `--norns_pack_census` (for the seed-signal extractor), not the upstream stock `vpr`. The evidence that this packs as stock is the
+   gate of the critical-heap lane (docs/plan/critical-heap.md, Q1 source: the `.net` of the 45 census runs is byte-identical to the stock
+   sweep run's, 45 of 45, on the 15 VTR Verilog designs; docs/plan/heap-picking.md repeats it). That gate was not repeated on the Round 9
+   designs in this PR; the full flow (placement, routing) is the same binary in both arms, so a difference in the pack alone would show
+   as a different pack, and the stock/known and stock/N_C numbers inherit the heap-lane gate.
+5. Step C, the new-pin exception. The fill step (Step C, item 1) gives every LUT with fewer than six distinct inputs more inputs from
+   nets inside its cluster. After the combinational-loop fix (a3bbbc6: Step C fill and doubling took nets from combinational cells and
+   could close a loop; now a net is taken only if it cannot close a cycle, the build raises on a written loop, and the fill prefers
+   flip-flop outputs, dummy outputs and nets that already enter the cluster), a cluster can have no loop-free internal net left for a
+   LUT. The fix then has a last resort, counted as `fill_new_pin` (8950cb7): the LUT reads one flip-flop output from outside the
+   cluster that already crosses clusters (so the cut of C does not change and the LUT does not become the only pin of a net a single
+   move could uncut), and only if the cluster has a free input pin (at most 32). This ADDS an external input pin to a cluster, so the
+   statements "never add a cluster input pin" (Step C header) and that the cluster-level graph is kept exactly are not true for these
+   builds: the net, already cut, gets a sink in one more cluster (its set of clusters grows by one; the number of cut nets, which counts
+   nets spanning more than one cluster, does not change; the reader's external input count grows by one).
+   Counts over the full set (7 builds out of 66, 3722 edges): blob_merge own 2335, blob_merge foreign 1038, mkDelayWorker32B own 180,
+   mkDelayWorker32B foreign 131, s38417 own 17, mkSMAdapter4B own 11, s38584.1 own 10; every other build 0. Where it applies, the claim
+   "the cluster graph is kept exactly" is weaker: the cut of C changes by none, the external input count of the reading clusters grows
+   by the number above, and the pin limit of 32 still holds (`pin_excess_clusters` is 0 in all builds).
+6. Report changes: `r9pool.py` prints a p of 0 as "< 0.0001" (no resample crossed 0, resolution 1/10000), prints the number of runs
+   read, failed (rc not 0: 87), dropped for a changed input hash (6) and dropped for a missing hash or build.json (0), and prints the
+   per-metric n of the self-bias rows.
