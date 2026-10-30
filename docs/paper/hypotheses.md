@@ -177,8 +177,14 @@ Framing: round 9 (docs/plan/round9-tpeko-real.md, nornsIII #26) is a protocol wi
 
 Computed by `python3 docs/paper/check_register.py` from the first word of every verdict cell (a row with two verdicts, as H20, H21/H26, counts under the first word; mixed rows are labelled in the cell). H17a, CH-a to CH-d and HP-1 to HP-4 are measurements and are not counted as hypotheses. The untested rows have no verdict.
 
+## HS0, the seed-order gap (2026-10-30)
+
+| H-ID | round / section | innovation tested | hypothesis | framing | experiment | metrics | result | test | verdict | in paper |
+|---|---|---|---|---|---|---|---|---|---|---|
+| H-seed | HS0, docs/plan/hs0-seed-gap.md, data/hs0/summary.json | A forced seed list in the Norns packer | Seed order matters: a better seed choice gives fewer CLBs and lower WL/CPD than stock (proposed, to be confirmed by Peter). | plan written before the arm runs; gate 30 of 30 byte-identical | 33 round 9 D' (own C, ordered file) x 3 VPR seeds; arms stock, oracle (one seed per known cluster), 8 random orders | CLBs, WL, CPD (stock over arm); oracle/N_C | oracle 1.007 [1.000, 1.014] CLB, 1.007 WL, 0.992 CPD (Holm p >= 0.69); median-of-8 0.997, 0.995, 0.997; best-of-8 1.012, 1.048, 1.045 but below the chance-only reference 1.017, 1.052, 1.049; stock/N_C 1.118, oracle/N_C 1.110 | bootstrap 90% over designs (10000); Holm over 9 tests | DISMISSED (no gap shown for this oracle rule; best-of-8 is selection) | not yet |
+
 | USEFUL | POSSIBLY GOOD | DISMISSED | INCONCLUSIVE | measurement (not a hypothesis) | untested (no result) |
 |---|---|---|---|---|---|
-| 14 | 9 | 18 | 23 | 9 (H17a, CH-a to CH-d, HP-1 to HP-4) | 10 (U1 to U10) |
+| 14 | 9 | 19 | 23 | 9 (H17a, CH-a to CH-d, HP-1 to HP-4) | 10 (U1 to U10) |
 
-73 register rows (64 hypotheses with a verdict and 9 measurements; some rows group related H-IDs and count once; H9a is three rows; H34a-d is one row; each E10 factor is one row). H22 is DISMISSED (the gain is withdrawn as a leak), H22' is DISMISSED (NOT CONFIRMED), H38 (the round 9 pilot) is INCONCLUSIVE on 3 designs and H-refresh is INCONCLUSIVE at k = 1 and DISMISSED at k = 8. Nine rows are POSSIBLY GOOD: H17c and the eight E10 factors whose effect survives the Holm adjustment. Three of the 14 USEFUL rows are validity checks of the benchmarks (H24/H27, H29 to H31 as one row) or the benchmark generator, and two are mechanism checks (H9a-word, H9a-wordio).
+74 register rows (65 hypotheses with a verdict and 9 measurements; some rows group related H-IDs and count once; H9a is three rows; H34a-d is one row; each E10 factor is one row). H22 is DISMISSED (the gain is withdrawn as a leak), H22' is DISMISSED (NOT CONFIRMED), H38 (the round 9 pilot) is INCONCLUSIVE on 3 designs and H-refresh is INCONCLUSIVE at k = 1 and DISMISSED at k = 8. Nine rows are POSSIBLY GOOD: H17c and the eight E10 factors whose effect survives the Holm adjustment. Three of the 14 USEFUL rows are validity checks of the benchmarks (H24/H27, H29 to H31 as one row) or the benchmark generator, and two are mechanism checks (H9a-word, H9a-wordio).

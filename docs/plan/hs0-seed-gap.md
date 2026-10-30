@@ -91,3 +91,46 @@ listed; a design-and-seed pair is used only if every arm has a result for it.
 The oracle uses the answer key C, so its gap is an upper bound on what a seed rule built from data could give, for this seed choice rule
 and this growth. A different atom rule inside each cluster may do better or worse. A gap in CLBs does not say where the packer goes wrong
 (Q-N2 asks that). The 33 designs are the round 9 set, own clustering only.
+
+## Results, 2026-10-30
+
+Plain English first. On the 33 round 9 designs there is no seed-order gap that this experiment can show. Giving the packer the answer key's
+seeds (the oracle: one seed per known cluster) saves 0.7 percent of the CLBs (stock/oracle 1.007, 90 percent interval [1.000, 1.014],
+Holm p 0.69) and does not change wire or delay. A typical random seed order is as good as stock (median of eight: CLB 0.997, WL 0.995,
+CPD 0.997), so stock's order is not worse than chance. The best of eight random orders beats stock by 1.2 percent in CLBs, 4.8 percent in
+wire and 4.5 percent in delay, and passes the literal rule, but that is what picking the best of eight does by itself: the chance-only
+reference (mean of the eight over the best of the eight) is 1.017, 1.052 and 1.049, larger than the observed best-of-eight gaps, so
+best-of-eight carries no evidence of a gap. The roughly 10 percent excess of stock over N_C that round 9 measured is therefore not
+a matter of which atom the packer seeds next, with this seed rule and this growth: the oracle closes 6 percent of the log gap to N_C
+(stock/N_C 1.118, oracle/N_C 1.110). Q-N2 (what data predicts the gap) has no gap to explain here and does not start on this evidence.
+
+Hypothesis (proposed, to be confirmed by Peter): "Seed order matters: a better seed choice gives fewer CLBs and lower WL/CPD than stock."
+
+Experiment as planned above: 33 designs, own C, ordered file, VPR seeds 1 to 3, arms stock, oracle, 8 random orders; 990 runs, all rc 0
+(`data/hs0/runs.jsonl`, pooled in `data/hs0/summary.json`, `python3 scripts/hs0run.py pool`). Gate: 30 of 30 byte-identical in both
+conditions (`data/hs0/gate.json`; a first attempt at the round 9 D' used pack-only runs, which do not use APPack and so differed from the
+analytic-flow reference; the gate was rerun with the full flow).
+
+| test | stock / arm CLB | WL | CPD |
+|---|---|---|---|
+| oracle | 1.0068 [0.9997, 1.0144] p 0.69 | 1.0067 [0.9959, 1.0180] p 1.0 | 0.9920 [0.9803, 1.0038] p 1.0 |
+| best-of-8 (optimistic) | 1.0121 [1.0056, 1.0183] p 0.032 | 1.0483 [1.0375, 1.0597] p < 0.0001 | 1.0450 [1.0339, 1.0571] p < 0.0001 |
+| median-of-8 | 0.9967 [0.9904, 1.0033] p 1.0 | 0.9951 [0.9867, 1.0032] p 1.0 | 0.9974 [0.9881, 1.0063] p 1.0 |
+| chance-only reference (mean of 8 / best of 8) | 1.0172 [1.0148, 1.0194] | 1.0523 [1.0441, 1.0616] | 1.0495 [1.0413, 1.0587] |
+
+(Geometric mean over 33 designs, 90 percent bootstrap interval over designs, Holm over the nine tests.) Without clma the numbers move
+by at most 0.001 (oracle CLB 1.0067, best-of-8 CLB 1.0118).
+
+Against N_C (CLB, geometric mean over designs, 90 percent interval): stock/N_C 1.118 [1.088, 1.159] (corrected N_C 1.113 [1.086, 1.149]);
+oracle/N_C 1.110 [1.082, 1.150] (1.105 [1.080, 1.140]); best-of-8/N_C 1.105 [1.074, 1.145] (1.100 [1.073, 1.133]); median-of-8/N_C 1.122
+[1.091, 1.163] (1.117 [1.089, 1.152]). The oracle explains 6 percent of the log gap of stock to N_C and best-of-8 11 percent, and the best-of-8
+share is selection (it is chance-only reference sized). The stock/N_C here (1.118) is on the ordered file only; round 9 pooled the three
+shuffles (1.103 corrected).
+
+Per design the oracle CLB gap ranges from 0.966 (ex5p) to 1.087 (stereovision3); the largest gains are on the smallest designs
+(stereovision3 1.087, ch_intrinsics 1.071, diffeq2 1.057).
+
+Verdict. The literal rule is met by the three best-of-8 tests (Holm p 0.032, < 0.0001, < 0.0001), and by none of the oracle or
+median-of-8 tests. By the plan's reading, best-of-8 counts only above the chance-only reference, and it is below it in all three metrics, so
+Q-N1 is answered NO: no seed-order gap shown. This is a result for one oracle seed rule (the vertex with the most internal nets per
+known cluster, clusters in stock's seed order) with stock's growth; another rule could do better. Register: H-seed DISMISSED.
