@@ -683,7 +683,7 @@ def run_vpr_pack(blif: Path, outdir: Path, affinity: Path | None = None) -> Path
     outdir = outdir.parent / f"{outdir.name}.{tag}"  # a changed input never reuses an earlier result
     outdir.mkdir(parents=True, exist_ok=True)
     net = outdir / (blif.stem + ".net")
-    if not net.is_file():
+    if not net.is_file() or net.stat().st_size == 0:  # an empty file is a pack a crash tore: redo it
         cmd = ["flock", "-x", LOCK, str(STOCK_VPR), str(ARCH), str(blif), "--pack", "--seed", "1"]
         if affinity is not None:
             cmd = ["flock", "-x", LOCK, str(NORNS_VPR), str(ARCH), str(blif), "--pack", "--seed", "1", "--norns_affinity", str(affinity),

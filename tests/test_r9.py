@@ -187,5 +187,25 @@ class Parts(unittest.TestCase):
         self.assertTrue(all(x % 2 == 0 for x in s[:-1]))
 
 
+class TornPack(unittest.TestCase):
+    def test_empty_net_is_repacked(self) -> None:
+        import unittest.mock as um
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            blif = Path(d) / "x.blif"
+            blif.write_text(".model x\n.end\n")
+            with um.patch.object(rb.subprocess, "run") as run:
+                out = rb.run_vpr_pack(blif, Path(d) / "pack")
+                run.assert_called_once()  # no net yet: VPR runs
+                out.write_text("")  # a crash left an empty file
+                run.reset_mock()
+                rb.run_vpr_pack(blif, Path(d) / "pack")
+                run.assert_called_once()  # empty file: VPR runs again
+                out.write_text("<x/>")
+                run.reset_mock()
+                rb.run_vpr_pack(blif, Path(d) / "pack")
+                run.assert_not_called()  # a real file is kept
+
+
 if __name__ == "__main__":
     unittest.main()
