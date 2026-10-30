@@ -121,3 +121,16 @@ nets of the atoms of the clusters closed since the last refresh and re-runs the 
 
 Files: `src/pack/greedy_clusterer.cpp` (hook after each closed cluster, `norns_refresh_criticality`), `greedy_seed_selector.cpp/.h`,
 `src/timing/PreClusterTimingManager.cpp/.h`, `PreClusterDelayCalculator.h` (wrapper only), option files as before.
+
+## HS0 (docs/plan/hs0-seed-gap.md, 2026-10-30)
+
+Two options, both stock when absent:
+
+* `--norns_seed_list FILE`: atom names, one per line. `GreedySeedSelector::get_next_seed` first returns the molecule of the first not yet
+  clustered atom of the list (molecules in file order, built in the constructor with `atom_netlist.find_block` and
+  `prepacker.get_atom_molecule`; unmatched names are skipped and counted in the `Norns seed list:` log line), and falls back to the stock
+  seed order when the list is used up. An empty file gives an empty list, so the stock code path.
+* `--norns_seed_dump FILE` (log-only): the stock seed order after the sort (position, then the atom names of the molecule, tab separated).
+
+Files: `src/pack/greedy_seed_selector.cpp/.h`, `norns_affinity.cpp/.h` (option storage), `base/read_options.cpp/.h`, `base/setup_vpr.cpp`.
+Gate (`scripts/hs0run.py gate`): the `.net` is byte-identical to stock with the options absent and with an empty list plus the dump.

@@ -156,7 +156,7 @@ def gate() -> int:
         b = Build(d)
         for s in SEEDS:
             refs = sorted((b.sh).glob(f"run-*/stock.s{s}/design.net"))
-            cases.append(("dprime", d, s, b.blif, refs[0] if refs else Path("/nonexistent")))
+            cases.append(("dprime_full", d, s, b.blif, refs[0] if refs else Path("/nonexistent")))
     results = []
     for kind, d, s, blif, ref in cases:
         guard()
@@ -169,7 +169,11 @@ def gate() -> int:
             cdir.mkdir(exist_ok=True)
             net = cdir / f"{blif.stem}.net"
             if not net.is_file() or net.stat().st_size == 0:
-                rc = run_vpr([str(blif), "--pack", "--seed", str(s), "--timing_report_npaths", "1000"] + extra, cdir, cdir / "vpr.out")
+                if kind == "vtr15":  # the sweep reference is the SA flow: pack only, as the critical-heap gate
+                    base = [str(blif), "--pack", "--seed", str(s), "--timing_report_npaths", "1000"]
+                else:  # the round 9 reference is the default (analytic) flow, whose packer is APPack: run the whole flow as the arms do
+                    base = [str(blif), "--seed", str(s), "--timing_report_npaths", "100", "--place_file", "/dev/null", "--route_file", "/dev/null"]
+                rc = run_vpr(base + extra, cdir, cdir / "vpr.out")
             else:
                 rc = 0
             rec[cond] = {"rc": rc, "equal": bool(rc == 0 and ref.is_file() and net.is_file() and sha(net) == sha(ref))}
@@ -177,7 +181,7 @@ def gate() -> int:
         print(json.dumps(rec), flush=True)
     summ = {"cases": len(results), "equal_absent": sum(r["absent"]["equal"] for r in results),
             "equal_empty_list_and_dump": sum(r["empty_list_and_dump"]["equal"] for r in results),
-            "vtr15": sum(1 for r in results if r["kind"] == "vtr15"), "dprime": sum(1 for r in results if r["kind"] == "dprime")}
+            "vtr15": sum(1 for r in results if r["kind"] == "vtr15"), "dprime": sum(1 for r in results if r["kind"] == "dprime_full")}
     (OUT / "gate.json").write_text(json.dumps({"summary": summ, "results": results}, indent=1))
     print("GATE", json.dumps(summ))
     return 0 if summ["cases"] == summ["equal_absent"] == summ["equal_empty_list_and_dump"] else 1
