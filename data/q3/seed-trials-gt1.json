@@ -1,0 +1,934 @@
+{
+ "features": [
+  "fanin",
+  "crit",
+  "closeness",
+  "seq_level",
+  "fanout"
+ ],
+ "totals": {
+  "clusters": 5071,
+  "exact": 1291,
+  "used": 192,
+  "trials1": 0,
+  "exact_skipped_min_trials": 1099
+ },
+ "results": {
+  "winner_vs_members|fanin": {
+   "mean": 0.5079918527239955,
+   "lo": 0.5028241104133961,
+   "hi": 0.5138448365457293,
+   "n_designs": 26,
+   "p": 0.0044
+  },
+  "winner_vs_members|crit": {
+   "mean": 0.3984404542005275,
+   "lo": 0.31829714402745535,
+   "hi": 0.4786827940577941,
+   "n_designs": 26,
+   "p": 0.0398
+  },
+  "winner_vs_members|closeness": {
+   "mean": 0.46334057976686177,
+   "lo": 0.41931306288678083,
+   "hi": 0.5038960782510461,
+   "n_designs": 26,
+   "p": 0.1438
+  },
+  "winner_vs_members|seq_level": {
+   "mean": 0.5004327323741243,
+   "lo": 0.4807727718032205,
+   "hi": 0.5193573681609396,
+   "n_designs": 26,
+   "p": 0.9618
+  },
+  "winner_vs_members|fanout": {
+   "mean": 0.529516605020268,
+   "lo": 0.48800027412893715,
+   "hi": 0.5750189840345518,
+   "n_designs": 26,
+   "p": 0.2588
+  },
+  "winner_vs_stock_seed|fanin": {
+   "mean": 0.5574404761904762,
+   "lo": 0.5208333333333334,
+   "hi": 0.6004464285714286,
+   "n_designs": 24,
+   "p": 0.0026
+  },
+  "winner_vs_stock_seed|crit": {
+   "mean": 0.2571924603174603,
+   "lo": 0.16344246031746032,
+   "hi": 0.35892857142857143,
+   "n_designs": 24,
+   "p": 0.0002
+  },
+  "winner_vs_stock_seed|closeness": {
+   "mean": 0.4293402777777778,
+   "lo": 0.3517336309523809,
+   "hi": 0.5060292658730159,
+   "n_designs": 24,
+   "p": 0.1336
+  },
+  "winner_vs_stock_seed|seq_level": {
+   "mean": 0.5451636904761905,
+   "lo": 0.5065972222222223,
+   "hi": 0.5903025793650793,
+   "n_designs": 24,
+   "p": 0.0488
+  },
+  "winner_vs_stock_seed|fanout": {
+   "mean": 0.7253472222222221,
+   "lo": 0.6448412698412698,
+   "hi": 0.805704365079365,
+   "n_designs": 24,
+   "p": 0.0001
+  }
+ },
+ "per_design": {
+  "alu4": {
+   "n": 4,
+   "vs_members": [
+    0.5,
+    0.1527777777777778,
+    0.3055555555555556,
+    0.5,
+    0.4722222222222222
+   ],
+   "vs_stock": [
+    0.5,
+    0.25,
+    0.0,
+    0.5,
+    1.0
+   ],
+   "n_stock": 4,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 77,
+    "exact": 9,
+    "used": 4,
+    "trials1": 0,
+    "exact_skipped_min_trials": 5
+   }
+  },
+  "apex2": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 95,
+    "exact": 5,
+    "exact_skipped_min_trials": 5
+   }
+  },
+  "apex4": {
+   "n": 1,
+   "vs_members": [
+    0.5,
+    0.1111111111111111,
+    0.5,
+    0.5,
+    0.7777777777777778
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.0,
+    0.5,
+    1.0
+   ],
+   "n_stock": 1,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 84,
+    "exact": 5,
+    "used": 1,
+    "trials1": 0,
+    "exact_skipped_min_trials": 4
+   }
+  },
+  "bigkey": {
+   "n": 2,
+   "vs_members": [
+    0.5,
+    0.25,
+    0.5555555555555556,
+    0.5,
+    0.9166666666666667
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.75,
+    0.5,
+    1.0
+   ],
+   "n_stock": 2,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 54,
+    "exact": 6,
+    "used": 2,
+    "trials1": 0,
+    "exact_skipped_min_trials": 4
+   }
+  },
+  "blob_merge": {
+   "n": 63,
+   "vs_members": [
+    0.5509259259259259,
+    0.4962522045855379,
+    0.3712522045855379,
+    0.5478395061728395,
+    0.5956790123456789
+   ],
+   "vs_stock": [
+    0.9821428571428571,
+    0.9642857142857143,
+    0.29464285714285715,
+    0.5089285714285714,
+    0.8035714285714286
+   ],
+   "n_stock": 56,
+   "win_is_stock": 7,
+   "stats": {
+    "clusters": 780,
+    "exact": 296,
+    "exact_skipped_min_trials": 233,
+    "used": 63,
+    "trials1": 0
+   }
+  },
+  "boundtop": {
+   "n": 3,
+   "vs_members": [
+    0.5,
+    0.5185185185185185,
+    0.48148148148148145,
+    0.5555555555555555,
+    0.3703703703703704
+   ],
+   "vs_stock": [
+    0.5,
+    0.25,
+    0.75,
+    0.75,
+    0.25
+   ],
+   "n_stock": 2,
+   "win_is_stock": 1,
+   "stats": {
+    "clusters": 58,
+    "exact": 18,
+    "exact_skipped_min_trials": 15,
+    "used": 3,
+    "trials1": 0
+   }
+  },
+  "ch_intrinsics": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 12,
+    "exact": 5,
+    "exact_skipped_min_trials": 5
+   }
+  },
+  "clma": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 38,
+    "exact": 2,
+    "exact_skipped_min_trials": 2
+   }
+  },
+  "des": {
+   "n": 2,
+   "vs_members": [
+    0.5,
+    0.05555555555555555,
+    0.33333333333333337,
+    0.5,
+    0.4444444444444444
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.25,
+    0.5,
+    1.0
+   ],
+   "n_stock": 2,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 87,
+    "exact": 18,
+    "used": 2,
+    "trials1": 0,
+    "exact_skipped_min_trials": 16
+   }
+  },
+  "diffeq": {
+   "n": 1,
+   "vs_members": [
+    0.5,
+    1.0,
+    0.0,
+    0.5,
+    0.3888888888888889
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 1,
+   "stats": {
+    "clusters": 50,
+    "exact": 7,
+    "used": 1,
+    "trials1": 0,
+    "exact_skipped_min_trials": 6
+   }
+  },
+  "diffeq1": {
+   "n": 4,
+   "vs_members": [
+    0.55625,
+    0.48888888888888893,
+    0.51875,
+    0.5,
+    0.475
+   ],
+   "vs_stock": [
+    0.75,
+    0.25,
+    0.375,
+    0.5,
+    0.5
+   ],
+   "n_stock": 4,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 39,
+    "exact": 20,
+    "exact_skipped_min_trials": 16,
+    "used": 4,
+    "trials1": 0
+   }
+  },
+  "diffeq2": {
+   "n": 1,
+   "vs_members": [
+    0.5,
+    0.4444444444444444,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "n_stock": 1,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 28,
+    "exact": 17,
+    "exact_skipped_min_trials": 16,
+    "used": 1,
+    "trials1": 0
+   }
+  },
+  "dsip": {
+   "n": 4,
+   "vs_members": [
+    0.5,
+    0.5833333333333333,
+    0.5416666666666666,
+    0.5,
+    0.7222222222222222
+   ],
+   "vs_stock": [
+    0.5,
+    0.16666666666666666,
+    0.5,
+    0.5,
+    1.0
+   ],
+   "n_stock": 3,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 57,
+    "exact": 9,
+    "used": 4,
+    "trials1": 0,
+    "exact_skipped_min_trials": 5
+   }
+  },
+  "elliptic": {
+   "n": 4,
+   "vs_members": [
+    0.5,
+    0.5972222222222222,
+    0.5972222222222222,
+    0.5,
+    0.4444444444444444
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.8333333333333334,
+    0.6666666666666666,
+    0.5
+   ],
+   "n_stock": 3,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 121,
+    "exact": 20,
+    "exact_skipped_min_trials": 16,
+    "used": 4,
+    "trials1": 0
+   }
+  },
+  "ex1010": {
+   "n": 15,
+   "vs_members": [
+    0.5,
+    0.16666666666666666,
+    0.35555555555555557,
+    0.5,
+    0.437037037037037
+   ],
+   "vs_stock": [
+    0.5,
+    0.2,
+    0.1,
+    0.5,
+    0.9333333333333333
+   ],
+   "n_stock": 15,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 292,
+    "exact": 47,
+    "exact_skipped_min_trials": 32,
+    "used": 15,
+    "trials1": 0
+   }
+  },
+  "ex5p": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 46,
+    "exact": 0
+   }
+  },
+  "frisc": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 153,
+    "exact": 9,
+    "exact_skipped_min_trials": 9
+   }
+  },
+  "misex3": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 62,
+    "exact": 2,
+    "exact_skipped_min_trials": 2
+   }
+  },
+  "mkDelayWorker32B": {
+   "n": 5,
+   "vs_members": [
+    0.5,
+    0.6555555555555556,
+    0.4,
+    0.5,
+    0.5
+   ],
+   "vs_stock": [
+    0.5,
+    1.0,
+    0.2,
+    0.5,
+    0.8
+   ],
+   "n_stock": 5,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 84,
+    "exact": 51,
+    "exact_skipped_min_trials": 46,
+    "used": 5,
+    "trials1": 0
+   }
+  },
+  "mkPktMerge": {
+   "n": 0,
+   "vs_members": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 22,
+    "exact": 18,
+    "exact_skipped_min_trials": 18
+   }
+  },
+  "mkSMAdapter4B": {
+   "n": 5,
+   "vs_members": [
+    0.5325,
+    0.34388888888888886,
+    0.42638888888888893,
+    0.4225,
+    0.4444444444444445
+   ],
+   "vs_stock": [
+    0.7,
+    0.4,
+    0.7,
+    0.3,
+    0.5
+   ],
+   "n_stock": 5,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 127,
+    "exact": 25,
+    "exact_skipped_min_trials": 20,
+    "used": 5,
+    "trials1": 0
+   }
+  },
+  "or1200": {
+   "n": 7,
+   "vs_members": [
+    0.5178571428571429,
+    0.6964285714285714,
+    0.4682539682539683,
+    0.5357142857142857,
+    0.44841269841269843
+   ],
+   "vs_stock": [
+    0.5714285714285714,
+    0.5,
+    0.6428571428571429,
+    0.5,
+    0.5714285714285714
+   ],
+   "n_stock": 7,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 257,
+    "exact": 39,
+    "exact_skipped_min_trials": 32,
+    "used": 7,
+    "trials1": 0
+   }
+  },
+  "pdc": {
+   "n": 3,
+   "vs_members": [
+    0.5,
+    0.0,
+    0.3888888888888889,
+    0.5,
+    0.5185185185185185
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.3333333333333333,
+    0.5,
+    1.0
+   ],
+   "n_stock": 3,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 183,
+    "exact": 3,
+    "used": 3,
+    "trials1": 0
+   }
+  },
+  "raygentop": {
+   "n": 4,
+   "vs_members": [
+    0.5208333333333334,
+    0.4444444444444444,
+    0.5,
+    0.4513888888888889,
+    0.75
+   ],
+   "vs_stock": [
+    0.625,
+    0.25,
+    0.625,
+    0.5,
+    0.75
+   ],
+   "n_stock": 4,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 157,
+    "exact": 53,
+    "exact_skipped_min_trials": 49,
+    "used": 4,
+    "trials1": 0
+   }
+  },
+  "s298": {
+   "n": 3,
+   "vs_members": [
+    0.5,
+    0.2777777777777778,
+    0.5555555555555555,
+    0.48148148148148145,
+    0.6481481481481483
+   ],
+   "vs_stock": [
+    0.5,
+    0.3333333333333333,
+    0.16666666666666666,
+    0.5,
+    1.0
+   ],
+   "n_stock": 3,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 64,
+    "exact": 5,
+    "used": 3,
+    "trials1": 0,
+    "exact_skipped_min_trials": 2
+   }
+  },
+  "s38417": {
+   "n": 13,
+   "vs_members": [
+    0.5,
+    0.5256410256410257,
+    0.4487179487179486,
+    0.48717948717948717,
+    0.670940170940171
+   ],
+   "vs_stock": [
+    0.5,
+    0.20833333333333334,
+    0.4166666666666667,
+    0.5833333333333334,
+    0.75
+   ],
+   "n_stock": 12,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 244,
+    "exact": 40,
+    "exact_skipped_min_trials": 27,
+    "used": 13,
+    "trials1": 0
+   }
+  },
+  "s38584.1": {
+   "n": 2,
+   "vs_members": [
+    0.5,
+    0.5,
+    0.5,
+    0.3055555555555556,
+    0.5
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.5,
+    1.0,
+    0.5
+   ],
+   "n_stock": 1,
+   "win_is_stock": 1,
+   "stats": {
+    "clusters": 190,
+    "exact": 21,
+    "exact_skipped_min_trials": 19,
+    "used": 2,
+    "trials1": 0
+   }
+  },
+  "seq": {
+   "n": 1,
+   "vs_members": [
+    0.5,
+    0.0,
+    0.7222222222222222,
+    0.5,
+    0.3888888888888889
+   ],
+   "vs_stock": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "n_stock": 0,
+   "win_is_stock": 1,
+   "stats": {
+    "clusters": 85,
+    "exact": 3,
+    "exact_skipped_min_trials": 2,
+    "used": 1,
+    "trials1": 0
+   }
+  },
+  "sha": {
+   "n": 4,
+   "vs_members": [
+    0.5,
+    0.027777777777777776,
+    0.6388888888888888,
+    0.6527777777777777,
+    0.4166666666666667
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.5,
+    0.625,
+    0.5
+   ],
+   "n_stock": 4,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 134,
+    "exact": 19,
+    "exact_skipped_min_trials": 15,
+    "used": 4,
+    "trials1": 0
+   }
+  },
+  "spla": {
+   "n": 3,
+   "vs_members": [
+    0.5,
+    0.35185185185185186,
+    0.4074074074074074,
+    0.5,
+    0.40740740740740744
+   ],
+   "vs_stock": [
+    0.5,
+    0.5,
+    0.25,
+    0.5,
+    1.0
+   ],
+   "n_stock": 2,
+   "win_is_stock": 1,
+   "stats": {
+    "clusters": 139,
+    "exact": 4,
+    "used": 3,
+    "trials1": 0,
+    "exact_skipped_min_trials": 1
+   }
+  },
+  "stereovision1": {
+   "n": 35,
+   "vs_members": [
+    0.4877551020408163,
+    0.5879818594104309,
+    0.5301587301587302,
+    0.6129251700680272,
+    0.5292517006802722
+   ],
+   "vs_stock": [
+    0.5,
+    0.15,
+    0.6166666666666667,
+    0.65,
+    0.55
+   ],
+   "n_stock": 30,
+   "win_is_stock": 5,
+   "stats": {
+    "clusters": 1194,
+    "exact": 509,
+    "exact_skipped_min_trials": 474,
+    "used": 35,
+    "trials1": 0
+   }
+  },
+  "stereovision3": {
+   "n": 2,
+   "vs_members": [
+    0.5416666666666667,
+    0.6944444444444444,
+    0.5,
+    0.45833333333333337,
+    0.5
+   ],
+   "vs_stock": [
+    0.75,
+    0.75,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "n_stock": 2,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 20,
+    "exact": 3,
+    "used": 2,
+    "trials1": 0,
+    "exact_skipped_min_trials": 1
+   }
+  },
+  "tseng": {
+   "n": 1,
+   "vs_members": [
+    0.5,
+    0.3888888888888889,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "vs_stock": [
+    0.5,
+    0.0,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "n_stock": 1,
+   "win_is_stock": 0,
+   "stats": {
+    "clusters": 38,
+    "exact": 3,
+    "used": 1,
+    "trials1": 0,
+    "exact_skipped_min_trials": 2
+   }
+  }
+ },
+ "win_is_stock_total": 17,
+ "n_used": 192
+}

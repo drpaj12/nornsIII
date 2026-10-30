@@ -77,5 +77,18 @@ class TestStats(unittest.TestCase):
         self.assertGreater(w[0], 0)
 
 
+
+class TestSeed(unittest.TestCase):
+    def test_order_and_closeness(self):
+        import q3seed
+        blif = ".model m\\n.inputs a\\n.names a x\\n1 1\\n.latch x q re clk 0\\n.names q y\\n1 1\\n"
+        blif = blif.replace("\\n", "\n")
+        pos = q3seed.statement_order(blif)
+        self.assertLess(pos["x"], pos["q"])
+        self.assertLess(pos["q"], pos["y"])
+        c = q3seed.closeness(["a", "b", "c"], {"a": {"b"}, "b": {"a", "c"}, "c": {"b"}})
+        self.assertGreater(c["b"], c["a"])
+
+
 if __name__ == "__main__":
     unittest.main()
