@@ -344,7 +344,7 @@ Self-bias (own divided by foreign, per design, n = 33): stock/N_C 1.007 [0.999, 
 WL 0.994 [0.978, 1.009], CPD 0.980 [0.962, 0.997] (Holm p 0.09). Stock does very slightly better in CLBs on the own C; nothing else is
 distinguishable from 1. CPD is not claimed optimal (stage 1 decision): the exact arm is an achievable point, not a bound, and CPD verdicts
 are mostly INCONCLUSIVE because the gm lies between 1.02 and 1.05. Outlier: clma has N_C = 51 below VPR's own 82 clusters and stock/N_C
-1.95 (known/N_C 1.88), so even the Norns known arm cannot reach C there; it enters every geometric mean (without it stock/N_C own is lower).
+1.95 (known/N_C 1.88), so even the Norns known arm cannot reach C there; it enters every geometric mean (without it stock/N_C is 1.089 own and 1.081 foreign).
 Caveats: 25 of 33 designs have the exact arm and the missing eight are the hard-block, constant-heavy and large ones, so the stock/exact rows
 describe the easier designs; the stock/known and stock/N_C rows cover all 33. The Norns known arm reproduces C 0.82 to 1.00 (purity).
 Rename: K is now N_C (cluster count) in this plan and in the r9pool output; JSON keys in build.json and the summary still say K.
