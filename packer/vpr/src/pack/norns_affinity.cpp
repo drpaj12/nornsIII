@@ -55,6 +55,12 @@ void set_refresh_options(int k) { g_refresh_k = k < 0 ? 0 : k; }
 int refresh_k() { return g_refresh_k; }
 RefreshStats& refresh_stats() { return g_refresh_stats; }
 
+static float g_twohop_w = 0.f;
+static TwoHopStats g_twohop_stats;
+void set_twohop_weight(float w) { g_twohop_w = w < 0.f ? 0.f : (w > 1.f ? 1.f : w); }
+float twohop_weight() { return g_twohop_w; }
+TwoHopStats& twohop_stats() { return g_twohop_stats; }
+
 void set_census_options(const std::string& census_file, bool count_queued) {
     g_census_file = census_file;
     g_count_queued = count_queued;

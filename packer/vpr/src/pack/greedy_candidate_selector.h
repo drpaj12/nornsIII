@@ -24,6 +24,7 @@
 #include "vtr_random.h"
 #include "lazy_pop_unique_priority_queue.h"
 #include "norns_affinity.h" // Norns III provenance affinity
+#include "norns_twohop.h"   // Norns III Q-N3b 2-hop index
 
 // Forward declarations
 class AtomNetlist;
@@ -121,6 +122,9 @@ struct ClusterGainStats {
 
     /// @brief Norns III: the cluster's dominant affinity group (-1: none yet).
     int norns_dominant_group = -1;
+
+    /// @brief Norns III Q-N3b: the 2-hop index of the atoms in this cluster (filled only with --norns_2hop_weight > 0).
+    norns::TwoHopIndex norns_twohop;
 
     /// @brief Norns III census (log-only, never read by the packing): cluster sequence number (0: census
     ///        off), molecules added so far, the source being proposed, the gain of the last popped
@@ -535,6 +539,12 @@ class GreedyCandidateSelector {
         ClusterGainStats& cluster_gain_stats,
         LegalizationClusterId legalization_cluster_id,
         const ClusterLegalizer& cluster_legalizer);
+
+    /**
+     * @brief Norns III Q-N3b: an atom joined the cluster; run the bounded 2-hop search from it (nets of up to 32 sinks, no
+     *        clock, ignored or constant net) and record it in the cluster's 2-hop index. Called only with --norns_2hop_weight > 0.
+     */
+    void norns_twohop_join(ClusterGainStats& cluster_gain_stats, AtomBlockId blk_id);
 
     /**
      * @brief Norns III census (log-only): write the record of a molecule added to a cluster (kind

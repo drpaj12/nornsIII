@@ -91,6 +91,19 @@ struct RefreshStats {
 };
 RefreshStats& refresh_stats();
 
+/// @brief Q-N3b option: weight w of the 2-hop gain term (0 = off, stock): gain = (1 - w) x stock gain + w x members_2hop / cluster atoms.
+void set_twohop_weight(float w);
+float twohop_weight();
+
+/// @brief Log-only counters of the 2-hop term (evaluations and time, atom joins and time).
+struct TwoHopStats {
+    unsigned long long evals = 0;
+    unsigned long long joins = 0;
+    double eval_seconds = 0.0;
+    double join_seconds = 0.0;
+};
+TwoHopStats& twohop_stats();
+
 /// @brief Candidate source codes of the census (where a molecule entered the candidate queue).
 enum CensusSource {
     SRC_SEED = 0,
