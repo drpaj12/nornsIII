@@ -45,6 +45,9 @@ void set_seed_options(const std::string& list_file, const std::string& dump_file
 }
 const std::string& seed_list_file() { return g_seed_list_file; }
 const std::string& seed_dump_file() { return g_seed_dump_file; }
+static std::string g_oracle_file;
+void set_oracle_option(const std::string& file) { g_oracle_file = file; }
+const std::string& oracle_file() { return g_oracle_file; }
 
 static int g_refresh_k = 0;
 static RefreshStats g_refresh_stats;

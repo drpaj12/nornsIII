@@ -76,6 +76,10 @@ void set_seed_options(const std::string& list_file, const std::string& dump_file
 const std::string& seed_list_file();
 const std::string& seed_dump_file();
 
+/// @brief Q-N1b option: the known clustering C (lines "atom TAB cluster id") for the true seed oracle (empty = stock).
+void set_oracle_option(const std::string& file);
+const std::string& oracle_file();
+
 /// @brief H-refresh options: k > 0 refreshes the pre-cluster criticality after every k-th closed cluster (0 = stock).
 void set_refresh_options(int k);
 int refresh_k();

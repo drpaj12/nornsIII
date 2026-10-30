@@ -58,6 +58,13 @@
 #include "PreClusterTimingManager.h"
 #include "vpr_context.h"
 #include "vtr_math.h"
+#include <algorithm>
+#include <fstream>
+#include <unordered_map>
+#include <unordered_set>
+
+// Norns III (Q-N1b): true while the oracle grows a trial cluster; try_grow_cluster then returns before finalizing it.
+static bool g_norns_trial = false;
 
 namespace {
 
@@ -165,8 +172,142 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
                                      pre_cluster_timing_manager_,
                                      ram_mapper);
 
+    // Norns III (Q-N1b): the true seed oracle (--norns_seed_oracle FILE). Absent: oracle.on is false and nothing below runs.
+    struct NornsOracle {
+        bool on = false;
+        std::unordered_map<AtomBlockId, int> label;
+        std::unordered_map<int, std::vector<AtomBlockId>> members;
+        std::unordered_set<int> done;
+        size_t expect_atoms = 0;
+        size_t clusters = 0, exact = 0, trials = 0, single = 0, recheck_mismatch = 0;
+    } oracle;
+    if (!norns::oracle_file().empty()) {
+        if (attraction_groups.num_attraction_groups() > 0 || !norns::seed_list_file().empty() || norns::refresh_k() > 0) {
+            VPR_FATAL_ERROR(VPR_ERROR_PACK, "--norns_seed_oracle does not combine with attraction groups, --norns_seed_list or --norns_refresh_crit");
+        }
+        std::ifstream in(norns::oracle_file());
+        if (!in) VPR_FATAL_ERROR(VPR_ERROR_PACK, "Cannot open --norns_seed_oracle file '%s'", norns::oracle_file().c_str());
+        std::string line;
+        size_t entries = 0, unmatched = 0;
+        while (std::getline(in, line)) {
+            while (!line.empty() && (line.back() == '\r' || line.back() == ' ')) line.pop_back();
+            if (line.empty()) continue;
+            size_t tab = line.rfind('\t');
+            if (tab == std::string::npos) VPR_FATAL_ERROR(VPR_ERROR_PACK, "--norns_seed_oracle: line without TAB: '%s'", line.c_str());
+            ++entries;
+            AtomBlockId blk = atom_netlist_.find_block(line.substr(0, tab));
+            if (!blk.is_valid() || !prepacker.get_atom_molecule(blk).is_valid()) {
+                ++unmatched;
+                continue;
+            }
+            int lab = std::atoi(line.c_str() + tab + 1);
+            if (oracle.label.emplace(blk, lab).second) oracle.members[lab].push_back(blk);
+        }
+        oracle.on = true;
+        VTR_LOG("Norns seed oracle: %zu entries, %zu unmatched, %zu clusters of C\n", entries, unmatched, oracle.members.size());
+    }
+
+    // Grow one cluster (both strategies as the main loop) with the given seed; returns the cluster id or an invalid id.
+    auto grow = [&](PackMoleculeId m) {
+        LegalizationClusterId id = try_grow_cluster(m, candidate_selector, ClusterLegalizationStrategy::SKIP_INTRA_LB_ROUTE, cluster_legalizer, prepacker, ram_mapper,
+                                                    balance_block_type_utilization, attraction_groups, num_used_type_instances, mutable_device_ctx);
+        if (!id.is_valid()) {
+            id = try_grow_cluster(m, candidate_selector, ClusterLegalizationStrategy::FULL, cluster_legalizer, prepacker, ram_mapper,
+                                  balance_block_type_utilization, attraction_groups, num_used_type_instances, mutable_device_ctx);
+        }
+        return id;
+    };
+    auto root_atom_of = [&](PackMoleculeId m) {
+        const t_pack_molecule& mol = prepacker.get_molecule(m);
+        return mol.atom_block_ids[mol.root];
+    };
+
+    // The oracle: s is the stock seed. Returns the seed to commit (s itself when s is not in an unfinished cluster of C).
+    auto oracle_pick = [&](PackMoleculeId s) -> PackMoleculeId {
+        oracle.expect_atoms = 0;
+        int c = -1;
+        for (AtomBlockId b : prepacker.get_molecule(s).atom_block_ids) {
+            if (!b.is_valid()) continue;
+            auto it = oracle.label.find(b);
+            if (it != oracle.label.end()) {
+                c = it->second;
+                break;
+            }
+        }
+        if (c < 0 || oracle.done.count(c)) return s;
+        oracle.done.insert(c);
+        const std::vector<AtomBlockId>& mem = oracle.members[c];
+        std::unordered_set<AtomBlockId> cset(mem.begin(), mem.end());
+        const auto& s_types = primitive_candidate_block_types_[atom_netlist_.block_model(root_atom_of(s))];
+        std::vector<PackMoleculeId> cands;
+        std::unordered_set<size_t> seen;
+        for (AtomBlockId b : mem) {
+            PackMoleculeId m = prepacker.get_atom_molecule(b);
+            if (!m.is_valid() || cluster_legalizer.is_mol_clustered(m) || !seen.insert(size_t(m)).second) continue;
+            if (primitive_candidate_block_types_[atom_netlist_.block_model(root_atom_of(m))] != s_types) continue;
+            cands.push_back(m);
+        }
+        std::sort(cands.begin(), cands.end(), [&](PackMoleculeId a, PackMoleculeId b) { return size_t(root_atom_of(a)) < size_t(root_atom_of(b)); });
+        if (cands.empty()) return s;
+        oracle.clusters++;
+        if (cands.size() == 1) oracle.single++;
+        PackMoleculeId best = s;
+        double best_j = -1.0;
+        size_t best_out = 0, best_missing = 0, best_atoms = 0, ntrials = 0;
+        bool exact = false;
+        for (PackMoleculeId m : cands) {
+            g_norns_trial = true;
+            LegalizationClusterId id = grow(m);
+            g_norns_trial = false;
+            if (!id.is_valid()) continue;
+            ++ntrials;
+            size_t natoms = 0, inter = 0;
+            for (PackMoleculeId mm : cluster_legalizer.get_cluster_molecules(id)) {
+                for (AtomBlockId b : prepacker.get_molecule(mm).atom_block_ids) {
+                    if (!b.is_valid()) continue;
+                    ++natoms;
+                    if (cset.count(b)) ++inter;
+                }
+            }
+            num_used_type_instances[cluster_legalizer.get_cluster_type(id)]--;
+            cluster_legalizer.destroy_cluster(id);
+            cluster_legalizer.compress();
+            size_t outs = natoms - inter, missing = cset.size() - inter;
+            double j = double(inter) / double(natoms + cset.size() - inter);
+            bool better = best_j < 0 || j > best_j || (j == best_j && outs < best_out);
+            if (better) {
+                best = m;
+                best_j = j;
+                best_out = outs;
+                best_missing = missing;
+                best_atoms = natoms;
+            }
+            if (outs == 0 && missing == 0) {
+                exact = true;
+                break;
+            }
+        }
+        oracle.trials += ntrials;
+        if (exact) oracle.exact++;
+        oracle.expect_atoms = best_atoms;
+        VTR_LOG("NORNS_ORACLE\t%d\t%zu\t%zu\t%d\t%.6f\t%zu\t%zu\t%zu\n", c, cands.size(), ntrials, exact ? 1 : 0, best_j < 0 ? 0.0 : best_j, best_out, best_missing, cset.size());
+        return best;
+    };
+
+    size_t seed_pos = 0;
+    auto next_seed = [&]() {
+        PackMoleculeId m = seed_selector.get_next_seed(cluster_legalizer);
+        seed_pos = seed_selector.norns_seed_pos();
+        if (oracle.on && m.is_valid()) {
+            PackMoleculeId picked = oracle_pick(m);
+            if (picked != m) seed_selector.norns_set_seed_pos(seed_pos - 1); // put the stock seed back; it is skipped if it got clustered
+            m = picked;
+        }
+        return m;
+    };
+
     // Pick the first seed molecule.
-    PackMoleculeId seed_mol_id = seed_selector.get_next_seed(cluster_legalizer);
+    PackMoleculeId seed_mol_id = next_seed();
 
     // Norns III H-refresh (--norns_refresh_crit k, 0 = off): atoms of the clusters closed since the last refresh.
     const int norns_refresh_k = pre_cluster_timing_manager_.is_valid() ? norns::refresh_k() : 0;
@@ -254,8 +395,21 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
             }
         }
 
+        if (oracle.on && oracle.expect_atoms != 0) {
+            size_t natoms = 0;
+            for (PackMoleculeId mm : cluster_legalizer.get_cluster_molecules(new_cluster_id)) {
+                for (AtomBlockId b : prepacker.get_molecule(mm).atom_block_ids) natoms += b.is_valid() ? 1 : 0;
+            }
+            if (natoms != oracle.expect_atoms) oracle.recheck_mismatch++;
+        }
+
         // Pick new seed.
-        seed_mol_id = seed_selector.get_next_seed(cluster_legalizer);
+        seed_mol_id = next_seed();
+    }
+
+    if (oracle.on) {
+        VTR_LOG("Norns seed oracle summary: clusters=%zu exact=%zu single_candidate=%zu trials=%zu recheck_mismatch=%zu\n", oracle.clusters, oracle.exact, oracle.single,
+                oracle.trials, oracle.recheck_mismatch);
     }
 
     if (norns_refresh_k > 0) {
@@ -433,6 +587,9 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
 
     // A legal cluster must have been created by this point.
     VTR_ASSERT(legalization_cluster_id.is_valid());
+
+    // Norns III (Q-N1b): a trial cluster is read and destroyed by the oracle, not finalized.
+    if (g_norns_trial) return legalization_cluster_id;
 
     // After the cluster has been fully created, update internal structures
     // to improve the gain calculation.

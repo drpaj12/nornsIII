@@ -80,6 +80,11 @@ class GreedySeedSelector {
      */
     PackMoleculeId get_next_seed(const ClusterLegalizer& cluster_legalizer);
 
+    /// @brief Norns III (Q-N1b): the position in the stock seed order after the last seed returned, and a setter. The oracle puts a
+    ///        stock seed back (position of that seed) when the cluster it opened did not absorb it; the stock path never calls these.
+    size_t norns_seed_pos() const { return seed_index_; }
+    void norns_set_seed_pos(size_t pos) { seed_index_ = pos; }
+
     /**
      * @brief Norns III (H-refresh): recompute the seed gains from the current pre-cluster criticalities and re-sort
      *        the seeds not yet proposed (the seeds already proposed keep their place). Same gain, same stable sort and

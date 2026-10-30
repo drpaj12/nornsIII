@@ -2635,6 +2635,17 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .default_value("")
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_seed_oracle, "--norns_seed_oracle")
+        .help(
+            "Norns III (Q-N1b): file of lines 'atom name TAB cluster id' (the known clustering C).\n"
+            "When the packer opens a new cluster it takes the next unfinished cluster of C (in the\n"
+            "stock seed order), grows a trial cluster from each of its unclustered molecules with\n"
+            "VPR's own gain and legality, rolls each trial back, and commits the seed whose trial\n"
+            "equals the C cluster (else the best Jaccard). One 'NORNS_ORACLE' line per cluster in\n"
+            "the log. Empty (default): stock packing\n")
+        .default_value("")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument<bool, ParseOnOff>(args.memoize_cluster_packings, "--memoize_cluster_packings")
         .help("Enables memoization of previously seen clusters during packing.\n"
               "\n"
