@@ -37,6 +37,15 @@ std::ofstream g_census_stream;
 unsigned long long g_cluster_seq = 0;
 } // namespace
 
+static std::string g_seed_list_file;
+static std::string g_seed_dump_file;
+void set_seed_options(const std::string& list_file, const std::string& dump_file) {
+    g_seed_list_file = list_file;
+    g_seed_dump_file = dump_file;
+}
+const std::string& seed_list_file() { return g_seed_list_file; }
+const std::string& seed_dump_file() { return g_seed_dump_file; }
+
 static int g_refresh_k = 0;
 static RefreshStats g_refresh_stats;
 void set_refresh_options(int k) { g_refresh_k = k < 0 ? 0 : k; }

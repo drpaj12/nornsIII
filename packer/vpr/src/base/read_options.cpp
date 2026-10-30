@@ -2618,6 +2618,23 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .default_value("0")
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_seed_list, "--norns_seed_list")
+        .help(
+            "Norns III (HS0): file of atom names, one per line. The packer takes the next seed\n"
+            "as the molecule of the first not yet clustered atom of the file; when the file is\n"
+            "exhausted (or empty) it takes the stock seed order. Names that match no atom are\n"
+            "skipped and counted in the log. Empty (default): stock packing\n")
+        .default_value("")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
+    pack_grp.add_argument(args.norns_seed_dump, "--norns_seed_dump")
+        .help(
+            "Norns III (HS0): write the stock seed order (after the seed sort) to this file,\n"
+            "one molecule per line (position, TAB, atom names separated by TAB). Log-only.\n"
+            "Empty (default): off\n")
+        .default_value("")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument<bool, ParseOnOff>(args.memoize_cluster_packings, "--memoize_cluster_packings")
         .help("Enables memoization of previously seen clusters during packing.\n"
               "\n"

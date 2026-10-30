@@ -662,6 +662,7 @@ void setup_packer_opts(const t_options& Options,
     norns::set_options(Options.norns_affinity, Options.norns_affinity_weight); // Norns III
     norns::set_census_options(Options.norns_pack_census, Options.norns_proposal_count.value() != "attempted");
     norns::set_refresh_options(Options.norns_refresh_crit);
+    norns::set_seed_options(Options.norns_seed_list, Options.norns_seed_dump); // Norns III HS0
 
     PackerOpts->device_layout = Options.device_layout;
 

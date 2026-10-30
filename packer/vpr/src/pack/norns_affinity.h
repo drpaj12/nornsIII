@@ -70,6 +70,12 @@ ProposalStats& proposal_stats();
 void set_census_options(const std::string& census_file, bool count_queued);
 bool count_queued();
 
+/// @brief HS0 options: a seed list file (atom names, one per line; the next seed is the molecule of the first unclustered atom
+///        of the list, else the stock order; empty = stock) and a log-only dump of the stock seed order (empty = off).
+void set_seed_options(const std::string& list_file, const std::string& dump_file);
+const std::string& seed_list_file();
+const std::string& seed_dump_file();
+
 /// @brief H-refresh options: k > 0 refreshes the pre-cluster criticality after every k-th closed cluster (0 = stock).
 void set_refresh_options(int k);
 int refresh_k();
