@@ -108,7 +108,11 @@ def arm_run(design: str, cons: str, sh: int, arm: str, seed: int) -> dict:
     if arm == "known":
         flags += ["--norns_affinity", str(shd / "affinity.tsv"), "--norns_affinity_weight", f"{BETA_KNOWN:g}",
                   "--norns_proposal_count", "queued"]
-    binary = rb.STOCK_VPR if arm == "stock" else NORNS_VPR
+    if arm == "stock":
+        # the Norns binary with no affinity file packs exactly as the stock binary (gate in scripts/heap_census.py: byte-identical .net);
+        # it also writes the pack census the seed-signal extractor reads: sh<s>/census.tsv (VPR seed 1; the pack does not depend on the seed)
+        flags += ["--norns_pack_census", str(shd / "census.tsv" if seed == 1 else cwd / "census.tsv")]
+    binary = NORNS_VPR
     cmd = ["prlimit", f"--as={MEM_BYTES}", "flock", "-x", LOCK, str(binary), str(rb.ARCH), str(blif)] + flags
     log = cwd / "vpr.out"
     with log.open("w") as fh:
@@ -195,8 +199,20 @@ def status(gm: float, lo: float, hi: float, p_adj: float) -> str:
     return "INCONCLUSIVE"
 
 
+def read_runs() -> list:
+    """Records of runs.jsonl; a line torn by a crash (NUL bytes, partial JSON) is skipped."""
+    p = OUT / "runs.jsonl"
+    out = []
+    for x in (p.read_text(errors="replace").splitlines() if p.is_file() else []):
+        try:
+            out.append(json.loads(x))
+        except ValueError:
+            continue
+    return out
+
+
 def summary(designs: list, json_path: str = "") -> int:
-    runs = [json.loads(x) for x in (OUT / "runs.jsonl").read_text().splitlines() if x.strip()] if (OUT / "runs.jsonl").is_file() else []
+    runs = read_runs()
     runs = [r for r in runs if r["rc"] == 0 and (not designs or r["design"] in designs) and "sha" in r
             and r["sha"] == blif_sha(r["design"], r["cons"], r["shuffle"])]
     by = collections.defaultdict(dict)
