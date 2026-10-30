@@ -104,6 +104,26 @@ struct TwoHopStats {
 };
 TwoHopStats& twohop_stats();
 
+/// @brief Q-N5 options (docs/plan/q-n5-schabas-spare.md): s empty BLE slots left in up to n timing-critical logic clusters (a cluster whose seed has
+///        pre-pack criticality >= crit_min closes once it holds N - s BLEs, N = BLEs per logic cluster). s = 0: stock. dump_file: log-only
+///        record of every logic cluster (seed criticality, qualified, BLEs, atoms). Empty = off.
+void set_spare_options(int s, int n, float crit_min, const std::string& dump_file);
+int spare_bles();
+int spare_clusters();
+float spare_crit_min();
+const std::string& spare_dump_file();
+
+/// @brief Log-only counters of the spare-room rule.
+struct SpareStats {
+    unsigned long long logic_clusters = 0;
+    unsigned long long qualified = 0;
+    unsigned long long closed_at_limit = 0; ///< qualified clusters stopped by the limit
+    unsigned long long overshoot = 0;       ///< qualified clusters that ended above N - s BLEs (a molecule spanning several BLEs)
+    unsigned long long ble_total = 0;       ///< BLEs over all logic clusters
+    int n_ble = 0;                          ///< BLEs per logic cluster (N)
+};
+SpareStats& spare_stats();
+
 /// @brief Candidate source codes of the census (where a molecule entered the candidate queue).
 enum CensusSource {
     SRC_SEED = 0,

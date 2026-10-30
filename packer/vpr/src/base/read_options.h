@@ -142,6 +142,10 @@ struct t_options {
     argparse::ArgValue<std::string> norns_seed_list;       // Norns III HS0
     argparse::ArgValue<std::string> norns_seed_dump;       // Norns III HS0
     argparse::ArgValue<std::string> norns_seed_oracle;     // Norns III Q-N1b
+    argparse::ArgValue<int> norns_spare_bles;              // Norns III Q-N5
+    argparse::ArgValue<int> norns_spare_clusters;          // Norns III Q-N5
+    argparse::ArgValue<float> norns_spare_crit_min;        // Norns III Q-N5
+    argparse::ArgValue<std::string> norns_spare_dump;      // Norns III Q-N5
     argparse::ArgValue<std::vector<std::string>> pack_high_fanout_threshold;
     argparse::ArgValue<int> pack_verbosity;
     argparse::ArgValue<bool> use_ram_mapper;

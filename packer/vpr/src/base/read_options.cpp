@@ -2644,6 +2644,32 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .default_value("")
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_spare_bles, "--norns_spare_bles")
+        .help(
+            "Norns III (Q-N5, after Schabas and Brown, FPGA 2003): s empty BLE slots left in timing-critical logic\n"
+            "clusters. A logic cluster whose seed has pre-pack criticality >= --norns_spare_crit_min (at most\n"
+            "--norns_spare_clusters of them) closes once it holds N - s BLEs (N = fle instances of the cluster).\n"
+            "0 (default): stock packing\n")
+        .default_value("0")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
+    pack_grp.add_argument(args.norns_spare_clusters, "--norns_spare_clusters")
+        .help("Norns III (Q-N5): the cluster budget n of --norns_spare_bles (clusters that may keep s spare BLEs). Default 0\n")
+        .default_value("0")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
+    pack_grp.add_argument(args.norns_spare_crit_min, "--norns_spare_crit_min")
+        .help("Norns III (Q-N5): minimum pre-pack criticality of the seed of a cluster that keeps spare BLEs. Default 0\n")
+        .default_value("0")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
+    pack_grp.add_argument(args.norns_spare_dump, "--norns_spare_dump")
+        .help(
+            "Norns III (Q-N5): write one line per logic cluster (index, seed criticality, qualified, BLEs, atom names, TAB\n"
+            "separated) to this file. Log-only. Empty (default): off\n")
+        .default_value("")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument(args.norns_seed_oracle, "--norns_seed_oracle")
         .help(
             "Norns III (Q-N1b): file of lines 'atom name TAB cluster id' (the known clustering C).\n"
