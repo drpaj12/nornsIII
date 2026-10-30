@@ -106,3 +106,104 @@ The census logs one stock run; it does not say what the packer would have done a
 are measured on D', whose fill and padding shape nets inside the known clusters. The queue-time gain is VPR's own; the right atom's legality
 is judged by free slots and the logged refusals. Distance attenuation of APPack is not measured. Offline ranking is necessary, not sufficient,
 for a better packer: only a downstream run (not part of this entry) can show QoR.
+
+## Results, 2026-10-30 (measurement; offline; no VPR run was made)
+
+Command: `python scripts/q3feat.py <r9 root> <out>` (labels and features, 264 packs, 15 s), `python scripts/q3stats.py` (statistics), `python scripts/q3table.py`
+(tables in `data/q3/tables.md`, numbers in `data/q3/summary.json`), `python scripts/q3seed.py` (step 4). Tests: `tests/test_q3.py`.
+
+### Plain English
+
+Is there something in the circuit that would have told the packer to take the right atom instead of the wrong one? A little, but not robustly. Of the
+Q-N2 wrong picks (26,214 per shuffle, the count reproduces), about 9,800 were picks where connectivity, not a timing pull, decided (37 percent) and about 16,400
+had a timing pull (63 percent; the pick's timing gain beat the right atom's). On the 16 held-out TEST designs, counting nets that the right atom shares with
+the cluster, the number of cluster atoms within two hops, the pin pressure and the common neighbours each put the right atom ahead of the pick in 61 to 69 percent
+of the connectivity picks (VPR's own gain does so in 0.3 percent, by construction: the wrong pick was its maximum). A combined score fitted on the TUNE designs
+reaches 0.69, and on all decisions (wrong and right picks together) its best-scored queued atom is a member of the seed's own known cluster in 84 percent of the
+decisions against 77 percent for VPR's gain (+6.8 points, interval 5.5 to 8.2). But most of this signal depends on the dummy cells that the round 9 construction adds
+to fill clusters (Step B): with the dummies deleted from the cluster and the nets, the single features fall to 0.53 to 0.61, the combined score falls to 0.59, and
+on the connectivity decisions it no longer beats VPR (-5.2 points for the C-free score, +0.1 for the score that also uses VPR's gain). By the rule written above, **no
+feature ranks the right atom robustly**: five of the eight are flagged construction-dependent or have a lower bound under 0.55. What remains after deleting the
+dummies is a weak group-connectivity signal (best: cluster atoms within two hops, AUC 0.61, 0.58 to 0.65) that this benchmark cannot separate from the
+construction (the Step C fill nets cannot be removed). The candidate gain terms below are UNTESTED ideas; nothing here is a QoR claim.
+
+### Labels (Step 1)
+
+Events reconstructed by the Q-N2 replay (`q2gap.analyse_run`, extended with a log-only callback; unchanged without it, tested). Total wrong picks 104,855 over
+the 4 shuffles = 26,214 per shuffle (Q-N2: 26,214). Strata by recomputed pack-time timing gain (agrees with the logged `A` record of the pick in 386 of 386 picks
+of the smoke test, alu4 own sh0). Counts (summed over the 4 shuffles):
+
+| side | C | connectivity picks | timing-pull picks | right picks (sampled 1 in 3) |
+|---|---|---|---|---|
+| TUNE (17 designs) | own | 10,873 | 19,685 | 19,305 |
+| TUNE | foreign | 9,261 | 15,722 | 21,851 |
+| TEST (16 designs) | own | 10,506 | 16,310 | 9,272 |
+| TEST | foreign | 8,640 | 13,858 | 10,789 |
+
+Per shuffle (mean): 9,820 connectivity (37.5 percent) and 16,394 timing-pull (62.5 percent).
+
+### Features on the TEST designs (Steps 2 and 3)
+
+Pairwise AUC (right vs pick), mean over TEST designs, 90 percent bootstrap interval over designs; top-1 and the full tables are in `data/q3/tables.md`.
+Connectivity stratum first. "real" = dummy atoms of Step B deleted from the cluster state, the nets and the candidates, features recomputed.
+
+| feature | connectivity, all | own C | foreign C | real view | timing-pull, all | rule |
+|---|---|---|---|---|---|---|
+| members_2hop (cluster atoms within 2 hops) | 0.687 (0.662 to 0.711) | 0.681 | 0.701 | 0.612 (0.581 to 0.646) | 0.596 | construction-dependent (0.075 drop) |
+| shared_nets | 0.675 (0.643 to 0.711) | 0.682 | 0.672 | 0.577 (0.543 to 0.616) | 0.595 | construction-dependent (0.098 drop) |
+| common_nbrs | 0.633 (0.600 to 0.665) | 0.688 | 0.579 | 0.582 | 0.637 | construction-dependent |
+| d_pins (pin pressure, lower better) | 0.610 (0.579 to 0.643) | 0.618 | 0.605 | 0.526 | 0.670 | construction-dependent |
+| absorbed | 0.563 (0.540 to 0.590) | 0.539 | 0.597 | 0.562 | 0.730 | lower bound 0.54 |
+| seq_gap | 0.554 (0.532 to 0.575) | 0.571 | 0.534 | 0.497 | 0.662 | lower bound, construction |
+| nearcrit_shared | 0.541 (0.519 to 0.565) | 0.550 | 0.530 | 0.527 | 0.439 (opposite sign) | lower bound 0.52 |
+| fanout (lower better) | 0.531 (0.505 to 0.557) | 0.538 | 0.530 | 0.557 | 0.749 | lower bound 0.51 |
+| VPR gain (baseline) | 0.003 | 0.002 | 0.005 | 0.004 | 0.000 | selection effect |
+| combined A (C-free features, fitted on TUNE) | 0.686 (0.655 to 0.720) | 0.683 | 0.694 | 0.593 (0.555 to 0.632) | 0.628 | - |
+
+BH q (32 tests) is below 0.05 for every feature in both strata except `common_nbrs` foreign connectivity (0.049) and none changes the verdict. Own and
+foreign C agree in sign for all features. Top-1 on the wrong picks (the best-scored queued molecule is a right one): combined A 0.509 (0.461 to 0.567) on the
+connectivity stratum (0.373 real), best single feature `shared_nets` 0.449; VPR gain 0.002. Because VPR's gain scores about zero on wrong picks by
+construction, the fair comparison is top-1 over ALL decisions of the connectivity set (wrong picks plus sampled right picks, weighted back): VPR 0.774 (0.742 to 0.806),
+combined A 0.842 (0.816 to 0.870), difference +0.068 (0.055 to 0.082); combined B (adds VPR gain) 0.839, +0.065. In the real view the same differences are
+-0.052 (-0.075 to -0.030) for A and +0.001 (-0.004 to 0.006) for B (the models are refitted on the real-view features of TUNE). Over all picks including the timing-pull
+ones, B reaches +0.140 (full) and +0.048 (0.040 to 0.057, real) over VPR; these include picks that may be deliberate speed choices.
+
+Construction artefact check, said plainly. The dummies added in Step B are in the stock clusters and their inputs come from nets inside the same known cluster, so
+a dummy in the cluster state leaks which known cluster it belongs to; deleting them is the nearest view to the real design D (D itself is not recoverable, as in
+seed-signal). Step C fill nets cannot be separated and the five connectivity features (1 to 4 and 7) were marked construction-sensitive in advance. Word and
+bit-slice membership could not be measured at all (names of D' are opaque). The model weights (standardised, TUNE): `members_2hop` +0.69, `shared_nets` +1.23,
+`common_nbrs` -1.11 (collinear with the first two), `d_pins` +0.67 in the full view; `shared_nets` +0.65, `common_nbrs` -1.49, `d_pins` +0.52 in the real view
+(`data/q3/summary.json`).
+
+### Are oracle seeds special? (Step 4)
+
+The Q-N1b log does not name the winning seed. For the 1,291 exactly rebuilt clusters (25.5 percent of 5,071, own C, ordered shuffle sh0) the winner is
+reconstructed as the `trials`-th molecule of the cluster in ascending root-atom statement order of `design.blif`; the reconstruction is checked by the number
+of molecules of the cluster equalling the logged `candidates` (1,291 of 1,291). Not verified against an explicit seed log. In 1,099 of them (85 percent)
+`trials` = 1: the first molecule in file order already rebuilds the cluster, so for most clusters there is no distinctive winner. Pairwise AUC (winner
+higher than the other members, mean over 32 designs, 90 percent interval): fan-in 0.508 (0.504 to 0.513), pack-time criticality 0.510 (0.467 to 0.549),
+closeness in the cluster 0.493 (0.470 to 0.517), sequential level 0.491 (0.484 to 0.499), fan-out 0.582 (0.550 to 0.617); with dummies left out 0.512, 0.475,
+0.510, 0.501, 0.556. Against the stock seed of the same known cluster (261 winners are the stock seed itself; the rest compared, 26 to 32 designs):
+fan-out 0.730 (0.658 to 0.800), fan-in 0.544, sequential level 0.524, criticality 0.443 (0.348 to 0.537), closeness 0.450. On the 192 clusters where an
+earlier candidate failed (`trials` > 1) the winner is LESS critical than the stock seed (AUC 0.257, 0.163 to 0.359) and than the members (0.398, 0.318 to
+0.479) and has higher fan-out than the stock seed (0.725, 0.645 to 0.806). Answer to Peter's question "is the seed node the most important node of the
+cluster?": on these features no. The winning seed is not the most critical, not the most central and not the best-connected member; it is mostly an arbitrary
+member, and where a choice mattered it was a less critical atom with a larger fan-out than the one VPR picks. Caveat: with 85 percent `trials` = 1 the
+winner mostly reflects file order, not a ranking by quality, so this is a negative result for "special", not a positive result for the fan-out hint.
+
+### Candidate gain terms (UNTESTED ideas)
+
+1. A group-aware term in the candidate gain: the number of cluster atoms within two hops of the candidate (the best feature that survives deleting the dummies).
+2. The same with the pin-pressure term (new input pins the candidate adds).
+3. A tie-aware rule that discounts a pure timing pull when the timing-pull candidate adds many pins.
+Each needs a downstream run on D' and on real designs (speed, wirelength, area), and a test on a benchmark without dummy padding; none is started.
+
+### Verdict and limits
+
+MEASUREMENT. By the rule fixed in the plan no feature ranks the right atom robustly and the combined score does not help on the connectivity decisions once dummies
+are deleted; a weak group-connectivity signal (AUC 0.58 to 0.61) remains that this benchmark cannot separate from its construction. Limits: the right atom's
+legality is judged by slots and refusals, not trial packing; the queue-time gain is VPR's own and includes APPack's distance attenuation, which was not logged;
+the decisions are from one stock run (a different pick would change the rest of the packing; no counterfactual run); the stratum threshold (strictly larger timing
+gain) is one definition and puts 63 percent of the picks in the timing stratum (Q-N2 counted timing pull differently: pick timing gain >= 0.9, 17 percent);
+the real view also drops events involving dummies, so part of the change in AUC is a change of population; 16 TEST designs, shuffles of one design are not independent.
+Q-N4 and the VPR arms are not started.
