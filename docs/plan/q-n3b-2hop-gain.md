@@ -75,7 +75,7 @@ Adding the "how many atoms of the cluster are two hops away" term to APPack's ga
 35 real designs. At w = 0.1 the critical-path delay is 0.7 percent lower (17 wins, 14 losses, 4 ties of 35), which is inside the noise (90 percent interval
 -1.9 to +0.6 percent). At w = 0.25 it is 1.9 percent worse. Wirelength and CLBs do not move beyond 1 percent either way. The number of near-critical endpoints
 falls (14 to 19 percent, pooled geomean over designs) but no test survives the Holm correction, the same pattern as H-refresh, and the critical path does not
-follow. Both arms are DISMISSED by the rule fixed above. The prior from Q-N3 (a small effect on D' with the dummies deleted) held: the term that ranks the right
+follow. w = 0.25 is DISMISSED and w = 0.1 INCONCLUSIVE (relabelled by the controller 2026-10-30 under the CAD convention; see Verdicts). The prior from Q-N3 (a small effect on D' with the dummies deleted) held: the term that ranks the right
 atom better on the round 9 benchmark does not carry over to real designs as a gain.
 
 ## Gate
@@ -127,9 +127,9 @@ term itself costs under 5 s in total; the rise is not diagnosed (a candidate rea
 
 ## Verdicts (rule as written in the plan, applied unchanged)
 
-* w = 0.1: **DISMISSED**. CPD 0.993 [0.982, 1.006] lies wholly inside [0.98, 1.02]; no effect beyond 2 percent. CLB and WL point estimates are within 2 percent.
+* w = 0.1: **INCONCLUSIVE** (relabelled by the controller 2026-10-30 under the CAD convention; the first run of the rule wrote DISMISSED). CAD view: CPD +0.67% geomean win [-0.58, +1.85] (ratio 0.993 [0.982, 1.006]), 17 W / 14 L / 4 T over 35 designs; not separable from noise at this sample size. WL -0.22% (15 / 16 / 4) and CLBs -0.56% (9 / 14 / 12) are small losses, so it is a speed-versus-WL/area trade-off; pack time 6.4% slower. A positive geomean whose interval touches 1 is INCONCLUSIVE, not DISMISSED.
 * w = 0.25: **DISMISSED**. CPD 1.019 [1.000, 1.040]: the interval is wholly above 1.000 (worse) with its lower bound at 1.0002; WL 1.010 and CLBs 0.999 within 2 percent.
-* H-2hop (CPD lower without raising CLBs or WL by more than 2 percent): not supported at either weight. The CAD-style positive geomean win of the near-critical endpoint
+* H-2hop (CPD lower without raising CLBs or WL by more than 2 percent): not supported at w = 0.25 (dismissed) and not shown at w = 0.1 (inconclusive). The CAD-style positive geomean win of the near-critical endpoint
   counts is reported, but those tests are not significant after Holm (smallest p 0.288) and the CPD does not follow, so it is not a verdict basis.
 
 ## Not met / limits
