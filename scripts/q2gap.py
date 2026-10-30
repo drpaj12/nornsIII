@@ -100,9 +100,10 @@ def connection_class(member_atoms, cl_atoms, net_atoms, atom_nets, hub_of):
 
 
 # ---------------------------------------------------------------------------------------------------
-def analyse_run(census, cmap, atom_loc, clbs, g, want_edges=True):
+def analyse_run(census, cmap, atom_loc, clbs, g, want_edges=True, on_pick=None):
     """One pack. census: heappick_lib.parse_census_full; cmap {atom: C cluster}; atom_loc/clbs: heappick_lib.parse_net_clusters;
-    g: heap_lib.parse_blif_graph of the shuffled D'. Returns a dict (no raw per-cluster dump except the example list)."""
+    g: heap_lib.parse_blif_graph of the shuffled D'. on_pick (Q-N3, log-only): optional callback(kind, info) called for a wrong pick with a
+    right atom queued (kind 'b') and for a right pick with another free member of c0 queued (kind 'ok'); it changes no result. Returns a dict (no raw per-cluster dump except the example list)."""
     mols = [m for m in census["mols"] if m["cseq"] in census["closed"]]
     by_cseq = collections.OrderedDict()
     for m in mols:
@@ -183,6 +184,7 @@ def analyse_run(census, cmap, atom_loc, clbs, g, want_edges=True):
                 pending.pop(root, None)
             elif t == "M":
                 m = root_mol[root]
+                snap = dict(pending) if on_pick else None
                 pending.pop(root, None)
                 if m["idx"] == 0:
                     place_kind[id(m)] = "seed"
@@ -228,6 +230,9 @@ def analyse_run(census, cmap, atom_loc, clbs, g, want_edges=True):
                             pa = census["atoms"].get(m["root"])
                             if pa:
                                 out["b"]["pick_tg_ge_0.9" if pa["tg"] >= 0.9 else "pick_tg_lt_0.9"] += 1
+                            if on_pick:
+                                on_pick("b", {"cseq": cs, "idx": m["idx"], "pick": m, "right": [x["root"] for x in queued], "snap": snap,
+                                              "cl_atoms": set(cl_atoms), "root_mol": root_mol, "clustered": clustered})
                             place_kind[id(m)] = "b"
                             if first_dev is None:
                                 first_dev = "b"
@@ -257,6 +262,11 @@ def analyse_run(census, cmap, atom_loc, clbs, g, want_edges=True):
                                                 "free_members": len(free), "src": m["src"]})
                 else:
                     place_kind[id(m)] = "track"
+                    if on_pick and c0 is not None and m["idx"] > 0:
+                        okq = [x for x in members[c0] if id(x) not in clustered and x["w"] <= CAP - used and x is not m and x["root"] in snap]
+                        if okq:
+                            on_pick("ok", {"cseq": cs, "idx": m["idx"], "pick": m, "right": [x["root"] for x in okq], "snap": snap,
+                                           "cl_atoms": set(cl_atoms), "root_mol": root_mol, "clustered": clustered})
                 add_log.append(set(m["atoms"]))
                 cl_atoms.update(m["atoms"])
                 used += m["w"]
