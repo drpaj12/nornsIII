@@ -8,6 +8,9 @@
 #include "greedy_seed_selector.h"
 
 #include <algorithm>
+#include <fstream>
+#include <string>
+#include <unordered_set>
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -18,8 +21,10 @@
 #include "greedy_clusterer.h"
 #include "logic_types.h"
 #include "logical_ram_infer.h"
+#include "norns_affinity.h"
 #include "prepack.h"
 #include "vpr_error.h"
+#include "vtr_log.h"
 #include "vpr_types.h"
 #include "vtr_assert.h"
 #include "vtr_math.h"
@@ -187,6 +192,46 @@ GreedySeedSelector::GreedySeedSelector(const AtomNetlist& atom_netlist,
     // The index of the first seed to propose is the first molecule in the
     // seed molecules vector (i.e. the one with the highest seed gain).
     seed_index_ = 0;
+
+    // Norns III (HS0), log-only: the stock seed order.
+    if (!norns::seed_dump_file().empty()) {
+        std::ofstream dump(norns::seed_dump_file());
+        if (!dump) VPR_FATAL_ERROR(VPR_ERROR_PACK, "Cannot open --norns_seed_dump file '%s'", norns::seed_dump_file().c_str());
+        size_t pos = 0;
+        for (PackMoleculeId mol_id : seed_mols_) {
+            dump << pos++;
+            for (AtomBlockId blk : prepacker.get_molecule(mol_id).atom_block_ids) {
+                if (blk.is_valid()) dump << '\t' << atom_netlist.block_name(blk);
+            }
+            dump << '\n';
+        }
+    }
+
+    // Norns III (HS0): the seed list. Option absent or file empty: norns_list_ stays empty and get_next_seed is the stock code.
+    if (!norns::seed_list_file().empty()) {
+        std::ifstream in(norns::seed_list_file());
+        if (!in) VPR_FATAL_ERROR(VPR_ERROR_PACK, "Cannot open --norns_seed_list file '%s'", norns::seed_list_file().c_str());
+        std::unordered_set<size_t> seen;
+        std::string line;
+        size_t entries = 0, unmatched = 0;
+        while (std::getline(in, line)) {
+            while (!line.empty() && (line.back() == '\r' || line.back() == ' ' || line.back() == '\t')) line.pop_back();
+            if (line.empty()) continue;
+            ++entries;
+            AtomBlockId blk = atom_netlist.find_block(line);
+            if (!blk.is_valid()) {
+                ++unmatched;
+                continue;
+            }
+            PackMoleculeId mol_id = prepacker.get_atom_molecule(blk);
+            if (!mol_id.is_valid()) {
+                ++unmatched;
+                continue;
+            }
+            if (seen.insert(size_t(mol_id)).second) norns_list_.push_back(mol_id);
+        }
+        VTR_LOG("Norns seed list: %zu entries, %zu unmatched, %zu distinct molecules\n", entries, unmatched, norns_list_.size());
+    }
 }
 
 void GreedySeedSelector::norns_refresh_seed_gains(const AtomNetlist& atom_netlist,
@@ -280,6 +325,13 @@ void GreedySeedSelector::sort_seeds(size_t first,
 }
 
 PackMoleculeId GreedySeedSelector::get_next_seed(const ClusterLegalizer& cluster_legalizer) {
+    // Norns III (HS0): the first unclustered molecule of the seed list, else the stock order below.
+    while (norns_list_index_ < norns_list_.size()) {
+        PackMoleculeId list_mol_id = norns_list_[norns_list_index_++];
+        if (!cluster_legalizer.is_mol_clustered(list_mol_id)) {
+            return list_mol_id;
+        }
+    }
     while (seed_index_ < seed_mols_.size()) {
         // Get the current seed molecule at the seed index and increment the
         // seed index.

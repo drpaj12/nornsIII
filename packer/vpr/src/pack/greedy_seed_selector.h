@@ -109,6 +109,10 @@ class GreedySeedSelector {
     ///        are proposed.
     size_t seed_index_;
 
+    /// @brief Norns III (HS0): molecules of the --norns_seed_list atoms, in file order (empty = stock), and the next index.
+    std::vector<PackMoleculeId> norns_list_;
+    size_t norns_list_index_ = 0;
+
     /// @brief A list of seed molecules, sorted in decreasing order of gain. This
     ///        is computed in the constructor and is traversed when a new seed
     ///        is being proposed.
