@@ -187,7 +187,7 @@ def pack_alone(text: str, d: Path, tag: str) -> tuple:
         od = d / f"{tag}.v{k}"
         od.mkdir(exist_ok=True)
         net = od / (p.stem + ".net")
-        if not net.is_file():
+        if not net.is_file() or net.stat().st_size == 0:  # an empty file is a pack the crash tore
             if v and v[0] == "norns":
                 atoms = [ln.split()[-1] for ln in text.splitlines() if ln.startswith(".names")]
                 atoms += [ln.split()[2] for ln in text.splitlines() if ln.startswith(".latch")]
