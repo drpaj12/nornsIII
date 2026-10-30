@@ -134,3 +134,7 @@ Verdict. The literal rule is met by the three best-of-8 tests (Holm p 0.032, < 0
 median-of-8 tests. By the plan's reading, best-of-8 counts only above the chance-only reference, and it is below it in all three metrics, so
 Q-N1 is answered NO: no seed-order gap shown. This is a result for one oracle seed rule (the vertex with the most internal nets per
 known cluster, clusters in stock's seed order) with stock's growth; another rule could do better. Register: H-seed DISMISSED.
+
+## Amendment 2026-10-30 (controller, after Peter's review; no new data)
+
+CAD reporting (Peter 2026-10-30): the seed rule gives a 0.7% geomean CLB win (stock/rule 1.007 [1.000, 1.014]; 18 wins, 13 losses, 2 ties over 33 designs; 3 VPR seeds each, averaged per design), 0.7% in WL and 0.8% worse in CPD. Wins and losses are expected across circuit structures; seeds and the geomean smooth the noise. The interval touches 1 and Holm p is 0.69, so the label is INCONCLUSIVE, not DISMISSED (a positive geomean whose interval touches 1 is not evidence of no effect). The arm called 'oracle' above is a seed rule that uses the known clustering (most internal nets per known cluster), not an oracle; the true oracle (trial growth from every member, Q-N1b) is a separate experiment. Biggest wins on small designs: stereovision3 25 to 23 CLBs (= N_C), ch_intrinsics 15 to 14, diffeq2 37 to 35; worst: ex5p 56 to 58, boundtop 65 to 67, apex4 110 to 113.
