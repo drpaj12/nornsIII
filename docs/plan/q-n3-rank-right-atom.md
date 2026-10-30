@@ -123,7 +123,7 @@ reaches 0.69, and on all decisions (wrong and right picks together) its best-sco
 decisions against 77 percent for VPR's gain (+6.8 points, interval 5.5 to 8.2). But most of this signal depends on the dummy cells that the round 9 construction adds
 to fill clusters (Step B): with the dummies deleted from the cluster and the nets, the single features fall to 0.53 to 0.61, the combined score falls to 0.59, and
 on the connectivity decisions it no longer beats VPR (-5.2 points for the C-free score, +0.1 for the score that also uses VPR's gain). By the rule written above, **no
-feature ranks the right atom robustly**: five of the eight are flagged construction-dependent or have a lower bound under 0.55. What remains after deleting the
+feature ranks the right atom robustly**: none of the eight passes (four are construction-dependent, the other four have a lower bound under 0.55). What remains after deleting the
 dummies is a weak group-connectivity signal (best: cluster atoms within two hops, AUC 0.61, 0.58 to 0.65) that this benchmark cannot separate from the
 construction (the Step C fill nets cannot be removed). The candidate gain terms below are UNTESTED ideas; nothing here is a QoR claim.
 
@@ -160,7 +160,7 @@ Connectivity stratum first. "real" = dummy atoms of Step B deleted from the clus
 | VPR gain (baseline) | 0.003 | 0.002 | 0.005 | 0.004 | 0.000 | selection effect |
 | combined A (C-free features, fitted on TUNE) | 0.686 (0.655 to 0.720) | 0.683 | 0.694 | 0.593 (0.555 to 0.632) | 0.628 | - |
 
-BH q (32 tests) is below 0.05 for every feature in both strata except `common_nbrs` foreign connectivity (0.049) and none changes the verdict. Own and
+BH q (32 tests) is below 0.05 for every feature in both strata (largest 0.049, `common_nbrs` foreign connectivity), so q does not decide the rule; the lower bound and the artefact check do. Own and
 foreign C agree in sign for all features. Top-1 on the wrong picks (the best-scored queued molecule is a right one): combined A 0.509 (0.461 to 0.567) on the
 connectivity stratum (0.373 real), best single feature `shared_nets` 0.449; VPR gain 0.002. Because VPR's gain scores about zero on wrong picks by
 construction, the fair comparison is top-1 over ALL decisions of the connectivity set (wrong picks plus sampled right picks, weighted back): VPR 0.774 (0.742 to 0.806),
@@ -169,7 +169,7 @@ combined A 0.842 (0.816 to 0.870), difference +0.068 (0.055 to 0.082); combined 
 ones, B reaches +0.140 (full) and +0.048 (0.040 to 0.057, real) over VPR; these include picks that may be deliberate speed choices.
 
 Construction artefact check, said plainly. The dummies added in Step B are in the stock clusters and their inputs come from nets inside the same known cluster, so
-a dummy in the cluster state leaks which known cluster it belongs to; deleting them is the nearest view to the real design D (D itself is not recoverable, as in
+a dummy in the cluster state probably leaks which known cluster it belongs to (the drop in AUC when they are deleted is consistent with this; not isolated further); deleting them is the nearest view to the real design D (D itself is not recoverable, as in
 seed-signal). Step C fill nets cannot be separated and the five connectivity features (1 to 4 and 7) were marked construction-sensitive in advance. Word and
 bit-slice membership could not be measured at all (names of D' are opaque). The model weights (standardised, TUNE): `members_2hop` +0.69, `shared_nets` +1.23,
 `common_nbrs` -1.11 (collinear with the first two), `d_pins` +0.67 in the full view; `shared_nets` +0.65, `common_nbrs` -1.49, `d_pins` +0.52 in the real view
