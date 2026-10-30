@@ -199,8 +199,20 @@ def status(gm: float, lo: float, hi: float, p_adj: float) -> str:
     return "INCONCLUSIVE"
 
 
+def read_runs() -> list:
+    """Records of runs.jsonl; a line torn by a crash (NUL bytes, partial JSON) is skipped."""
+    p = OUT / "runs.jsonl"
+    out = []
+    for x in (p.read_text(errors="replace").splitlines() if p.is_file() else []):
+        try:
+            out.append(json.loads(x))
+        except ValueError:
+            continue
+    return out
+
+
 def summary(designs: list, json_path: str = "") -> int:
-    runs = [json.loads(x) for x in (OUT / "runs.jsonl").read_text().splitlines() if x.strip()] if (OUT / "runs.jsonl").is_file() else []
+    runs = read_runs()
     runs = [r for r in runs if r["rc"] == 0 and (not designs or r["design"] in designs) and "sha" in r
             and r["sha"] == blif_sha(r["design"], r["cons"], r["shuffle"])]
     by = collections.defaultdict(dict)

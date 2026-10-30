@@ -50,7 +50,7 @@ Romesis, Xie, ICCAD 2003 (`Cong03tpeko`); round 5 (docs/plan/round5.md).
 * Hard blocks: memories, multipliers and the io pads. They are outside the claim (their own block types, the packer does not
   cluster them with logic). A net with a pad or hard-block pin and at least one logic pin is cut in EVERY clustering; these
   nets are a constant K0 of the cut and are removed from the optimisation. The claim is about the logic cells only.
-* Clustering C: a partition of the cells and macros into K clusters. Demand of a cluster = sum of cell weights.
+* Clustering C: a partition of the cells and macros into N_C clusters. Demand of a cluster = sum of cell weights.
 * Cut of a clustering: number of non-clock, non-constant nets with pins in more than one cluster (pads and hard blocks each
   count as their own cluster, as in round 5). cut = K0 + cut*, cut* = cut of the logic-only hypergraph H*.
 * Purity against C, exact cluster, reproduction rate: as round 5 (`r5lib.packing_vs_blocks`), clusters of C playing the role
@@ -59,7 +59,7 @@ Romesis, Xie, ICCAD 2003 (`Cong03tpeko`); round 5 (docs/plan/round5.md).
 ## Stage 1: the construction, and why it is sound
 
 Input D and a clustering C0 of D (a partition of the cells). C0 is either `own` (the clusters of `vpr --pack`, AAPack, stock
-binary, seed 1; atoms to clusters from the `.net`) or `foreign` (METIS k-way on the cell hypergraph into K parts, K = number
+binary, seed 1; atoms to clusters from the `.net`) or `foreign` (METIS k-way on the cell hypergraph into N_C parts, N_C = number
 of clusters of the own construction). Output D' (own) or D'' (foreign), written as BLIF, plus C (cell to cluster), plus a
 record of everything below.
 
@@ -68,7 +68,7 @@ record of everything below.
 Widening every LUT to 6 inputs makes a cluster that held 14 fractured small LUTs need 14 fle. So C is C0 repaired: while a
 cluster has demand above 10 or more than 40 distinct external input nets, evict its least-connected cell (never a macro unless
 only macros remain) to the cluster that shares most nets with it and has room, else to a new cluster. Consequence, stated up
-front: K (the CLB count of C) is at least the number of VPR clusters of D, and is reported next to it. Chains longer than 20
+front: N_C (the CLB count of C) is at least the number of VPR clusters of D, and is reported next to it. Chains longer than 20
 adders do not fit one CLB (diffeq1 has four chains of 34): they are cut into segments of at most 20 adders, all but the last
 of even length; the carry link between segments (one net per cut) is removed and the next segment's carry-in is tied to
 ground. This is the nearest sound alternative to the brief's "keep whole chains in one cluster or drop the design"; the
@@ -81,12 +81,12 @@ Each cluster is padded with dummy LF cells (a 6-input LUT feeding one flip-flop)
 only from nets driven inside the same cluster; a dummy output is read only inside its cluster. Dummies form a ring so none is
 dangling (VPR removes dangling blocks; check: atom count of D' after VPR equals the generator's count).
 
-Why C is exactly optimal in CLB count. Total demand T' = 10 K after padding. In every packing the following holds, by the
+Why C is exactly optimal in CLB count. Total demand T' = 10 N_C after padding. In every packing the following holds, by the
 architecture file: (i) a cell's LUT has six distinct input nets, so it cannot be in a `ble5` (5 inputs) and needs an `n1_lut6`
 fle, one cell per fle; (ii) a flip-flop of a cell can only be fed by its LUT, so it needs no other fle; (iii) an adder macro
 needs ceil(L/2) fle that no other cell shares (the fle is in arithmetic mode; chains start at an fle boundary); (iv) hard
-blocks are in other block types and use no fle; (v) a CLB has 10 fle. So any legal packing needs at least ceil(T'/10) = K
-CLBs, and C reaches K, so the minimum is exactly K, by a counting argument that does not depend on the packer. Two things
+blocks are in other block types and use no fle; (v) a CLB has 10 fle. So any legal packing needs at least ceil(T'/10) = N_C
+CLBs, and C reaches N_C, so the minimum is exactly N_C, by a counting argument that does not depend on the packer. Two things
 this argument does not prove, and the plan tests them instead: that C is legal in VPR's actual packer (intra-cluster
 routing, pin limits) is checked by the `known` arm reproducing every cluster (reproduction rate 1.0 for at least one
 shuffle per design, else the design is reported as "C not confirmed legal"); that the architecture file has no further
@@ -108,9 +108,9 @@ Done in this priority until the conditions below hold or nothing more can be don
    per design as `unmet` (count of cells). We do NOT rewire D's inter-cluster nets to fix it; the claim is then weaker for
    that design and the design is flagged. (Rewiring would remove the real structure we are trying to keep.)
 
-Why C is optimal in cut. Let cut*(P) be the logic-only cut of a partition P into K parts. Every part of a K-part partition
+Why C is optimal in cut. Let cut*(P) be the logic-only cut of a partition P into N_C parts. Every part of a N_C-part partition
 has demand exactly 10 (T' = 10K), so the only partitions with the minimum CLB count are the exactly-full ones. Scope of the
-claim: the cut is minimal among those partitions; clusterings with more than K CLBs are not covered (they can have a lower
+claim: the cut is minimal among those partitions; clusterings with more than N_C CLBs are not covered (they can have a lower
 cut and are worse in area, which is the primary measure). What the construction PROVES, as a margin: for every ordered pair
 of cells (u in Ci, v in Cj, i not j), swapping u and v increases cut* by at least `margin(u,v)`, computed exactly over every
 swap whose two clusters share a net, and by at least a(u) + a(v) for all other swaps (nothing can be saved without a shared
@@ -118,7 +118,7 @@ net); the conditions of Step C aim at margin >= 1 for every swap, and the measur
 per design. So C is a strict local optimum of the swap neighbourhood whenever the minimum margin is at least 1 and `unmet` is
 0. What it does NOT prove: that no partition far from C (a cycle of three or more cells, or a different arrangement of whole
 groups of cells) has a lower cut. That is a global statement; it is checked, not proved:
-independent METIS runs (pymetis, the Mimir partition extra, k-way with K parts on the star expansion of H*, 100 seeds, option
+independent METIS runs (pymetis, the Mimir partition extra, k-way with N_C parts on the star expansion of H*, 100 seeds, option
 variants cut and volume), each result repaired to exactly-full parts and then refined by pair-swap local search; a
 Kernighan-Lin style swap search from C after random perturbation of 10 percent of the cells (100 restarts); and the best cut
 found compared with cut*(C). Any partition found with a smaller cut* falsifies the claim for that design (reported, design
@@ -152,7 +152,7 @@ structure D' keeps".
 ### Self-bias control
 
 C = VPR's own answer favours VPR (it is a point VPR's greedy can reach). The foreign construction D'' uses a METIS partition
-of the cell hypergraph into K balanced parts (target demand T/K each, repaired by Step A), built into D'' exactly as D'. The
+of the cell hypergraph into N_C balanced parts (target demand T/N_C each, repaired by Step A), built into D'' exactly as D'. The
 comparison: log (stock/known) on D' minus log (stock/known) on D'', per design. If stock does relatively better on D' the
 benchmark is biased towards VPR by that amount, and the paper reports both gaps and does not average them away. Also reported:
 cut of the foreign C and of the own C in D.
@@ -162,7 +162,7 @@ cut of the foreign C and of the own C in D.
 Arms on every D' and D'' (3 shuffles each): `stock` (the stock `vpr`) and `known` (Norns binary, `--norns_affinity` = C's
 clusters over all logic atoms including dummies and wrappers, `--norns_affinity_weight 100`, `--norns_proposal_count queued`,
 the round-5 known arm). VPR seeds 1, 2, 3. One VPR at a time under the Norns VPR lock
-(`flock -x /tmp/claude-1000/norns-vpr.lock`). Per run: logic CLBs and CLBs/K, cut and cut/cut(C), purity vs C and reproduction
+(`flock -x /tmp/claude-1000/norns-vpr.lock`). Per run: logic CLBs and CLBs/N_C, cut and cut/cut(C), purity vs C and reproduction
 rate, routed WL, minimum channel width, CPD, pack and flow time. Failed runs are listed, not replaced.
 
 Pilot (this PR): ch_intrinsics, diffeq1, mkPktMerge. For each: own and foreign construction, 3 shuffles, seeds 1 to 3, arms stock
@@ -190,7 +190,7 @@ ratios may fall below 1.
    (nearest sound alternative above), at the price of removing one carry net per segment boundary.
 3. "Keep D's topology": nets leaving clusters are kept, but every LUT is widened to 6 inputs and lone flip-flops get a wrapper
    LUT, so the in-degree distribution and the LUT count change by construction; reported as D against D'.
-4. C is VPR's clustering repaired for 6-LUT accounting, so K can exceed VPR's own cluster count on D.
+4. C is VPR's clustering repaired for 6-LUT accounting, so N_C can exceed VPR's own cluster count on D.
 5. Designs where hard blocks dominate (mkPktMerge: 459 memory slices against 178 LUTs) are kept in the pilot because the brief
    names them; the claim is about the logic CLBs only and the hard-block nets are a constant of the cut. They are listed.
 6. A cluster with no dummy and no spare input slot cannot be strengthened without rewiring; it is flagged (`unmet`).
@@ -210,13 +210,13 @@ written (VPR was run only on cleaned D, on single clusters, and on written files
    per design: `vpr --pack` on the cleaned file reports the same flip-flop and adder counts and at most two more LUT atoms than
    the cleaned file has, the extra ones being the constant generators `gnd` and `vcc`, which VPR instantiates as LUT atoms. Each is
    a cell of weight 1 (kind K) placed in a cluster, so the count stays exact; the bound still holds if VPR pairs the two in one fle
-   (10K - 1 > 10(K-1)). A primary output driven by a constant is kept as `.names gnd o` (a buffer VPR absorbs).
+   (10K - 1 > 10(N_C-1)). A primary output driven by a constant is kept as `.names gnd o` (a buffer VPR absorbs).
 2. Pin limits. C respects what VPR's default flow forms, not the raw architecture: at most 32 external input nets (0.8 of 40) and
    12 external output nets (0.6 of 20) per cluster; a carry-chain macro keeps its own pins. Reason: a C that needs 33 inputs cannot
    be formed by the stock flow, so stock/known would measure the flag, not the packer.
 3. Step A also (i) keeps one logic element free per cluster for a dummy (capacity 9 for real cells, 10 only where a single vertex
    needs it), because the strict margin of Step C needs at least one all-internal net per cell and only a dummy can supply it, and (ii)
-   merges clusters that fit together (VPR leaves tail clusters of one to four cells). K can still exceed VPR's cluster count.
+   merges clusters that fit together (VPR leaves tail clusters of one to four cells). N_C can still exceed VPR's cluster count.
 4. Step C: when a cell already has six real inputs and no spare slot, one input that is a pad or hard-block net (constant-cut, with
    other readers) is replaced by a dummy output. Count reported as `rewired_const_cut`. Inter-cluster logic nets are never rewired.
    A cell that still cannot be anchored is counted as `unmet`. Constant-generator cells have no nets; a swap with one is a tie by
@@ -233,7 +233,7 @@ written (VPR was run only on cleaned D, on single clusters, and on written files
    listed per design. Greedy packing can fail on a legal cluster (observed: a cluster of one carry-chain macro plus ordinary cells
    is split by VPR's order of placement), so "not confirmed" is not "illegal"; it is reported, not hidden. The counting bound on
    the CLB count holds regardless.
-8. Reports. Besides stock/known (the brief), the summary gives stock/K and known/K for CLBs (K is the exact area bound), cut/cut(C),
+8. Reports. Besides stock/known (the brief), the summary gives stock/N_C and known/N_C for CLBs (N_C is the exact area bound), cut/cut(C),
    purity, reproduction rate, and the `ordered` control (shuffle id 0: statements cluster by cluster, names in order of first use).
    Bootstrap detail: "interval excludes 0 after Holm" is read as the Holm-adjusted two-sided bootstrap p < 0.10.
 9. The independent partitioner check can be vacuous when no METIS partition satisfies the pin limits (diffeq1); the record carries
@@ -257,14 +257,14 @@ and puts every external input on a CLB pin is used (variant 0 is the default opt
 change clustering options only: alpha, connection or timing driven off, unrelated clustering, seed type, pin utilisation). (3) Copy
 those CLB blocks into one `.net` file whose header, pads and hard blocks come from the stock packing of the full shuffled netlist
 (same atom netlist, so the file's netlist hash matches), numbering the blocks as VPR requires. (4) Run `vpr --net_file ... --place
---route --analysis` (VPR seeds 1 to 3). Nothing about C is approximate: purity is 1 and the logic CLBs are K by construction, and the
+--route --analysis` (VPR seeds 1 to 3). Nothing about C is approximate: purity is 1 and the logic CLBs are N_C by construction, and the
 check is that VPR loads the file against the BLIF and routes it. The constant generators `gnd` and `vcc` are CLBs of their own in the
-stock packing of the full netlist, so every flow reports K plus those 1 or 2 CLBs; they are copied unchanged and left out of purity
+stock packing of the full netlist, so every flow reports N_C plus those 1 or 2 CLBs; they are copied unchanged and left out of purity
 (they are in no cluster of C in the packed file). The shipped statistics report `logic_clbs` as VPR prints it and `clbs - const_clbs`.
 
-Acceptance (set before the full set): CLBs = K and purity >= 0.95 on the three pilot designs, both constructions, all 3 shuffles.
+Acceptance (set before the full set): CLBs = N_C and purity >= 0.95 on the three pilot designs, both constructions, all 3 shuffles.
 If a cluster cannot be packed alone by any variant, that design has no exact arm and is listed; if the method failed on the pilot,
-stock/K (area, exact) would stay primary and WL and CPD would be stated against the Norns `known` arm.
+stock/N_C (area, exact) would stay primary and WL and CPD would be stated against the Norns `known` arm.
 
 Why this is a fair "C placed and routed" measure, and where it is not. The placer and router are VPR's own, run from C; they are free to
 find a good or poor placement of C's clusters (3 VPR seeds, 3 shuffles). The intra-cluster packing of each cluster is the one VPR's
@@ -280,7 +280,71 @@ in a day of generator time is listed with the reason, not dropped silently. For 
 run with fewer seeds (the count is stored in the build record) and this is said where it applies.
 Statistics: the design is the unit. Per design the ratio is the geometric mean over the 9 (shuffle, seed) pairs; the pooled value is the
 geometric mean over designs; the interval is a bootstrap over designs (10000 resamples, seed 20261029, percentile, 90 percent); Holm
-over the metrics CLB, WL, CPD. Verdicts by the same room rule. The primary ratios are stock/K (CLBs, exact) and stock/exact (WL and CPD);
+over the metrics CLB, WL, CPD. Verdicts by the same room rule. The primary ratios are stock/N_C (CLBs, exact) and stock/exact (WL and CPD);
 stock/known is reported beside them. Self-bias: per design log(stock/exact) on own minus on foreign, pooled and bootstrapped over
 designs. Comparison with round 5 (CLB 1.073, WL 1.220, CPD 1.093 on 72 synthetic designs) in one table.
 Weekly meter is checked between steps; the work stops and reports at a weekly figure of 85 percent.
+
+## Entry 2026-10-30: resume after the VM crash, fixes, and results of the full set (33 of 35 designs)
+
+Plain English first. On 33 real designs, with the clustering C known by construction (N_C clusters, every cluster full), VPR's stock packer
+needs about 10 percent more CLBs than N_C (own C 1.108, foreign C 1.101), and when its placement is compared with the placement and routing
+of C itself, stock wirelength is about 33 percent higher (n = 25 designs that have an exact arm) and critical path delay about 3 to 5 percent
+longer. The gap is not an artefact of C being VPR's own answer: the own/foreign difference is 1.01 in CLBs and not distinguishable from 1 in
+wirelength and delay. The real-structure gap is about the same size as the round-5 synthetic gap in area (stock/known 1.059 against 1.073)
+and larger in wirelength (1.265 against 1.220); delay is smaller (1.026 against 1.093). So artificialness did not hide the gap; it slightly
+inflated the area and delay figures and slightly deflated the wirelength figure. Two designs (stereovision0, stereovision2) are not in the
+set (below).
+
+What happened on the resume. The crash (host C: full, 2026-10-29 about 22:08) left: runs.jsonl with a NUL line and complete lines; zero-length
+`.net` and report files from single-cluster packs that were running; designs with 42 to 57 of 60 runs. A run is finished if and only if its
+`metrics.json` exists (written last, then one line appended to runs.jsonl), so no run was half-counted; a run without `metrics.json` is run
+again in its own directory (VPR rewrites its files; nothing deleted). The torn runs.jsonl line is skipped by `r9run.read_runs` (used by the
+summary and by `r9pool.py`). Runs are keyed by the hash of the input file, so a rebuilt design never reuses an earlier run. The driver was a
+shell loop (`resume.sh` in the run root, not committed) calling `r9build.py`, `r9run.py arms DESIGN --ordered` and `r9exact.py run DESIGN
+--only-missing`, with the disk guard (C: free at least 15 G, read before each design and each step; lowest seen 40 G) and the weekly guard
+(stop at 97; seen 79 to 80).
+
+R2, the build rc=1 cases. (1) mkSMAdapter4B, s38584.1, s38417: the pre-fix generator raised "cluster too small to give a LUT six distinct
+inputs without a combinational loop"; the chain later rebuilt all three with the loop fix (rc=0, 60 runs each for the two MCNC designs).
+mkSMAdapter4B had been built with shuffles 0 and 1 only, so its runs stopped after six; it was rebuilt with all three shuffles. (2) blob_merge:
+the legality check read a zero-length `.net` left by a pack the crash killed (`run_vpr_pack` reused any existing file). Fix: an empty cached
+`.net` is packed again (`r9build.run_vpr_pack`, same in `r9exact.pack_alone`); test `TornPack`. blob_merge then built and ran (42 runs).
+A slip of mine: one mkSMAdapter4B rebuild was started without `R9_OUT` and wrote into the v1 root (`r9-out/mkSMAdapter4B`: build.json,
+struct.json, the clean file and `legal` were regenerated by the current generator). v1 runs.jsonl is untouched and no v1 file was deleted;
+the v1 mkSMAdapter4B build directory no longer matches the v1 runs for that design (all of them failed foreign exact runs).
+
+Exact arm (stage 3a), what was found and fixed. Single-cluster packs of clusters with a dangling adder `sumout` made it a pad, so the
+assembled `.net` named a net that VPR sweeps ("unknown net found in .net file", mkPktMerge, or1200, mkDelayWorker32B). Fix in
+`r9exact.cluster_blifs`: a dangling adder output is no pad; new output tag `exact16` (the old `exact15` files are kept; a run succeeded under
+either tag counts, `--only-missing`). mkPktMerge then ran (own 8 of 9; the other still fails). Still without an exact arm (the stock and known
+arms are complete for all of these): blob_merge, boundtop, raygentop (const_gnd cannot be packed alone), mkSMAdapter4B (const_vcc),
+stereovision1 (16 own and about 38 foreign clusters do not pack alone), and mkDelayWorker32B, or1200, stereovision3 (the assembled `.net` makes
+the stock VPR abort in the post-cluster delay calculator, SIGABRT, or rc=1; cause not found: the constant-generator and adder-chain handling is
+the suspect; the stock `.net` of the same netlist runs). Their exact failures are listed and not replaced.
+
+Excluded designs. stereovision2 (about 79k BLIF lines): the generator had not finished after 105 CPU-minutes when stopped; stereovision0
+(about 18k LUT and FF): not started. Both are listed as not built, not as failures of the method. The set is therefore 33 designs
+(13 VTR Verilog, 20 MCNC).
+
+Results (data/r9/full-summary.json; scripts/r9pool.py; design is the unit; geometric mean over designs, 90 percent bootstrap over designs,
+10000 resamples, seed 20261029, Holm over CLB, WL, CPD; room rule as round 5). Primary: CLB against N_C (exact), WL and CPD against the exact arm.
+
+| ratio | C | n | CLB | WL | CPD |
+|---|---|---|---|---|---|
+| stock / N_C | own | 33 | 1.108 [1.080, 1.149] ROOM | - | - |
+| stock / N_C | foreign | 33 | 1.101 [1.073, 1.140] ROOM | - | - |
+| stock / exact | own | 25 | 1.099 [1.065, 1.146] ROOM | 1.322 [1.278, 1.367] ROOM | 1.033 [1.024, 1.042] INCONCLUSIVE |
+| stock / exact | foreign | 25 | 1.087 [1.055, 1.136] ROOM | 1.330 [1.280, 1.384] ROOM | 1.054 [1.037, 1.076] ROOM |
+| stock / known | own | 33 | 1.059 [1.049, 1.071] ROOM | 1.265 [1.223, 1.307] ROOM | 1.026 [1.014, 1.038] INCONCLUSIVE |
+| stock / known | foreign | 33 | 1.056 [1.046, 1.066] ROOM | 1.287 [1.243, 1.332] ROOM | 1.042 [1.027, 1.062] INCONCLUSIVE |
+| round 5, stock / known, synthetic, 72 | - | 72 | 1.073 | 1.220 | 1.093 |
+
+Self-bias (own divided by foreign, per design, n = 33): stock/N_C 1.007 [0.999, 1.014]; stock/exact CLB 1.011 [1.005, 1.017] (Holm p 0.011),
+WL 0.994 [0.978, 1.009], CPD 0.980 [0.962, 0.997] (Holm p 0.09). Stock does very slightly better in CLBs on the own C; nothing else is
+distinguishable from 1. CPD is not claimed optimal (stage 1 decision): the exact arm is an achievable point, not a bound, and CPD verdicts
+are mostly INCONCLUSIVE because the gm lies between 1.02 and 1.05. Outlier: clma has N_C = 51 below VPR's own 82 clusters and stock/N_C
+1.95 (known/N_C 1.88), so even the Norns known arm cannot reach C there; it enters every geometric mean (without it stock/N_C own is lower).
+Caveats: 25 of 33 designs have the exact arm and the missing eight are the hard-block, constant-heavy and large ones, so the stock/exact rows
+describe the easier designs; the stock/known and stock/N_C rows cover all 33. The Norns known arm reproduces C 0.82 to 1.00 (purity).
+Rename: K is now N_C (cluster count) in this plan and in the r9pool output; JSON keys in build.json and the summary still say K.

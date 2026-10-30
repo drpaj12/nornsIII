@@ -3,7 +3,7 @@
   python scripts/r9pool.py [--json data/r9/full-summary.json] [DESIGN ...]
 
 Per design and construction: ratios over the (shuffle 1 to 3) x (VPR seed 1 to 3) pairs, as geometric means:
-  CLB   stock / K            (K = exact bound, as in the pilot), stock / exact, stock / known, known / K
+  CLB   stock / N_C            (N_C = exact bound, as in the pilot), stock / exact, stock / known, known / N_C
   WL    stock / exact, stock / known
   CPD   stock / exact, stock / known
 Pooled over designs: geometric mean, 90 percent bootstrap over designs (10000, seed 20261029, percentile), Holm over the three
@@ -29,7 +29,7 @@ METRICS = ("logic_clbs", "wirelength", "cpd_ns")
 
 def load(designs: list) -> dict:
     out = rr.OUT
-    runs = [json.loads(x) for x in (out / "runs.jsonl").read_text().splitlines() if x.strip()]
+    runs = rr.read_runs()
     keep = collections.defaultdict(dict)
     for r in runs:
         if r["rc"] != 0 or (designs and r["design"] not in designs) or r.get("shuffle", -1) == 0 and r["arm"] != "stock":
@@ -144,7 +144,7 @@ def main(argv: list) -> int:
     if a.json:
         Path(a.json).parent.mkdir(parents=True, exist_ok=True)
         Path(a.json).write_text(json.dumps(res, indent=1, sort_keys=True))
-    print("design cons K Kvpr n/ne | stock/K known/K | CLB s/e s/k | WL s/e s/k | CPD s/e s/k | purity stock known exact")
+    print("design cons N_C N_Cvpr n/ne | stock/N_C known/N_C | CLB s/e s/k | WL s/e s/k | CPD s/e s/k | purity stock known exact")
     f = lambda r, k: f"{r[k]:.3f}" if k in r else "  -  "  # noqa: E731
     for r in res["designs"]:
         print(f"{r['design']} {r['cons']} {r['K']} {r['K_vpr']} {r['n_pairs']}/{r.get('n_exact', 0)} | {f(r, 'clb_over_K')} {f(r, 'known_over_K')} | "
