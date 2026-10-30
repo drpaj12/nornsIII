@@ -56,6 +56,8 @@ CONFIGS = {
     "uoff": {"net": "base", "arch": "norns", "vpr": "--allow_unrelated_clustering off", "arms": "vpr_sa"},
     "rc1": {"net": "base", "arch": "norns", "vpr": "--norns_refresh_crit 1", "arms": "vpr_sa"},  # H-refresh (docs/plan/refresh-crit.md), k = 1
     "rc8": {"net": "base", "arch": "norns", "vpr": "--norns_refresh_crit 8", "arms": "vpr_sa"},  # H-refresh, k = 8
+    "h1": {"net": "base", "arch": "norns", "vpr": "--norns_2hop_weight 0.1", "arms": "vpr_sa"},    # Q-N3b (docs/plan/q-n3b-2hop-gain.md), w = 0.1
+    "h25": {"net": "base", "arch": "norns", "vpr": "--norns_2hop_weight 0.25", "arms": "vpr_sa"},  # Q-N3b, w = 0.25
     "plc": {"net": "base", "arch": "norns", "vpr": "", "arms": "vpr_ap,ext_nextpnr_heap,ext_nextpnr_sa", "extra": ["--sa-temp", "100"]}  # T = 100: placers.md section 10.5,
 }
 

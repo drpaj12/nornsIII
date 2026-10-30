@@ -2618,6 +2618,15 @@ static void add_packing_options(argparse::ArgumentParser& parser, t_options& arg
         .default_value("0")
         .show_in(argparse::ShowIn::HELP_ONLY);
 
+    pack_grp.add_argument(args.norns_2hop_weight, "--norns_2hop_weight")
+        .help(
+            "Norns III (Q-N3b): weight w in [0, 1] of the 2-hop connectivity term. A candidate molecule's\n"
+            "gain becomes (1 - w) x stock gain + w x h2, before the APPack distance attenuation; h2 = atoms of\n"
+            "the cluster within two hops of the molecule (nets of up to 32 sinks) divided by the atoms of the\n"
+            "cluster. 0 (default): stock packing\n")
+        .default_value("0")
+        .show_in(argparse::ShowIn::HELP_ONLY);
+
     pack_grp.add_argument(args.norns_seed_list, "--norns_seed_list")
         .help(
             "Norns III (HS0): file of atom names, one per line. The packer takes the next seed\n"

@@ -7,6 +7,7 @@
 
 #include "greedy_candidate_selector.h"
 #include <algorithm>
+#include <chrono>
 #include <limits>
 #include <queue>
 #include <vector>
@@ -216,12 +217,43 @@ void GreedyCandidateSelector::initialize_unrelated_clustering_data(const t_molec
 }
 
 GreedyCandidateSelector::~GreedyCandidateSelector() {
+    // Norns III Q-N3b: log-only cost of the 2-hop term (a no-op without the option).
+    if (norns::twohop_weight() > 0.f) {
+        const norns::TwoHopStats& ts = norns::twohop_stats();
+        VTR_LOG("Norns 2hop: w=%g evals=%llu eval_time=%.3f s joins=%llu join_time=%.3f s\n",
+                norns::twohop_weight(), ts.evals, ts.eval_seconds, ts.joins, ts.join_seconds);
+    }
     // Norns III: log-only summary of the group-member proposals (a no-op without the option).
     if (norns::global_map().active()) {
         const norns::ProposalStats& ps = norns::proposal_stats();
         VTR_LOG("Norns proposals: %llu calls, %llu with 0 queued, %llu molecules attempted, %llu queued\n",
                 ps.calls, ps.calls_zero_queued, ps.attempted, ps.queued);
     }
+}
+
+void GreedyCandidateSelector::norns_twohop_join(ClusterGainStats& cluster_gain_stats, AtomBlockId blk_id) {
+    const auto t0 = std::chrono::steady_clock::now();
+    constexpr size_t norns_net_cap = 32; // the cap of scripts/q3feat.py (q2gap.HF)
+    auto nbrs = [&](uint32_t a, std::vector<uint32_t>& out) {
+        AtomBlockId b(a);
+        for (int dir = 0; dir < 2; dir++) {
+            for (AtomPinId pin_id : (dir == 0 ? atom_netlist_.block_output_pins(b) : atom_netlist_.block_input_pins(b))) {
+                AtomNetId net_id = atom_netlist_.pin_net(pin_id);
+                if (!net_id || is_clock_.count(net_id) || atom_netlist_.net_is_ignored(net_id) || atom_netlist_.net_is_constant(net_id))
+                    continue;
+                if (atom_netlist_.net_sinks(net_id).size() > norns_net_cap)
+                    continue;
+                for (AtomPinId p : atom_netlist_.net_pins(net_id)) {
+                    AtomBlockId nb = atom_netlist_.pin_block(p);
+                    if (nb != b) out.push_back((uint32_t)size_t(nb));
+                }
+            }
+        }
+    };
+    cluster_gain_stats.norns_twohop.add((uint32_t)size_t(blk_id), nbrs);
+    norns::TwoHopStats& st = norns::twohop_stats();
+    st.joins++;
+    st.join_seconds += std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
 }
 
 ClusterGainStats GreedyCandidateSelector::create_cluster_gain_stats(
@@ -388,6 +420,10 @@ void GreedyCandidateSelector::update_cluster_gain_stats_candidate_success(
         /* TODO: Allow clusters to have more than one attraction group. */
         if (atom_grp_id.is_valid())
             cluster_gain_stats.attraction_grp_id = atom_grp_id;
+
+        if (norns::twohop_weight() > 0.f) {
+            norns_twohop_join(cluster_gain_stats, blk_id); // Norns III Q-N3b
+        }
 
         // Norns III: count the atom's provenance-affinity group; the dominant group is the plurality.
         if (norns::global_map().loaded()) {
@@ -1345,6 +1381,25 @@ static float get_molecule_gain(PackMoleculeId molecule_id,
 
     if (num_molecule_failures > 0 && attraction_groups.num_attraction_groups() > 0) {
         gain -= 0.1 * num_molecule_failures;
+    }
+
+    // Norns III Q-N3b: blend in the 2-hop term, before the APPack attenuation below (which stays as stock).
+    // h2 = atoms of the cluster within two hops of the molecule / atoms of the cluster, in [0, 1].
+    if (norns::twohop_weight() > 0.f && cluster_gain_stats.norns_twohop.size() > 0) {
+        const auto norns_t0 = std::chrono::steady_clock::now();
+        std::vector<uint32_t> norns_big;
+        size_t norns_n = 0;
+        for (AtomBlockId blk_id : molecule.atom_block_ids) {
+            if (!blk_id.is_valid()) continue;
+            norns_big.push_back((uint32_t)size_t(blk_id));
+            norns_n++;
+        }
+        const float norns_h2 = norns_n == 0 ? 0.f : (float)cluster_gain_stats.norns_twohop.count(norns_big.data(), norns_n) / (float)cluster_gain_stats.norns_twohop.size();
+        const float norns_w = norns::twohop_weight();
+        gain = (1.f - norns_w) * gain + norns_w * norns_h2;
+        norns::TwoHopStats& norns_st = norns::twohop_stats();
+        norns_st.evals++;
+        norns_st.eval_seconds += std::chrono::duration<double>(std::chrono::steady_clock::now() - norns_t0).count();
     }
 
     // If using APPack, attenuate the gain.
