@@ -4,7 +4,7 @@ This file is committed and pushed before any VPR run. It is not edited after the
 
 ## Plain-English summary
 
-Peter (2026-10-30), verbatim: "Try the duplication after placement. That might be the end of norns". Q-N5 (nornsIII #39) tested the first half of Schabas and Brown
+Peter (2026-10-30), verbatim: "Try the duplication after placement. That might be the end of norns". Confirmed by Peter (2026-10-30), verbatim: "Okay let's run duplication testing with the goal of speed improvement". So speed (post-route critical-path delay) is the primary measure and the hypothesis target; wirelength and area (CLBs used) are costs. Q-N5 (nornsIII #39) tested the first half of Schabas and Brown
 (FPGA 2003, `schabas2003duplication`): empty BLEs in critical clusters on a fixed square grid. It did not replicate (CPD 1.4 to 1.5 percent slower). In the paper the
 second half, duplicating logic on the critical path after placement, gave the rest: +7.7 percent in total (1.4 from plain BLE moves, 6.3 from copies). Question: on VPR
 3c9a4d23b2 with the same 35 designs and the same fixed square grids, does copying a critical-path LUT into a nearby cluster with room, so that the copy drives only the
