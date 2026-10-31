@@ -665,6 +665,7 @@ void setup_packer_opts(const t_options& Options,
     norns::set_twohop_weight(Options.norns_2hop_weight); // Norns III Q-N3b
     norns::set_seed_options(Options.norns_seed_list, Options.norns_seed_dump); // Norns III HS0
     norns::set_oracle_option(Options.norns_seed_oracle);                       // Norns III Q-N1b
+    norns::set_spare_options(Options.norns_spare_bles, Options.norns_spare_clusters, Options.norns_spare_crit_min, Options.norns_spare_dump); // Norns III Q-N5
 
     PackerOpts->device_layout = Options.device_layout;
 

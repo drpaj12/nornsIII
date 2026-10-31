@@ -61,6 +61,22 @@ void set_twohop_weight(float w) { g_twohop_w = w < 0.f ? 0.f : (w > 1.f ? 1.f : 
 float twohop_weight() { return g_twohop_w; }
 TwoHopStats& twohop_stats() { return g_twohop_stats; }
 
+static int g_spare_s = 0, g_spare_n = 0;
+static float g_spare_crit = 0.f;
+static std::string g_spare_dump;
+static SpareStats g_spare_stats;
+void set_spare_options(int s, int n, float crit_min, const std::string& dump_file) {
+    g_spare_s = s < 0 ? 0 : s;
+    g_spare_n = n < 0 ? 0 : n;
+    g_spare_crit = crit_min;
+    g_spare_dump = dump_file;
+}
+int spare_bles() { return g_spare_s; }
+int spare_clusters() { return g_spare_n; }
+float spare_crit_min() { return g_spare_crit; }
+const std::string& spare_dump_file() { return g_spare_dump; }
+SpareStats& spare_stats() { return g_spare_stats; }
+
 void set_census_options(const std::string& census_file, bool count_queued) {
     g_census_file = census_file;
     g_count_queued = count_queued;

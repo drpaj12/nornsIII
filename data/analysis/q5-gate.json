@@ -1,0 +1,1416 @@
+{
+ "w0": {
+  "n": 105,
+  "net_equal": 105,
+  "rc0": 105,
+  "runs": [
+   {
+    "design": "alu4",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "alu4",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "alu4",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex2",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex2",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex2",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex4",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex4",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex4",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "bigkey",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "bigkey",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "bigkey",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "blob_merge",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "blob_merge",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "blob_merge",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.9,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "boundtop",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "boundtop",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "boundtop",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ch_intrinsics",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ch_intrinsics",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ch_intrinsics",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "clma",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "clma",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "clma",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "des",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "des",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "des",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq1",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq1",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq1",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq2",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq2",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq2",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "dsip",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "dsip",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "dsip",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "elliptic",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "elliptic",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "elliptic",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex1010",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex1010",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex1010",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 4.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex5p",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex5p",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex5p",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "frisc",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "frisc",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "frisc",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "misex3",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.9,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "misex3",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "misex3",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkDelayWorker32B",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkDelayWorker32B",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkDelayWorker32B",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkPktMerge",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkPktMerge",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkPktMerge",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkSMAdapter4B",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkSMAdapter4B",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkSMAdapter4B",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "or1200",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 3.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "or1200",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 3.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "or1200",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 3.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "pdc",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "pdc",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "pdc",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "raygentop",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "raygentop",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "raygentop",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s298",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s298",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s298",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38417",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38417",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38417",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38584.1",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38584.1",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38584.1",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "seq",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "seq",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "seq",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.0,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "sha",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "sha",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "sha",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "spla",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "spla",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "spla",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision0",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 5.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision0",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 5.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision0",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 5.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision1",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 6.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision1",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 5.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision1",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 5.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision2",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 12.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision2",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 12.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision2",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 12.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision3",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision3",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision3",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "tseng",
+    "seed": 1,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "tseng",
+    "seed": 2,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "tseng",
+    "seed": 3,
+    "mode": "w0",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   }
+  ]
+ },
+ "none": {
+  "n": 35,
+  "net_equal": 35,
+  "rc0": 35,
+  "runs": [
+   {
+    "design": "alu4",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex2",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "apex4",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "bigkey",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "blob_merge",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 4.9,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "boundtop",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.4,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ch_intrinsics",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "clma",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "des",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq1",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "diffeq2",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "dsip",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "elliptic",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex1010",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 4.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "ex5p",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "frisc",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 2.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "misex3",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.8,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkDelayWorker32B",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 2.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkPktMerge",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "mkSMAdapter4B",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "or1200",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 3.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "pdc",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 2.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "raygentop",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s298",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.7,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38417",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "s38584.1",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 2.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "seq",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.1,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "sha",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.3,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "spla",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 1.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision0",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 5.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision1",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 5.6,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision2",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 12.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "stereovision3",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.2,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   },
+   {
+    "design": "tseng",
+    "seed": 1,
+    "mode": "none",
+    "rc": 0,
+    "secs": 0.5,
+    "net_equal": true,
+    "fixed_grid_logged": true,
+    "compare": "architecture_id blanked"
+   }
+  ]
+ }
+}

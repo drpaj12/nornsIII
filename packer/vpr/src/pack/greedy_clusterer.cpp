@@ -60,11 +60,33 @@
 #include "vtr_math.h"
 #include <algorithm>
 #include <fstream>
+#include <iomanip>
 #include <unordered_map>
 #include <unordered_set>
 
 // Norns III (Q-N1b): true while the oracle grows a trial cluster; try_grow_cluster then returns before finalizing it.
 static bool g_norns_trial = false;
+
+// Norns III (Q-N5): spare-room rule. Number of qualified clusters committed so far, and the log-only dump stream.
+static unsigned long long g_spare_qualified = 0;
+static std::ofstream g_spare_dump_out;
+
+// BLEs (instances of the pb_type "fle") used in a logic cluster and the number the cluster holds; false for a cluster without fle (io, memory, mult).
+static bool norns_count_ble(const t_pb* pb, int& used, int& cap) {
+    if (pb == nullptr || pb->child_pbs == nullptr || pb->pb_graph_node == nullptr) return false;
+    const t_mode& md = pb->pb_graph_node->pb_type->modes[pb->mode];
+    for (int i = 0; i < md.num_pb_type_children; i++) {
+        if (std::string(md.pb_type_children[i].name) == "fle") {
+            cap = md.pb_type_children[i].num_pb;
+            used = 0;
+            for (int j = 0; j < cap; j++) {
+                if (!pb->child_pbs[i][j].name.empty()) used++;
+            }
+            return true;
+        }
+    }
+    return false;
+}
 
 namespace {
 
@@ -141,6 +163,12 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
 
     // Check whether the RAM mapper has any groups to guard RAM-specific logic.
     has_ram_groups_ = ram_mapper.num_groups() > 0;
+
+    // Norns III (Q-N5): VPR re-packs (unrelated clustering, balanced block types) when a pack does not fit the device, so do_clustering
+    // can run more than once: the spare-room budget, the counters and the dump start afresh on every call (the dump holds the last pack).
+    g_spare_qualified = 0;
+    norns::spare_stats() = norns::SpareStats();
+    if (g_spare_dump_out.is_open()) g_spare_dump_out.close();
 
     // Calculate the max molecule stats, which is used for gain calculation.
     const t_molecule_stats max_molecule_stats = prepacker.calc_max_molecule_stats(atom_netlist_, arch_.models);
@@ -412,6 +440,13 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
                 oracle.trials, oracle.recheck_mismatch);
     }
 
+    if (norns::spare_bles() > 0 || !norns::spare_dump_file().empty()) {
+        const norns::SpareStats& st = norns::spare_stats();
+        VTR_LOG("Norns spare: s=%d n=%d crit_min=%.4f N=%d logic_clusters=%llu qualified=%llu closed_at_limit=%llu overshoot=%llu ble_total=%llu\n", norns::spare_bles(),
+                norns::spare_clusters(), norns::spare_crit_min(), st.n_ble, st.logic_clusters, st.qualified, st.closed_at_limit, st.overshoot, st.ble_total);
+        if (g_spare_dump_out.is_open()) g_spare_dump_out.flush();
+    }
+
     if (norns_refresh_k > 0) {
         VTR_LOG("Norns refresh: k=%d refreshes=%llu time=%.3f s\n", norns_refresh_k, norns::refresh_stats().refreshes, norns::refresh_stats().seconds);
     }
@@ -494,6 +529,27 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
                                                                       num_used_type_instances,
                                                                       mutable_device_ctx);
 
+    // Norns III (Q-N5): is this a logic cluster that keeps spare BLEs? Stock (s = 0, no dump): nothing below runs.
+    int norns_used = 0, norns_cap = 0;
+    bool norns_logic = false, norns_qualified = false, norns_stopped = false;
+    int norns_limit = 0; // N - s for a qualified cluster, else 0
+    float norns_seed_crit = 0.f;
+    if (!g_norns_trial && (norns::spare_bles() > 0 || !norns::spare_dump_file().empty())) {
+        norns_logic = norns_count_ble(cluster_legalizer.get_cluster_pb(legalization_cluster_id), norns_used, norns_cap);
+        if (norns_logic) {
+            if (pre_cluster_timing_manager_.is_valid()) {
+                for (AtomBlockId blk : prepacker.get_molecule(seed_mol_id).atom_block_ids) {
+                    if (blk.is_valid()) norns_seed_crit = std::max(norns_seed_crit, pre_cluster_timing_manager_.calc_atom_setup_criticality(blk, atom_netlist_));
+                }
+            }
+            if (norns::spare_bles() > 0 && g_spare_qualified < (unsigned long long)norns::spare_clusters() && norns_seed_crit >= norns::spare_crit_min()
+                && norns_cap - norns::spare_bles() > 0) {
+                norns_qualified = true;
+                norns_limit = norns_cap - norns::spare_bles();
+            }
+        }
+    }
+
     // Create the cluster gain stats. This updates the gains in the candidate
     // selector due to a new molecule being clustered.
     ClusterGainStats cluster_gain_stats = candidate_selector.create_cluster_gain_stats(seed_mol_id,
@@ -525,7 +581,11 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
     //  1) No candidate molecule is proposed.
     //  2) The same candidate was proposed multiple times.
     int num_repeated_molecules = 0;
-    while (candidate_mol_id.is_valid() && num_repeated_molecules < max_num_repeated_molecules) {
+    if (norns_qualified) {
+        norns_count_ble(cluster_legalizer.get_cluster_pb(legalization_cluster_id), norns_used, norns_cap);
+        norns_stopped = norns_used >= norns_limit; // the seed alone fills the allowance
+    }
+    while (candidate_mol_id.is_valid() && num_repeated_molecules < max_num_repeated_molecules && !norns_stopped) {
         // Try to cluster the candidate molecule into the cluster.
         bool success = try_add_candidate_mol_to_cluster(candidate_mol_id,
                                                         legalization_cluster_id,
@@ -542,6 +602,14 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
                                                                            legalization_cluster_id,
                                                                            cluster_legalizer,
                                                                            attraction_groups);
+            // Norns III (Q-N5): a qualified cluster closes once it holds N - s BLEs.
+            if (norns_qualified) {
+                norns_count_ble(cluster_legalizer.get_cluster_pb(legalization_cluster_id), norns_used, norns_cap);
+                if (norns_used >= norns_limit) {
+                    norns_stopped = true;
+                    continue; // the loop condition ends the growth
+                }
+            }
         } else {
             // If the last candidate was not clustered successfully, update the
             // gains in the candidate selector accordingly.
@@ -590,6 +658,34 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
 
     // Norns III (Q-N1b): a trial cluster is read and destroyed by the oracle, not finalized.
     if (g_norns_trial) return legalization_cluster_id;
+
+    // Norns III (Q-N5): bookkeeping and the log-only dump of the committed logic cluster.
+    if (norns_logic) {
+        norns_count_ble(cluster_legalizer.get_cluster_pb(legalization_cluster_id), norns_used, norns_cap);
+        norns::SpareStats& st = norns::spare_stats();
+        st.n_ble = norns_cap;
+        st.logic_clusters++;
+        st.ble_total += (unsigned long long)norns_used;
+        if (norns_qualified) {
+            st.qualified++;
+            g_spare_qualified++;
+            if (norns_stopped) st.closed_at_limit++;
+            if (norns_used > norns_limit) st.overshoot++;
+        }
+        if (!norns::spare_dump_file().empty()) {
+            if (!g_spare_dump_out.is_open()) {
+                g_spare_dump_out.open(norns::spare_dump_file());
+                if (!g_spare_dump_out) VPR_FATAL_ERROR(VPR_ERROR_PACK, "Cannot open --norns_spare_dump file '%s'", norns::spare_dump_file().c_str());
+            }
+            g_spare_dump_out << st.logic_clusters << '\t' << std::setprecision(9) << norns_seed_crit << '\t' << (norns_qualified ? 1 : 0) << '\t' << norns_used;
+            for (PackMoleculeId mol_id : cluster_legalizer.get_cluster_molecules(legalization_cluster_id)) {
+                for (AtomBlockId blk : prepacker.get_molecule(mol_id).atom_block_ids) {
+                    if (blk.is_valid()) g_spare_dump_out << '\t' << atom_netlist_.block_name(blk);
+                }
+            }
+            g_spare_dump_out << '\n';
+        }
+    }
 
     // After the cluster has been fully created, update internal structures
     // to improve the gain calculation.
