@@ -4,7 +4,7 @@
 
 OUT_ROOT holds netlists/ (symlink to the keep sweep), order.json, arch/<design>.xml and prep.json (q5_prep.py). Per design and seed:
 setting a = E10 base flow (minimum-width search; each arm measured at its own Wmin), then setting b = the same arms at the fixed
-W = ceil(1.2 x Wmin of the stock arm of setting a, same design and seed). One placers_main.py process per run, so the resume key is the run.
+W = ceil(1.2 x Wmin of the stock arm, rounded up to even of setting a, same design and seed). One placers_main.py process per run, so the resume key is the run.
 Guards before each design: /mnt/c free >= 15 GB, weekly meter < 100. Resumable; nothing is deleted.
 """
 import argparse, json, math, os, re, subprocess, sys
@@ -31,7 +31,7 @@ def one(root, label, d, seed, extra, prep):
     work = root / "vpr" / label
     env = dict(os.environ, NORNS_RUNS=str(root / "netlists" / "base"), NORNS_ARCH=str(root / "arch" / f"{d}.xml"), NORNS_DATA=str(root / "data"), NORNS_LOCK=LOCK)
     argv = [sys.executable, str(HERE / "placers_main.py"), "--work", str(work), "--tag", label, "--designs", d, "--seeds", str(seed), "--arms", "vpr_sa",
-            "--odin-meta", str(root / "netlists" / "base" / d / "netlist" / "odin-meta.json"), "--vpr-extra", extra]
+            "--redo-failed", "--odin-meta", str(root / "netlists" / "base" / d / "netlist" / "odin-meta.json"), "--vpr-extra", extra]
     rc = subprocess.run(argv, env=env).returncode
     return rc
 
@@ -74,7 +74,7 @@ def main():
             if w is None:
                 print(f"{d} s{seed}: stock Wmin unknown, setting b skipped", flush=True)
                 continue
-            W = math.ceil(1.2 * w)
+            W = 2 * math.ceil(1.2 * w / 2)  # unidirectional routing needs an even width (VPR check_setup)
             for arm, extra in arms.items():
                 rc = one(root, f"q5b-{arm}", d, seed, f"{extra} --route_chan_width {W}", prep)
                 print(f"{d} s{seed} b-{arm} W={W} rc {rc}", flush=True)

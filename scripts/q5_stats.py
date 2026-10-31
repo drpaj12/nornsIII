@@ -37,6 +37,7 @@ def measures(rd, mt):
     m["precpd"] = float(p.group(1)) if p else 0.0
     w = re.search(r"Best routing used a channel width factor of (\d+)\.", t)
     m["wmin"] = float(w.group(1)) if w else 0.0
+    m["refit"] = float(len(re.findall(r"Packing failed to fit on device", t)))
     g = re.search(r"FPGA sized to (\d+) x (\d+)", t)
     m["grid"] = [int(g.group(1)), int(g.group(2))] if g else None
     sp = re.search(r"Norns spare: s=(\d+) n=(\d+) crit_min=\S+ N=(\d+) logic_clusters=(\d+) qualified=(\d+) closed_at_limit=(\d+) overshoot=(\d+) ble_total=(\d+)", t)
@@ -118,7 +119,8 @@ def main():
                     if m is None:
                         txt = (rd / "vpr.out").read_text(errors="replace") if (rd / "vpr.out").is_file() else ""
                         err = re.findall(r"^.*(?:Error|error).*$", txt, re.M)[:2]
-                        failed.append({"setting": st, "arm": arm, "design": d, "seed": s, "error": " | ".join(e.strip()[:200] for e in err)})
+                        fit = bool(re.search(r"fit|too small|Not enough", " ".join(err) + " " + txt[-3000:]))
+                        failed.append({"setting": st, "arm": arm, "design": d, "seed": s, "fit_failure": fit, "error": " | ".join(e.strip()[:200] for e in err)})
                         continue
                     m["grid_ok"] = m["grid"] == prep[d]["grid"]
                     data[(st, arm, d, s)] = m
@@ -126,7 +128,8 @@ def main():
                         ms = mech_share(rd)
                         if ms:
                             mech[(arm, d, s)] = ms
-    bad = {(f["setting"], f["arm"], f["design"]) for f in failed}
+    bad = {(f["setting"], f["arm"], f["design"]) for f in failed if not f["fit_failure"]}
+    fitfail = {(f["setting"], f["arm"], f["design"]) for f in failed if f["fit_failure"]}
     res = {"failed": failed, "settings": {}, "n_runs": len(data), "grid_mismatch": [f"{k}" for k, v in data.items() if not v["grid_ok"]], "prep": prep}
     rnd = random.Random(BOOT_SEED)
     for st in SETTINGS:
@@ -142,7 +145,13 @@ def main():
                           if (st, arm, d, s) in data and (st, "stock", d, s) in data and data[(st, "stock", d, s)][m] > 0 and data[(st, arm, d, s)][m] > 0]
                     if rr:
                         ratios[m][d] = rs.geomean(rr)
+            worst = {m: max(ratios[m].values()) for m in METRICS + DESCR if ratios[m]}
+            for (st2, ar2, d) in sorted(fitfail):       # a design that does not fit the fixed grid is a loss: the worst ratio observed for each metric
+                if st2 == st and ar2 == arm and (st, "stock", d) not in bad:
+                    for m in worst:
+                        ratios[m][d] = worst[m]
             S["per_design"][arm] = ratios
+            S.setdefault("fit_failed", {})[arm] = sorted(d for (st2, ar2, d) in fitfail if st2 == st and ar2 == arm)
             A = {"n_designs": len(ratios["cpd"]), "pooled": {}, "suites": {}, "schabas": {}}
             for m in METRICS + DESCR:
                 v = list(ratios[m].values())
