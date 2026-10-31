@@ -60,6 +60,7 @@
 #include "vtr_math.h"
 #include <algorithm>
 #include <fstream>
+#include <iomanip>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -162,6 +163,12 @@ GreedyClusterer::do_clustering(ClusterLegalizer& cluster_legalizer,
 
     // Check whether the RAM mapper has any groups to guard RAM-specific logic.
     has_ram_groups_ = ram_mapper.num_groups() > 0;
+
+    // Norns III (Q-N5): VPR re-packs (unrelated clustering, balanced block types) when a pack does not fit the device, so do_clustering
+    // can run more than once: the spare-room budget, the counters and the dump start afresh on every call (the dump holds the last pack).
+    g_spare_qualified = 0;
+    norns::spare_stats() = norns::SpareStats();
+    if (g_spare_dump_out.is_open()) g_spare_dump_out.close();
 
     // Calculate the max molecule stats, which is used for gain calculation.
     const t_molecule_stats max_molecule_stats = prepacker.calc_max_molecule_stats(atom_netlist_, arch_.models);
@@ -670,7 +677,7 @@ LegalizationClusterId GreedyClusterer::try_grow_cluster(PackMoleculeId seed_mol_
                 g_spare_dump_out.open(norns::spare_dump_file());
                 if (!g_spare_dump_out) VPR_FATAL_ERROR(VPR_ERROR_PACK, "Cannot open --norns_spare_dump file '%s'", norns::spare_dump_file().c_str());
             }
-            g_spare_dump_out << st.logic_clusters << '\t' << norns_seed_crit << '\t' << (norns_qualified ? 1 : 0) << '\t' << norns_used;
+            g_spare_dump_out << st.logic_clusters << '\t' << std::setprecision(9) << norns_seed_crit << '\t' << (norns_qualified ? 1 : 0) << '\t' << norns_used;
             for (PackMoleculeId mol_id : cluster_legalizer.get_cluster_molecules(legalization_cluster_id)) {
                 for (AtomBlockId blk : prepacker.get_molecule(mol_id).atom_block_ids) {
                     if (blk.is_valid()) g_spare_dump_out << '\t' << atom_netlist_.block_name(blk);
