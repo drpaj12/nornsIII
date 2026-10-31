@@ -209,3 +209,25 @@ Note on signs: a positive "win" for the endpoint rows means fewer near-critical 
 * Wmin in (b) for the stock arm is per seed; arms share W per (design, seed). The unroutable cases above leave the design out for that arm.
 * Duplication (second half of Schabas) not built, as briefed. Only s = 2, 4.
 * Pack time rises; VPR's re-pack with unrelated clustering is part of the arm when the first pack does not fit (45 of 102 and 42 of 105 runs); not separated from the spare rule.
+
+## Controller review note (2026-10-30): fit vs re-pack split
+
+VPR re-packed with unrelated clustering in 45 of 102 s = 2 runs and 42 of 105 s = 4 runs (setting a), so the
+controller split the per-design ratios (geomean over seeds, then over designs; computed from
+data/analysis/q5-stats.json, `refit` field) by whether the arm's run kept the loosened pack (fit) or fell back.
+Positive = better than stock.
+
+| setting | arm | runs kept (fit) | designs | post-route CPD | W/L | WL | CLBs used |
+|---|---|---|---|---|---|---|---|
+| a | s = 2 | fit | 19 | -0.71% | 6/11 | -2.59% | -13.75% |
+| a | s = 2 | re-pack | 15 | -1.49% | 6/9 | -1.18% | -3.05% |
+| a | s = 4 | fit | 21 | -2.23% | 5/16 | -3.29% | -20.23% |
+| a | s = 4 | re-pack | 14 | -0.45% | 5/7 | -2.62% | -4.10% |
+| b | s = 2 | fit | 19 | -1.53% | 5/13 | -2.10% | -13.75% |
+| b | s = 2 | re-pack | 15 | -1.35% | 5/8 | -2.32% | -3.05% |
+| b | s = 4 | fit | 21 | -2.81% | 4/16 | -2.75% | -20.23% |
+| b | s = 4 | re-pack | 14 | -0.92% | 6/6 | -1.97% | -4.10% |
+
+The fallback does not explain the loss: runs that kept the loosened clustering lose as much or more speed, and the
+re-packed runs have mostly undone the loosening (CLBs within 3 to 4% of stock). The verdicts stand. Exploratory split
+after the result, not in the plan.
