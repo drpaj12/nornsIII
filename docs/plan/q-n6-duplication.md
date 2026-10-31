@@ -80,3 +80,83 @@ Out of scope: sink-side duplication, FF-carrying BLEs, tuning of k, R, distance 
 ## Resume / stop rule
 
 Stop at weekly meter >= 100 or C: below 15G; commit, push, and note the next step here (below) first.
+
+---
+
+# Results (2026-10-30 / 31)
+
+Plan commits 172007f (written before the runs) and 4d225bc (Peter's confirmation). Tool: VPR 3c9a4d23b2 with the Norns overlay (unchanged), private tree `work/norns-vtr-dup`; code
+`scripts/q6_dup.py` (loop), `q6_run.py` (driver), `q6_stats.py`; `tests/test_q6.py`. Data: `data/analysis/q6-stats.json` (ratios, intervals, gate, mechanism). Run outputs `work/q6-out`.
+
+## Plain-English summary
+
+Duplicating critical-path LUTs after placement did not make the designs faster on this flow. The first numbers look good (post-route delay 1.9 to 2.8 percent better than stock when
+the best of up to five rounds is kept), but that is the router's run-to-run noise being selected: when the same chosen netlist and placement are routed again at the fixed width the gain
+disappears and turns into a 0.4 to 0.5 percent loss against stock (95 percent of the interval inside the 2 percent band). Verdict: DISMISSED for both arms, on the unbiased
+(fixed-width re-route) measurement. Schabas's +7.7 percent (duplication stage) is not reproduced.
+
+## What was built (method as built)
+
+* Route (ii) of the plan: netlist-level loop on `--analytical_place --read_flat_place F --ap_full_legalizer flat-recon --ap_detailed_placer none --route --analysis --device spare`
+  (`flat-recon` rebuilds the clusters from the flat placement; atoms at one (x, y, sub-tile) form a cluster, legalized by VPR's cluster legalizer). Round 0 = the unchanged BLIF and the start
+  run's `final.flat_place`; round r copies (or moves) up to k = 4 LUTs chosen from the previous round's 1000-path report and re-runs. R = 4. The start placement of the dup arm is the Q-N5 stock run
+  (same seed), of the spare arm the Q-N5 s = 2 run. Candidate model, cost, source-side-only copies as planned. Targets: any clb tile of the fixed grid with an empty `fle`, existing clusters
+  (from `.net`/`.place`) or empty tiles (from the fixed layout), at any distance (see deviations).
+* Equivalence: ABC `cec` (`yosys-abc`) of every duplicated BLIF against the original, before placement: 219 of 219 netlists with a copy equivalent, 0 failures; 36 rounds were plain moves only
+  (BLIF unchanged, noted).
+* Setting a: the loop runs in the E10 min-width flow; the best round (lowest post-route CPD, ties earlier) is kept. Setting b: the paired baseline (round 0) and the best round are
+  each re-routed fresh at W = 2 x ceil(1.2 x Wmin(Q-N5 stock arm, same design and seed) / 2).
+
+## Gate
+
+Zero duplications does NOT reproduce stock bit for bit: the flat-recon rebuild assigns atoms to the pb tree differently, so the clusters (CLBs equal on 48 of 105 dup runs) and the routing differ
+slightly. Round-0 / original start run, dup arm (105 runs): post-route CPD geomean 1.0045 (per-run range 0.70 to 1.24, i.e. router noise), WL 0.9964; grid identical on 105 of 105.
+Spare arm: CPD 0.9946, WL 1.0014 (99 runs; 6 spare round-0 runs failed to legalize and are excluded). A re-implementation step is therefore unavoidable, and every dup ratio is
+reported against BOTH the paired baseline (round 0, same flow) and the original Q-N5 stock run.
+
+## CAD view (geomean percent win, W/L/T over designs, tie within 0.5 percent; 35 designs, 15 VTR + 20 MCNC; 90 percent bootstrap)
+
+Against the original stock run (the claim of the hypothesis), setting b (fixed W, fresh route of the chosen result; the unbiased one):
+
+| arm | post-route CPD | VTR / MCNC | endpoints >=0.90 / 0.95 / 0.99 | WL | CLBs used |
+|---|---|---|---|---|---|
+| dup | -0.50% [-1.14, +0.10] W/L/T 11/20/4 | -0.39% 5/8/2 / -0.59% 6/12/2 | -7.7 / -4.0 / +3.1 | -0.13% 10/17/8 | -1.13% 0/20/15 |
+| dup + spare | -0.44% [-1.49, +0.65] W/L/T 12/20/2 | -1.05% 3/11/1 / +0.04% 9/9/1 | -1.3 / -10.2 / -31.0 | -2.48% 5/26/3 | -10.30% 4/27/3 |
+
+Setting a (E10 flow, best round chosen on the measured result; biased towards a win): dup +1.92% [+0.43, +3.30] 23/7/5 (VTR +0.55%, MCNC +2.94%), WL +0.71%, CLBs -1.13%, Wmin -1.03%;
+dup + spare +2.83% [+1.56, +4.09] 24/9/1 (VTR +0.80%, MCNC +4.40%), WL -1.84%, CLBs -10.30%.
+Against the paired baseline (round 0): a: dup +2.36% [+1.55, +3.21] 19/0/16, spare +3.36% [+2.44, +4.29] 19/0/15; b: dup +0.05% [-0.33, +0.42] 7/5/23, spare +1.06% [+0.54, +1.61] 13/2/19.
+Wirelength and area are costs: WL and CLBs move by about one percent or less for dup, and the spare arm's WL and CLB cost is Q-N5's (the packing), not duplication's.
+Pre-route CPD (placement estimate) is NOT reported: the AP flat-recon flow prints no placement estimate (deviation).
+
+## Strict verdict (rule of the plan, Holm over arms x metrics inside a setting)
+
+* b vs stock: dup DISMISSED (geomean the wrong way, interval inside the 2 percent band); dup + spare DISMISSED.
+* a vs stock: the rule returns POSSIBLY GOOD (dup) and USEFUL (spare). These two values are NOT accepted: the best round is selected on the same noisy post-route number it is then
+  scored on (winner's curse; round 0 is one sample, the best round is the minimum of up to five). Evidence: dup a vs paired baseline +2.36%, the same netlist re-routed at fixed W +0.05%
+  (INCONCLUSIVE by the rule, centred on zero). Registered as INCONCLUSIVE with this explanation.
+* Paired view b: dup + spare vs its own baseline +1.06% (rule: USEFUL), but that baseline is the Q-N5 s = 2 packing, which is itself 1.4% slower than stock; duplication recovers about that
+  loss and no more (vs stock -0.44%).
+
+## Mechanism
+
+* Copies and moves (setting a runs, 105 per arm): dup 180 copies + 115 plain moves, 77 runs with at least one candidate round, 36 runs where a later round beat round 0; stops: no candidate with
+  estimated gain 35, guard (round not better than best) 68, VPR refused 1, rounds done 1. Spare 254 copies + 139 moves, 84 runs with a round, 35 improved; guard 78, no candidate 17, round-0
+  failure 6, refused 4. So most runs stop because the first round does not improve the routed delay.
+* How much the router keeps: the model-estimated gain per copy (0.02 to 0.3 ns) is below the per-run noise of the routed delay (round-0 / original ratios 0.70 to 1.24 per run), and the
+  fresh re-route removes the apparent gain; that is what the a-to-b drop of 2.3 points shows.
+* Near-critical endpoints rise rather than fall with duplication in setting a (more connections) and are flat at b.
+
+## Deviations from the plan (all before looking at verdicts)
+
+1. Target distance limit 3 was dropped (a probe on alu4 found no candidate with it); any clb tile with room qualifies, as in Schabas.
+2. Congestion guard: replaced by "stop and keep the best when a round is not better" (Eq. 8 needs all connection criticalities, not exported).
+3. Selection loop runs once per design, seed and arm under setting a; setting b re-routes the chosen result (and the baseline) at the fixed W, it does not repeat the loop.
+4. Pre-route CPD not available in the flat-recon flow (not reported). Cost is the estimated timing gain with the distance tie-break (no annealer Eq. 6 offline).
+5. The gate is approximate (above); the paired baseline is round 0.
+6. Source-side copies only; LUT+FF BLEs not copied; 1000-path reports hold few paths on small designs (8 on alu4), limiting candidates.
+7. The a-setting rule verdicts are overridden to INCONCLUSIVE in the register for the selection-bias reason above.
+
+## Next step (if this line is continued)
+
+Select by the placement-time model only (no routed number) or on one seed and score on the other two; add sink-side copies.

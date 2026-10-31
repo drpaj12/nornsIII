@@ -28,7 +28,7 @@ def run_measures(d, mimir_timing):
     rec = json.loads((d / "mimir-run.json").read_text()) if (d / "mimir-run.json").is_file() else {}
     if cpd is None or wl is None or clbs is None or not rec.get("ok", False):
         return None
-    m = {"cpd": float(cpd), "wl": float(wl), "clbs": float(clbs), "pack_s": float(pk), "total_s": float(rec.get("time_s") or 0)}
+    m = {"cpd": float(cpd), "wl": float(wl), "clbs": float(clbs), "pack_s": float(pk or 0), "total_s": float(rec.get("time_s") or 0)}
     r = re.search(r"Norns refresh: k=(\d+) refreshes=(\d+) time=([\d.]+)", t)
     m["refreshes"], m["refresh_s"] = (int(r.group(2)), float(r.group(3))) if r else (0, 0.0)
     rp = d / "report_timing.setup.rpt"
