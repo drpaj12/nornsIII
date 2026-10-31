@@ -33,10 +33,10 @@ Ordered so that every term depends only on terms above it. `defined at` is the l
 | affinity packing (Norns packer) | A copy of VPR's packer with a bonus beta for adding atoms of the same word or module to a CLB. | n-background.tex:38 | n-background.tex:38 | packing; word; module; VPR; CLB | `affinity\|\\beta\|Norns packer` |
 | purity | The share of a CLB's labelled atoms that carry its most common word (or module). | n-background.tex:39 | n-background.tex:39 | CLB; word | `\bpurity\b` |
 | split factor | How many CLBs a word spans divided by the fewest it could span. | n-background.tex:40 | n-background.tex:40 | word; CLB | `split factor` |
-| known-optimum yardstick | Designs built from blocks that each fill one CLB, so the intended clustering is known by construction. | n-intro.tex:15 | n-intro.tex:15 | - | `yardstick\|by construction\|known grouping\|known clustering\|known arm\|\\emph\{known\}` |
+| known-optimum yardstick | Designs built from blocks that each fill one CLB, so the intended clustering is known by construction. | n-intro.tex:17 | n-intro.tex:17 | - | `yardstick\|by construction\|known grouping\|known clustering\|known arm\|\\emph\{known\}` |
 | foreign clustering | A clustering that VPR did not make (METIS), used so VPR is not graded on its own answer. | n-background.tex:42 | n-background.tex:42 | cluster / clustering; known-optimum yardstick | `foreign` |
 | alignment | How closely the HDL words match the yardstick's blocks: 1 is the leak, 0 means words span about ten blocks. | n-background.tex:43 | n-background.tex:43 | word; known-optimum yardstick | `alignment` |
-| leak | A gain that exists only because the input file already equals the answer. | n-intro.tex:16 | n-intro.tex:16 | - | `\bleak` |
+| leak | A gain that exists only because the input file already equals the answer. | n-intro.tex:18 | n-intro.tex:18 | - | `\bleak` |
 | pairing class | Class of a pair of atoms in one CLB: series-critical, series-noncritical, shared-input, orthogonal, filler. | n-background.tex:45 | n-background.tex:45 | CLB | `pairing class\|series-critical\|series-noncritical\|shared-input` |
 | critical heap | The set of atoms of criticality at least 0.90, which the greedy packer takes first. | n-background.tex:46 | n-background.tex:46 | near-critical; criticality; packing | `critical heap` |
 | pack-time heap | The critical heap as the packer sees it: pack-time criticality at least 0.90. | n-background.tex:47 | n-background.tex:47 | critical heap; packing | `pack-time heap` |
