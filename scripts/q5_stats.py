@@ -119,7 +119,7 @@ def main():
                     if m is None:
                         txt = (rd / "vpr.out").read_text(errors="replace") if (rd / "vpr.out").is_file() else ""
                         err = re.findall(r"^.*(?:Error|error).*$", txt, re.M)[:2]
-                        fit = bool(re.search(r"fit|too small|Not enough", " ".join(err) + " " + txt[-3000:]))
+                        fit = bool(re.search(r"fit|too small|Not enough|Failed to find device", " ".join(err) + " " + txt[-3000:]))
                         failed.append({"setting": st, "arm": arm, "design": d, "seed": s, "fit_failure": fit, "error": " | ".join(e.strip()[:200] for e in err)})
                         continue
                     m["grid_ok"] = m["grid"] == prep[d]["grid"]
