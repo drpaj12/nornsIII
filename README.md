@@ -1,5 +1,7 @@
 # The Norns III
 
+**Status: closed (negative results), 2026-10-31.** See `docs/plan/STATUS.md` for the experiments, archive locations and how to reopen.
+
 The placement experiment of Yggdrasil III: does seeding VPR's simulated anneal from netlist
 clusters (Loki III L2) or from the provenance hierarchy (Odin III) improve placement, and how
 hot can the anneal start before it destroys the seed?

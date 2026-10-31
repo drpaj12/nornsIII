@@ -1,0 +1,39 @@
+\section{Summary of What Was Tried}
+\label{sec:summary}
+
+Table~\ref{tab:tried} lists every change to packing or placement that this work tried in the hope of a deployable gain, and the one oracle that bounds what such a change could reach. It is read as a CAD paper is read. Each cell is the geometric-mean percent win over the stock flow (positive is better; a ratio of 1.007 stock over arm is a 0.7\% win) and, in brackets, the wins, losses and ties over designs (a tie is within 0.5\%). The columns are in the order speed (post-route critical-path delay, CPD), wirelength (WL), area (CLBs used). The last column is the strict register verdict (a positive geomean whose interval touches 1 is \textsc{inconclusive}, not \textsc{dismissed}). Every number is a row of the register (\texttt{docs/paper/hypotheses.md}).
+
+\begin{table*}[t]
+\centering
+\caption{Every packing or placement change tried, with its CAD headline (geomean percent win; wins/losses/ties over designs in brackets; ``n/t'' = not tabulated in the register, the ratio is given instead). Real designs are the 35 of E10 (15 VTR Verilog, 20 MCNC) unless the row says 33 (round-9 known-optimum designs).}
+\label{tab:tried}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{3.9cm}p{2.9cm}p{2.9cm}p{2.9cm}p{3.6cm}@{}}
+\toprule
+Change (register ID) & Speed (CPD) & Wirelength & Area (CLBs) & Verdict \\
+\midrule
+Seeding the anneal from the designer's grouping (R1a, 15 designs) & ratio 0.970 to 1.004 (n/t) & ratio 0.997 to 1.029, pooled 1.009 (n/t) & channel width ratio 0.947 to 0.994 (n/t) & \textsc{inconclusive} (no gain in WL; no test) \\
+HDL-aware packer, realistic registers (H22$'$, 56 mesh/tree designs) & 33 to 41 percent worse (ratio 1.33 to 1.41, n/t) & 65 to 150 percent worse (ratio 1.652 to 2.505, n/t) & ratio 0.946 to 1.033 (n/t) & \textsc{dismissed} at every width \\
+Refresh criticality, every cluster (H-refresh k=1) & $-0.5$ (n/t; ratio 1.005 [0.990, 1.021]) & $-0.3$ (n/t) & $-0.2$ (n/t) & \textsc{inconclusive} \\
+Refresh criticality, every 8th cluster (k=8) & $-0.7$ (n/t; ratio 1.007) & $-0.4$ (n/t) & $-0.5$ (n/t) & \textsc{dismissed} \\
+Seed rule from the answer key (HS0, 33 designs) & $-0.8$ (n/t) & $+0.7$ (n/t) & $+0.7$ [18/13/2] & \textsc{inconclusive} \\
+2-hop gain term, $w=0.1$ (H-2hop) & $+0.7$ [17/14/4] & $-0.2$ [15/16/4] & $-0.6$ [9/14/12] & \textsc{inconclusive} \\
+2-hop gain term, $w=0.25$ & $-1.9$ [15/17/3] & $-1.0$ [13/17/5] & $+0.1$ [12/11/12] & \textsc{dismissed} \\
+Spare room $s=2$, E10 flow (H-spare-2) & $-1.4$ [12/21/2] & $-2.2$ [7/22/6] & $-10.8$ [5/27/3] & \textsc{inconclusive} \\
+Spare room $s=2$, fixed width & $-1.6$ [10/21/3] & $-2.3$ [6/27/1] & $-10.7$ [5/26/3] & \textsc{dismissed} \\
+Spare room $s=4$, E10 flow & $-1.5$ [10/23/2] & $-3.1$ [6/26/3] & $-16.5$ [4/30/1] & \textsc{dismissed} \\
+Spare room $s=4$, fixed width & $-2.1$ [10/20/3] & $-2.6$ [6/23/4] & $-16.8$ [4/28/1] & \textsc{dismissed} \\
+Duplicate critical LUTs after placement, fixed width (H-dup-W) & $-0.5$ [11/20/4] & $-0.1$ [10/17/8] & $-1.1$ [0/20/15] & \textsc{dismissed} \\
+Duplication after $s=2$ packing, fixed width (H-dup-spare-W) & $-0.4$ [12/20/2] & $-2.5$ [5/26/3] & $-10.3$ [4/27/3] & \textsc{dismissed} \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Bounds, not deployable (they use the answer key)}} \\
+True seed oracle (Q-N1b, 33 designs) & $-0.7$ [13/20/0] & $+2.8$ [25/8/0] & $+1.2$ [23/6/4] & \textsc{possibly good} in WL and area, \textsc{inconclusive} in speed; strong form \textsc{dismissed} \\
+HDL-aware packer, registers equal blocks (H33, 14 designs) & ratio 0.841 (n/t) & ratio 0.669 (n/t) & ratio 0.870 (n/t) & \textsc{useful} as an upper bound; a leak \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Three things stand out. First, no deployable change wins on speed: the best geomean delay win is 0.7\% (H-2hop at $w=0.1$), with 17 wins against 14 losses, inside the noise. Second, the changes that move area or wire move them the wrong way (spare room raises CLBs by 11 to 17\%). Third, the two selections that looked like speed gains were selections: the duplication result of $+1.9$ and $+2.8$\% (setting a) is the best of up to five routed rounds scored on the number it is chosen on, and the same netlists routed afresh are 0.5 and 0.4\% slower; the original HDL-aware gain (WL 0.902 of stock) was a leak. Table~\ref{tab:tried} does not list the sweep of VPR options (E10), which changes tool settings and not the packer; its eight area and speed effects are in Section~\ref{sec:e10}.
+
+What was measured, not tried, is the other half of the picture (all in the register). On 33 real designs made into known-optimum yardsticks (H38) the stock packer uses 1.108 times the proven lower bound on CLBs [1.080, 1.149], and 1.265 times the wire and 1.026 times the delay of the known clustering over the 33 designs (delay \textsc{inconclusive}). Its decision log (Q-N2) puts 60\% of the CLB gap in picks of an atom of another known cluster while the right atom was queued, with a strictly lower gain in 99.8\% of them; 11\% comes from clusters closed with free slots. No C-free feature ranks the right atom well once the construction's dummy cells are deleted (Q-N3: AUC 0.687 [0.662, 0.711] with them, 0.612 without), and a seed oracle rebuilds only 25.5\% of known clusters exactly and closes 11\% of the log gap (Q-N1b). The measured room is real in CLBs and wire; what a rule that sees only the circuit can reach of it is, on these experiments, within noise.

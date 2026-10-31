@@ -1,5 +1,6 @@
 # The Norns III documentation
 
+- [Status: closed 2026-10-31](plan/STATUS.md): experiments, PRs, archive locations, how to reopen.
 - [Experiment plan](plan/norns-experiment.md): seeds, injection, the crossover sweep,
   checkpointing, metrics.
 - [VTR interfaces](plan/vtr-interfaces.md): the pinned VTR interfaces with source locations.

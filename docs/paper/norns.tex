@@ -28,8 +28,8 @@
         frame=single, framesep=2pt, xleftmargin=3pt, xrightmargin=3pt,
         aboveskip=4pt, belowskip=4pt}
 
-\title{The Norns~III: Packing with the HDL's Structure,\\
-a Known-Optimum Yardstick, and the Leak It Found}
+\title{The Norns~III: Does Keeping the HDL's Structure Help FPGA Packing?\\
+A Known-Optimum Yardstick and Negative Results}
 
 \author{\IEEEauthorblockN{Peter Jamieson}
 \IEEEauthorblockA{Electrical and Computer Engineering, Miami University\\
@@ -40,7 +40,7 @@ jamiespa@miamioh.edu}}
 \maketitle
 
 \begin{abstract}
-Before an FPGA design is placed on a chip, the grouping the designer wrote down in the source is mostly lost. This paper tests, one hypothesis and one experiment at a time, whether keeping it helps. It contributes (1) a packer, a copy of VPR's own, with a bonus for keeping the pieces of one HDL register together; (2) a yardstick of designs built so that the best grouping is known, which shows that the standard packer uses 22\% more wire than the known grouping over all topologies and 49\% more on meshes and trees; and (3) a finding about method. The packer's first measured gain (wirelength 0.902 of stock) was a leak: the input file already equalled the answer. Re-run with registers that cut across the blocks, the packer used 1.65 to 2.51 times the wire of the standard packer at every register width we tried, and with perfectly aligned registers it used 0.669 of it. Near-critical connections are kept inside tiles more often than connections in general, on 9 designs. A sweep of VPR options adds eight area and speed effects. Starting placement from the designer's grouping, the idea this work began with, has no measured gain. The packer's own idea of which connections are critical is mostly stale: 81\% of its picks on critical connections hold nothing that is critical after routing, and refreshing the criticality while packing did not lower the delay. The yardstick designs are too regular to show the true gap (their Rent exponent is 0.08, against 0.56 for real designs), so a second yardstick is built from real designs. Speed is judged by the critical-path delay and by near-critical paths; power is not measured. Of 64 hypotheses, 14 are useful, 9 possibly good, 23 inconclusive and 18 dismissed; nine further rows are measurements and ten ideas are untested.
+Before an FPGA design is placed on a chip, the grouping the designer wrote down in the source is mostly lost, and the packer that groups logic into tiles uses only local information about the circuit. This paper asks whether keeping that grouping, or any other cheap change to packing and placement, buys a deployable gain in speed, wire or area, and closes with a negative answer. We measured the room first. A yardstick of designs built so that the best grouping is known shows that the standard packer uses 22\% more wire than the known grouping over all topologies and 49\% more on meshes and trees, and on 33 real designs made into known-optimum yardsticks it needs 1.108 times the proven lower bound on CLBs and 1.265 times the wire (delay inconclusive). Its decision log puts 60\% of the CLB gap in one kind of pick: an atom of another cluster taken while the right one was queued. We then tried every change we could define from local, answer-free information. An HDL-aware packer first showed a 0.902 wirelength ratio, which was a leak (the input equalled the answer); with realistic registers it used 65\% to 150\% more wire. Refreshing criticality while packing, a seed rule, a two-hop gain term, Schabas-style spare room and duplication after placement each gave a geomean speed change between $-2.1\%$ and $+0.7\%$ with wins and losses nearly even (best: 17 wins, 14 losses, 4 ties), and none beat noise; the two apparent speed gains were selections on the number they were scored on. A true seed oracle that uses the answer key improves wire by 2.8\% and CLBs by 1.2\% but not speed, and rebuilds only 25.5\% of the known clusters. The reading is that modern APPack is near what local information reaches, and that the 2003 results of Schabas and Brown do not replicate on VTR~9. Threats: the yardstick is optimal for area and cut, not timing; one architecture and 35 designs. Of 77 register hypotheses, 15 are useful, 10 possibly good, 27 inconclusive and 25 dismissed; 11 further rows are measurements and ten ideas are untested and parked.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -56,6 +56,8 @@ FPGA packing, placement, provenance, known-optimum benchmarks, VTR
 \input{n-method}
 
 \input{n-experiments}
+
+\input{n-summary}
 
 \input{n-discussion}
 
