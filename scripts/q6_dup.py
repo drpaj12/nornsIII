@@ -77,6 +77,8 @@ class Blif:
         i = 0
         while i < len(raw):
             ln = raw[i]
+            if ln.startswith(".end"):
+                break   # only the first (top) model is read
             if ln.startswith(".names"):
                 j = i + 1
                 while j < len(raw) and not raw[j].startswith("."):
@@ -97,24 +99,22 @@ class Blif:
 
 
 def edit_blif(src, edits, dst):
-    """edits: [(s, snew, q)]: copy the .names of s as snew and make q read snew in place of s. Returns the text written."""
+    """edits: [(s, snew, q)]: copy the .names of s as snew (inserted right after s, inside the same .model) and make q read snew in place of s."""
     b = Blif(src)
     lines = list(b.lines)
-    add = []
+    ins = []
     for s, snew, q in edits:
         a, e = b.names[s]
         blk = list(b.lines[a:e])
         h = blk[0].split()
         h[-1] = snew
         blk[0] = " ".join(h)
-        add += blk
+        ins.append((e, blk))
         qa, qe = b.names[q]
         hq = lines[qa].split()
-        hq = [snew if (t == s and k < len(hq) - 1) else t for k, t in enumerate(hq)]
-        lines[qa] = " ".join(hq)
-    # place the copies before .end
-    end = max(i for i, l in enumerate(lines) if l.startswith(".end"))
-    lines[end:end] = add
+        lines[qa] = " ".join(snew if (t == s and k < len(hq) - 1) else t for k, t in enumerate(hq))
+    for e, blk in sorted(ins, key=lambda x: -x[0]):
+        lines[e:e] = blk
     Path(dst).write_text("\n".join(lines) + "\n")
 
 
