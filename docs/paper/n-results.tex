@@ -1,12 +1,41 @@
 \section{Results}
 \label{sec:results}
 
-This section gives the results as they stand at the close of the work. Each result is stated as a CAD paper states it: the geometric-mean percent win, with the wins, losses and ties over designs where the register has them, and then the strict register verdict (Section~\ref{sec:verdicts}). The full record of each experiment, in time order, with its hypothesis, experiment, result, verdict and pull request, is in Appendix~\ref{sec:records}; every row of the register is in Appendix~\ref{sec:log}.
+Each result below is one structured argument with the same seven parts, in this order: the \textbf{Hypothesis} (what we claim), its \textbf{Implication} (why it matters if true), the \textbf{Experiment} (what is run, on which data, against what), the \textbf{Methodology} (the measure, the split, the statistics and the stopping rule), the \textbf{Measurements} (the numbers), the \textbf{Interpretation} (what the numbers mean) and the \textbf{Conclusion} with its verdict (Section~\ref{sec:verdicts}). The arguments are ordered so that each builds on the earlier ones: the room that a packer has (Sections~\ref{sec:r-room-s} and~\ref{sec:r-room-r}), where the standard packer loses it (Sections~\ref{sec:r-loses} to~\ref{sec:r-3}), whether the designer's grouping recovers it (Section~\ref{sec:r-packer}), and whether cheap changes to packing and placement do (Sections~\ref{sec:r-e10} to~\ref{sec:r-dup}). Each is stated as a CAD paper states it: the geometric-mean percent win with wins, losses and ties over designs where the register has them, then the strict register verdict. Appendix~\ref{sec:records} gives the full record of each experiment in time order, with the pull request; Appendix~\ref{sec:log} holds every row of the register.
 
-\subsection{How much room a packer has}
-\label{sec:r-room}
+\subsection{Room on constructed designs}
+\label{sec:r-room-s}
 
-The yardstick measures room. Table~\ref{tab:room} gives the standard packer over the known clustering on the two forms of the yardstick. On the 72 synthetic designs the standard packer uses 22\% more wire than the known clustering, and 49\% more on meshes and trees (14 cells), where the designs have most room; on chain and random graphs there is almost none. On the 33 real designs it needs 1.103 times the corrected counting lower bound on CLBs, 1.265 times the wire and 1.026 times the delay of the known clustering, and the own clustering gives it no visible advantage over a foreign one (every self-bias ratio is within 2\%). The delay ratio is \textsc{inconclusive}: the yardstick is optimal for area and cut and not for timing. The room is therefore real in CLBs and wire. Appendices~\ref{sec:e-room} and~\ref{sec:e-real} give the records.
+\hd{Hypothesis} The standard packer needs at least 5\% more CLBs, wire or delay than the known clustering of a constructed design, over all topologies (\emph{H25}) and on meshes and trees (\emph{H32}). Here \emph{H25} and \emph{H32} are the register identifiers of the two claims.
+
+\hd{Implication} If true, there is room for a better packer, and the size of the room says which circuits to study. If false, packing is already near the best grouping and the paper stops.
+
+\hd{Experiment} The 72 synthetic yardstick designs (Section~\ref{sec:i-yardstick}), at the netlist level and, for the 63 kept by the label rule, at the HDL level, and 14 mesh and tree designs of the alignment ladder. Arms: the standard packer and the known clustering handed to the same placer and router. Three VPR seeds.
+
+\hd{Methodology} The measure is the geometric mean over designs of standard over known, for CLBs, routed wirelength and critical-path delay, with a 90\% bootstrap interval and the Holm adjustment. A claim holds when the mean is at least 1.05 and the interval excludes 1. The yardstick is exact for CLB count only (Section~\ref{sec:i-yardstick}).
+
+\hd{Measurements} Table~\ref{tab:room}, first two rows: over 72 designs the ratios are 1.073 (CLB), 1.220 [1.168, 1.275] (wire) and 1.093 (delay); on the 14 mesh and tree designs 1.152, 1.489 [1.394, 1.591] and 1.181. On chains and random graphs the wire ratio is close to 1.0 (Appendix~\ref{sec:e-room}).
+
+\hd{Interpretation} The standard packer uses 22\% more wire than the known grouping on average, and about half as much again on meshes and trees; it has almost no room on chains and random graphs. The synthetic designs have almost no Rent growth (Section~\ref{sec:i-rent}), so this is the gap on regular designs and cannot be read as the gap on real logic.
+
+\hd{Conclusion} There is room on regular designs, concentrated in meshes and trees. \textsc{useful} (Appendix~\ref{sec:e-room}).
+
+\subsection{Room on real designs}
+\label{sec:r-room-r}
+
+\hd{Hypothesis} On real designs made into known-optimum yardsticks, the standard packer needs at least 5\% more CLBs, wire or delay than the known clustering (\emph{H38}), and VPR does relatively better on its own clustering than on a foreign one.
+
+\hd{Implication} If the gap survives on real structure, the room is not an artefact of regular synthetic designs, and a packer change has something real to recover. The self-bias check says whether VPR is being graded on its own answer.
+
+\hd{Experiment} 33 real designs (13 VTR Verilog designs and 20 MCNC circuits), each edited so that a clustering is the proven best for CLB count and a strict local optimum for cut (Section~\ref{sec:i-yardstick-real}); once with VPR's own clustering and once with a METIS clustering; three shuffles and three VPR seeds; arms standard and known.
+
+\hd{Methodology} Geometric mean of standard over known with a 90\% bootstrap interval; CLBs are also compared with the exact counting bound. The rule is the one of Section~\ref{sec:r-room-s}; with fewer than 12 designs no pooled claim is made.
+
+\hd{Measurements} Table~\ref{tab:room}, last two rows. With the own clustering: CLB 1.059 [1.049, 1.071], wire 1.265 [1.223, 1.307], delay 1.026 [1.014, 1.038]. With the foreign clustering: 1.056, 1.287 and 1.042. The standard packer needs 1.103 times the corrected counting lower bound on CLBs. Every self-bias ratio is within 2\%.
+
+\hd{Interpretation} The standard packer needs about 10\% more CLBs than the minimum possible and about 27\% more wire than the known grouping on real designs. VPR gets no visible advantage from its own clustering. The delay ratio is not a claim: the known clustering is optimal for CLB count and cut and not for timing, so the packer may be buying speed with the extra wire.
+
+\hd{Conclusion} The room in CLBs and wire is real on real designs. \textsc{useful}; the delay ratio is \textsc{inconclusive} (Appendix~\ref{sec:e-real}).
 
 \begin{table*}[t]
 \caption{Standard packer over the known clustering (geometric mean over designs; 90\% bootstrap interval where the register has one; below 1 would favour the standard packer). Sources: \code{docs/paper/hypotheses.md} (H25/H19, H32, H38); \code{data/r9/full-summary.json}.}
@@ -25,20 +54,141 @@ Real designs, foreign clustering & 33 & 1.056 [1.046, 1.066] & 1.287 [1.243, 1.3
 \end{tabular}
 \end{table*}
 
-\subsection{Where the standard packer loses}
+\subsection{Where the standard packer loses the room}
 \label{sec:r-loses}
 
-Four measurements place the loss. The decision log of the standard packer (Q-N2) puts 60\% of the CLB gap to the known clustering in one kind of pick, an atom of another known cluster added while a legal member of the right cluster was queued, with a strictly lower queue gain in 99.8\% of them; 11\% comes from clusters closed with free slots. A seed oracle that uses the answer key rebuilds only 25.5\% of the known clusters and closes 11\% of the log gap (Q-N1b), so the gap is in growth (gain and closing), not in seeding. No feature computable from the circuit alone ranks the right atom well once the construction's dummy cells are deleted (Q-N3: AUC 0.687 [0.662, 0.711] with them, 0.612 without). On the timing side, the packer's criticality is computed once before packing, 81\% of its picks on a criticality of at least 0.90 hold nothing that is critical after routing (HP-1), and 98\% of the cuts of near-critical paths are capacity cuts at full clusters (HP-2). Eleven exception HDL patterns, each with a detector and an untested hint, are in Table~\ref{tab:exceptions} (Appendix~\ref{sec:e-pick}). All of these are \textsc{measurement} or \textsc{useful} rows. Appendices~\ref{sec:e-seedoracle},~\ref{sec:e-q2},~\ref{sec:e-q3},~\ref{sec:e-heap} and~\ref{sec:e-pick} give the records.
+\hd{Hypothesis} The CLB gap to the known clustering comes from the growth of a cluster (which atom is added next, and when a cluster is closed), and not from the choice of the first atom of a cluster (\emph{Q-N2}, a measurement, and \emph{Q-N1b}, the seed-oracle test). A feature computed from the circuit alone ranks the right atom above the one the packer picks (\emph{Q-N3}).
+
+\hd{Implication} If the loss is in growth, a better gain term could recover it without any knowledge of the designer's grouping. If it is in seeding, a rule for the first atom would do. If a circuit-only feature ranks the right atom, it is a candidate gain term.
+
+\hd{Experiment} On the 33 real yardstick designs. Q-N2 replays the packer's decision log (264 stock packs) against the known clustering, with no VPR run. Q-N1b gives the packer an oracle that, for each new cluster, tries every atom of the next known cluster as the seed and keeps the one whose growth equals the known cluster; three VPR seeds. Q-N3 scores eight circuit-only features, fitted on 17 tune designs and tested on 16 held-out designs, against VPR's own gain, with and without the yardstick's dummy cells.
+
+\hd{Methodology} Q-N2 assigns each lost CLB slot to the first deviation on its cluster's timeline. Q-N1b reports speed first, then wire and area, as geometric mean win of the oracle over stock with 90\% intervals and wins, losses and ties. Q-N3 uses the pairwise AUC of the right atom against the pick (0.5 is no signal) on held-out designs.
+
+\hd{Measurements} Q-N2: 60\% of the CLB gap (66\% without one design) is a pick of an atom of another known cluster while a legal member of the right cluster was queued, with a strictly lower queue gain in 99.8\% of them; 11\% is clusters closed with free slots. Q-N1b: the oracle rebuilds 25.5\% of the known clusters exactly (mean Jaccard 0.61); it changes delay by $-0.7$\% (13 wins, 20 losses), wire by $+2.8$\% (25 wins, 8 losses) and CLBs by $+1.2$\% (23 wins, 6 losses, 4 ties), and closes 11\% of the log gap. Q-N3: AUC 0.687 [0.662, 0.711] for the best feature (cluster atoms within two hops), falling to 0.612 when the dummy cells are deleted.
+
+\hd{Interpretation} Six of ten CLBs lost are lost by one kind of wrong add, not by bad seeds: an oracle that uses the answer key for the seeds recovers only about a ninth of the gap. The one feature that ranks the right atom does so only weakly, and part of that is an artefact of how the yardstick was built.
+
+\hd{Conclusion} The loss is in growth, not in seeding. Q-N2 and Q-N3 are \textsc{measurement}; Q-N1b is \textsc{possibly good} for wire and area, \textsc{inconclusive} for speed, and its strong form (most clusters rebuilt from one seed) is \textsc{dismissed} (Appendices~\ref{sec:e-seedoracle}, \ref{sec:e-q2} and~\ref{sec:e-q3}).
+
+\subsection{Is the packer's idea of what is critical out of date?}
+\label{sec:r-heap}
+
+\hd{Hypothesis} The packer works on criticality computed once before packing with one delay per net, so most of its picks on atoms it believes critical (criticality at least 0.90) hold nothing that is critical after routing (\emph{HP-1}), and most cuts of near-critical paths happen where a cluster is already full (\emph{HP-2}).
+
+\hd{Implication} If HP-1 holds, refreshing the criticality while packing is a candidate remedy (Section~\ref{sec:r-3}). If HP-2 holds, speed lost to cuts is a capacity problem, and only a rule that reserves room on the path could help (Section~\ref{sec:future}).
+
+\hd{Experiment} The 45 routed runs of the 15 VTR Verilog designs with three VPR seeds, each with its 1000 most critical paths, against the packer's own log of its criticality. No new VPR run.
+
+\hd{Methodology} A pick is \emph{stale} when it is made on a pack-time criticality of at least 0.90 and holds no atom of the post-route critical heap (Section~\ref{sec:background}). Summaries are medians over designs with 90\% bootstrap intervals. No decision rule was fixed in advance, so these are measurements without a verdict.
+
+\hd{Measurements} HP-1: 81\% [63\%, 91\%] of the picks made on a pack-time criticality of at least 0.90 are stale. HP-2: a near-critical path touches a median 3.7 clusters against a capacity floor of 1.9, and 98\% of the crossing edges fall where the earlier cluster closed full. The HDL constructs we can name before packing predict membership of the post-route heap at an AUC of 0.49 [0.38, 0.60].
+
+\hd{Interpretation} Four of five picks the packer makes on what it believes critical do not touch what is critical in the routed design, and almost every cut is forced by capacity. HDL structure alone says nothing about which atoms end up critical (AUC 0.49 is chance). Table~\ref{tab:exceptions} (Appendix~\ref{sec:e-pick}) lists eleven exception HDL patterns with detectors and untested hints.
+
+\hd{Conclusion} The criticality the packer uses is stale and the cuts are capacity cuts. \textsc{measurement} (Appendices~\ref{sec:e-heap} and~\ref{sec:e-pick}).
 
 \subsection{The packer that keeps the HDL's registers}
 \label{sec:r-packer}
 
-The standard packer scatters the source's words: median word purity 0.63 and median split factor 4.00 on 15 designs (H8, \textsc{useful}). The Norns packer raises word purity by 0.111 with no growth in CLBs (H9a, \textsc{useful} as a mechanism check). When the words equal the blocks it uses 0.669 [0.627, 0.713] of the stock wire (H33, \textsc{useful} as an upper bound, because that is the leak). With words that cut across the blocks it is worse at every alignment below 1 (WL 1.218 to 2.038 of stock, H34, \textsc{dismissed}), and with realistic bus words it uses 65\% to 150\% more wire and 33\% to 41\% more delay (H22$'$, \textsc{dismissed}). Appendices~\ref{sec:e-scatter},~\ref{sec:e-leak} and~\ref{sec:e-h22p} give the records.
+\hd{Hypothesis} The standard packer scatters the words of the HDL (\emph{H8}); the Norns packer keeps them together (\emph{H9a}); and when the words are the blocks it uses less wire than stock (\emph{H33}) but with words that cut across the blocks it does not (\emph{H34}, \emph{H22$'$}).
+
+\hd{Implication} If keeping the designer's grouping through packing helps, then provenance from the front end buys speed or wire, and the whole suite idea has an application. If it helps only when the hint equals the answer, the hint is a leak, not a gain.
+
+\hd{Experiment} H8 and H9a on the 15 VTR Verilog designs, three seeds. H33 and H34 on the 105 alignment designs, where the alignment $a$ between the HDL words and the blocks runs from 0 to 1. H22$'$ on 84 designs whose registers are word buses of width 4, 8, 16 or 32 over a random permutation of the flip-flops, with a chain control. Arms stock, Norns ($\beta=4$) and known.
+
+\hd{Methodology} Word purity and split factor against a random null (50 samples) for H8. Geometric mean of Norns over stock for wire, delay and CLBs with a 90\% bootstrap interval and the Holm adjustment for the rest; H22$'$ is supported only if the wire mean is at most 0.99 with Holm $p<0.05$. Controls: byte-identical output at $\beta=0$ and a ratio near 1 at alignment 1 on chains.
+
+\hd{Measurements} H8: median word purity 0.63 and split factor 4.00, above the null on 15 of 15 designs. H9a: purity up by 0.111 with no growth in CLBs. H33: Norns over stock is 0.669 [0.627, 0.713] in wire, 0.841 in delay and 0.870 in CLBs. H34: wire 2.034, 2.038, 1.731 and 1.218 of stock at alignment 0, 0.25, 0.5 and 0.75. H22$'$: wire 1.652 to 2.505 of stock and delay 1.33 to 1.41, at every width (Holm $p=1.0$).
+
+\hd{Interpretation} The standard packer puts fewer than two thirds of a word's bits in the CLB that holds most of them. The Norns packer fixes that, but the wire gain of 0.669 appears only where the words equal the blocks: there the word file is the answer, which is a leak, and the first reported gain (0.902 of stock) was this. As soon as the words cut across the blocks, the packer follows them and uses 22\% to 150\% more wire.
+
+\hd{Conclusion} Keeping the registers together is possible and costs nothing in CLBs, but it gave no gain that survives realistic registers. H8, H9a and H33 are \textsc{useful} (H33 as an upper bound, because it is the leak); H34 and H22$'$ are \textsc{dismissed} (Appendices~\ref{sec:e-scatter}, \ref{sec:e-leak} and~\ref{sec:e-h22p}).
 
 \subsection{Tool options}
 \label{sec:r-e10}
 
-A sweep of nine tool options over 35 designs moves area and speed in different directions (E10; eight \textsc{possibly good}, one no-op \textsc{dismissed}): the area-oriented ABC script lowers the LUT count by 3.0\% and raises the CPD by 14.1\%; the EArch architecture lowers the CLB count by 14.5\% and raises WL by 16.0\%; unrelated clustering lowers the CLB count by 7.6\%; the analytic and nextpnr placers lower WL by 4.3\% to 5.0\% and raise the CLB count by 3.1\% to 4.0\%. These change tool settings and not the packer. The verdict rule was chosen after the data, so none is more than \textsc{possibly good}. Appendix~\ref{sec:e10} gives the record.
+\hd{Hypothesis} Nine changes of tool setting around the base flow (two other ABC scripts, $K=4$, the EArch architecture, unrelated clustering on and off, VPR's analytic placer, nextpnr HeAP and SA) each move area, wire or speed (\emph{E10} is the register identifier of the sweep).
+
+\hd{Implication} Settings are the cheap changes a user already has. If one wins on speed, no new packer is needed; if they only trade area against speed, the baseline for any packer change must be chosen with that in mind.
+
+\hd{Experiment} 35 designs (20 MCNC and 15 VTR Verilog), three seeds, one factor against the base flow.
+
+\hd{Methodology} A measure counts as supported when its 95\% design-bootstrap interval excludes 1.000 and its Holm-adjusted $p$ over 36 tests is below 0.05. The comparisons were fixed in advance and no thresholds were, so the verdict rule is post hoc.
+
+\hd{Measurements} The area-oriented ABC script lowers the LUT count by 3.0\% and raises the CPD by 14.1\%. The EArch architecture lowers the CLB count by 14.5\% and raises wire by 16.0\%. Unrelated clustering lowers the CLB count by 7.6\%. The analytic and nextpnr placers lower wire by 4.3\% to 5.0\% and raise the CLB count by 3.1\% to 4.0\%. Forcing unrelated clustering off changes nothing.
+
+\hd{Interpretation} Area and speed move in opposite directions: a gain on one metric is not a gain on the problem. These are tool settings, not a packer, so they do not answer the paper's question, and they set what a packer change must beat.
+
+\hd{Conclusion} Eight of the nine are \textsc{possibly good} (the rule was chosen after the data); the no-op is \textsc{dismissed} (Appendix~\ref{sec:e10}).
+
+\subsection{Does refreshing criticality while packing lower the delay?}
+\label{sec:r-3}
+
+\hd{Hypothesis} Refreshing the packer's criticality after every closed cluster ($k=1$) or every eighth ($k=8$) lowers the post-route critical-path delay without raising CLBs or wire by more than 2\% (\emph{H-refresh}).
+
+\hd{Implication} The stale picks of Section~\ref{sec:r-heap} would then be a cause of lost speed that a small packer change removes.
+
+\hd{Experiment} The Norns packer option \code{--norns\_refresh\_crit} on 35 designs, three seeds, arms stock, $k=1$, $k=8$: 315 runs. At $k=0$ the output must equal stock (it does on 105 of 105).
+
+\hd{Methodology} Geometric mean of refreshed over stock with a 90\% bootstrap interval and Holm over 12 tests. Supported if the delay upper bound is below 1.000 with Holm $p<0.05$, dismissed if the interval lies inside [0.98, 1.02].
+
+\hd{Measurements} Delay 1.005 [0.990, 1.021] at $k=1$ and 1.007 [0.997, 1.018] at $k=8$; wire 1.003 and 1.004; CLBs 1.002 and 1.005. Near-critical endpoint counts fall to 0.84 to 0.88 but no test survives Holm (smallest $p=0.20$). Pack time is 1.87 times stock at $k=1$. The stale share of heap picks is 88\% at $k=1$ and 79\% at $k=8$, against 81\% for stock.
+
+\hd{Interpretation} The packer now sees a moving heap, and its picks are no better matched to the routed one. The delay does not move by more than noise.
+
+\hd{Conclusion} $k=1$ is \textsc{inconclusive} (its upper bound 1.021 is just outside the dismissal band); $k=8$ is \textsc{dismissed} (Appendix~\ref{sec:e-refresh}).
+
+\subsection{Does a two-hop connectivity term help?}
+\label{sec:r-2hop}
+
+\hd{Hypothesis} Adding the best Q-N3 feature, the share of cluster atoms within two hops of the candidate, to the packer's gain with weight $w$ lowers the delay on real designs without raising CLBs or wire by more than 2\% (\emph{H-2hop}).
+
+\hd{Implication} A feature that ranks the right atom offline would become a deployable gain term that needs no knowledge of the designer's grouping.
+
+\hd{Experiment} Gain $=(1-w)\times$ stock $+\,w\,h_2$ before distance attenuation, $w=0.1$ and $0.25$ fixed before the runs; the 35 designs, three seeds, 315 runs; at $w=0$ the output equals stock on 105 of 105.
+
+\hd{Methodology} Speed first: geometric-mean percent win over stock with a 90\% interval and wins, losses and ties; Holm adjustment; dismissed if the delay interval lies above 1.000.
+
+\hd{Measurements} Delay: $w=0.1$ $+0.7$\% $[-0.6,+1.9]$ (17 wins, 14 losses, 4 ties); $w=0.25$ $-1.9$\% $[-4.0,0.0]$ (15, 17, 3). Wire $-0.2$\% and $-1.0$\%; CLBs $-0.6$\% and $+0.1$\%. Pack time rises 5\% to 6\%.
+
+\hd{Interpretation} A 0.7\% win with 17 wins against 14 losses is within the noise of about $\pm3\%$ across designs. The feature that ranks the right atom offline does not help as a gain.
+
+\hd{Conclusion} $w=0.1$ \textsc{inconclusive}; $w=0.25$ \textsc{dismissed} (Appendix~\ref{sec:e-2hop}).
+
+\subsection{Does spare room in critical clusters buy speed?}
+\label{sec:r-spare}
+
+\hd{Hypothesis} After stock packing fixes the grid, leaving $s$ BLEs empty in the most critical clusters lowers the post-route delay inside the same grid without raising wire by more than 2\% (\emph{H-spare}; Schabas and Brown's packing change~\cite{schabas2003duplication}).
+
+\hd{Implication} The 2003 result of $+6.4$\% delay would carry to a modern flow, and critical paths would gain speed from room that the grid already has.
+
+\hd{Experiment} Arms stock, $s=2$ and $s=4$ on the 35 designs (the 20 MCNC circuits are those of Schabas and Brown's Table 1), three seeds, at two channel-width settings (the E10 flow, and every arm at 1.2 times the stock minimum width): 630 runs; $s=0$ equals stock on 105 of 105.
+
+\hd{Methodology} Speed first, as in Section~\ref{sec:r-2hop}; dismissed if the delay interval lies wholly above 1.000.
+
+\hd{Measurements} Delay, E10 flow: $s=2$ $-1.4$\% $[-3.1,+0.2]$ (12 wins, 21 losses, 2 ties), $s=4$ $-1.5$\% (10, 23, 2); fixed width $-1.6$\% and $-2.1$\%. The 20 MCNC alone: $-1.4$\% against their $+6.4$\%. Wire is 2\% to 3\% worse and CLBs used 11\% to 17\% higher.
+
+\hd{Interpretation} The loosened clusters hold no more of the near-critical atoms than their share of the design (55\% against 57\% at $s=2$), so the room is spent where it does not help. Their gain does not appear on VPR~9.
+
+\hd{Conclusion} $s=4$ \textsc{dismissed}; $s=2$ \textsc{inconclusive} in the E10 flow and \textsc{dismissed} at fixed width (Appendix~\ref{sec:e-spare}).
+
+\subsection{Does duplicating critical logic after placement buy speed?}
+\label{sec:r-dup}
+
+\hd{Hypothesis} Copying a critical-path LUT after placement into a nearby cluster with room, so that the copy drives only the critical connection, shortens the routed critical path (\emph{H-dup}; the second change of Schabas and Brown~\cite{schabas2003duplication}, who report $+7.7$\%).
+
+\hd{Implication} A post-placement step would give speed with no change to packing or placement.
+
+\hd{Experiment} Starting from the stock placement (arm dup) or the $s=2$ placement (arm dup plus spare), up to four copies per round for four rounds, chosen from the 1000-path report, checked equivalent with ABC \texttt{cec} (219 of 219), then routed. The same 35 designs, grids and seeds. Setting a keeps the best round; setting b routes the chosen result again at 1.2 times the stock minimum width.
+
+\hd{Methodology} Speed first against stock; setting b is the fair one, because setting a compares the best of up to five routed rounds with one baseline.
+
+\hd{Measurements} Setting a: $+1.9$\% $[+0.4,+3.3]$ (23 wins, 7 losses, 5 ties) and $+2.8$\% $[+1.6,+4.1]$ (24, 9, 1). Setting b: $-0.5$\% $[-1.1,+0.1]$ (11, 20, 4) and $-0.4$\% $[-1.5,+0.7]$ (12, 20, 2). On the MCNC subset dup is $-0.6$\% against $+7.7$\%.
+
+\hd{Interpretation} The setting-a gain is a selection on the number it is scored on; the same netlists routed afresh are slightly slower. The modelled gain per copy (0.02 to 0.3 ns) is below the routed-delay noise.
+
+\hd{Conclusion} Both arms \textsc{dismissed} on the fixed-width measurement; the setting-a verdicts are withdrawn as \textsc{inconclusive} (Appendix~\ref{sec:e-dup}).
 
 \subsection{What was tried: nothing deployable beat noise}
 \label{sec:summary}

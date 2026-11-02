@@ -1,0 +1,34 @@
+% Norns III overall flow: stages as boxes, features under their stage, data on the arrows,
+% each tried change marked closed on the stage it changes, the argument that tests it in brackets.
+\begin{tikzpicture}[odin, node distance=4mm]
+  \tikzset{edgelabel/.append style={align=center}, tag/.style={plain, font=\scriptsize, text width=2.7cm, align=left, inner sep=1.5pt},
+           closed/.style={draw=o3brn6, fill=white, rounded corners=1pt, font=\scriptsize, text width=2.6cm, align=left, inner sep=2pt, line width=0.4pt}}
+  % main flow
+  \node[box, neutral, minimum width=2.4cm] (hdl) {HDL\\\odinsub{Verilog design}};
+  \node[box, neutral, right=9mm of hdl, minimum width=2.4cm] (odin) {Odin III\\\odinsub{front end}};
+  \node[box, light, right=9mm of odin, minimum width=2.4cm] (pack) {Packer\\\odinsub{AAPack / APPack}};
+  \node[box, neutral, right=9mm of pack, minimum width=2.4cm] (place) {Placer\\\odinsub{VPR anneal}};
+  \node[box, neutral, right=9mm of place, minimum width=2.4cm] (route) {Router\\\odinsub{VPR, timing}};
+  \draw[flow] (hdl) -- (odin);
+  \draw[flow] (odin) -- node[edgelabel, above=1pt] {netlist,\\provenance} (pack);
+  \draw[flow] (pack) -- node[edgelabel, above=1pt] {CLBs} (place);
+  \draw[flow] (place) -- node[edgelabel, above=1pt] {placement} (route);
+  % measures
+  \node[box, light, below=22mm of route, minimum width=3.4cm] (meas) {Measures\\\odinsub{wire, CLBs, delay}};
+  \draw[flow] (route) -- node[edgelabel, right=1pt] {routed design,\\1000 paths} (meas);
+  % yardstick
+  \node[box, light, below=22mm of pack, minimum width=3.4cm] (yard) {Known-optimum yardstick\\\odinsub{pad, fill, local optimum}};
+  \draw[flow] (odin.south) |- node[edgelabel, pos=0.25, left=1pt] {netlist} (yard.west);
+  \draw[flow] (yard.east) -- node[edgelabel, above=1pt] {known clustering,\\answer key} (meas.west);
+  \draw[flow] (yard.north) -- node[edgelabel, right=1pt] {edited design} (pack.south);
+  \node[closed, above=3mm of pack.north, text width=3.1cm]
+       (cpack) {\textbf{closed:} registers kept (\ref{sec:r-packer}); refresh criticality (\ref{sec:r-3}); two-hop gain (\ref{sec:r-2hop}); spare room (\ref{sec:r-spare})};
+  \node[closed, above=3mm of place.north, text width=3.1cm]
+       (cplace) {\textbf{closed:} seeds and outside placers (App.~\ref{sec:e-seed}); duplication after placement (\ref{sec:r-dup})};
+  % features under stages
+  \node[tag, above=3mm of odin] (fodin) {words, modules, io-words (provenance record)};
+  \node[tag, above=3mm of cpack.north, text width=3.1cm] (fpack) {affinity bonus $\beta$ (Norns packer); pack-time criticality};
+  \node[tag, above=3mm of cplace.north, text width=3.1cm] (fplace) {anneal; analytic; nextpnr HeAP and SA; seeds};
+  % closed changes
+  \node[tag, below=1mm of meas, text width=4.2cm, align=center] {room (\ref{sec:r-room-s}, \ref{sec:r-room-r}); where it is lost (\ref{sec:r-loses}, \ref{sec:r-heap}); tool options (\ref{sec:r-e10})};
+\end{tikzpicture}

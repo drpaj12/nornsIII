@@ -238,6 +238,43 @@ def render(rep: Report, top: int) -> str:
     return "\n".join(out)
 
 
+def emph_defining_line(lines: list[Line], term: Term) -> int | None:
+    """Index of the first line whose \\emph{...} text matches the term (its defining use)."""
+    pat = term.pattern()
+    for index, line in enumerate(lines):
+        if line.in_abstract:
+            continue
+        for m in re.finditer(r"\\emph\{((?:[^{}]|\{[^{}]*\})*)\}", line.text):
+            if pat.search(m.group(1)):
+                return index
+    return None
+
+
+def rewrite_positions(md: Path, lines: list[Line], terms: list[Term]) -> int:
+    """Rewrite the ``defined at`` and ``first used at`` columns of terms.md from the text."""
+    rows = md.read_text(encoding="utf-8").splitlines()
+    by_name = {t.name: t for t in terms}
+    changed = 0
+    for n, raw in enumerate(rows):
+        if not raw.startswith("|"):
+            continue
+        cells = re.split(r"(?<!\\)\|", raw.strip().strip("|"))
+        name = cells[0].strip()
+        if name not in by_name or len(cells) < 6:
+            continue
+        term = by_name[name]
+        d = emph_defining_line(lines, term)
+        u = first_use(lines, term)
+        if d is not None:
+            cells[2] = f" {lines[d].file}:{lines[d].number} "
+        if u is not None:
+            cells[3] = f" {lines[u].file}:{lines[u].number} "
+        rows[n] = "|" + "|".join(cells) + "|"
+        changed += 1
+    md.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    return changed
+
+
 def main(argv: list[str]) -> int:
     """Command-line entry."""
     here = Path(__file__).resolve().parent
@@ -246,8 +283,15 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--terms", type=Path, default=here / "terms.md")
     parser.add_argument("--top", type=int, default=10)
     parser.add_argument("--report-only", action="store_true")
+    parser.add_argument(
+        "--write",
+        action="store_true",
+        help="rewrite the defined-at and first-used-at columns from the first \\emph use",
+    )
     args = parser.parse_args(argv)
     lines = flatten(args.tex.resolve())
+    if args.write:
+        print(f"rewrote {rewrite_positions(args.terms, lines, parse_terms(args.terms))} rows")
     rep = check(lines, parse_terms(args.terms))
     print(render(rep, args.top))
     return 0 if args.report_only or rep.failures() == 0 else 1
