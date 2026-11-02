@@ -1,0 +1,110 @@
+\section{Results}
+\label{sec:results}
+
+This section gives the results as they stand at the close of the work. Each result is stated as a CAD paper states it: the geometric-mean percent win, with the wins, losses and ties over designs where the register has them, and then the strict register verdict (Section~\ref{sec:verdicts}). The full record of each experiment, in time order, with its hypothesis, experiment, result, verdict and pull request, is in Appendix~\ref{sec:records}; every row of the register is in Appendix~\ref{sec:log}.
+
+\subsection{How much room a packer has}
+\label{sec:r-room}
+
+The yardstick measures room. Table~\ref{tab:room} gives the standard packer over the known clustering on the two forms of the yardstick. On the 72 synthetic designs the standard packer uses 22\% more wire than the known clustering, and 49\% more on meshes and trees (14 cells), where the designs have most room; on chain and random graphs there is almost none. On the 33 real designs it needs 1.103 times the corrected counting lower bound on CLBs, 1.265 times the wire and 1.026 times the delay of the known clustering, and the own clustering gives it no visible advantage over a foreign one (every self-bias ratio is within 2\%). The delay ratio is \textsc{inconclusive}: the yardstick is optimal for area and cut and not for timing. The room is therefore real in CLBs and wire. Appendices~\ref{sec:e-room} and~\ref{sec:e-real} give the records.
+
+\begin{table*}[t]
+\caption{Standard packer over the known clustering (geometric mean over designs; 90\% bootstrap interval where the register has one; below 1 would favour the standard packer). Sources: \code{docs/paper/hypotheses.md} (H25/H19, H32, H38); \code{data/r9/full-summary.json}.}
+\label{tab:room}
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrlll@{}}
+\toprule
+Yardstick & $n$ & CLB & WL & CPD \\
+\midrule
+Synthetic, all topologies & 72 & 1.073 & 1.220 [1.168, 1.275] & 1.093 \\
+Synthetic, mesh and tree & 14 & 1.152 & 1.489 [1.394, 1.591] & 1.181 \\
+Real designs, own clustering & 33 & 1.059 [1.049, 1.071] & 1.265 [1.223, 1.307] & 1.026 [1.014, 1.038] \\
+Real designs, foreign clustering & 33 & 1.056 [1.046, 1.066] & 1.287 [1.243, 1.332] & 1.042 [1.027, 1.062] \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Where the standard packer loses}
+\label{sec:r-loses}
+
+Four measurements place the loss. The decision log of the standard packer (Q-N2) puts 60\% of the CLB gap to the known clustering in one kind of pick, an atom of another known cluster added while a legal member of the right cluster was queued, with a strictly lower queue gain in 99.8\% of them; 11\% comes from clusters closed with free slots. A seed oracle that uses the answer key rebuilds only 25.5\% of the known clusters and closes 11\% of the log gap (Q-N1b), so the gap is in growth (gain and closing), not in seeding. No feature computable from the circuit alone ranks the right atom well once the construction's dummy cells are deleted (Q-N3: AUC 0.687 [0.662, 0.711] with them, 0.612 without). On the timing side, the packer's criticality is computed once before packing, 81\% of its picks on a criticality of at least 0.90 hold nothing that is critical after routing (HP-1), and 98\% of the cuts of near-critical paths are capacity cuts at full clusters (HP-2). Eleven exception HDL patterns, each with a detector and an untested hint, are in Table~\ref{tab:exceptions} (Appendix~\ref{sec:e-pick}). All of these are \textsc{measurement} or \textsc{useful} rows. Appendices~\ref{sec:e-seedoracle},~\ref{sec:e-q2},~\ref{sec:e-q3},~\ref{sec:e-heap} and~\ref{sec:e-pick} give the records.
+
+\subsection{The packer that keeps the HDL's registers}
+\label{sec:r-packer}
+
+The standard packer scatters the source's words: median word purity 0.63 and median split factor 4.00 on 15 designs (H8, \textsc{useful}). The Norns packer raises word purity by 0.111 with no growth in CLBs (H9a, \textsc{useful} as a mechanism check). When the words equal the blocks it uses 0.669 [0.627, 0.713] of the stock wire (H33, \textsc{useful} as an upper bound, because that is the leak). With words that cut across the blocks it is worse at every alignment below 1 (WL 1.218 to 2.038 of stock, H34, \textsc{dismissed}), and with realistic bus words it uses 65\% to 150\% more wire and 33\% to 41\% more delay (H22$'$, \textsc{dismissed}). Appendices~\ref{sec:e-scatter},~\ref{sec:e-leak} and~\ref{sec:e-h22p} give the records.
+
+\subsection{Tool options}
+\label{sec:r-e10}
+
+A sweep of nine tool options over 35 designs moves area and speed in different directions (E10; eight \textsc{possibly good}, one no-op \textsc{dismissed}): the area-oriented ABC script lowers the LUT count by 3.0\% and raises the CPD by 14.1\%; the EArch architecture lowers the CLB count by 14.5\% and raises WL by 16.0\%; unrelated clustering lowers the CLB count by 7.6\%; the analytic and nextpnr placers lower WL by 4.3\% to 5.0\% and raise the CLB count by 3.1\% to 4.0\%. These change tool settings and not the packer. The verdict rule was chosen after the data, so none is more than \textsc{possibly good}. Appendix~\ref{sec:e10} gives the record.
+
+\subsection{What was tried: nothing deployable beat noise}
+\label{sec:summary}
+
+Table~\ref{tab:tried} lists the changes to packing or placement that this work tried in the hope of a deployable gain, and the one oracle that bounds what such a change could reach. It is read as a CAD paper is read. Each cell is the geometric-mean percent win over the stock flow (positive is better; a ratio of 1.007 stock over arm is a 0.7\% win) and, in brackets, the wins, losses and ties over designs (a tie is within 0.5\%). The columns are in the order speed (post-route critical-path delay, CPD), wirelength (WL), area (CLBs used). The last column is the strict register verdict (a positive geomean whose interval touches 1 is \textsc{inconclusive}, not \textsc{dismissed}). Every number is a row of the register (\texttt{docs/paper/hypotheses.md}); the earlier ideas are in Table~\ref{tab:notwork}.
+
+\begin{table*}[t]
+\centering
+\caption{Every packing or placement change tried, with its CAD headline (geomean percent win; wins/losses/ties over designs in brackets; ``n/t'' = not tabulated in the register, the ratio is given instead). Real designs are the 35 of E10 (15 VTR Verilog, 20 MCNC) unless the row says 33 (round-9 known-optimum designs).}
+\label{tab:tried}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{3.9cm}p{2.9cm}p{2.9cm}p{2.9cm}p{3.6cm}@{}}
+\toprule
+Change (register ID) & Speed (CPD) & Wirelength & Area (CLBs) & Verdict \\
+\midrule
+Seeding the anneal from the designer's grouping (R1a, 15 designs) & ratio 0.970 to 1.004 (n/t) & ratio 0.997 to 1.029, pooled 1.009 (n/t) & channel width ratio 0.947 to 0.994 (n/t) & \textsc{inconclusive} (no gain in WL; no test) \\
+HDL-aware packer, realistic registers (H22$'$, 56 mesh/tree designs) & 33 to 41 percent worse (ratio 1.33 to 1.41, n/t) & 65 to 150 percent worse (ratio 1.652 to 2.505, n/t) & ratio 0.946 to 1.033 (n/t) & \textsc{dismissed} at every width \\
+Refresh criticality, every cluster (H-refresh k=1) & $-0.5$ (n/t; ratio 1.005 [0.990, 1.021]) & $-0.3$ (n/t) & $-0.2$ (n/t) & \textsc{inconclusive} \\
+Refresh criticality, every 8th cluster (k=8) & $-0.7$ (n/t; ratio 1.007) & $-0.4$ (n/t) & $-0.5$ (n/t) & \textsc{dismissed} \\
+Seed rule from the answer key (HS0, 33 designs) & $-0.8$ (n/t) & $+0.7$ (n/t) & $+0.7$ [18/13/2] & \textsc{inconclusive} \\
+2-hop gain term, $w=0.1$ (H-2hop) & $+0.7$ [17/14/4] & $-0.2$ [15/16/4] & $-0.6$ [9/14/12] & \textsc{inconclusive} \\
+2-hop gain term, $w=0.25$ & $-1.9$ [15/17/3] & $-1.0$ [13/17/5] & $+0.1$ [12/11/12] & \textsc{dismissed} \\
+Spare room $s=2$, E10 flow (H-spare-2) & $-1.4$ [12/21/2] & $-2.2$ [7/22/6] & $-10.8$ [5/27/3] & \textsc{inconclusive} \\
+Spare room $s=2$, fixed width & $-1.6$ [10/21/3] & $-2.3$ [6/27/1] & $-10.7$ [5/26/3] & \textsc{dismissed} \\
+Spare room $s=4$, E10 flow & $-1.5$ [10/23/2] & $-3.1$ [6/26/3] & $-16.5$ [4/30/1] & \textsc{dismissed} \\
+Spare room $s=4$, fixed width & $-2.1$ [10/20/3] & $-2.6$ [6/23/4] & $-16.8$ [4/28/1] & \textsc{dismissed} \\
+Duplicate critical LUTs after placement, fixed width (H-dup-W) & $-0.5$ [11/20/4] & $-0.1$ [10/17/8] & $-1.1$ [0/20/15] & \textsc{dismissed} \\
+Duplication after $s=2$ packing, fixed width (H-dup-spare-W) & $-0.4$ [12/20/2] & $-2.5$ [5/26/3] & $-10.3$ [4/27/3] & \textsc{dismissed} \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Bounds, not deployable (they use the answer key)}} \\
+True seed oracle (Q-N1b, 33 designs) & $-0.7$ [13/20/0] & $+2.8$ [25/8/0] & $+1.2$ [23/6/4] & \textsc{possibly good} in WL and area, \textsc{inconclusive} in speed; strong form \textsc{dismissed} \\
+HDL-aware packer, registers equal blocks (H33, 14 designs) & ratio 0.841 (n/t) & ratio 0.669 (n/t) & ratio 0.870 (n/t) & \textsc{useful} as an upper bound; a leak \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Three things stand out. First, no deployable change wins on speed: the best geomean delay win is 0.7\% (H-2hop at $w=0.1$), with 17 wins against 14 losses, inside the noise. Second, the changes that move area or wire move them the wrong way (spare room raises CLBs by 11 to 17\%). Third, the two selections that looked like speed gains were selections: the duplication result of $+1.9$ and $+2.8$\% (setting a) is the best of up to five routed rounds scored on the number it is chosen on, and the same netlists routed afresh are 0.5 and 0.4\% slower; the original HDL-aware gain (WL 0.902 of stock) was a leak. Table~\ref{tab:tried} does not list the sweep of VPR options (E10), which changes tool settings and not the packer; its eight area and speed effects are in Appendix~\ref{sec:e10}.
+
+\subsection{What did not work}
+\label{sec:r-notwork}
+
+Table~\ref{tab:notwork} gives one line for each idea of rounds 1 to 9 that failed or was closed, with the appendix record; Table~\ref{tab:tried} has the CAD numbers of the later changes. Rows of the register that are not listed here are in Appendix~\ref{sec:log}.
+
+\begin{table*}[t]
+\centering
+\caption{What did not work, one line each (rounds 1 to 9). Verdicts are the register's. Numbers are from \code{docs/paper/hypotheses.md}.}
+\label{tab:notwork}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{4.1cm}p{7.3cm}p{2.2cm}p{3.0cm}@{}}
+\toprule
+Idea (register ID) & What happened & Verdict & Record \\
+\midrule
+Seed the anneal from the designer's grouping or a recovered clustering (R1a to R1f, H4, H7) & WL ratio 0.997 to 1.029 pooled 1.009; a random start is as good as any seed (H4: 0.997 random, 1.029 quotient layout) & \textsc{inconclusive} (R1a, R1e), \textsc{dismissed} (H4, R1f) & Appendix~\ref{sec:e-seed} \\
+Hard floorplan regions for the seed (R1c) & WL 1.088 over 104 runs, worse than soft & \textsc{dismissed} & Appendix~\ref{sec:e-seed} \\
+Packer with an affinity bonus, alone or with a word seed (H9b, H9c, H10b, H14) & WL 1.030 to 1.064 of stock (H9b, H9c) and 0.998 (H10b); H14 gives WL 1.033, channel width 1.015, CPD 0.996 and Holm $p=1.0$ & \textsc{dismissed} (H9b \textsc{inconclusive}) & Appendix~\ref{sec:log} \\
+Stage-by-bit floorplan seed (H16) & WL 1.005 and 1.015 under both packings & \textsc{dismissed} & Appendix~\ref{sec:log} \\
+HDL-aware packer, first yardstick gain (H22) & WL 0.902 of stock was a leak: the word file equalled the answer & \textsc{dismissed} & Appendix~\ref{sec:e-leak} \\
+HDL-aware packer at partial alignment (H34a to H34d) & WL 2.034, 2.038, 1.731, 1.218 of stock at alignment 0, 0.25, 0.5, 0.75 & \textsc{dismissed} & Appendix~\ref{sec:e-leak} \\
+HDL-aware packer, realistic registers (H22$'$) & WL 65\% to 150\% worse, CPD 33\% to 41\% worse, at every width & \textsc{dismissed} & Appendix~\ref{sec:e-h22p} \\
+Known-optimal clustering examples as a route to a better packer (TPEKO style; H24 to H38 and the follow-ups of Table~\ref{tab:tried}) & The yardstick measures room (Table~\ref{tab:room}), but no change tried from it beat noise; a timing-aware yardstick was not built & yardstick \textsc{useful}; route to a deployable gain closed & Appendix~\ref{sec:e-tpeko} \\
+Synthesis keeps the construction; zero-violation check (H18, H28) & 32 of 72 and 37 of 72 under the rules fixed in advance (63 and 72 under rules chosen after the data) & \textsc{dismissed} & Appendix~\ref{sec:log} \\
+Hindsight re-clustering from the best stock placement (R7a) & Held-out WL gap 0.987, CPD 0.994; interval above 1 on 1 of 8 designs & \textsc{inconclusive} & Appendix~\ref{sec:e-hind} \\
+Outside placers, nextpnr HeAP and SA (R8a, R8b) & HeAP WL 1.001 [0.984, 1.019]; SA WL 0.947 [0.919, 0.975], WL$\times$CPD 0.952 [0.909, 1.003] & \textsc{inconclusive} & Appendix~\ref{sec:e-hind} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
