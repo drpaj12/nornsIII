@@ -33,6 +33,44 @@ hot can the anneal start before it destroys the seed?
 Urd uses what the design was (the provenance hierarchy), Verdandi what is recovered now
 (Loki III clusters), and Skuld what shall be (the placement they constrain).
 
+## Features
+
+The project is **closed** (negative results, 2026-10-31): nothing tried gave a speed, wirelength or area gain that
+stands apart from noise. What remains useful is the yardstick and the instruments. Status: **works** = a tool or
+measurement that is kept and reproduces from the committed `data/`; **closed** = an idea that was tried and did not
+beat noise (verdicts are the register's, `docs/paper/hypotheses.md`; the numbers are in the paper tables
+`tab:tried` and `tab:notwork`, `docs/paper/n-results.tex`).
+
+Working tools and measurements:
+
+| Feature | Status | Where |
+|---|---|---|
+| Known-optimum yardstick: designs with a known optimal clustering (Cong03-style known-optimal placement examples, "TPEKO"), synthetic in round 5 and built from 33 real designs in round 9 (H38); it measures the room left in CLBs and wire, delay inconclusive | works (register: useful) | `gen/`, `docs/plan/round5.md`, `docs/plan/round9-tpeko-real.md` |
+| Norns packer: a copy of VPR's AAPack/APPack at pinned commit 3c9a4d23b2 with a provenance-affinity term, packing census and proposal-count options | works (instrument) | `packer/README.md`, `packer/build.sh` |
+| Seeding VPR's anneal from a clustering (soft, chunk and bitwise seeds, word seeds) with the crossover sweep and checkpointing arm | works (instrument) | `docs/plan/norns-experiment.md`, `scripts/build_seeds.py`, `scripts/matrix.py` |
+| Gap anatomy: where the packer departs from the known clustering (Q-N2), ranking the right atom (Q-N3), true seed oracle (Q-N1b) | works (measurements) | `docs/plan/q-n2-appack-gap.md`, `q-n3-rank-right-atom.md`, `q-n1b-true-seed-oracle.md` |
+| Heap studies (critical heap, heap picking) with their censuses | works (measurements) | `docs/plan/critical-heap.md`, `docs/plan/heap-picking.md`, `scripts/heap_*.py` |
+| Timing attribution and near-critical paths per design (needs Odin III with the attribution library) | works (instrument) | `docs/plan/round4.md`, `scripts/timing4.py`, `scripts/r4near.py` |
+| nextpnr "viaduct" uarch for the VTR k6_frac_N10 grid, with converters, so outside placers run on the same designs | works (instrument) | `placers/nextpnr_k6/`, `docs/plan/placers.md` |
+| E10 sweep of VPR options (eight area and speed effects) | works (measurement) | `docs/plan/e10.md` |
+| Report and paper generators that rebuild every document byte-identically from the committed `data/` | works | `scripts/report.py`, `scripts/fill_paper.py`, `docs/paper/` |
+
+Ideas tried, all closed (did not beat noise):
+
+| Idea | Status | Record |
+|---|---|---|
+| Seed the anneal from the designer's grouping or a recovered clustering (R1a to R1f, H4, H7); hard floorplan regions | closed, inconclusive or dismissed | `docs/paper/hypotheses.md` |
+| Packer with an affinity bonus, alone or with a word seed (H9b, H9c, H10b, H14); stage-by-bit seed (H16) | closed, dismissed | `docs/plan/round3.md`, `round4.md` |
+| HDL-aware packer: the first gain (H22) was a leak, partial alignment (H34) and realistic registers (H22') are 65% to 150% worse in wirelength | closed, dismissed | `docs/plan/round8-h22.md` |
+| Known-optimal clustering as a route to a better packer (round-5 TPEKO idea; H24 to H38 and follow-ups): the yardstick measures room, no change tried from it beat noise; a timing-aware yardstick was not built | closed (yardstick kept, route closed) | `docs/plan/round5.md`, `round9-tpeko-real.md`, `STATUS.md` |
+| Refresh criticality while packing (k=1, k=8) | closed, inconclusive and dismissed | `docs/plan/refresh-crit.md` |
+| Seed-order rule (HS0) and the true seed oracle's deployable form | closed, inconclusive | `docs/plan/hs0-seed-gap.md`, `q-n1b-true-seed-oracle.md` |
+| 2-hop gain term (w=0.1 inconclusive, w=0.25 dismissed) | closed | `docs/plan/q-n3b-2hop-gain.md` |
+| Schabas spare room in clusters | closed, dismissed (more CLBs, no speed) | `docs/plan/q-n5-schabas-spare.md` |
+| Duplicating critical LUTs after placement (the setting-a gains were selection) | closed, dismissed | `docs/plan/q-n6-duplication.md` |
+| Hindsight re-clustering (R7a); outside placers nextpnr HeAP and SA (R8a, R8b) | closed, inconclusive | `docs/paper/hypotheses.md`, `docs/plan/placers.md` |
+| Parked, never run: a timing-aware yardstick, the Loki L3 to packer-hints bridge, seed-split duplication, untested ideas U1 to U10 | not run | `docs/plan/STATUS.md` |
+
 ## Running it
 
     . scripts/env.sh                     # from the checkout; paths default to $WS_ROOT (~/odin3-ws),
