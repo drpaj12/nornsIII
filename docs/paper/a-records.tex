@@ -52,7 +52,7 @@ Hard floorplan regions are worse (geomean WL 1.088 over 104 runs; R1c, \textsc{d
 \caption{Seeding baseline: geomean quality ratios against the unseeded baseline, soft arm (15 designs, one VPR seed); the inter-cluster-only row shuffles the order inside each cluster and pools all seven families, and the $k$-means row pools $k$, $2k$ and $4k$. Below 1.0 is better. Source: \code{docs/plan/EXPERIMENT.md} (round one).}
 \label{tab:qor}
 \centering
-\footnotesize
+\scriptsize
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 Seed & Wirelength & Delay & Chan. width & Runtime \\
@@ -111,7 +111,7 @@ Inter-cluster only & 1.015 & 0.981 & 0.987 & 1.102 \\
 \label{sec:e-tpeko}
 
 \pp{Where it ran.} Rounds 5, 6 and 9, with follow-ups in HS0, Q-N1b, Q-N2, Q-N3 and Q-N3b; nornsIII PRs \#10, \#11, \#26, \#30 and \#31 (the follow-ups are PRs \#32 to \#38).
-\pp{Idea and why it was tried.} Cong, Romesis and Xie built placement problems with a known optimal answer (TPEKO) to measure how far placers are from it~\cite{Cong03tpeko}. Round 5 applied the idea to packing: build designs whose best clustering is known, measure how far the packer is from it, and use the gap and the shape of the packer's mistakes to design a better packer. The plan quotes Peter (2026-10-25): ``Tpeko tells us what is still possible, so from a clustering perspective it's an interesting approach.'' The known optimum is a clustering optimum only: it reaches the CLB-count lower bound and has a known cut, and it is not a proven placement or timing optimum.
+\pp{Idea and why it was tried.} Cong, Romesis and Xie built placement problems with a known optimal answer (TPEKO) to measure how far placers are from it~\cite{Cong03tpeko}. Round 5 applied the idea to packing: build designs whose best clustering is known, measure how far the packer is from it, and use the gap and the shape of the packer's mistakes to design a better packer. The round 5 plan records the author's reading (2026-10-25): ``Tpeko tells us what is still possible, so from a clustering perspective it's an interesting approach.'' The known optimum is a clustering optimum only: it reaches the CLB-count lower bound and has a known cut, and it is not a proven placement or timing optimum.
 \pp{Experiment.} Three stages. Round 5 and 6: 72 generated designs and 105 alignment designs, built from blocks that each fill one CLB (Section~\ref{sec:i-yardstick}). Round 9: 33 real designs edited until a chosen clustering is the known best (Section~\ref{sec:i-yardstick-real}). Follow-ups on the round 9 designs used the known clustering as the answer key to test five ways of closing the gap: a seed rule (HS0), a true seed oracle (Q-N1b), a decision-log anatomy (Q-N2), a ranking of the right atom (Q-N3) and a two-hop gain term (Q-N3b).
 \pp{Result.} The yardstick works as a measuring instrument: the known arm reproduces the blocks exactly (mean reproduction 1.000), and the standard packer is 1.073 times the known clustering in CLBs, 1.220 [1.168, 1.275] in wire and 1.093 in delay over the 72 synthetic designs, and 1.103 times the corrected CLB lower bound, 1.265 times the wire and 1.026 times the delay on the 33 real designs (Appendices~\ref{sec:e-room} and~\ref{sec:e-real}). It also exposed a leak in the first packer result (Appendix~\ref{sec:e-leak}). As a route to a better packer it did not deliver. The Norns packer is still 1.099 of the known wire on the first yardstick (H20). The seed rule is a 0.7\% geomean CLB win (18 wins, 13 losses, 2 ties; \textsc{inconclusive}). A true seed oracle that uses the answer key rebuilds 25.5\% of the known clusters, wins 2.8\% in wire and 1.2\% in CLBs, loses 0.7\% in delay, and closes 11\% of the log gap (Appendix~\ref{sec:e-seedoracle}). 60\% of the CLB gap is a wrong add with the right atom queued (Appendix~\ref{sec:e-q2}), and no feature computable from the circuit ranks the right atom well once the construction's dummy cells are deleted (Appendix~\ref{sec:e-q3}). The two-hop gain term moved delay by $+0.7\%$ (17 wins, 14 losses, 4 ties; Appendix~\ref{sec:e-2hop}).
 \pp{Verdict.} The yardstick is \textsc{useful} (H24, H27, H25/H19, H32, H38). The plan to turn it into a deployable packer or placement gain is \textsc{closed}: every change tried from it was \textsc{dismissed} or \textsc{inconclusive} (Table~\ref{tab:notwork}). A timing-aware yardstick, as TPEKO had for placement, was not built (parked item P1, Section~\ref{sec:future}).
@@ -286,7 +286,7 @@ At $a=1$ the packer leaves chain unchanged. The harm grows as word purity falls 
 \caption{H38 pilot: stock over known (geometric mean over 3 shuffles $\times$ 3 seeds) and CLB counts against the exact bound $N_C$. Status by the rule of the text: R room, N no room, I inconclusive. Source: \code{data/r9/pilot-summary.json}.}
 \label{tab:r9pilot}
 \centering
-\footnotesize\setlength{\tabcolsep}{3pt}
+\scriptsize\setlength{\tabcolsep}{2pt}
 \begin{tabular}{@{}llrrrrrr@{}}
 \toprule
 Design & C & $N_C$ & stock/$N_C$ & known/$N_C$ & CLB & WL & CPD \\
