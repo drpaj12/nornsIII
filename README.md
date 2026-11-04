@@ -120,7 +120,7 @@ Round three (the Norns packer, I/O words, packing experiments, proximity). The p
     8. scripts/r3stats.py                # every round-three statistic and status -> data/analysis/r3-results.json
     9. scripts/write_round3.py           # docs/paper/r3-*.tex (sections and appendix)
    10. scripts/report.py                 # docs/plan/EXPERIMENT.md (includes the round-three tables)
-   11. tectonic -X compile docs/paper/norns.tex --outdir <dir>   # copy norns.pdf to docs/paper/build/
+   11. (cd docs/paper && latexmk -pdf -interaction=nonstopmode -outdir=<dir> norns.tex)   # copy norns.pdf to docs/paper/build/
 
 Fix round (2026-10-25, after review; protocol entry in `docs/plan/round3.md`): `scripts/r3fix.py ident|stockn|timing|gate2|match`
 (pack-only style, no routing, heavy lock; results `data/analysis/r3fix-*.json`) need `runs/`; `scripts/n11.py` was rerun, then steps 8 to 11.

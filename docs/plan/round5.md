@@ -232,7 +232,7 @@ decision rule (H18 to H24) returns each of its three status words on synthetic d
 status is unreachable by construction; (6) a design whose LUT count is perturbed is excluded by (k1). Gates: `ruff
 check --select E4,E7,E9,F` clean on `scripts/` and `gen/`; regeneration (generator, designs record, statistics,
 paper numbers) byte-identical from a `git archive` copy under `/tmp/claude-1000/nr5-*`; the steps that need `runs/` (VPR
-logs, flat placements, BLIFs) are named in the paper and read the committed `data/r5/` records. Tectonic builds the
+logs, flat placements, BLIFs) are named in the paper and read the committed `data/r5/` records. latexmk builds the
 paper from the worktree and from the archive copy with 0 undefined references and citations.
 
 ## n
