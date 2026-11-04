@@ -203,7 +203,7 @@ small)" and the case where the geometric mean passes but the p value does not; (
 perturbed (k1) and a design whose word file covers < 90% of the flip-flops (k5). Gates: `ruff check --select E4,E7,E9,F` clean on
 `scripts/` and `gen/`; regeneration (generator, designs record, statistics, paper numbers) byte-identical from a `git archive`
 copy under `/tmp/claude-1000/nr6-*` (the steps that need `runs/`, i.e. synthesis, word recovery, VPR logs and flat placements, are named
-in the paper and read the committed `data/r6/` records); tectonic builds the paper from the worktree and from the archive copy
+in the paper and read the committed `data/r6/` records); latexmk builds the paper from the worktree and from the archive copy
 with 0 undefined references and citations; no absolute home-directory path literal in committed files.
 
 ## n
